@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Add Resources Here -->
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="20">
+            <StackPanel Spacing="0">
+                <ComboBox></ComboBox>
+                <Button
+                    Theme="{DynamicResource MdButton}"
+                    CornerRadius="12"
+                    Padding="10"
+                    Background="{DynamicResource SurfaceContainer}">Test Button</Button>
+                <Button
+                    Theme="{DynamicResource MdButton}"
+                    Padding="10"
+                    Background="{DynamicResource SurfaceContainer}">Test Button</Button>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
+    <ControlTheme x:Key="MdButton" TargetType="Button">
+        <Setter Property="BorderThickness" Value="6"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Margin" Value="-3"/>
+        
+        <Style Selector="^:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        </Style>
+        
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        </Style>
+        
+        <Style Selector="^:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

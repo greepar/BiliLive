@@ -1,0 +1,86 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Add Resources Here -->
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="20">
+            <StackPanel Spacing="0">
+                <ComboBox></ComboBox>
+                <CheckBox
+                    Theme="{DynamicResource MdCheckBox}"
+                    CornerRadius="12"
+                    Padding="10"
+                    Background="{DynamicResource SurfaceContainer}">Test Button</CheckBox>
+                <CheckBox
+                    Theme="{DynamicResource MdCheckBox}"
+                    Padding="10"
+                    Background="{DynamicResource SurfaceContainer}">Test Button</CheckBox>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
+    <ControlTheme x:Key="MdCheckBox" TargetType="CheckBox">
+        <!-- 默认颜色 -->
+        <Setter Property= "Background" Value="Transparent" />
+        
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="RootBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="0"
+                        CornerRadius="4"
+                        Padding="4">
+                    <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+                        <!-- 勾选方框 -->
+                        <Border x:Name="CheckBox"
+                                Width="20" Height="20"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                VerticalAlignment="Center"
+                                BorderThickness="1"
+                                CornerRadius="5">
+                            <Path x:Name="CheckMark"
+                                  Opacity="0.8"
+                                  Data="M 4 10 L 8 14 L 15 6"
+                                  Margin="0 0 0 0"
+                                  Stroke="{DynamicResource OnPrimary}"
+                                  StrokeThickness="2"
+                                  IsHitTestVisible="False"/>
+                        </Border>
+                        <!-- 文本内容 -->
+                        <ContentPresenter Grid.Column="1"
+                                          Margin="5,0,0,0"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          Foreground="{TemplateBinding Foreground}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^:checked /template/ Path#CheckMark">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        
+        <Style Selector="^:unchecked /template/ Path#CheckMark">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        
+        <Style Selector="^:pointerover /template/ Border#CheckBox">
+            <Setter Property="BoxShadow" Value="0 0 3 1 #32000000"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}"/>
+        </Style>
+        
+        <Style Selector="^:unchecked /template/ Border#CheckBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}"/>
+        </Style>
+        
+        <Style Selector="^:checked /template/ Border#CheckBox">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        
+        
+    </ControlTheme>
+
+</ResourceDictionary>
