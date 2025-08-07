@@ -9,6 +9,7 @@
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
+        TransparencyLevelHint="Transparent"
         Background="Transparent"
         TransparencyBackgroundFallback="Transparent"
         >
@@ -38,7 +39,7 @@
                             ClipToBounds="False"
                             Background="Transparent"
                             CornerRadius="28 28 0 0"
-                            BoxShadow="0 0.59 0 0 #26000000">
+                            BoxShadow="0 0.8 0 0 #26000000">
                         <Grid ColumnDefinitions="*,Auto,Auto">
                             <TextBlock Grid.Column = "0"
                                        VerticalAlignment="Center"
@@ -109,8 +110,9 @@
                                 <Grid RowDefinitions="Auto,*">
                                     <!-- 弹幕标题栏 -->
                                     <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
-                                        <Border Background="{DynamicResource Primary}" Opacity="0.7" BoxShadow="0 0.59 0 0 #26000000"/>
+                                        <Border Background="{DynamicResource Primary}" Opacity="0.7" BoxShadow="0 1 0 0 #26000000"/>
                                         <TextBlock Text="Danmaku Panel" 
+                                                   FontWeight="Medium"
                                                    Margin="11 0 0 0"
                                                    Foreground="{DynamicResource OnSurface}"
                                                    VerticalAlignment="Center"
@@ -166,8 +168,9 @@
                                         ClipToBounds="True">
                                     <Grid RowDefinitions="Auto,*">
                                         <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
-                                            <Border Background="{DynamicResource SurfaceContainer}" Opacity="0.7" BoxShadow="0 0.59 0 0 #26000000"/>
+                                            <Border Background="{DynamicResource SurfaceContainer}" Opacity="0.7" BoxShadow="0 1 0 0 #37000000"/>
                                             <TextBlock Text="Live Room Info" 
+                                                       FontWeight="Medium"
                                                        Margin="14 0 0 0"
                                                        Foreground="{DynamicResource OnSurface}"
                                                        VerticalAlignment="Center"
@@ -192,9 +195,11 @@
                                                                    VerticalAlignment="Bottom"
                                                                    Text="Stream Title"
                                                                    Margin="0 0 0 3"/>
-                                                        <TextBox Name="PathBox" FontSize="10" MinHeight="35" CornerRadius="10"
+                                                        <TextBox Name="PathBox"
+                                                                 MinHeight="35" CornerRadius="10"
                                                                  Margin="0 3 0 0"
                                                                  BorderThickness="0"
+                                                                 VerticalContentAlignment="Center"
                                                                  Background="{DynamicResource Surface}"
                                                                  SelectionBrush="Transparent"
                                                                  IsReadOnly="False" 
@@ -282,8 +287,9 @@
                                     Margin="0 7 5 0">
                                 <Grid RowDefinitions="Auto,*">
                                     <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
-                                        <Border Background="{DynamicResource SurfaceContainer}" BoxShadow="0 0.59 0 0 #26000000"/>
+                                        <Border Background="{DynamicResource SurfaceContainer}" BoxShadow="0 1 0 0 #26000000"/>
                                         <TextBlock Text="AutoStream Service [Optional]" 
+                                                   FontWeight="Medium"
                                                    Margin="14 0 0 0"
                                                    Foreground="{DynamicResource OnSurface}"
                                                    VerticalAlignment="Center"
@@ -355,7 +361,7 @@
                             <!-- 开始直播和状态区域 -->
                             <Grid Grid.Row="2"
                                   Height="53"
-                                  Margin="0 8 0 0"
+                                  Margin="0 7 0 -4.5"
                                   ColumnDefinitions="*,Auto">
                                 <TextBlock Margin="0 8 15 0" Grid.Column="0"
                                            HorizontalAlignment="Right"

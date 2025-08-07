@@ -18,18 +18,19 @@
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="Surface" Color="#141218" />
-            <SolidColorBrush x:Key="SurfaceVariant" Color="#49454E" />
+            <SolidColorBrush x:Key="Surface" Color="#1E1B24" />
+            <SolidColorBrush x:Key="SurfaceVariant" Color="#49454F" />
             <SolidColorBrush x:Key="OnSurface" Color="#E7E0E8" />
-            <SolidColorBrush x:Key="SurfaceContainer" Color="#211F24" />
-            <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#2B292F" />
-            <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#36343A" />
-            <SolidColorBrush x:Key="SecondaryContainer" Color="#4A4358" />
+            <SolidColorBrush x:Key="SurfaceContainer" Color="#2B272F" />
+            <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#35313A" />
+            <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#3F3B45" />
+            <SolidColorBrush x:Key="SecondaryContainer" Color="#73678A" />
             <SolidColorBrush x:Key="Primary" Color="#D1BCFD" />
             <SolidColorBrush x:Key="InversePrimary" Color="#66558E" />
-            <SolidColorBrush x:Key="PrimaryContainer" Color="#4E3D75" />    
-            <SolidColorBrush x:Key="OnPrimary" Color="#37265C" />
+            <SolidColorBrush x:Key="PrimaryContainer" Color="#6B5CA0" />
+            <SolidColorBrush x:Key="OnPrimary" Color="#FFFFFF" />
         </ResourceDictionary>
+
         
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

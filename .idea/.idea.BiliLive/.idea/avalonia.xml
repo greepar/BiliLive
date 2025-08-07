@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="BiliLive/App.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Resources/MDColors.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow.axaml" value="BiliLive/BiliLive.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
