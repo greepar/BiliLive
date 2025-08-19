@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace BiliLive.ViewModels;
+namespace BiliLive.Views;
 
 public class ViewModelBase : ObservableObject
 {

@@ -1,34 +1,28 @@
 using System;
-using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using BiliLive.ViewModels;
 using BiliLive.Views;
+using ViewLocator.Generator.Common;
 
 namespace BiliLive;
 
-public class ViewLocator : IDataTemplate
+[GenerateViewLocator]
+public partial class ViewLocator : IDataTemplate
 {
-    private static readonly Dictionary<Type, Func<Control>> ViewFactoryMap = new()
+    public Control? Build(object? data)
     {
-        [typeof(MainWindowViewModel)] = () => new MainWindow()
-        // 继续添加你的 ViewModel/View 映射
-    };
-    
-
-    public Control? Build(object? param)
-    {
-        if (param == null)
-            return null;
-
-        var vmType = param.GetType();
-
-        if (ViewFactoryMap.TryGetValue(vmType, out var viewFactory))
+        if (data is null)
         {
-            return viewFactory();
+            return null;
+        }
+        var type = data.GetType();
+        
+        if (s_views.TryGetValue(type, out var func))
+        {
+            return func.Invoke();
         }
 
-        return new TextBlock { Text = $"View not found for: {vmType.Name}" };
+        throw new Exception($"Unable to create view for type: {type}");
     }
 
     public bool Match(object? data)

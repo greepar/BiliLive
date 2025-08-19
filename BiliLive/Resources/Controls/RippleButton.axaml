@@ -1,0 +1,27 @@
+﻿<UserControl
+    x:Class="BiliLive.Resources.Controls.RippleButton"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Name="Root">
+
+    <!-- <Canvas x:Name="PART_Canvas" -->
+    <!--         Background="Transparent" -->
+    <!--         PointerPressed="OnPointerPressed"> -->
+    <!-- -->
+    <!--     ~1~ 实际按钮 @1@ -->
+    <!--     <Button x:Name="PART_Button" -->
+    <!--             Content="{Binding Content, ElementName=Root}" -->
+    <!--             Command="{Binding Command, ElementName=Root}" -->
+    <!--             CommandParameter="{Binding CommandParameter, ElementName=Root}" -->
+    <!--             Width="{Binding Width, ElementName=Root}" -->
+    <!--             Height="{Binding Height, ElementName=Root}" -->
+    <!--             CornerRadius="12" -->
+    <!--             Background="#FF4081" -->
+    <!--             Foreground="White" -->
+    <!--             HorizontalAlignment="Stretch" -->
+    <!--             VerticalAlignment="Stretch" /> -->
+    <!-- -->
+    <!-- </Canvas> -->
+    <!-- -->
+
+</UserControl>

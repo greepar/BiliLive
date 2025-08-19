@@ -15,6 +15,8 @@
             <SolidColorBrush x:Key="InversePrimary" Color="#D1BCFD" />
             <SolidColorBrush x:Key="PrimaryContainer" Color="#EADDFF" />
             <SolidColorBrush x:Key="OnPrimary" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="OnPrimaryFixedVariant" Color="#4E3D75" />
+            
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
@@ -29,6 +31,7 @@
             <SolidColorBrush x:Key="InversePrimary" Color="#66558E" />
             <SolidColorBrush x:Key="PrimaryContainer" Color="#6B5CA0" />
             <SolidColorBrush x:Key="OnPrimary" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="OnPrimaryFixedVariant" Color="#4E3D75" />
         </ResourceDictionary>
 
         

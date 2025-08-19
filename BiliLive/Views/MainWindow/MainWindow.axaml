@@ -1,11 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:BiliLive.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
         mc:Ignorable="d"
-        x:Class="BiliLive.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:Class="BiliLive.Views.MainWindow.MainWindow"
+        x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
@@ -13,25 +13,24 @@
         Background="Transparent"
         TransparencyBackgroundFallback="Transparent"
         >
-
+    
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+             to set the actual DataContext for runtime, set the DataContext property in code) -->
+        <mainWindow:MainWindowViewModel/>
     </Design.DataContext>
-    
     
     <Border Name="MainBorder" Background="Transparent">
         <Border.Transitions>
-            
+    
         </Border.Transitions>
         <Border Width="800" Height="450"
-                Margin="10" 
+                Margin="10"
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"
                 Background="{DynamicResource Surface}">
                 <Grid RowDefinitions="Auto,*">
-                    
+    
                     <!-- 标题栏 -->
                     <Border Grid.Row="0"
                             PointerPressed="InputElement_OnPointerPressed"
@@ -48,10 +47,10 @@
                                        FontWeight="Medium"
                                        Text="BiliStream Enabler"
                                        Margin="18 2 0 0"/>
-                            <Button Grid.Column = "1" 
+                            <Button Grid.Column = "1"
                                     Width="30"
                                     Height="30"
-                                    HorizontalAlignment="Right" 
+                                    HorizontalAlignment="Right"
                                     CornerRadius="10"
                                     Background="{DynamicResource SurfaceContainer}"
                                     Theme="{StaticResource MdButton}"
@@ -65,10 +64,10 @@
                                       Margin="0 0 0 0"
                                       Data="M 0,0 L 8,0" />
                             </Button>
-                            <Button Grid.Column = "2" 
+                            <Button Grid.Column = "2"
                                     Width="30"
                                     Height="30"
-                                    HorizontalAlignment="Right" 
+                                    HorizontalAlignment="Right"
                                     CornerRadius="10"
                                     Background="{DynamicResource SurfaceContainer}"
                                     Margin="11 0 15 0"
@@ -93,13 +92,15 @@
                             </Button>
                         </Grid>
                     </Border>
-                    
+    
                     <!-- 主界面区域 -->
-                    <Grid Grid.Row="1" 
+                    <Grid Grid.Row="1"
+                         Focusable="True"
                           ColumnDefinitions="*,2*"
-                          Margin="19 7 19 0">
+                          Margin="19 7 19 0"
+                         GotFocus="InputElement_OnGotFocus">
                         <!-- 弹幕姬 + UID-->
-                        <Grid Grid.Column="0" 
+                        <Grid Grid.Column="0"
                               Margin="0 0 0 14"
                               RowDefinitions="*,Auto">
                             <!-- 弹幕板 -->
@@ -111,7 +112,7 @@
                                     <!-- 弹幕标题栏 -->
                                     <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
                                         <Border Background="{DynamicResource Primary}" Opacity="0.7" BoxShadow="0 1 0 0 #26000000"/>
-                                        <TextBlock Text="Danmaku Panel" 
+                                        <TextBlock Text="Danmaku Panel"
                                                    FontWeight="Medium"
                                                    Margin="11 0 0 0"
                                                    Foreground="{DynamicResource OnSurface}"
@@ -134,13 +135,13 @@
                                                  Width="16" Height="16"/>
                                         </Button>
                                     </Grid>
-                                    
+    
                                     <!-- 实际弹幕内容,待写 -->
                                     <TextBlock Grid.Row="1" Text="暂时没有弹幕哦..."
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="13"/>
-                                    
+    
                                 </Grid>
                             </Border>
                             <!-- 左下角展示UID -->
@@ -148,19 +149,19 @@
                                        FontSize="12"
                                        Opacity="0.75"
                                        Grid.Row="1"
-                                       Text="[UID:196431435]"/>
+                                       Text="{Binding UserId, StringFormat='[UID:{0}]'}" />
                         </Grid>
-                        
+    
                         <!-- 右侧内容区域 -->
-                        
-                        <Grid Grid.Column="1" 
+    
+                        <Grid Grid.Column="1"
                               Margin="9 0 0 0"
                               RowDefinitions="1.31*,*,Auto">
-                            
+    
                             <!-- 直播间信息 , 登录 , 直播分区-->
                             <Grid Grid.Row="0"
                                   ColumnDefinitions="*,Auto">
-
+    
                                 <!-- 直播间信息标题栏 -->
                                 <Border Grid.Column="0"
                                         Background="{DynamicResource SurfaceContainer}"
@@ -169,14 +170,15 @@
                                     <Grid RowDefinitions="Auto,*">
                                         <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
                                             <Border Background="{DynamicResource SurfaceContainer}" Opacity="0.7" BoxShadow="0 0.56 0 0 #37000000"/>
-                                            <TextBlock Text="Live Room Info" 
+                                            <TextBlock Text="Live Room Info"
                                                        FontWeight="Medium"
                                                        Margin="14 0 0 0"
                                                        Foreground="{DynamicResource OnSurface}"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Left"/>
-                                        </Grid>
                                         
+                                        </Grid>
+    
                                         <Border Grid.Row="1" Margin="14 0 14 0">
                                             <Grid VerticalAlignment="Center" RowDefinitions="Auto,*">
                                                 <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
@@ -187,8 +189,8 @@
                                                                RenderOptions.BitmapInterpolationMode="MediumQuality"></Image>
                                                     </Border>
                                                     <!-- 标题 -->
-                                                    <Grid Grid.Column="1" 
-                                                          Margin="14 0 0 0" 
+                                                    <Grid Grid.Column="1"
+                                                          Margin="14 0 0 0"
                                                           VerticalAlignment="Center"
                                                           RowDefinitions="*,*">
                                                         <TextBlock Grid.Row="0"
@@ -202,49 +204,77 @@
                                                                  VerticalContentAlignment="Center"
                                                                  Background="{DynamicResource Surface}"
                                                                  SelectionBrush="Transparent"
-                                                                 IsReadOnly="False" 
+                                                                 IsReadOnly="False"
                                                                  Focusable="True" Grid.Row="1"
                                                                  VerticalAlignment="Center" />
                                                     </Grid>
                                                 </Grid>
-                                                
-                                                <TextBlock Grid.Row="1" 
-                                                           Margin="1 10 0 0"
-                                                           Text="API Key : ?streamname=liv*****************pflag=1"/>
+    
+                                                <Grid Grid.Row="1"
+                                                      Margin="0 9 0 0" ColumnDefinitions="*,Auto">
+                                                    <TextBlock Grid.Column="0"
+                                                               Margin="1 4.4 0 0"
+                                                               Text="API Key : ?streamName=liv***************Live=1"/>
+                                                 <Button Grid.Column="1"
+                                                         Background="Transparent"
+                                                         Height="30"
+                                                         CornerRadius="8"
+                                                         Theme="{StaticResource MdButton}"
+                                                         VerticalAlignment="Center">
+                                                     <Svg VerticalAlignment="Bottom"
+                                                          Width="18" Height="18"
+                                                          Path="/Assets/Icons/Copy.svg"></Svg>
+                                                 </Button>
+                                                </Grid>
+    
                                             </Grid>
                                         </Border>
-                                        
+    
                                     </Grid>
                                 </Border>
-                                
+    
                                 <!-- 登录和直播分区 -->
                                 <Grid RowDefinitions="Auto,*"
                                       Margin="7 0 0 0"
                                       Grid.Column="1">
-                                    
+    
                                     <!-- 头像部分 -->
                                     <Grid Grid.Row="0"
                                           Margin="0 0 0 7">
-                                        <Button HorizontalAlignment="Stretch"
+                                        <Button Name="LoginButton"
+                                                HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Bottom"
                                                 CornerRadius="12"
                                                 Height="36"
                                                 Background="{DynamicResource SurfaceContainerHigh}"
-                                                Theme="{StaticResource MdButton}">
-                                                <TextBlock Text="uwu_131" Margin="6 0 37 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                Theme="{StaticResource MdButton}"
+                                                Command="{Binding LoginCommand}">
+                                                <TextBlock Text="{Binding UserName}" Margin="6 0 37 0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Button>
+                                        <Popup PlacementTarget="{Binding ElementName=LoginButton}"
+                                               Placement="Bottom"
+                                               IsOpen="{Binding IsLoginOpen}">
+                                            <Border Background="LightGray" Padding="10">
+                                                <TextBlock Text="这里是弹出的内容" />
+                                            </Border>
+                                        </Popup>
                                         
                                         <Border HorizontalAlignment="Right"
                                                 ClipToBounds="True"
                                                 CornerRadius="18.5">
-                                            <Image Source="/Assets/Pics/userPic.jpg"
-                                                   Stretch="UniformToFill"
-                                                   RenderOptions.BitmapInterpolationMode="None"
-                                                   Width="37" Height="37" Margin="0,0,0,0"/>
+    
+                                            <Grid>
+                                                <Image Source="/Assets/Pics/userPic.jpg"
+                                                       Stretch="UniformToFill"
+                                                       RenderOptions.BitmapInterpolationMode="None"
+                                                       Width="37" Height="37" Margin="0,0,0,0"/>
+                                                <Image Source="{Binding UserFace}" />
+                                            </Grid>
+    
                                         </Border>
                                     </Grid>
-                                   
-                                    
+    
+    
                                     <Button Grid.Row="1"
                                             VerticalAlignment="Stretch"
                                             HorizontalAlignment="Stretch"
@@ -259,26 +289,26 @@
                                                 <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
                                             </Style>
                                         </Button.Styles>
-                                        
+    
                                         <StackPanel VerticalAlignment="Center" Margin="0 0 0 5" Background="Transparent" Orientation="Vertical" >
                                             <Svg VerticalAlignment="Bottom"
                                                  Width="32" Height="32"
                                                  Path="/Assets/Icons/ChangeArea.svg"></Svg>
-                                            
+    
                                             <StackPanel  >
-                                                <TextBlock HorizontalAlignment="Center" 
+                                                <TextBlock HorizontalAlignment="Center"
                                                            VerticalAlignment="Center">Change Area</TextBlock>
-                                            
-                                                <TextBlock HorizontalAlignment="Center" 
+    
+                                                <TextBlock HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
                                                            Text="[手游-原神]"></TextBlock>
                                             </StackPanel>
-                                     
+    
                                         </StackPanel>
                                     </Button>
                                 </Grid>
                             </Grid>
-                       
+    
                             <!-- AutoStream区域 -->
                             <Border Grid.Row="1"
                                     Background="{DynamicResource SurfaceContainer}"
@@ -288,14 +318,14 @@
                                 <Grid RowDefinitions="Auto,*">
                                     <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
                                         <Border Background="{DynamicResource SurfaceContainer}" BoxShadow="0 0.56 0 0 #26000000"/>
-                                        <TextBlock Text="AutoStream Service [Optional]" 
+                                        <TextBlock Text="AutoStream Service [Optional]"
                                                    FontWeight="Medium"
                                                    Margin="14 0 0 0"
                                                    Foreground="{DynamicResource OnSurface}"
                                                    VerticalAlignment="Center"
                                                    HorizontalAlignment="Left"/>
                                     </Grid>
-                                    
+    
                                     <Grid Grid.Row="1"
                                           Margin="8"
                                           RowDefinitions="*,*,*">
@@ -303,9 +333,11 @@
                                             <TextBlock Grid.Column="0"
                                                        VerticalAlignment="Center"
                                                        Margin="0 0 0 2"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
                                                        HorizontalAlignment="Right">Ffmpeg Path</TextBlock>
                                             <Border Grid.Column="1" Margin="7 0 0 0">
-                                                <Button HorizontalAlignment="Right" 
+                                                <Button HorizontalAlignment="Right"
                                                         CornerRadius="12"
                                                         Width="390"
                                                         Height="30"
@@ -322,15 +354,17 @@
                                                 </Button>
                                             </Border>
                                         </Grid>
-                                        <Grid Grid.Row="1" 
+                                        <Grid Grid.Row="1"
                                               Margin="0 8 0 5"
                                               ColumnDefinitions="*,Auto">
                                             <TextBlock Grid.Column="0"
                                                        Margin="0 0 0 2"
                                                        VerticalAlignment="Center"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
                                                        HorizontalAlignment="Right">Video Path</TextBlock>
                                             <Border Grid.Column="1" Margin="7 0 0 0">
-                                                <Button HorizontalAlignment="Right" 
+                                                <Button HorizontalAlignment="Right"
                                                         CornerRadius="12"
                                                         Width="390"
                                                         Height="30"
@@ -346,7 +380,7 @@
                                                     </Button.Styles>
                                                 </Button>
                                             </Border>
-                                      
+    
                                         </Grid>
                                         <StackPanel Margin="8 0 0 0" Grid.Row="2" Orientation="Horizontal">
                                             <CheckBox Theme="{StaticResource MdCheckBox}"
@@ -357,7 +391,7 @@
                                     </Grid>
                                 </Grid>
                             </Border>
-                            
+    
                             <!-- 开始直播和状态区域 -->
                             <Grid Grid.Row="2"
                                   Height="53"
@@ -371,20 +405,21 @@
                                               CornerRadius="12"
                                               VerticalAlignment="Top"
                                               HorizontalAlignment="Right"
+                                              Command="{Binding StartServiceCommand}"
                                               Theme="{StaticResource MdToggleButton}"
                                               >
                                     <TextBlock Text="Start Stream"
+                                               FontWeight="Medium"
                                                Margin="16 0 16 0"
                                                VerticalAlignment="Center"/>
                                 </ToggleButton>
                             </Grid>
                         </Grid>
-                        
+    
                     </Grid>
                 </Grid>
             </Border>
     </Border>
     
-    <!-- <TextBlock Text="{Binding UserName}" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
 
 </Window>

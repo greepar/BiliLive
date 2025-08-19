@@ -3,20 +3,21 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PublishAot>false</PublishAot>
+        <PublishSingleFile>true</PublishSingleFile>
+        <PublishTrimmed>true</PublishTrimmed>
+        <SelfContained>false</SelfContained>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
-        <Folder Include="Services\BiliServices\" />
-        <Folder Include="Views\Dialogs\" />
     </ItemGroup>
 
+    
     <ItemGroup>
-        <PackageReference Include="Avalonia.Svg.Skia" Version="11.3.0" />
         <PackageReference Include="HotAvalonia" Version="3.0.0" PrivateAssets="All" Publish="True" />
         <PackageReference Include="Avalonia" Version="11.3.2"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.3.2"/>
@@ -29,6 +30,40 @@
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0-preview.6.25358.103" />
-        <PackageReference Include="QRCoder" Version="1.6.0" />
+        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.0.3" />
+        <PackageReference Include="ViewLocator.Generator" Version="2025.8.4.737-manual">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="ViewLocator.Generator.Common" Version="2025.8.4.737-manual" />
+    </ItemGroup>
+
+    
+    <ItemGroup>
+      <Compile Update="Views\Dialogs\AccountWindow\AccountWindow.axaml.cs">
+        <DependentUpon>AccountWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Dialogs\AccountWindow\QrLoginWindow.axaml.cs">
+        <DependentUpon>QrLoginWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\AccountWindow\Pages\AccountPage.axaml.cs">
+        <DependentUpon>AccountPage.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\AccountWindow\Pages\QrLoginPage.axaml.cs">
+        <DependentUpon>QrLoginPage.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+    
+    <ItemGroup>
+      <ProjectReference Include="..\BiliLive.Core\BiliLive.Core.csproj" />
     </ItemGroup>
 </Project>

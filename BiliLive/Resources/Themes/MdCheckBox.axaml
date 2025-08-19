@@ -33,15 +33,18 @@
                     <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
                         <!-- 勾选方框 -->
                         <Border x:Name="CheckBox"
-                                Width="20" Height="20"
+                                Width="18" Height="18"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 VerticalAlignment="Center"
-                                BorderThickness="1"
+                                BorderThickness="0.9"
                                 CornerRadius="5">
                             <Path x:Name="CheckMark"
                                   Opacity="0.8"
-                                  Data="M 4 10 L 8 14 L 15 6"
-                                  Margin="0 0 0 0"
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Data="M 2 5 L 4 7 L 7.5 3"
+                                  Margin="3"
                                   Stroke="{DynamicResource OnPrimary}"
                                   StrokeThickness="2"
                                   IsHitTestVisible="False"/>

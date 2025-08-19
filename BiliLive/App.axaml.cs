@@ -1,26 +1,49 @@
+using System.Net.Http;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using BiliLive.ViewModels;
-using BiliLive.Views;
+using BiliLive.Views.MainWindow;
+using BiliLive.Core.Services.BiliService;
+using BiliLive.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace BiliLive;
 
 public class App : Application
 {
+    private IHost AppHost { get; set; } = null!;
+    
     public override void Initialize()
     {
+        var httpClient = new HttpClient();
+        AppHost = Host.CreateDefaultBuilder()
+            .ConfigureServices(services =>
+            {
+                services.AddSingleton(httpClient);
+                services.AddSingleton<LoginService>();
+                services.AddSingleton<AccountInterface>();
+                services.AddSingleton<MainWindow>();
+                services.AddSingleton<MainWindowViewModel>();
+                // 更多服务...
+            })
+            .Build();
+        
         AvaloniaXamlLoader.Load(this);
     }
-
+    
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel()
-            };
-
+        {
+            var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
+            var mainWindowViewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
+            mainWindow.DataContext = mainWindowViewModel;
+            
+            desktop.MainWindow = mainWindow;
+        }
         base.OnFrameworkInitializationCompleted();
     }
+    
+
 }
