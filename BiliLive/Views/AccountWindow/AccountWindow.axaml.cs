@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Transformation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.AccountWindow;
 
@@ -18,6 +19,11 @@ public partial class AccountWindow : Window
         };
     }
     
+    public AccountWindow(IServiceProvider serviceProvider) : this()
+    {
+        var vm = serviceProvider.GetRequiredService<AccountWindowViewModel>();
+        DataContext = vm;
+    }
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {

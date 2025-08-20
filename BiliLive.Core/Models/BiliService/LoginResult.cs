@@ -1,10 +1,17 @@
 namespace BiliLive.Core.Models.BiliService;
 
-public class LoginResult
+public abstract class LoginResult { }
+
+public class LoginSuccess : LoginResult
 {
-    public bool? IsSuccess { get; set; }
-    public long? UserId { get; set; } 
-    public string? UserName { get; set; }
-    public string? UserFaceUrl { get; set; }
-    public string? ErrorMsg { get; set; }
+    public required long UserId { get; set; }
+    public required string UserName { get; set;}
+    public required string UserFaceUrl { get; set; }
+}
+
+public class LoginFailed : LoginResult
+{
+    public string? ErrorMsg { get; set;}
+    public bool IsCanceled { get; set;}
+    
 }

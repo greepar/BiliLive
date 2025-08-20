@@ -1,11 +1,7 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
+using BiliLive.Core.Models.BiliService;
 using BiliLive.Services;
-using BiliLive.Views.AccountWindow;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -13,7 +9,7 @@ namespace BiliLive.Views.MainWindow;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly AccountInterface? accInterface;
+    private readonly AccountInterface? _accInterface;
     
     [ObservableProperty] private string? _userName = "Not Login";
     [ObservableProperty] private string? _roomTitle;
@@ -38,15 +34,35 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel(AccountInterface accountInterface)
     {
-        accInterface = accountInterface;
+        _accInterface = accountInterface;
     }
     
     [RelayCommand]
     private async Task LoginAsync()
     {
-        await accInterface.LoginAsync();
-        UserName = "UserName";
-        UserId = 123;
+        if (_accInterface != null)
+        {
+            var loginResult = await _accInterface.LoginAsync();
+            if (loginResult is not null)
+            {
+                switch (loginResult)
+                {
+                    case LoginSuccess success:
+                        UserName = success.UserName;
+                        UserFace = new Bitmap(success.UserFaceUrl);
+                        UserId = success.UserId;
+                        break;
+                    case LoginFailed failed:
+                        if (failed.IsCanceled)
+                        {
+                        }
+                        else
+                        {
+                        }
+                        break;
+                }
+            }
+        }
     }
 
     [RelayCommand]

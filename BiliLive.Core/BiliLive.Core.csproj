@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <PublishAot>true</PublishAot>
+        <PublishAot>false</PublishAot>
         <PublishTrimmed>true</PublishTrimmed>
-        <SelfContained>false</SelfContained>
+        <SelfContained>true</SelfContained>
     </PropertyGroup>
 
     <ItemGroup>

@@ -36,10 +36,10 @@ public class LoginService
         if (_biliCookie == null)
         {
             _biliCookie = await TryLoginByQrCodeAsync();
-            return new LoginResult()
-            {
-                IsSuccess = false,
-            };
+            // return new LoginResult()
+            // {
+            //     IsSuccess = false,
+            // };
         }
         
         if (_biliCookie != null)
@@ -60,7 +60,6 @@ public class LoginService
             var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
             var response = await _httpClient.GetAsync(checkLoginApi);
             
-            //mark may have problem
             using var jsonDoc = JsonDocument.Parse(response.Content.ReadAsStringAsync().Result);
             
             if (response.IsSuccessStatusCode)
@@ -68,25 +67,23 @@ public class LoginService
                 var isLogin = jsonDoc.RootElement.GetProperty("data").GetProperty("isLogin").GetBoolean();
                 if (isLogin)
                 {
-                    return new LoginResult()
+                    return new LoginSuccess()
                     {
-                        IsSuccess = true,
-                        UserName = jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString(),
+                        UserName = jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString() ?? "Unknown",
                         UserId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64(),
-                        UserFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString()
+                        UserFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString() ?? "https://www.bilibili.com/favicon.ico"
                     };
                 }
-                return new LoginResult()
+                return new LoginFailed()
                 {
-                    IsSuccess = false,
                     ErrorMsg = "登录信息失效了，请重新扫码登录..."
                 };
             }
         }
-
-        return new LoginResult()
+        
+        return new LoginFailed()
         {
-            IsSuccess = true
+            ErrorMsg = "登录信息失效了，请重新扫码登录..."
         };
     }
 

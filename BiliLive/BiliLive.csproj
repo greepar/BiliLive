@@ -9,7 +9,7 @@
         <PublishAot>false</PublishAot>
         <PublishSingleFile>true</PublishSingleFile>
         <PublishTrimmed>true</PublishTrimmed>
-        <SelfContained>false</SelfContained>
+        <SelfContained>true</SelfContained>
     </PropertyGroup>
     
     <ItemGroup>

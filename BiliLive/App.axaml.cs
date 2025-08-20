@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using BiliLive.Views.MainWindow;
 using BiliLive.Core.Services.BiliService;
 using BiliLive.Services;
+using BiliLive.Views.AccountWindow;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -22,9 +23,12 @@ public class App : Application
             {
                 services.AddSingleton(httpClient);
                 services.AddSingleton<LoginService>();
-                services.AddSingleton<AccountInterface>();
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
+                services.AddSingleton<AccountInterface>();
+                services.AddTransient<AccountWindow>();
+                services.AddTransient<AccountWindowViewModel>();
+                
                 // 更多服务...
             })
             .Build();
@@ -36,10 +40,10 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            //通过DI获取MainWindow
             var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
             var mainWindowViewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
             mainWindow.DataContext = mainWindowViewModel;
-            
             desktop.MainWindow = mainWindow;
         }
         base.OnFrameworkInitializationCompleted();
