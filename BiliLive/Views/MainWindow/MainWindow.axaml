@@ -187,8 +187,8 @@
                                                 <Border Grid.Column="0" CornerRadius="12" ClipToBounds="True"
                                                         Width="157" Height="89" Background="Wheat">
                                                     <Image Stretch="UniformToFill"
-                                                           Source="/Assets/Pics/Cover.png"
-                                                           RenderOptions.BitmapInterpolationMode="MediumQuality" />
+                                                           Source="{Binding RoomCover}"
+                                                           RenderOptions.BitmapInterpolationMode="None" />
                                                 </Border>
                                                 <!-- 标题 -->
                                                 <Grid Grid.Column="1"
@@ -260,12 +260,13 @@
                                     <Popup PlacementTarget="{Binding ElementName=LoginButton}"
                                            Placement= "BottomEdgeAlignedRight"
                                            PlacementConstraintAdjustment="None"
+                                           IsOpen="True"
                                            Name="LoginPopup"
                                            VerticalOffset="-5"
                                            HorizontalOffset="10"
                                            >
                                         <Border Name="LoginBorder"
-                                                Opacity="0"
+                                                Opacity="1"
                                                 Background="Transparent"
                                                 ClipToBounds="True"
                                                 BorderThickness="15" BorderBrush="Transparent">
@@ -305,23 +306,80 @@
                                                                        Margin="20 2 0 0" />
                                                         </Grid>
                                                     </Border>
-
-                                                    <!-- 内容页面 废弃 -->
-                                                    <!-- <ContentControl Grid.Row="1" -->
-                                                    <!--                 HorizontalAlignment="Center" -->
-                                                    <!--                 VerticalAlignment="Center" -->
-                                                    <!--                 Content="{Binding CurrentPage}" /> -->
                                                     
+                                                    <!-- 标题下的内容 -->
                                                     <Grid Grid.Row="1">
                                                         <Border IsVisible="{Binding !InLogin}">
-                                                            <Grid>
-                                                                <TextBlock HorizontalAlignment="Center"
-                                                                           VerticalAlignment="Center">Accounts will be shown here</TextBlock>
-                                                                <Button HorizontalAlignment="Right"
+                                                            <Grid ShowGridLines="False" RowDefinitions="*,Auto">
+                                                               
+                                                                <!-- 账号列表 -->
+                                                                <Border Grid.Row="0"
+                                                                        Width="305" Height="75"
+                                                                        CornerRadius="12"
+                                                                        ClipToBounds="True"
+                                                                        Background="{DynamicResource SurfaceContainer}">
+                                                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                                                          Margin="10">
+                                                                        <Border Grid.Column="0"
+                                                                                CornerRadius="90"
+                                                                                Width="47" Height="47"
+                                                                                ClipToBounds="True"
+                                                                            >
+                                                                            <Image 
+                                                                                Stretch="UniformToFill"
+                                                                                RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                                                Source="{Binding UserFace}"></Image>
+                                                                        </Border>
+                                                                        
+                                                                       <Grid ShowGridLines="False" Grid.Column="1" 
+                                                                             Margin="5 0 0 0"
+                                                                             RowDefinitions="*,*">
+                                                                           <TextBlock Grid.Row="0"
+                                                                                   VerticalAlignment="Bottom"
+                                                                                   FontWeight="Medium"
+                                                                                   Text="{Binding UserName}"></TextBlock>
+                                                                           <TextBlock Grid.Row="1"
+                                                                                   VerticalAlignment="Top"
+                                                                                   FontWeight="Light"
+                                                                                   Text="{Binding UserId}"></TextBlock>
+                                                                       </Grid>
+                                                                        
+                                                                        <Button Grid.Column="2"
+                                                                                CornerRadius="12"
+                                                                                Height="30" Width="30"
+                                                                                Theme="{StaticResource MdButton}"
+                                                                                Background="{DynamicResource SurfaceContainerHighest}">
+                                                                            <Button.Styles>
+                                                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                                                    <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
+                                                                                    <Setter Property="Background" Value="#DE4C4C" />
+                                                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+                                                                                </Style>
+                                                                            </Button.Styles>
+                                                                        </Button>
+                                                                    </Grid>
+                                                                </Border>
+                                                                
+                                                                <!-- 添加账号按钮 -->
+                                                                <Button Grid.Row="1" Width="71" Height="39" 
+                                                                        Margin="-3 -3 11 7"
+                                                                        HorizontalAlignment="Right"
                                                                         VerticalAlignment="Bottom"
-                                                                        Content="+ Add"
+                                                                        CornerRadius="12"
+                                                                        Background="{DynamicResource SecondaryContainer}"
+                                                                        Theme="{StaticResource MdButton}"
                                                                         Command="{Binding AddAccountCommand}"
-                                                                />
+                                                                >
+                                                                    <Button.Styles>
+                                                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                                            <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
+                                                                            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+                                                                            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+                                                                        </Style>
+                                                                    </Button.Styles>
+                                                                    <TextBlock Text="+ Add"
+                                                                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                                </Button>
                                                             </Grid>
                                                         </Border>
                                                         
@@ -356,7 +414,8 @@
                                                                 <Grid Grid.Column="1"
                                                                       RowDefinitions="*,Auto">
                                                                     <!-- 用户确认信息 -->
-                                                                    <Grid Grid.Row="0">
+                                                                    <Grid Grid.Row="0"
+                                                                          Margin="-10 0 10 -4">
                                                                         <Border Height="69" CornerRadius="12"
                                                                                 Background="{DynamicResource SurfaceContainer}"></Border>
                                                                     </Grid>
@@ -364,17 +423,53 @@
                                                                     <!-- 确认和取消按钮 -->
                                                                     <StackPanel Grid.Row="1"
                                                                             Orientation="Horizontal"
+                                                                            HorizontalAlignment="Right"
+                                                                            Margin="0 0 15 10"
                                                                     >
-                                                                        <Border Margin="0 0 10 0">
+                                                                        
+                                                                        <!-- 确认按钮 -->
+                                                                        <Border Margin="0 0 8.5 0">
                                                                             <Button Background="{DynamicResource Primary}" 
+                                                                                    CornerRadius="100"
+                                                                                    Height="34" Width="75"
                                                                                     Theme="{StaticResource MdButton}"
-                                                                                    Content="Confirm"/>
+                                                                                    Command="{Binding ConfirmLoginCommand}"
+                                                                                    >
+                                                                            <Button.Styles>
+                                                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                                                    <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
+                                                                                    <Setter Property="Background" Value="{DynamicResource InversePrimary}" />
+                                                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+                                                                                </Style>
+                                                                            </Button.Styles>
+                                                                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                                                                       FontWeight="SemiLight"
+                                                                                       FontSize="13"
+                                                                                       Foreground="{DynamicResource OnPrimary}">Confirm</TextBlock>
+                                                                                </Button>
+
                                                                         </Border>
       
-                                                                        <Button Background="{DynamicResource Primary}" 
+                                                                        <!-- 取消按钮 -->
+                                                                        <Button Background="{DynamicResource Surface}" 
+                                                                                BorderBrush="{DynamicResource Primary}"
+                                                                                BorderThickness="2"
                                                                                 Theme="{StaticResource MdButton}"
-                                                                                Content="Cancel"
-                                                                                Command="{Binding CancelLoginCommand}"/>
+                                                                                Height="31" Width="68"
+                                                                                CornerRadius="100"
+                                                                                Command="{Binding CancelLoginCommand}">
+                                                                            <Button.Styles>
+                                                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                                                    <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
+                                                                                    <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+                                                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+                                                                                </Style>
+                                                                            </Button.Styles>
+                                                                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                                                                    FontWeight="Regular"
+                                                                                    FontSize="13"
+                                                                                       Foreground="{DynamicResource OnSurface}">Cancel</TextBlock>
+                                                                        </Button>
                                                                     </StackPanel>
                                                                 </Grid>
                                                             </Grid>
@@ -392,11 +487,13 @@
                                             CornerRadius="18.5">
 
                                         <Grid>
-                                            <Image Source="/Assets/Pics/userPic.jpg"
-                                                   Stretch="UniformToFill"
+                                            <!-- <Image Source="/Assets/Pics/userPic.jpg" -->
+                                            <!--        Stretch="UniformToFill" -->
+                                            <!--        RenderOptions.BitmapInterpolationMode="None" -->
+                                            <!--        Width="37" Height="37" Margin="0,0,0,0" /> -->
+                                            <Image Stretch="UniformToFill" Width="37" Height="37"
                                                    RenderOptions.BitmapInterpolationMode="None"
-                                                   Width="37" Height="37" Margin="0,0,0,0" />
-                                            <Image Source="{Binding UserFace}" />
+                                                   Source="{Binding UserFace}" />
                                         </Grid>
 
                                     </Border>

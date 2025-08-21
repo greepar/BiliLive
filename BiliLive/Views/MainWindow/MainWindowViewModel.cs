@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
+using BiliLive.Core.Services.BiliService;
 using BiliLive.Services;
+using BiliLive.Services.Utils;
 using BiliLive.Views.MainWindow.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,10 +21,14 @@ namespace BiliLive.Views.MainWindow;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly BiliService? _biliService;
+    private readonly LiveService? _liveService;
     private CancellationTokenSource _pollingCts = new ();
     
     //主窗口内容
     [ObservableProperty] private string? _userName = "Not Login";
+    [ObservableProperty] private long? _userId = 196431435;
+    [ObservableProperty] private Bitmap? _userFace ;
+    
     [ObservableProperty] private string? _roomTitle;
     [ObservableProperty] private string? _roomArea = "选择分区";
     [ObservableProperty] private string? _apiKey = "Null";
@@ -29,18 +36,17 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string? _videoPath;
     [ObservableProperty] private string? _status = "Not Login";
     [ObservableProperty] private string? _btnWord = "Start Stream";
-    [ObservableProperty] private Bitmap? _userFace ;
+    
     [ObservableProperty] private Bitmap? _roomCover ;
     [ObservableProperty] private bool _autoStart = false ;
     [ObservableProperty] private bool _isLoginOpen = false ;
     [ObservableProperty] private bool _checkTask = false ;
     [ObservableProperty] private bool _streamBtn = false ;
-    [ObservableProperty] private long? _userId = 196431435;
     
     //Popup登录窗口内容
     [ObservableProperty] private string _popupTitle = "Accounts";
     [ObservableProperty]private object _currentPage = new AccountPageViewModel();
-    [ObservableProperty]private bool _inLogin = false;
+    [ObservableProperty]private bool _inLogin = true;
     
     //Popup QR登录窗口内容
     [ObservableProperty] private bool _showCoverBox = false;
@@ -57,12 +63,18 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public MainWindowViewModel()
     {
+        var coverStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/a.png"));
+        var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 157, 89);
+        RoomCover = roomBm;
+        
         var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/UserPic.jpg"));
-        LoginQrPic = new Bitmap(stream);
+        var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 47, 47);
+        UserFace = userPicBm;
     }
 
-    public MainWindowViewModel(BiliService biliService) : this()
+    public MainWindowViewModel(BiliService biliService,LiveService liveService) : this()
     {
+        _liveService = liveService;
         _biliService = biliService;
     }
     
@@ -76,7 +88,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddAccountAsync()
     {
-        var loginInfo = await _biliService.GetLoginUrlAsync();
+        var loginInfo = await _biliService!.GetLoginUrlAsync();
         if (loginInfo == null){return;}
         
         //生成登录二维码
@@ -105,12 +117,11 @@ public partial class MainWindowViewModel : ViewModelBase
                 {
                     case 86101:
                         //未扫码，继续等待
-                        Status = "QR Code Canceled";
+                        Status = "Waiting";
                         break;
                     case 86090:
                         //已扫码，等待手机确认登录
                         Status = "Scanned";
-                        await _pollingCts.CancelAsync();
                         break;
                     case 0:
                         //登录成功
@@ -138,9 +149,29 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task ConfirmLoginAsync()
     {
-        if (_biliService == null) { return; }
-        
-        //获取登录状态
+        var loginResult = await _biliService!.LoginAsync();
+        if (loginResult is LoginSuccess result)
+        {
+            UserName = result.UserName;
+            UserId = result.UserId;
+            var faceBytes = result.UserFaceBytes;
+            var stream = new MemoryStream(faceBytes);
+            UserFace = PicHelper.ResizeStreamToBitmap(stream, 37, 37);
+
+            var roomInfo = await _liveService!.GetRoomInfoAsync();
+            var roomCover = roomInfo.RoomCover;
+            var rcStream = new MemoryStream(roomCover);
+            RoomCover = PicHelper.ResizeStreamToBitmap(rcStream, 157, 89);
+            RoomTitle = roomInfo.Title;
+        }
+        else
+        {
+            //登录失败
+            UserName = "Login Failed";
+            UserId = null;
+            var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/UserPic.jpg"));
+            UserFace = new Bitmap(stream);
+        }
         
         //切换页面
         CurrentPage = new AccountPageViewModel();

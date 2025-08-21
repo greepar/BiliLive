@@ -1,11 +1,12 @@
+using System.Net;
 using System.Net.Http;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using BiliLive.Core.Services;
+using BiliLive.Core.Services.BiliService;
 using BiliLive.Views.MainWindow;
 using BiliLive.Services;
-using BiliLive.Views.AccountWindow;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -17,17 +18,25 @@ public class App : Application
     
     public override void Initialize()
     {
-        HttpClient httpClient = new HttpClient();
+        //构造一个带有CookieContainer的HttpClient
+        var cookieContainer = new CookieContainer();
+        var handler = new HttpClientHandler
+        {
+            UseCookies = true,
+            CookieContainer = cookieContainer
+        };
+        var httpClient = new HttpClient(handler);
+        
         AppHost = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
                 services.AddSingleton(httpClient);
+                services.AddSingleton(cookieContainer);
                 services.AddSingleton<BiliService>();
+                services.AddSingleton<LiveService>();
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
                 services.AddSingleton<AccountInterface>();
-                services.AddTransient<AccountWindow>();
-                services.AddTransient<AccountWindowViewModel>();
                 
                 // 更多服务...
             })

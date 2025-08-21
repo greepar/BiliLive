@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BiliLive.Core.Models.BiliService;
 
-namespace BiliLive.Core.Services;
+namespace BiliLive.Core.Services.BiliService;
 
 public class BiliService
 {
@@ -14,39 +14,28 @@ public class BiliService
     private const string UserAgent =
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:138.0) Gecko/20100101 Firefox/138.0";
     private readonly CookieContainer _cookieContainer;
-    private string? _biliCookie;
 
-    public BiliService(HttpClient httpClient)
+    public BiliService(HttpClient httpClient, CookieContainer cookieContainer)
     {
-        _cookieContainer = new CookieContainer();
-        var handler = new HttpClientHandler
-        {
-            UseCookies = true,
-            CookieContainer = _cookieContainer
-        };
+        _cookieContainer = cookieContainer;
         _httpClient = httpClient;
-        _httpClient = new HttpClient(handler);
+        
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
     }
 
-    public async Task<LoginResult> LoginAsync(string? inputCookie,string? qrCodeKey = null)
+    public async Task<LoginResult> LoginAsync(string? biliCookie = null)
     {
-        _biliCookie = inputCookie;
-        //如果没有登录就触发登录程序
-        if (_biliCookie == null && qrCodeKey != null)
+        if (biliCookie == null)
         {
-            
-            // return new LoginResult()
-            // {
-            //     IsSuccess = false,
-            // };
+            var uri = new Uri("https://space.bilibili.com");
+            var cookie = _cookieContainer.GetCookies(uri);
+            biliCookie = string.Join(";", cookie.Select(c => $"{c.Name}={c.Value}"));
         }
+
         
-        if (_biliCookie != null)
-        {
             //已存在Cookie，直接检查Cookie是否有效
-            _cookieContainer.SetCookies(new Uri("https://api.bilibili.com/"), _biliCookie);
-            var cookiePairs = _biliCookie.Split(';');
+            _cookieContainer.SetCookies(new Uri("https://api.bilibili.com/"), biliCookie);
+            var cookiePairs = biliCookie.Split(';');
             foreach (var pair in cookiePairs)
             {
                 var cookieParts = pair.Split('=', 2);
@@ -59,19 +48,22 @@ public class BiliService
             }
             var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
             var response = await _httpClient.GetAsync(checkLoginApi);
-            
+        
             using var jsonDoc = JsonDocument.Parse(response.Content.ReadAsStringAsync().Result);
+        
             
             if (response.IsSuccessStatusCode)
             {
                 var isLogin = jsonDoc.RootElement.GetProperty("data").GetProperty("isLogin").GetBoolean();
                 if (isLogin)
                 {
+                    var userFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString() ?? "Unknown";
+                    var userFaceBytes = await _httpClient.GetByteArrayAsync(userFaceUrl);
                     return new LoginSuccess()
                     {
                         UserName = jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString() ?? "Unknown",
                         UserId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64(),
-                        UserFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString() ?? "https://www.bilibili.com/favicon.ico"
+                        UserFaceBytes = userFaceBytes
                     };
                 }
                 return new LoginFailed()
@@ -79,8 +71,8 @@ public class BiliService
                     ErrorMsg = "登录信息失效了，请重新扫码登录..."
                 };
             }
-        }
         
+
         return new LoginFailed()
         {
             ErrorMsg = "登录信息失效了，请重新扫码登录..."
