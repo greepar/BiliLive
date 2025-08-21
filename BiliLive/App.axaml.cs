@@ -2,8 +2,8 @@ using System.Net.Http;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using BiliLive.Core.Services;
 using BiliLive.Views.MainWindow;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Services;
 using BiliLive.Views.AccountWindow;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,12 +17,12 @@ public class App : Application
     
     public override void Initialize()
     {
-        var httpClient = new HttpClient();
+        HttpClient httpClient = new HttpClient();
         AppHost = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
                 services.AddSingleton(httpClient);
-                services.AddSingleton<LoginService>();
+                services.AddSingleton<BiliService>();
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
                 services.AddSingleton<AccountInterface>();

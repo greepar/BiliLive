@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BiliLive.Core.Models.BiliService;
 
-namespace BiliLive.Core.Services.BiliService;
+// namespace BiliLive.Core.Services.BiliService;
 
 public class LoginService
 {

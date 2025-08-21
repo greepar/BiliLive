@@ -11,11 +11,14 @@
         <PublishTrimmed>true</PublishTrimmed>
         <SelfContained>true</SelfContained>
     </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <PublishAot>false</PublishAot>
+    </PropertyGroup>
     
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
-
     
     <ItemGroup>
         <PackageReference Include="HotAvalonia" Version="3.0.0" PrivateAssets="All" Publish="True" />
@@ -52,11 +55,19 @@
         <DependentUpon>MainWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\AccountWindow\Pages\AccountPage.axaml.cs">
+      <Compile Update="Views\MainWindow\Pages\AccountPageView.axaml.cs">
         <DependentUpon>AccountPage.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\AccountWindow\Pages\QrLoginPage.axaml.cs">
+      <Compile Update="Views\MainWindow\Pages\QrLoginPageView.axaml.cs">
+        <DependentUpon>QrLoginPage.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\Pages\AccountPage.axaml.cs">
+        <DependentUpon>AccountPage.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\Pages\QrLoginPage.axaml.cs">
         <DependentUpon>QrLoginPage.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

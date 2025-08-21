@@ -1,0 +1,66 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:BiliLive.Views.MainWindow.Pages"
+             mc:Ignorable="d"
+             x:DataType="local:QrLoginPageViewModel"
+             x:Class="BiliLive.Views.MainWindow.Pages.QrLoginPageView">
+    
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code) -->
+        <local:QrLoginPageViewModel />
+    </Design.DataContext>
+    
+    <Grid ColumnDefinitions="*,*" >
+        
+        <Border Grid.Column="0"
+                CornerRadius="12"
+                ClipToBounds="True"
+                Opacity="0.7">
+            <Grid>
+                <Image Width="128" Height="128"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Source="{Binding LoginQrPic }"/>
+                
+                <!-- 确认遮罩 -->
+                <Grid IsVisible="{Binding IsScanned}">
+                    <Border Background="White" Opacity="1.0" ></Border>
+                    <TextBlock Text="请在手机点击确认"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0 10 0 0"
+                               FontSize="10"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource PrimaryText}"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+        
+        <Grid Grid.Column="1"
+              RowDefinitions="*,Auto">
+            <!-- 用户确认信息 -->
+            <Grid Grid.Row="0">
+                <Border Height="69" CornerRadius="12"
+                        Background="{DynamicResource SurfaceContainer}"></Border>
+            </Grid>
+            
+            <!-- 确认和取消按钮 -->
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+            >
+                <Border Margin="0 0 10 0">
+                    <Button Background="{DynamicResource Primary}" 
+                            Theme="{StaticResource MdButton}">Confirm</Button>
+                </Border>
+      
+                <Button Background="{DynamicResource Primary}" 
+                        Theme="{StaticResource MdButton}"
+                        Click="Button_OnClick">Cancel</Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

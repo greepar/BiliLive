@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Core.Services.BiliService;
-using BiliLive.Views.AccountWindow.Pages;
+using BiliLive.Views.MainWindow.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -12,7 +11,7 @@ public partial class AccountWindowViewModel : ViewModelBase
     private readonly LoginService? _loginService;
     
     [ObservableProperty]private string _windowTitle = "Accounts";
-    [ObservableProperty]private object? _currentPage = new AccountPage();
+    [ObservableProperty]private object? _currentPage = new AccountPageView();
     [ObservableProperty]private bool _showAddBtn = true;
     [ObservableProperty]private LoginResult? _loginResult;
 
@@ -25,7 +24,7 @@ public partial class AccountWindowViewModel : ViewModelBase
     [RelayCommand]
     private void SwitchLoginPage()
     {
-        CurrentPage = new Pages.QrLoginPage();
+        CurrentPage = new QrLoginPageView();
         WindowTitle = "Scan the QR to Login";
         ShowAddBtn = false;
     }
