@@ -74,7 +74,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 157, 89);
         RoomCover = roomBm;
         
-        var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/UserPic.jpg"));
+        var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
         var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 47, 47);
         UserFace = userPicBm;
         _ = LoadConfigAsync();
@@ -101,6 +101,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoginAsync()
     {
+        await Task.Delay(1);
         if (_biliService==null) {return;}
         IsLoginOpen = !IsLoginOpen;
     }

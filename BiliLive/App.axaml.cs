@@ -41,7 +41,7 @@ public class App : Application
                 services.AddSingleton<LiveService>();
                 services.AddSingleton<MainWindow>();
                 services.AddTransient<MainWindowViewModel>();
-                services.AddSingleton<AccountInterface>();
+            
                 
                 // 更多服务...
             })
