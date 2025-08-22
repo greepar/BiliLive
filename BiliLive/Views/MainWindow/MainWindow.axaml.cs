@@ -1,11 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Media.Transformation;
 
 namespace BiliLive.Views.MainWindow;
 
@@ -34,7 +32,7 @@ public partial class MainWindow : Window
 
     private void InputElement_OnGotFocus(object? sender, GotFocusEventArgs e)
     {
-        this.Topmost = true;
+        Topmost = true;
         // this.Topmost = false;
         // this.Activate(); 
         // this.Focus(); 
@@ -42,17 +40,16 @@ public partial class MainWindow : Window
 
     private void LoginPopup_OnOpened(object? sender, EventArgs e)
     {
-            LoginBorder.Opacity = 1;
-            LoginBorder.RenderTransform = new ScaleTransform(1, 1);
+        LoginBorder.Opacity = 1;
+        LoginBorder.RenderTransform = new ScaleTransform(1, 1);
     }
+
     private async void LoginPopup_OnClosed(object? sender, EventArgs e)
     {
         // LoginBorder.RenderTransform = new ScaleTransform(0.8, 0.8);
         await Task.Delay(1);
         LoginBorder.Opacity = 0;
         // LoginBorder.RenderTransform = TransformOperations.Parse("scale(0.8)");
-
-
     }
 
 
@@ -61,15 +58,15 @@ public partial class MainWindow : Window
         try
         {
             LoginButton.IsEnabled = false;
-            if (LoginPopup.IsOpen)
+            if (LoginBorder.IsVisible)
             {
                 LoginBorder.Opacity = 0;
                 await Task.Delay(300);
-                LoginPopup.IsOpen = !LoginPopup.IsOpen;
+                LoginBorder.IsVisible = !LoginBorder.IsVisible;
             }
             else
             {
-                LoginPopup.IsOpen = !LoginPopup.IsOpen;
+                LoginBorder.IsVisible = !LoginBorder.IsVisible;
                 LoginBorder.Opacity = 1;
             }
         }

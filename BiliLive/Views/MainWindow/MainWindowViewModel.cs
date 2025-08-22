@@ -3,13 +3,17 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
 using BiliLive.Core.Services.BiliService;
+using BiliLive.Models;
 using BiliLive.Services;
 using BiliLive.Services.Utils;
+using BiliLive.Utils;
 using BiliLive.Views.MainWindow.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -29,8 +33,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private long? _userId = 196431435;
     [ObservableProperty] private Bitmap? _userFace ;
     
-    [ObservableProperty] private string? _roomTitle;
-    [ObservableProperty] private string? _roomArea = "选择分区";
+    [ObservableProperty] private string? _roomTitle = "123";
+    [ObservableProperty] private string? _roomArea = "开播后获取..";
     [ObservableProperty] private string? _apiKey = "Null";
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
@@ -46,15 +50,18 @@ public partial class MainWindowViewModel : ViewModelBase
     //Popup登录窗口内容
     [ObservableProperty] private string _popupTitle = "Accounts";
     [ObservableProperty]private object _currentPage = new AccountPageViewModel();
-    [ObservableProperty]private bool _inLogin = true;
+    [ObservableProperty]private bool _inLogin = false;
     
     //Popup QR登录窗口内容
     [ObservableProperty] private bool _showCoverBox = false;
     [ObservableProperty] private Path _coverIcon;
     [ObservableProperty] private string _coverContent;
     [ObservableProperty] private bool _isScanned = false;
+    [ObservableProperty] private bool _isConfirmed = false;
     [ObservableProperty] private bool _timeout = false;
     [ObservableProperty] private Bitmap _loginQrPic;
+    [ObservableProperty] private int _loginProgressValue = 0;
+    
     
     //临时确认窗口
     [ObservableProperty] private Bitmap _tempPic;
@@ -70,12 +77,25 @@ public partial class MainWindowViewModel : ViewModelBase
         var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/UserPic.jpg"));
         var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 47, 47);
         UserFace = userPicBm;
+        _ = LoadConfigAsync();
     }
 
     public MainWindowViewModel(BiliService biliService,LiveService liveService) : this()
     {
         _liveService = liveService;
         _biliService = biliService;
+    }
+
+    private async Task LoadConfigAsync()
+    {
+        var appConfig = await ConfigManager.LoadConfigAsync();
+        if (appConfig == null)
+        {
+            return;
+        }
+
+        var loginResult = await _biliService!.LoginAsync(appConfig.BiliCookie);
+        await ConfirmLoginAsync(loginResult);
     }
     
     [RelayCommand]
@@ -117,14 +137,18 @@ public partial class MainWindowViewModel : ViewModelBase
                 {
                     case 86101:
                         //未扫码，继续等待
+                        LoginProgressValue = 25;
                         Status = "Waiting";
                         break;
                     case 86090:
                         //已扫码，等待手机确认登录
                         Status = "Scanned";
+                        LoginProgressValue = 50;
                         break;
                     case 0:
                         //登录成功
+                        IsConfirmed = true;
+                        LoginProgressValue = 100;
                         Status = "Login Success";
                         await _pollingCts.CancelAsync();
                         break;
@@ -145,13 +169,27 @@ public partial class MainWindowViewModel : ViewModelBase
             }
         }
     }
+
+    [RelayCommand]
+    private async Task LogoutAsync()
+    {
+        await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie, null);
+        UserName = "Not Login";
+        UserId = 196431435;
+        RoomTitle = null;
+        
+
+    }
+    
     //确认登录
     [RelayCommand]
-    private async Task ConfirmLoginAsync()
+    private async Task ConfirmLoginAsync(LoginResult? loginResult = null)
     {
-        var loginResult = await _biliService!.LoginAsync();
+        IsConfirmed = false;
+        loginResult ??= await _biliService!.LoginAsync();
         if (loginResult is LoginSuccess result)
         {
+            await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,result.BiliCookie);
             UserName = result.UserName;
             UserId = result.UserId;
             var faceBytes = result.UserFaceBytes;

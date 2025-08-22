@@ -34,18 +34,24 @@ public class BiliService
 
         
             //已存在Cookie，直接检查Cookie是否有效
-            _cookieContainer.SetCookies(new Uri("https://api.bilibili.com/"), biliCookie);
             var cookiePairs = biliCookie.Split(';');
+
             foreach (var pair in cookiePairs)
             {
                 var cookieParts = pair.Split('=', 2);
                 if (cookieParts.Length != 2) continue;
+
                 var name = cookieParts[0].Trim();
                 var value = cookieParts[1].Trim();
-                // 添加Cookie到CookieContainer
-                _cookieContainer.Add(new Uri("https://www.bilibili.com"),
-                    new Cookie(name, value) { Domain = ".bilibili.com" });
+
+                // 添加 Cookie，Domain 设置为 .bilibili.com，让所有子域名共享
+                _cookieContainer.Add(new Cookie(name, value)
+                {
+                    Domain = ".bilibili.com",
+                    Path = "/"
+                });
             }
+            
             var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
             var response = await _httpClient.GetAsync(checkLoginApi);
         
@@ -61,6 +67,7 @@ public class BiliService
                     var userFaceBytes = await _httpClient.GetByteArrayAsync(userFaceUrl);
                     return new LoginSuccess()
                     {
+                        BiliCookie = biliCookie,
                         UserName = jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString() ?? "Unknown",
                         UserId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64(),
                         UserFaceBytes = userFaceBytes

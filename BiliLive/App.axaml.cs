@@ -1,10 +1,14 @@
+using System;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using BiliLive.Core.Services;
 using BiliLive.Core.Services.BiliService;
+using BiliLive.Models;
 using BiliLive.Views.MainWindow;
 using BiliLive.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,8 +18,9 @@ namespace BiliLive;
 
 public class App : Application
 {
-    private IHost AppHost { get; set; } = null!;
+   
     
+    private IHost AppHost { get; set; } = null!;
     public override void Initialize()
     {
         //构造一个带有CookieContainer的HttpClient
@@ -35,7 +40,7 @@ public class App : Application
                 services.AddSingleton<BiliService>();
                 services.AddSingleton<LiveService>();
                 services.AddSingleton<MainWindow>();
-                services.AddSingleton<MainWindowViewModel>();
+                services.AddTransient<MainWindowViewModel>();
                 services.AddSingleton<AccountInterface>();
                 
                 // 更多服务...
