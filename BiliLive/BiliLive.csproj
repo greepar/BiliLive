@@ -55,14 +55,6 @@
         <DependentUpon>MainWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\MainWindow\Pages\AccountPageView.axaml.cs">
-        <DependentUpon>AccountPage.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\MainWindow\Pages\QrLoginPageView.axaml.cs">
-        <DependentUpon>QrLoginPage.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="Views\MainWindow\Pages\AccountPage.axaml.cs">
         <DependentUpon>AccountPage.axaml</DependentUpon>
         <SubType>Code</SubType>

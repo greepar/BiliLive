@@ -1,20 +1,13 @@
 ﻿using System;
 using System.IO;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Core.Services;
 using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
-using BiliLive.Services;
-using BiliLive.Services.Utils;
 using BiliLive.Utils;
-using BiliLive.Views.MainWindow.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QRCoder;
@@ -49,7 +42,6 @@ public partial class MainWindowViewModel : ViewModelBase
     
     //Popup登录窗口内容
     [ObservableProperty] private string _popupTitle = "Accounts";
-    [ObservableProperty]private object _currentPage = new AccountPageViewModel();
     [ObservableProperty]private bool _inLogin = false;
     
     //Popup QR登录窗口内容
@@ -120,7 +112,6 @@ public partial class MainWindowViewModel : ViewModelBase
         LoginQrPic = new Bitmap(new MemoryStream(qrCodeImage));
         
         //切换page
-        CurrentPage = new QrLoginPageViewModel(); 
         PopupTitle = "Scan the QR to Login";
         InLogin = true;
 
@@ -213,7 +204,6 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         
         //切换页面
-        CurrentPage = new AccountPageViewModel();
         PopupTitle = "Accounts";
         InLogin = false;
         
@@ -226,7 +216,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         await Task.Delay(1);
         InLogin = false;
-        CurrentPage = new QrLoginPageViewModel(); 
         PopupTitle = "Accounts";
         await _pollingCts.CancelAsync();
     }
@@ -234,7 +223,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartServiceAsync()
     {
-        CurrentPage = new AccountPageViewModel();
         await Task.Delay(1);
         InLogin = true;
         UserName = "Hello";

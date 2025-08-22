@@ -2,7 +2,7 @@
 using Avalonia.Media.Imaging;
 using SkiaSharp;
 
-namespace BiliLive.Services.Utils;
+namespace BiliLive.Utils;
 
 public static class PicHelper
 {
