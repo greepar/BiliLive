@@ -92,8 +92,12 @@
                     </Grid>
                 </Border>
 
+                <ProgressBar IsIndeterminate="True" Width="15" Grid.Row="1" IsVisible="{Binding LoadConfigCommand.IsRunning}">
+                    
+                </ProgressBar>
                 <!-- 主界面区域 -->
                 <Grid Grid.Row="1"
+                      IsVisible="{Binding !LoadConfigCommand.IsRunning}"
                       ColumnDefinitions="*,2*"
                       Margin="19 7 19 0"
                       GotFocus="InputElement_OnGotFocus">

@@ -69,7 +69,8 @@ public partial class MainWindowViewModel : ViewModelBase
         var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
         var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 47, 47);
         UserFace = userPicBm;
-        _ = LoadConfigAsync();
+        
+        LoadConfigCommand.Execute(null);
     }
 
     public MainWindowViewModel(BiliService biliService,LiveService liveService) : this()
@@ -77,7 +78,8 @@ public partial class MainWindowViewModel : ViewModelBase
         _liveService = liveService;
         _biliService = biliService;
     }
-
+    
+    [RelayCommand]
     private async Task LoadConfigAsync()
     {
         var appConfig = await ConfigManager.LoadConfigAsync();
