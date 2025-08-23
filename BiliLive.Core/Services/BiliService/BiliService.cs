@@ -32,7 +32,7 @@ public class BiliService
             biliCookie = string.Join(";", cookie.Select(c => $"{c.Name}={c.Value}"));
         }
 
-        
+
             //已存在Cookie，直接检查Cookie是否有效
             var cookiePairs = biliCookie.Split(';');
 
@@ -51,33 +51,41 @@ public class BiliService
                     Path = "/"
                 });
             }
-            
-            var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
-            var response = await _httpClient.GetAsync(checkLoginApi);
-        
-            using var jsonDoc = JsonDocument.Parse(response.Content.ReadAsStringAsync().Result);
-        
-            
-            if (response.IsSuccessStatusCode)
+
+            try
             {
-                var isLogin = jsonDoc.RootElement.GetProperty("data").GetProperty("isLogin").GetBoolean();
-                if (isLogin)
+                var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
+                var response = await _httpClient.GetAsync(checkLoginApi);
+        
+                using var jsonDoc = JsonDocument.Parse(response.Content.ReadAsStringAsync().Result);
+        
+            
+                if (response.IsSuccessStatusCode)
                 {
-                    var userFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString() ?? "Unknown";
-                    var userFaceBytes = await _httpClient.GetByteArrayAsync(userFaceUrl);
-                    return new LoginSuccess()
+                    var isLogin = jsonDoc.RootElement.GetProperty("data").GetProperty("isLogin").GetBoolean();
+                    if (isLogin)
                     {
-                        BiliCookie = biliCookie,
-                        UserName = jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString() ?? "Unknown",
-                        UserId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64(),
-                        UserFaceBytes = userFaceBytes
-                    };
+                        var userFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString() ?? "Unknown";
+                        var userFaceBytes = await _httpClient.GetByteArrayAsync(userFaceUrl);
+                        return new LoginSuccess()
+                        {
+                            BiliCookie = biliCookie,
+                            UserName = jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString() ?? "Unknown",
+                            UserId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64(),
+                            UserFaceBytes = userFaceBytes
+                        };
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
                 return new LoginFailed()
                 {
-                    ErrorMsg = "登录信息失效了，请重新扫码登录..."
+                    ErrorMsg = "检查登录状态时发生错误: " + ex.Message
                 };
             }
+            
+           
         
 
         return new LoginFailed()

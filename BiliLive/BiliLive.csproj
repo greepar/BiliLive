@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <PublishAot>true</PublishAot>
+        <PublishAot>false</PublishAot>
     </PropertyGroup>
     
     <ItemGroup>

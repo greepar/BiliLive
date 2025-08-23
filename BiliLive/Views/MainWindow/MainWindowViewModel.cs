@@ -70,7 +70,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 47, 47);
         UserFace = userPicBm;
         
-        LoadConfigCommand.Execute(null);
+        PreLoadCommand.Execute(null);
     }
 
     public MainWindowViewModel(BiliService biliService,LiveService liveService) : this()
@@ -80,7 +80,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    private async Task LoadConfigAsync()
+    private async Task PreLoadAsync()
     {
         var appConfig = await ConfigManager.LoadConfigAsync();
         if (appConfig == null)
