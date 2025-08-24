@@ -35,29 +35,29 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string? _btnWord = "Start Stream";
     
     [ObservableProperty] private Bitmap? _roomCover ;
-    [ObservableProperty] private bool _autoStart = false ;
-    [ObservableProperty] private bool _isLoginOpen = false ;
-    [ObservableProperty] private bool _checkTask = false ;
-    [ObservableProperty] private bool _streamBtn = false ;
+    [ObservableProperty] private bool _autoStart;
+    [ObservableProperty] private bool _isLoginOpen ;
+    [ObservableProperty] private bool _checkTask;
+    [ObservableProperty] private bool _streamBtn;
     
     //Popup登录窗口内容
     [ObservableProperty] private string _popupTitle = "Accounts";
-    [ObservableProperty]private bool _inLogin = false;
+    [ObservableProperty]private bool _inLogin;
     
     //Popup QR登录窗口内容
-    [ObservableProperty] private bool _showCoverBox = false;
-    [ObservableProperty] private Path _coverIcon;
-    [ObservableProperty] private string _coverContent;
-    [ObservableProperty] private bool _isScanned = false;
-    [ObservableProperty] private bool _isConfirmed = false;
-    [ObservableProperty] private bool _timeout = false;
-    [ObservableProperty] private Bitmap _loginQrPic;
-    [ObservableProperty] private int _loginProgressValue = 0;
+    [ObservableProperty] private bool _showCoverBox;
+    [ObservableProperty] private Path? _coverIcon;
+    [ObservableProperty] private string? _coverContent;
+    [ObservableProperty] private bool _isScanned;
+    [ObservableProperty] private bool _isConfirmed;
+    [ObservableProperty] private bool _timeout;
+    [ObservableProperty] private Bitmap? _loginQrPic;
+    [ObservableProperty] private int _loginProgressValue;
     
     
     //临时确认窗口
-    [ObservableProperty] private Bitmap _tempPic;
-    [ObservableProperty] private string _tempUsername;
+    [ObservableProperty] private Bitmap? _tempPic;
+    [ObservableProperty] private string? _tempUsername;
     [ObservableProperty] private long _tempUid;
     
     public MainWindowViewModel()

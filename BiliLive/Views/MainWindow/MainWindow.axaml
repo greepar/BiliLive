@@ -15,7 +15,7 @@
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code) -->
+             to set the actual DataContext for runtime, set the DataContext property in code -->
         <mainWindow:MainWindowViewModel />
     </Design.DataContext>
 
@@ -92,12 +92,12 @@
                     </Grid>
                 </Border>
 
-                <ProgressBar IsIndeterminate="True" Width="15" Grid.Row="1" IsVisible="{Binding LoadConfigCommand.IsRunning}">
+                <ProgressBar IsIndeterminate="True" Width="15" Grid.Row="1" IsVisible="{Binding PreLoadCommand.IsRunning}">
                     
                 </ProgressBar>
                 <!-- 主界面区域 -->
                 <Grid Grid.Row="1"
-                      IsVisible="{Binding !LoadConfigCommand.IsRunning}"
+                      IsVisible="{Binding !PreLoadCommand.IsRunning}"
                       ColumnDefinitions="*,2*"
                       Margin="19 7 19 0"
                       GotFocus="InputElement_OnGotFocus">
@@ -330,7 +330,7 @@
                                                                                     Margin="9 0 5 0"
                                                                                     CornerRadius="60" ClipToBounds="True"
                                                                                     Width="54" Height="54">
-                                                                                    <Image Grid.Column="0" Source="/Assets/Pics/userPic.jpg"></Image>
+                                                                                    <Image Source="/Assets/Pics/userPic.jpg"></Image>
                                                                                 </Border>
                                                                                 
                                                                                 <StackPanel Grid.Column="1" 
@@ -443,7 +443,7 @@
                                                         Width="157" Height="89" Background="Wheat">
                                                     <Image Stretch="UniformToFill"
                                                            Source="{Binding RoomCover}"
-                                                           RenderOptions.BitmapInterpolationMode="None" />
+                                                           RenderOptions.BitmapInterpolationMode="HighQuality" />
                                                 </Border>
                                                 <!-- 标题 -->
                                                 <Grid Grid.Column="1"
@@ -650,6 +650,7 @@
                                     </Grid>
                                     <StackPanel Margin="8 0 0 0" Grid.Row="2" Orientation="Horizontal">
                                         <CheckBox Theme="{StaticResource MdCheckBox}"
+                                                  IsChecked="{Binding AutoStart}"
                                                   Content="Start with windows" />
                                         <CheckBox Theme="{StaticResource MdCheckBox}"
                                                   Margin="8 0 0 0" Content="Check 60min task" />

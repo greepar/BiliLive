@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 
 namespace BiliLive.Views.MainWindow;
 
@@ -37,21 +36,7 @@ public partial class MainWindow : Window
         // this.Activate(); 
         // this.Focus(); 
     }
-
-    private void LoginPopup_OnOpened(object? sender, EventArgs e)
-    {
-        LoginBorder.Opacity = 1;
-        LoginBorder.RenderTransform = new ScaleTransform(1, 1);
-    }
-
-    private async void LoginPopup_OnClosed(object? sender, EventArgs e)
-    {
-        // LoginBorder.RenderTransform = new ScaleTransform(0.8, 0.8);
-        await Task.Delay(1);
-        LoginBorder.Opacity = 0;
-        // LoginBorder.RenderTransform = TransformOperations.Parse("scale(0.8)");
-    }
-
+    
 
     private async void LoginButton_OnClick(object? sender, RoutedEventArgs e)
     {
