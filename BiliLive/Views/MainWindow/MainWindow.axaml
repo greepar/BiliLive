@@ -472,7 +472,7 @@
                                                   Margin="0 9 0 0" ColumnDefinitions="*,Auto">
                                                 <TextBlock Grid.Column="0"
                                                            Margin="1 4.4 0 0"
-                                                           Text="{Binding ApiKey,StringFormat=API Key : {0}}"/>
+                                                           Text="{Binding MaskedApiKey,StringFormat=API Key : {0}}"/>
                                                 <Button Grid.Column="1"
                                                         Background="Transparent"
                                                         Height="30"
@@ -671,12 +671,13 @@
                                        Text="{Binding Status,StringFormat=Status - {0}}" />
                             <ToggleButton Grid.Column="1"
                                           Height="41"
+                                          IsChecked="{Binding IsStreaming}"
                                           CornerRadius="12"
                                           VerticalAlignment="Top"
                                           HorizontalAlignment="Right"
                                           Command="{Binding StartServiceCommand}"
                                           Theme="{StaticResource MdToggleButton}">
-                                <TextBlock Text="Start Stream"
+                                <TextBlock Text="{Binding StreamButtonText}"
                                            FontWeight="Medium"
                                            Margin="16 0 16 0"
                                            VerticalAlignment="Center" />

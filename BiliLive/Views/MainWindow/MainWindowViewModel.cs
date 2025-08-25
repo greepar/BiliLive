@@ -33,16 +33,27 @@ public partial class MainWindowViewModel : ViewModelBase
     
     [ObservableProperty] private string? _roomTitle;
     [ObservableProperty] private string? _roomArea = "开播后获取..";
-    [ObservableProperty] private string? _apiKey = "Will be generated after start start...";
+    
+    private string? _apiKey;
+    [ObservableProperty] private string _maskedApiKey = "Will be generated after start start...";
+
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
     [ObservableProperty] private string? _status = "Not Login";
-    [ObservableProperty] private string? _btnWord = "Start Stream";
+
     
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StreamButtonText))]
+    private bool _isStreaming;
+    public string StreamButtonText => IsStreaming ? "Stop stream" : "Start stream";
+
+    
+    [ObservableProperty] private string? _btnWord = "Start Stream";
+
     [ObservableProperty] private Bitmap? _roomCover ;
     [ObservableProperty] private bool _autoStart;
-    [ObservableProperty] private bool _isLoginOpen ;
     [ObservableProperty] private bool _checkTask;
+    [ObservableProperty] private bool _isLoginOpen ;
     [ObservableProperty] private bool _streamBtn;
     
     //Popup登录窗口内容
@@ -84,6 +95,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _biliService = biliService;
     }
     
+    //初始化内容
     [RelayCommand]
     private async Task PreLoadAsync()
     {
@@ -97,6 +109,8 @@ public partial class MainWindowViewModel : ViewModelBase
         await ConfirmLoginAsync(loginResult);
     }
     
+    
+    //登录相关
     [RelayCommand]
     private async Task LoginAsync()
     {
@@ -104,7 +118,6 @@ public partial class MainWindowViewModel : ViewModelBase
         if (_biliService==null) {return;}
         IsLoginOpen = !IsLoginOpen;
     }
-
     [RelayCommand]
     private async Task AddAccountAsync()
     {
@@ -168,7 +181,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
         }
     }
-
+    //退出登录
     [RelayCommand]
     private async Task LogoutAsync()
     {
@@ -176,10 +189,7 @@ public partial class MainWindowViewModel : ViewModelBase
         UserName = "Not Login";
         UserId = 196431435;
         RoomTitle = null;
-        
-
     }
-    
     //确认登录
     [RelayCommand]
     private async Task ConfirmLoginAsync(LoginResult? loginResult = null)
@@ -195,7 +205,7 @@ public partial class MainWindowViewModel : ViewModelBase
             var stream = new MemoryStream(faceBytes);
             UserFace = PicHelper.ResizeStreamToBitmap(stream, 37, 37);
 
-            var roomInfo = await _liveService!.GetRoomInfoAsync();
+            var roomInfo = await _biliService!.GetRoomInfoAsync();
             var roomCover = roomInfo.RoomCover;
             var rcStream = new MemoryStream(roomCover);
             RoomCover = PicHelper.ResizeStreamToBitmap(rcStream, 157, 89);
@@ -227,12 +237,19 @@ public partial class MainWindowViewModel : ViewModelBase
         await _pollingCts.CancelAsync();
     }
     
-    //复制ApiKey到剪切板
+    //功能
+    [RelayCommand]
+    private async Task ChangeAreaAsync()
+    {
+        await Task.Delay(1);
+        UserName = "HelloArea";
+    }
+    
     [RelayCommand]
     private async Task CopyApiKeyToClipboard()
     {
         var clipboard = ClipboardHelper.Get();
-        await clipboard.SetTextAsync(ApiKey);
+        await clipboard.SetTextAsync(_apiKey);
     }
     
     
@@ -240,15 +257,25 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task StartServiceAsync()
     {
         await Task.Delay(1);
-        InLogin = true;
-        UserName = "Hello";
+        
+        _apiKey = await _biliService.StartLiveAsync();
+        Console.WriteLine("apikey: "+_apiKey);
+        if (_apiKey == null || _apiKey.Length <=1)
+        {
+            MaskedApiKey = "「获取失败，请检查登录状态」";
+            return;
+        }
+        // _apiKey = "1234567890abcdef1234567890abcdef";
+        if (_apiKey.StartsWith("错误"))
+        {
+            MaskedApiKey = _apiKey;
+        }
+        else
+        {
+            MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
+        }
     }
 
-    [RelayCommand]
-    private async Task ChangeAreaAsync()
-    {
-        await Task.Delay(1);
-        UserName = "HelloArea";
-    }
+
   
 }
