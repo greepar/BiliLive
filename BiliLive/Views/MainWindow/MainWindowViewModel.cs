@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Models.BiliService;
@@ -11,6 +14,8 @@ using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QRCoder;
+using Avalonia.Input.Platform;
+using BiliLive.Services;
 using Path = Avalonia.Controls.Shapes.Path;
 
 namespace BiliLive.Views.MainWindow;
@@ -26,9 +31,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private long? _userId = 196431435;
     [ObservableProperty] private Bitmap? _userFace ;
     
-    [ObservableProperty] private string? _roomTitle = "123";
+    [ObservableProperty] private string? _roomTitle;
     [ObservableProperty] private string? _roomArea = "开播后获取..";
-    [ObservableProperty] private string? _apiKey = "Null";
+    [ObservableProperty] private string? _apiKey = "Will be generated after start start...";
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
     [ObservableProperty] private string? _status = "Not Login";
@@ -221,6 +226,15 @@ public partial class MainWindowViewModel : ViewModelBase
         PopupTitle = "Accounts";
         await _pollingCts.CancelAsync();
     }
+    
+    //复制ApiKey到剪切板
+    [RelayCommand]
+    private async Task CopyApiKeyToClipboard()
+    {
+        var clipboard = ClipboardHelper.Get();
+        await clipboard.SetTextAsync(ApiKey);
+    }
+    
     
     [RelayCommand]
     private async Task StartServiceAsync()

@@ -472,13 +472,14 @@
                                                   Margin="0 9 0 0" ColumnDefinitions="*,Auto">
                                                 <TextBlock Grid.Column="0"
                                                            Margin="1 4.4 0 0"
-                                                           Text="API Key : ?streamName=liv***************Live=1" />
+                                                           Text="{Binding ApiKey,StringFormat=API Key : {0}}"/>
                                                 <Button Grid.Column="1"
                                                         Background="Transparent"
                                                         Height="30"
                                                         CornerRadius="8"
                                                         Theme="{StaticResource MdButton}"
-                                                        VerticalAlignment="Center">
+                                                        VerticalAlignment="Center"
+                                                        Command="{Binding CopyApiKeyToClipboardCommand}">
                                                     <Svg VerticalAlignment="Bottom"
                                                          Width="18" Height="18"
                                                          Path="/Assets/Icons/Copy.svg" />
