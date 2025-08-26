@@ -11,9 +11,7 @@ public static class PicHelper
         using var original = SKBitmap.Decode(ms);
         if (original == null)
             return null;
-
-        targetWidth *= 2;
-        targetHeight *= 2;
+        
         
         // 目标比例
         float targetRatio = (float)targetWidth / targetHeight;

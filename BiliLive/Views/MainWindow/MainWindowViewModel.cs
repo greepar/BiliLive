@@ -76,7 +76,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         var coverStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/a.png"));
-        var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 157, 89);
+        var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 314, 178);
         RoomCover = roomBm;
         
         var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
@@ -96,7 +96,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task PreLoadAsync()
     {
         var appConfig = await ConfigManager.LoadConfigAsync();
-        if (appConfig == null)
+        if (appConfig == null || string.IsNullOrWhiteSpace(appConfig.BiliCookie))
         {
             return;
         }
@@ -139,7 +139,6 @@ public partial class MainWindowViewModel : ViewModelBase
             try
             {
                 var qrStatusCode = await _biliService.GeQrStatusCodeAsync(loginInfo.QrCodeKey);
-                Console.WriteLine(qrStatusCode);
                 await Task.Delay(1000, _pollingCts.Token);
                 switch (qrStatusCode)
                 {
@@ -159,6 +158,7 @@ public partial class MainWindowViewModel : ViewModelBase
                         LoginProgressValue = 100;
                         Status = "Login Success";
                         await _pollingCts.CancelAsync();
+                        await RefreshConfirmInfoAsync();
                         break;
                     case 86038:
                         //二维码失效
@@ -204,7 +204,7 @@ public partial class MainWindowViewModel : ViewModelBase
             var roomInfo = await _biliService!.GetRoomInfoAsync();
             var roomCover = roomInfo.RoomCover;
             var rcStream = new MemoryStream(roomCover);
-            RoomCover = PicHelper.ResizeStreamToBitmap(rcStream, 157, 89);
+            RoomCover = PicHelper.ResizeStreamToBitmap(rcStream, 314, 178);
             RoomTitle = roomInfo.Title;
         }
         else
@@ -253,7 +253,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task StartServiceAsync()
     {
         _apiKey = await _biliService!.StartLiveAsync();
-        Console.WriteLine("apikey: "+_apiKey);
         if (_apiKey == null || _apiKey.Length <=1)
         {
             MaskedApiKey = "「获取失败，请检查登录状态」";
@@ -263,5 +262,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
 
+    private async Task RefreshConfirmInfoAsync()
+    {
+        if (_biliService == null) { return; }
+        var loginResult = await _biliService.LoginAsync();
+        if (loginResult is LoginSuccess result)
+        {
+            TempPic = PicHelper.ResizeStreamToBitmap(new MemoryStream(result.UserFaceBytes), 54, 54);
+            TempUsername = result.UserName;
+            TempUid = result.UserId;
+        }
+    }
   
 }
