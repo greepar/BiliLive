@@ -10,7 +10,7 @@ public static class ConfigManager
 {
     private static readonly string ConfigFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
 
-    public static async Task SaveConfigAsync(ConfigType configType, string? config)
+    public static async Task SaveConfigAsync(ConfigType configType, object? config)
     {
         AppConfig existConfig = await LoadConfigAsync() ?? new AppConfig();
         
@@ -29,13 +29,6 @@ public static class ConfigManager
             return null;
         }
         var configString = await File.ReadAllTextAsync(ConfigFilePath);
-        using var configDoc = JsonDocument.Parse(configString);
-        var biliCookie = configDoc.RootElement.TryGetProperty("BiliCookie", out var cookieElement)
-            ? cookieElement.GetString()
-            : null;
-        return new AppConfig()
-        {
-            BiliCookie = biliCookie
-        };
+        return JsonSerializer.Deserialize<AppConfig>(configString, SourceGenerateContext.Default.AppConfig);
     }
 }

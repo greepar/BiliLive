@@ -90,9 +90,13 @@
                                     <StackPanel Margin="8 0 0 0" Grid.Row="2" Orientation="Horizontal">
                                         <CheckBox Theme="{StaticResource MdCheckBox}"
                                                   IsChecked="{Binding AutoStart}"
+                                                  Command="{Binding ToggleOptionsCommand}"
                                                   Content="Start with windows" />
                                         <CheckBox Theme="{StaticResource MdCheckBox}"
-                                                  Margin="8 0 0 0" Content="Check 60min task" />
+                                                  IsChecked="{Binding Check60MinTask}"
+                                                  Margin="8 0 0 0" 
+                                                  Command="{Binding Check60MinTaskCommand}"
+                                                  Content="Check 60min task" />
                                     </StackPanel>
                                 </Grid>
                             </Grid>
