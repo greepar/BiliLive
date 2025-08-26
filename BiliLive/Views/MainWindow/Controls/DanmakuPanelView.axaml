@@ -1,0 +1,50 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Controls"
+             x:DataType="vm:DanmakuPanelViewModel"
+             mc:Ignorable="d" d:DesignWidth="263" d:DesignHeight="387"
+             x:Class="BiliLive.Views.MainWindow.Controls.DanmakuPanelView">
+        <Border Background="{DynamicResource SurfaceContainer}"
+                                CornerRadius="12"
+                                ClipToBounds="True">
+                            <Grid RowDefinitions="Auto,*">
+                                <!-- 弹幕标题栏 -->
+                                <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
+                                    <Border Background="{DynamicResource Primary}" Opacity="0.7"
+                                            BoxShadow="0 1 0 0 #26000000" />
+                                    <TextBlock Text="Danmaku Panel"
+                                               FontWeight="Medium"
+                                               Margin="11 0 0 0"
+                                               Foreground="{DynamicResource OnSurface}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left" />
+                                    <Button HorizontalAlignment="Right"
+                                            CornerRadius="8"
+                                            Height="28"
+                                            Width="30"
+                                            Margin="-3 -3 5 -3"
+                                            Background="Transparent"
+                                            Theme="{StaticResource MdButton}">
+                                        <Button.Styles>
+                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
+                                                <Setter Property="Background"
+                                                        Value="{DynamicResource SecondaryContainer}" />
+                                            </Style>
+                                        </Button.Styles>
+                                        <Svg Path="/Assets/Icons/Windowed.svg"
+                                             Width="16" Height="16" />
+                                    </Button>
+                                </Grid>
+
+                                <!-- 实际弹幕内容,待写 -->
+                                <TextBlock Grid.Row="1" Text="暂时没有弹幕哦..."
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontSize="13" />
+
+                            </Grid>
+                        </Border>
+</UserControl>

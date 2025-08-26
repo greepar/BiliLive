@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Services.BiliService;
 using BiliLive.Views.MainWindow;
+using BiliLive.Views.MainWindow.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -21,6 +22,9 @@ public class App : Application
                 services.AddSingleton<IBiliService,BiliServiceImpl>();
                 services.AddSingleton<MainWindow>();
                 services.AddTransient<MainWindowViewModel>();
+                services.AddTransient<AutoServiceView>();
+                services.AddTransient<AutoServiceViewModel>();
+                
                 // 更多服务...
             })
             .Build();

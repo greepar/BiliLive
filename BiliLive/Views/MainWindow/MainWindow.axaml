@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
+        xmlns:controls="clr-namespace:BiliLive.Views.MainWindow.Controls"
         mc:Ignorable="d"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
@@ -12,12 +13,6 @@
         TransparencyLevelHint="Transparent"
         Background="Transparent"
         TransparencyBackgroundFallback="Transparent">
-
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code -->
-        <mainWindow:MainWindowViewModel />
-    </Design.DataContext>
 
     <Border Name="MainBorder" Background="Transparent">
         <Border.Transitions>
@@ -106,48 +101,7 @@
                           Margin="0 0 0 14"
                           RowDefinitions="*,Auto">
                         <!-- 弹幕板 -->
-                        <Border Grid.Row="0" Grid.Column="0"
-                                Background="{DynamicResource SurfaceContainer}"
-                                CornerRadius="12"
-                                ClipToBounds="True">
-                            <Grid RowDefinitions="Auto,*">
-                                <!-- 弹幕标题栏 -->
-                                <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
-                                    <Border Background="{DynamicResource Primary}" Opacity="0.7"
-                                            BoxShadow="0 1 0 0 #26000000" />
-                                    <TextBlock Text="Danmaku Panel"
-                                               FontWeight="Medium"
-                                               Margin="11 0 0 0"
-                                               Foreground="{DynamicResource OnSurface}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left" />
-                                    <Button HorizontalAlignment="Right"
-                                            CornerRadius="8"
-                                            Height="28"
-                                            Width="30"
-                                            Margin="-3 -3 5 -3"
-                                            Background="Transparent"
-                                            Theme="{StaticResource MdButton}">
-                                        <Button.Styles>
-                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
-                                                <Setter Property="Background"
-                                                        Value="{DynamicResource SecondaryContainer}" />
-                                            </Style>
-                                        </Button.Styles>
-                                        <Svg Path="/Assets/Icons/Windowed.svg"
-                                             Width="16" Height="16" />
-                                    </Button>
-                                </Grid>
-
-                                <!-- 实际弹幕内容,待写 -->
-                                <TextBlock Grid.Row="1" Text="暂时没有弹幕哦..."
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontSize="13" />
-
-                            </Grid>
-                        </Border>
+                        <controls:DanmakuPanelView Grid.Row="0"></controls:DanmakuPanelView>
                         <!-- 左下角展示UID -->
                         <TextBlock Margin="0 7 0 0"
                                    FontSize="12"
@@ -159,259 +113,11 @@
                     <!-- 右侧内容区域 -->
 
                     <!-- 悬浮border，叠层 -->
-                    <Grid Grid.Column="1" ZIndex="1">
-                                          <Border Name="LoginBorder"
-                                                Opacity="0"
-                                                IsVisible="False"
-                                                Background="Transparent"
-                                                ClipToBounds="True"
-                                                Margin="0 30 -10 0"
-                                                VerticalAlignment="Top" HorizontalAlignment="Right"
-                                                BorderThickness="15" BorderBrush="Transparent">
-                                            <!-- 动画部分 -->
-                                            <Border.RenderTransform>
-                                                <ScaleTransform ScaleX="1" ScaleY="1"/>
-                                            </Border.RenderTransform>
-                                            <Border.Transitions>
-                                                <Transitions>
-                                                    <!-- <TransformOperationsTransition Property="Border.RenderTransform" -->
-                                                    <!--         Duration="0.3" -->
-                                                    <!--         Easing="ExponentialEaseOut" /> -->
-                                                  <DoubleTransition Property="Opacity" Duration="0.3"
-                                                                      Easing="ExponentialEaseOut" />
-                                                </Transitions>
-                                            </Border.Transitions>
-                                            <!-- BoxShadow & 背景 border -->
-                                            <Border CornerRadius="28" Background="{DynamicResource Surface}"
-                                                    Width="341" Height="183"
-                                                    BoxShadow="0 1 8 2 #26000000">
-                                                <Grid Margin="0"
-                                                      RowDefinitions="Auto,*">
-                                                    <!-- 标题栏 -->
-                                                    
-                                                            <TextBlock Grid.Row="0"
-                                                                       VerticalAlignment="Center"
-                                                                       HorizontalAlignment="Left"
-                                                                       FontSize="15"
-                                                                       FontWeight="Regular"
-                                                                       IsVisible="True"
-                                                                       Text="{Binding PopupTitle}"
-                                                                       Margin="25 15 0 0" />
-                                                   
-                                                    
-                                                    <!-- 标题下的内容 -->
-                                                    <Grid Grid.Row="1">
-                                                        <Border IsVisible="{Binding !InLogin}">
-                                                            <Grid ShowGridLines="False" RowDefinitions="*,Auto">
-                                                               
-                                                                <!-- 账号列表 -->
-                                                                <Border Grid.Row="0"
-                                                                        Width="305" Height="75"
-                                                                        CornerRadius="12"
-                                                                        ClipToBounds="True"
-                                                                        Background="{DynamicResource SurfaceContainer}">
-                                                                    <Grid ColumnDefinitions="Auto,*,Auto"
-                                                                          Margin="10">
-                                                                        <Border Grid.Column="0"
-                                                                                CornerRadius="90"
-                                                                                Width="47" Height="47"
-                                                                                ClipToBounds="True"
-                                                                            >
-                                                                            <Image 
-                                                                                Stretch="UniformToFill"
-                                                                                RenderOptions.BitmapInterpolationMode="HighQuality"
-                                                                                Source="{Binding UserFace}"></Image>
-                                                                        </Border>
-                                                                        
-                                                                       <Grid ShowGridLines="False" Grid.Column="1" 
-                                                                             Margin="5 0 0 0"
-                                                                             RowDefinitions="*,*">
-                                                                           <TextBlock Grid.Row="0"
-                                                                                   VerticalAlignment="Bottom"
-                                                                                   FontWeight="Medium"
-                                                                                   Text="{Binding UserName}"></TextBlock>
-                                                                           <TextBlock Grid.Row="1"
-                                                                                   VerticalAlignment="Top"
-                                                                                   FontWeight="Light"
-                                                                                   Text="{Binding UserId}"></TextBlock>
-                                                                       </Grid>
-                                                                        
-                                                                        <Button Grid.Column="2"
-                                                                                CornerRadius="12"
-                                                                                Height="30" Width="30"
-                                                                                Theme="{StaticResource MdButton}"
-                                                                                Command="{Binding LogoutCommand}"
-                                                                                Background="{DynamicResource SurfaceContainerHighest}">
-                                                                            <Button.Styles>
-                                                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                                                    <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
-                                                                                    <Setter Property="Background" Value="#DE4C4C" />
-                                                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-                                                                                </Style>
-                                                                            </Button.Styles>
-                                                                        </Button>
-                                                                    </Grid>
-                                                                </Border>
-                                                                
-                                                                <!-- 添加账号按钮 -->
-                                                                <Button Grid.Row="1" Width="71" Height="39" 
-                                                                        Margin="-3 -3 11 7"
-                                                                        HorizontalAlignment="Right"
-                                                                        VerticalAlignment="Bottom"
-                                                                        CornerRadius="12"
-                                                                        Background="{DynamicResource SecondaryContainer}"
-                                                                        Theme="{StaticResource MdButton}"
-                                                                        Command="{Binding AddAccountCommand}"
-                                                                >
-                                                                    <Button.Styles>
-                                                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                                            <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
-                                                                            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
-                                                                            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-                                                                        </Style>
-                                                                    </Button.Styles>
-                                                                    <TextBlock Text="+ Add"
-                                                                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                                </Button>
-                                                            </Grid>
-                                                        </Border>
-                                                        
-                                                        <!-- 二维码扫码border -->
-                                                        <Border IsVisible="{Binding InLogin}">
-                                                            <Grid ColumnDefinitions="*,*" >
-        
-                                                                <Border Grid.Column="0"
-                                                                        CornerRadius="12"
-                                                                        ClipToBounds="True"
-                                                                        Opacity="0.7">
-                                                                    <Grid>
-                                                                        <Image Width="128" Height="128"
-                                                                               VerticalAlignment="Center"
-                                                                               HorizontalAlignment="Center"
-                                                                               Source="{Binding LoginQrPic }"/>
-                
-                                                                        <!-- 确认遮罩 -->
-                                                                        <Grid IsVisible="{Binding IsScanned}">
-                                                                            <Border Background="White" Opacity="1.0" ></Border>
-                                                                            <TextBlock Text="请在手机点击确认"
-                                                                                    HorizontalAlignment="Center"
-                                                                                    VerticalAlignment="Center"
-                                                                                    Margin="0 10 0 0"
-                                                                                    FontSize="10"
-                                                                                    FontWeight="Medium"
-                                                                                    Foreground="{DynamicResource PrimaryText}"/>
-                                                                        </Grid>
-                                                                    </Grid>
-                                                                </Border>
-
-        
-                                                                <Grid Grid.Column="1"
-                                                                      RowDefinitions="*,Auto">
-                                                                    <!-- 用户确认信息 -->
-                                                                    <Grid Grid.Row="0"
-                                                                          Margin="-10 0 10 -4">
-                                                                        
-                                                                        <!-- 未确认时的加载动画 -->
-                                                                      <StackPanel Margin="0 45 0 0" IsVisible="{Binding !IsConfirmed}" Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center">
-                                                                          <Button HorizontalAlignment="Center" Content=" x " Margin="0 0 0 5" 
-                                                                                  Command="{Binding CancelLoginCommand}"
-                                                                                  CornerRadius="12"
-                                                                                  Theme="{StaticResource MdButton}"></Button>
-                                                                          <ProgressBar MinWidth="80" Width="70" Value="{Binding LoginProgressValue}"></ProgressBar>
-                                                                          <TextBlock Margin="0 5 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Status}"></TextBlock>
-                                                                      </StackPanel>
-                                                                        
-                                                                        <!-- 确认后的用户信息 -->
-                                                                        <Border Height="69" CornerRadius="12"
-                                                                                IsVisible="{Binding IsConfirmed}"
-                                                                                Background="{DynamicResource SurfaceContainer}">
-                                                                            <Grid ColumnDefinitions="Auto,*">
-                                                                                <Border Grid.Column="0" 
-                                                                                    Margin="9 0 5 0"
-                                                                                    CornerRadius="60" ClipToBounds="True"
-                                                                                    Width="54" Height="54">
-                                                                                    <Image Source="{Binding TempPic}"></Image>
-                                                                                </Border>
-                                                                                
-                                                                                <StackPanel Grid.Column="1" 
-                                                                                    Orientation="Vertical"
-                                                                                    VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                                    <TextBlock FontSize="16" FontWeight="Regular" Text="{Binding TempUsername}"></TextBlock>
-                                                                                    <TextBlock Margin="1.2 -3.5 0 0" FontSize="11" FontWeight="Regular" Text="{Binding TempUid,StringFormat= UID:{0}}"></TextBlock>
-                                                                                </StackPanel>
-                                                                            </Grid>
-                                                                            
-                                                                            
-                                                                        </Border>
-                                                                    </Grid>
-            
-                                                                    <!-- 确认和取消按钮 -->
-                                                                    <StackPanel Grid.Row="1"
-                                                                            Orientation="Horizontal"
-                                                                            HorizontalAlignment="Right"
-                                                                            Margin="0 0 15 10"
-                                                                            IsVisible="{Binding IsConfirmed}"
-                                                                    >
-                                                                        
-                                                                        <!-- 确认按钮 -->
-                                                                        <Border Margin="0 0 8.5 0">
-                                                                            <Button Background="{DynamicResource Primary}" 
-                                                                                    CornerRadius="100"
-                                                                                    Height="34" Width="75"
-                                                                                    Theme="{StaticResource MdButton}"
-                                                                                    IsVisible="{Binding IsConfirmed}"
-                                                                                    Command="{Binding ConfirmLoginCommand}"
-                                                                                    >
-                                                                            <Button.Styles>
-                                                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                                                    <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
-                                                                                    <Setter Property="Background" Value="{DynamicResource InversePrimary}" />
-                                                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-                                                                                </Style>
-                                                                            </Button.Styles>
-                                                                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" 
-                                                                                       FontWeight="SemiLight"
-                                                                                       FontSize="13"
-                                                                                       Foreground="{DynamicResource OnPrimary}">Confirm</TextBlock>
-                                                                                </Button>
-
-                                                                        </Border>
-      
-                                                                        <!-- 取消按钮 -->
-                                                                        <Button Background="{DynamicResource Surface}"
-                                                                                BorderBrush="{DynamicResource Primary}"
-                                                                                BorderThickness="2"
-                                                                                Theme="{StaticResource MdButton}"
-                                                                                Height="31" Width="68"
-                                                                                CornerRadius="100"
-                                                                                Command="{Binding CancelLoginCommand}">
-                                                                            <Button.Styles>
-                                                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                                                    <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
-                                                                                    <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
-                                                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-                                                                                </Style>
-                                                                            </Button.Styles>
-                                                                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                                                    FontWeight="Regular"
-                                                                                    FontSize="13"
-                                                                                       Foreground="{DynamicResource OnSurface}">Cancel</TextBlock>
-                                                                        </Button>
-                                                                    </StackPanel>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Border>
-                                                     
-                                                    </Grid>
-                                                </Grid>
-                                            </Border>
-
-                                        </Border>
-                    </Grid>
+                   
                     
                     <Grid Grid.Column="1"
                           Margin="9 0 0 0"
-                          RowDefinitions="1.31*,*,Auto">
+                          RowDefinitions="*,Auto,Auto">
                         
                         <!-- 直播间信息 , 登录 , 直播分区-->
                         <Grid Grid.Row="0"
@@ -566,95 +272,9 @@
                         </Grid>
 
                         <!-- AutoStream区域 -->
-                        <Border Grid.Row="1"
-                                Background="{DynamicResource SurfaceContainer}"
-                                CornerRadius="12"
-                                ClipToBounds="True"
-                                Margin="0 7 5 0">
-                            <Grid RowDefinitions="Auto,*">
-                                <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
-                                    <Border Background="{DynamicResource SurfaceContainer}"
-                                            BoxShadow="0 0.56 0 0 #26000000" />
-                                    <TextBlock Text="AutoStream Service [Optional]"
-                                               FontWeight="Medium"
-                                               Margin="14 0 0 0"
-                                               Foreground="{DynamicResource OnSurface}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left" />
-                                </Grid>
-
-                                <Grid Grid.Row="1"
-                                      Margin="8"
-                                      RowDefinitions="*,*,*">
-                                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
-                                        <TextBlock Grid.Column="0"
-                                                   VerticalAlignment="Center"
-                                                   Margin="0 0 0 2"
-                                                   FontSize="13"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Right">
-                                            Ffmpeg Path
-                                        </TextBlock>
-                                        <Border Grid.Column="1" Margin="7 0 0 0">
-                                            <Button HorizontalAlignment="Right"
-                                                    CornerRadius="12"
-                                                    Width="390"
-                                                    Height="30"
-                                                    Background="{DynamicResource Surface}"
-                                                    Theme="{StaticResource MdButton}">
-                                                <Button.Styles>
-                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                        <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
-                                                        <Setter Property="Background"
-                                                                Value="{DynamicResource SurfaceVariant}" />
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource OnSurface}" />
-                                                    </Style>
-                                                </Button.Styles>
-                                            </Button>
-                                        </Border>
-                                    </Grid>
-                                    <Grid Grid.Row="1"
-                                          Margin="0 8 0 5"
-                                          ColumnDefinitions="*,Auto">
-                                        <TextBlock Grid.Column="0"
-                                                   Margin="0 0 0 2"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="13"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Right">
-                                            Video Path
-                                        </TextBlock>
-                                        <Border Grid.Column="1" Margin="7 0 0 0">
-                                            <Button HorizontalAlignment="Right"
-                                                    CornerRadius="12"
-                                                    Width="390"
-                                                    Height="30"
-                                                    Background="{DynamicResource Surface}"
-                                                    Theme="{StaticResource MdButton}">
-                                                <Button.Styles>
-                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                        <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
-                                                        <Setter Property="Background"
-                                                                Value="{DynamicResource SurfaceVariant}" />
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource OnSurface}" />
-                                                    </Style>
-                                                </Button.Styles>
-                                            </Button>
-                                        </Border>
-
-                                    </Grid>
-                                    <StackPanel Margin="8 0 0 0" Grid.Row="2" Orientation="Horizontal">
-                                        <CheckBox Theme="{StaticResource MdCheckBox}"
-                                                  IsChecked="{Binding AutoStart}"
-                                                  Content="Start with windows" />
-                                        <CheckBox Theme="{StaticResource MdCheckBox}"
-                                                  Margin="8 0 0 0" Content="Check 60min task" />
-                                    </StackPanel>
-                                </Grid>
-                            </Grid>
-                        </Border>
+                        <controls:AutoServiceView Grid.Row="1" 
+                                                  DataContext="{Binding AsVm}"
+                                                  Margin="0 7 5 0"/>
 
                         <!-- 开始直播和状态区域 -->
                         <Grid Grid.Row="2"

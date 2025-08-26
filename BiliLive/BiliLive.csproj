@@ -12,9 +12,18 @@
         <SelfContained>true</SelfContained>
     </PropertyGroup>
 
+<!--    Aot publish-->
+<!--    <PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
+<!--        <PublishAot>true</PublishAot>-->
+<!--    </PropertyGroup>-->
+    
+<!--    无运行时 publish-->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <PublishAot>true</PublishAot>
+        <PublishAot>false</PublishAot>
+        <PublishTrimmed>false</PublishTrimmed>
+        <SelfContained>false</SelfContained>
     </PropertyGroup>
+    
     
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>

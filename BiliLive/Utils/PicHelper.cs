@@ -12,7 +12,6 @@ public static class PicHelper
         if (original == null)
             return null;
         
-        
         // 目标比例
         float targetRatio = (float)targetWidth / targetHeight;
         float originalRatio = (float)original.Width / original.Height;

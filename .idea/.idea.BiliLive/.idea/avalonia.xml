@@ -22,6 +22,10 @@
         <entry key="BiliLive/Views/Dialogs/QrLoginWindow.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/Dialogs/Window1.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Controls/AccountManagerView.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Controls/AutoServiceControl.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Controls/AutoServiceView.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Controls/DanmakuPanelView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/MainWindow.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AccountPage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AccountPageView.axaml" value="BiliLive/BiliLive.csproj" />
