@@ -12,6 +12,9 @@ public static class PicHelper
         if (original == null)
             return null;
 
+        targetWidth *= 2;
+        targetHeight *= 2;
+        
         // 目标比例
         float targetRatio = (float)targetWidth / targetHeight;
         float originalRatio = (float)original.Width / original.Height;
@@ -46,7 +49,17 @@ public static class PicHelper
         var outputStream = new MemoryStream();
         image.Encode(SKEncodedImageFormat.Png, 100).SaveTo(outputStream);
         outputStream.Position = 0;
-
+        
+        // Debug: 保存原图和处理后的图
+        // var originalBytes = ms is MemoryStream msMem ? msMem.ToArray() : null;
+        // if (originalBytes != null)
+        // {
+        //     File.WriteAllBytes("original.png", originalBytes);
+        // }
+        //
+        // var outBytes = outputStream.ToArray();
+        // File.WriteAllBytes("resized_image.png", outBytes);
+        
         return new Bitmap(outputStream);
     }
 }

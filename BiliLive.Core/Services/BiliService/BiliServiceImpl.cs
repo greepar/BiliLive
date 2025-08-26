@@ -1,0 +1,40 @@
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using BiliLive.Core.Interface;
+using BiliLive.Core.Models.BiliService;
+
+namespace BiliLive.Core.Services.BiliService;
+
+public class BiliServiceImpl : IBiliService
+{
+    private const string UserAgent =
+        "LiveHime/7.23.0.9579 os/Windows pc_app/livehime build/9579 osVer/10.0_x86_64";
+    private readonly LoginService _loginService;
+    private readonly LiveService _liveService;
+    
+    public BiliServiceImpl()
+    {
+        //初始化 HttpClient 和 CookieContainer
+        var cookieContainer = new CookieContainer();
+        var handler = new HttpClientHandler
+        {
+            UseCookies = true,
+            CookieContainer = cookieContainer
+        };
+        var httpClient = new HttpClient(handler);
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        
+        //构造子服务
+        _liveService = new LiveService(httpClient, cookieContainer);
+        _loginService = new LoginService(httpClient, cookieContainer);
+    }
+
+    public async Task<LoginResult> LoginAsync(string? biliCookie = null) => await _loginService.LoginAsync(biliCookie);
+    public async Task<QrLoginInfo?> GetLoginUrlAsync() => await _loginService.GetLoginUrlAsync();
+    public async Task<int?> GeQrStatusCodeAsync(string qrCodeKey) => await _loginService.GeQrStatusCodeAsync(qrCodeKey);
+    
+    
+    public async Task<LiveRoomInfo> GetRoomInfoAsync() => await _liveService.GetRoomInfoAsync();
+    public async Task<string?> StartLiveAsync() => await _liveService.StartLiveAsync();
+}

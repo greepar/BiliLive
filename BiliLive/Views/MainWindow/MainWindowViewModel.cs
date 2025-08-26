@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Data;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QRCoder;
-using Avalonia.Input.Platform;
+using BiliLive.Core.Interface;
 using BiliLive.Services;
 using Path = Avalonia.Controls.Shapes.Path;
 
@@ -22,8 +18,9 @@ namespace BiliLive.Views.MainWindow;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly BiliService? _biliService;
-    private readonly LiveService? _liveService;
+    private readonly IBiliService? _biliService;
+    
+    //构造QR轮询CTS
     private CancellationTokenSource _pollingCts = new ();
     
     //主窗口内容
@@ -89,9 +86,8 @@ public partial class MainWindowViewModel : ViewModelBase
         PreLoadCommand.Execute(null);
     }
 
-    public MainWindowViewModel(BiliService biliService,LiveService liveService) : this()
+    public MainWindowViewModel(IBiliService biliService) : this()
     {
-        _liveService = liveService;
         _biliService = biliService;
     }
     
@@ -256,24 +252,14 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartServiceAsync()
     {
-        await Task.Delay(1);
-        
-        _apiKey = await _biliService.StartLiveAsync();
+        _apiKey = await _biliService!.StartLiveAsync();
         Console.WriteLine("apikey: "+_apiKey);
         if (_apiKey == null || _apiKey.Length <=1)
         {
             MaskedApiKey = "「获取失败，请检查登录状态」";
             return;
         }
-        // _apiKey = "1234567890abcdef1234567890abcdef";
-        if (_apiKey.StartsWith("错误"))
-        {
-            MaskedApiKey = _apiKey;
-        }
-        else
-        {
-            MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
-        }
+        MaskedApiKey = _apiKey.StartsWith("错误") ? _apiKey : $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
     }
 
 

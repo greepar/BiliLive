@@ -1,0 +1,16 @@
+﻿using System.Threading.Tasks;
+using BiliLive.Core.Models.BiliService;
+
+namespace BiliLive.Core.Interface;
+
+public interface IBiliService
+{
+    // 登录相关
+    Task<LoginResult> LoginAsync(string? biliCookie = null);
+    Task<QrLoginInfo?> GetLoginUrlAsync();
+    Task<int?> GeQrStatusCodeAsync(string qrCodeKey);
+
+    // 直播相关
+    Task<LiveRoomInfo> GetRoomInfoAsync();
+    Task<string?> StartLiveAsync();
+}
