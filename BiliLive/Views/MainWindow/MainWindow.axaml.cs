@@ -11,6 +11,11 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        
+#if DEBUG
+        Topmost = true;
+#endif
+    
     }
 
 
@@ -29,13 +34,7 @@ public partial class MainWindow : Window
         WindowState = WindowState.Minimized;
     }
 
-    private void InputElement_OnGotFocus(object? sender, GotFocusEventArgs e)
-    {
-        Topmost = true;
-        // this.Topmost = false;
-        // this.Activate(); 
-        // this.Focus(); 
-    }
+
     
 
     private async void LoginButton_OnClick(object? sender, RoutedEventArgs e)

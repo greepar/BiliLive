@@ -13,16 +13,16 @@
     </PropertyGroup>
 
 <!--    Aot publish-->
-<!--    <PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
-<!--        <PublishAot>true</PublishAot>-->
-<!--    </PropertyGroup>-->
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <PublishAot>true</PublishAot>
+    </PropertyGroup>
     
 <!--    无运行时 publish-->
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <PublishAot>false</PublishAot>
-        <PublishTrimmed>false</PublishTrimmed>
-        <SelfContained>false</SelfContained>
-    </PropertyGroup>
+<!--    <PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
+<!--        <PublishAot>false</PublishAot>-->
+<!--        <PublishTrimmed>false</PublishTrimmed>-->
+<!--        <SelfContained>false</SelfContained>-->
+<!--    </PropertyGroup>-->
     
     
     <ItemGroup>

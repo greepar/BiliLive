@@ -21,6 +21,10 @@ public partial class AccountManagerViewMode : ViewModelBase
     private CancellationTokenSource _pollingCts = new ();
     private readonly IBiliService? _biliService;
     
+    //show window
+    [ObservableProperty] private bool _showWindow;
+
+    
     [ObservableProperty] private string _title = "Accounts";
     [ObservableProperty]private bool _inLogin;
 

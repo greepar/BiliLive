@@ -15,6 +15,10 @@
         Background="Transparent"
         TransparencyBackgroundFallback="Transparent">
 
+    <Design.DataContext>
+        <mainWindow:MainWindowViewModel/>
+    </Design.DataContext>
+    
     <Border Name="MainBorder" Background="Transparent">
         <Border.Transitions>
 
@@ -145,7 +149,7 @@
                       IsVisible="{Binding !PreLoadCommand.IsRunning}"
                       ColumnDefinitions="*,2*"
                       Margin="19 7 19 0"
-                      GotFocus="InputElement_OnGotFocus">
+                      >
                     <!-- 弹幕姬 + UID-->
                     <Grid Grid.Column="0"
                           Margin="0 0 0 14"
@@ -163,7 +167,10 @@
                     <!-- 右侧内容区域 -->
 
                     <!-- 悬浮border，叠层 -->
-                   
+                   <controls:AccountManagerView Grid.Column="1" ZIndex="1"
+                                                Margin="0 30 -10 0"
+                                                IsVisible="{Binding ShowWindow  }"
+                                                DataContext="{Binding AcVm }"/>
                     
                     <Grid Grid.Column="1"
                           Margin="9 0 0 0"

@@ -1,7 +1,10 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Controls"
              x:DataType="vm:AutoServiceViewModel"
+             mc:Ignorable="d" d:DesignWidth="500" 
              x:Class="BiliLive.Views.MainWindow.Controls.AutoServiceView">
     
     <Border Background="{DynamicResource SurfaceContainer}"
@@ -19,8 +22,15 @@
                                                    VerticalAlignment="Center"
                                                    HorizontalAlignment="Left" />
                                         <ToggleSwitch Grid.Column="1" HorizontalAlignment="Right" 
+                                                      OnContent="" OffContent=""
                                                       Command="{Binding ToggleOptionsCommand}"
-                                                      IsChecked="{Binding ShowOptions}"/>
+                                                      IsChecked="{Binding ShowOptions}">
+                                            <ToggleSwitch.Styles>
+                                                <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+                                                    <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                                                </Style>
+                                            </ToggleSwitch.Styles>
+                                        </ToggleSwitch>
                                     </Grid>
                           
                                 </Grid>
