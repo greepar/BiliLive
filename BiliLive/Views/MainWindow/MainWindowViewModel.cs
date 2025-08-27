@@ -81,6 +81,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task PreLoadAsync()
     {
+        LoadAcVm();
         var appConfig = await ConfigManager.LoadConfigAsync();
         if (appConfig == null) { return; }
         
@@ -90,7 +91,7 @@ public partial class MainWindowViewModel : ViewModelBase
         AsVm.ShowOptions = appConfig.ShowAsOption;
         AsVm.AutoStart = appConfig.AutoStart;
         AsVm.Check60MinTask = appConfig.Check60MinTask;
-        LoadAcVm();
+       
         
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
         var loginResult = await _biliService!.LoginAsync(appConfig.BiliCookie);
