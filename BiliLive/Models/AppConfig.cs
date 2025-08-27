@@ -17,6 +17,7 @@ public enum ConfigType
     Check60MinTask,
     FfmpegPath,
     VideoPath,
+    ShowAsOption,
 }
 
 public class AppConfig
@@ -29,6 +30,7 @@ public class AppConfig
     //bool
     public bool AutoStart { get; set; }
     public bool Check60MinTask { get; set; }
+    public bool ShowAsOption { get; set; }
 
     private static readonly Dictionary<ConfigType, Action<AppConfig, object?>> ConfigSetters
         = new()
@@ -39,6 +41,7 @@ public class AppConfig
             
             [ConfigType.AutoStart] = (cfg, val) => cfg.AutoStart = val is true,
             [ConfigType.Check60MinTask] = (cfg, val) => cfg.Check60MinTask = val is true,
+            [ConfigType.ShowAsOption] = (cfg, val) => cfg.ShowAsOption = val is true,
         };  
 
     // 修改对应属性

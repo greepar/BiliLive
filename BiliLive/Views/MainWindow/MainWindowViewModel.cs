@@ -104,6 +104,14 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
+        //初始化AutoService配置
+        AsVm.VideoPath = appConfig.VideoPath;
+        AsVm.FfmpegPath = appConfig.FfmpegPath;
+        AsVm.ShowOptions = appConfig.ShowAsOption;
+        AsVm.AutoStart = appConfig.AutoStart;
+        AsVm.Check60MinTask = appConfig.Check60MinTask;
+
+        
         var loginResult = await _biliService!.LoginAsync(appConfig.BiliCookie);
         // await ConfirmLoginAsync(loginResult);
     }
