@@ -21,20 +21,24 @@ public enum ConfigType
 
 public class AppConfig
 {
+    //string
     public string? BiliCookie { get; set; }
-    public bool AutoStart { get; set; }
-    public bool Check60MinTask { get; set; }
     public string? FfmpegPath { get; set; }
     public string? VideoPath { get; set; }
+    
+    //bool
+    public bool AutoStart { get; set; }
+    public bool Check60MinTask { get; set; }
 
     private static readonly Dictionary<ConfigType, Action<AppConfig, object?>> ConfigSetters
         = new()
         {
             [ConfigType.BiliCookie] = (cfg, val) => cfg.BiliCookie = val as string,
-            [ConfigType.AutoStart] = (cfg, val) => cfg.AutoStart = val is true,
-            [ConfigType.Check60MinTask] = (cfg, val) => cfg.Check60MinTask = val is true,
             [ConfigType.FfmpegPath] = (cfg, val) => cfg.FfmpegPath = val as string,
             [ConfigType.VideoPath] = (cfg, val) => cfg.VideoPath = val as string,
+            
+            [ConfigType.AutoStart] = (cfg, val) => cfg.AutoStart = val is true,
+            [ConfigType.Check60MinTask] = (cfg, val) => cfg.Check60MinTask = val is true,
         };  
 
     // 修改对应属性

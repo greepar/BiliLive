@@ -8,6 +8,8 @@ namespace BiliLive.Views.MainWindow.Controls;
 
 public partial class AutoServiceViewModel : ViewModelBase
 {
+    [ObservableProperty] private string? _ffmpegPath;
+    [ObservableProperty] private string? _videoPath;
     [ObservableProperty] private bool _showOptions;
     [ObservableProperty] private bool _autoStart;
     [ObservableProperty] private bool _check60MinTask;
@@ -22,7 +24,6 @@ public partial class AutoServiceViewModel : ViewModelBase
     private async Task ToggleOptions()
     {
         await ConfigManager.SaveConfigAsync(ConfigType.AutoStart,AutoStart);
-        await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,"true");
     }
 
     [RelayCommand]

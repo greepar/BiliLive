@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -147,7 +148,14 @@ public partial class MainWindowViewModel : ViewModelBase
         MaskedApiKey = _apiKey.StartsWith("错误") ? _apiKey : $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
     }
 
-
-
-  
+    [RelayCommand]
+    private void OpenCurrentFolder()
+    {
+        var currentPath = AppDomain.CurrentDomain.BaseDirectory;
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = currentPath,
+            UseShellExecute = true
+        });
+    }
 }
