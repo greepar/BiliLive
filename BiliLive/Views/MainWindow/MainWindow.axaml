@@ -1,16 +1,13 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
         xmlns:controls="clr-namespace:BiliLive.Views.MainWindow.Controls"
         xmlns:local="clr-namespace:BiliLive"
-        mc:Ignorable="d"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
-        SystemDecorations="None"
+        SystemDecorations="Full"
         TransparencyLevelHint="Transparent"
         Background="Transparent"
         TransparencyBackgroundFallback="Transparent">
@@ -21,9 +18,9 @@
     
     <Border Name="MainBorder" Background="Transparent">
         <Border.Transitions>
-
+            
         </Border.Transitions>
-        <Border Width="800" Height="450"
+        <Border MinWidth="800" MinHeight="450" 
                 Margin="10"
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"

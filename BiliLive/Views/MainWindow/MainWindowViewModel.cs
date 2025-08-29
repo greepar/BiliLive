@@ -131,12 +131,14 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task StartServiceAsync()
     {
         _apiKey = await _biliService!.StartLiveAsync();
-        if (_apiKey == null || _apiKey.Length <=1)
+        
+        if (_apiKey == null || _apiKey.Length <=1 || _apiKey.StartsWith("Error"))
         {
-            MaskedApiKey = "「获取失败，请检查登录状态」";
+            MaskedApiKey = _apiKey;
+            // await DialogWindowHelper.ShowDialogAsync();
             return;
         }
-        MaskedApiKey = _apiKey.StartsWith("错误") ? _apiKey : $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
+        MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
     }
 
     [RelayCommand]

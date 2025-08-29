@@ -32,26 +32,27 @@
                                             </ToggleSwitch.Styles>
                                         </ToggleSwitch>
                                     </Grid>
-                          
                                 </Grid>
-
+            
+                                
                                 <Grid Grid.Row="1"
                                       Margin="8"
                                       IsVisible="{Binding ShowOptions}"
                                       RowDefinitions="*,*,*">
-                                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                    <Grid Grid.Row="0"
+                                          ColumnDefinitions="Auto,*">
                                         <TextBlock Grid.Column="0"
                                                    VerticalAlignment="Center"
-                                                   Margin="0 0 0 2"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="6 0 7 2"
                                                    FontSize="13"
                                                    FontWeight="Bold"
-                                                   HorizontalAlignment="Right">
+                                                  >
                                             Ffmpeg Path
                                         </TextBlock>
-                                        <Border Grid.Column="1" Margin="7 0 0 0">
-                                            <Button Name="FfmpegPathBtn" HorizontalAlignment="Right"
+                                            <Button Grid.Column="1" Name="FfmpegPathBtn" 
+                                                    HorizontalAlignment="Stretch"
                                                     CornerRadius="12"
-                                                    Width="390"
                                                     Height="30"
                                                     FontSize="12"
                                                     Command="{Binding PickFfmpegPathCommand}"
@@ -68,23 +69,21 @@
                                                     </Style>
                                                 </Button.Styles>
                                             </Button>
-                                        </Border>
                                     </Grid>
                                     <Grid Grid.Row="1"
                                           Margin="0 8 0 5"
-                                          ColumnDefinitions="*,Auto">
+                                          ColumnDefinitions="Auto,*">
                                         <TextBlock Grid.Column="0"
-                                                   Margin="0 0 0 2"
+                                                   Margin="16 0 7 2"
                                                    VerticalAlignment="Center"
                                                    FontSize="13"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Right">
                                             Video Path
                                         </TextBlock>
-                                        <Border Grid.Column="1" Margin="7 0 0 0">
-                                            <Button HorizontalAlignment="Right"
+                                        <Border Grid.Column="1">
+                                            <Button HorizontalAlignment="Stretch"
                                                     CornerRadius="12"
-                                                    Width="390"
                                                     Height="30"
                                                     FontSize="12"
                                                     Content="{Binding VideoPath,StringFormat=' {0}'}"
