@@ -7,7 +7,7 @@
         x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
-        SystemDecorations="Full"
+        SystemDecorations="None"
         TransparencyLevelHint="Transparent"
         Background="Transparent"
         TransparencyBackgroundFallback="Transparent">
@@ -20,7 +20,7 @@
         <Border.Transitions>
             
         </Border.Transitions>
-        <Border MinWidth="800" MinHeight="450" 
+        <Border Width="800" Height="450" 
                 Margin="10"
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"
@@ -163,7 +163,7 @@
 
                     <!-- 右侧内容区域 -->
 
-                    <!-- 悬浮border，叠层 -->
+                    <!-- 悬浮border，登录窗口,叠层 -->
                    <controls:AccountManagerView Grid.Column="1" ZIndex="1"
                                                 Margin="0 30 -10 0"
                                                 IsVisible="{Binding ShowWindow  }"
@@ -173,7 +173,7 @@
                           Margin="9 0 0 0"
                           RowDefinitions="*,Auto,Auto">
                         
-                        <!-- 直播间信息 , 登录 , 直播分区-->
+                        <!-- 直播间信息 ,登录按钮， 直播分区-->
                         <Grid Grid.Row="0"
                               ColumnDefinitions="*,Auto">
 
@@ -341,6 +341,7 @@
                                        Text="{Binding Status,StringFormat=Status - {0}}" />
                             <ToggleButton Grid.Column="1"
                                           Height="41"
+                                          
                                           IsChecked="{Binding IsStreaming}"
                                           CornerRadius="12"
                                           VerticalAlignment="Top"

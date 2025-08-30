@@ -1,6 +1,8 @@
-﻿namespace BiliLive.Views.ErrorWindow;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public class DialogWindowViewModel
+namespace BiliLive.Views.DialogWindow;
+
+public partial class DialogWindowViewModel : ViewModelBase
 {
-    
+    [ObservableProperty] private string? _message;
 }

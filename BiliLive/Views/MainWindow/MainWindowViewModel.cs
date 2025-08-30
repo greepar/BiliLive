@@ -130,11 +130,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartServiceAsync()
     {
+      
         _apiKey = await _biliService!.StartLiveAsync();
         
         if (_apiKey == null || _apiKey.Length <=1 || _apiKey.StartsWith("Error"))
         {
-            MaskedApiKey = _apiKey;
+            if (_apiKey != null) await DialogWindowHelper.ShowDialogAsync(_apiKey);
+            IsStreaming = false;
             // await DialogWindowHelper.ShowDialogAsync();
             return;
         }

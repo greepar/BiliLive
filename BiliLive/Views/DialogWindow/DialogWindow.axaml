@@ -1,10 +1,48 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="clr-namespace:BiliLive.Views.DialogWindow"
+        Background="Transparent"
+        TransparencyBackgroundFallback="Transparent"
         x:Class="BiliLive.Views.DialogWindow.DialogWindow"
+        x:DataType="vm:DialogWindowViewModel"
         SystemDecorations="None"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
         Title="ErrorWindow">
-    Welcome to Avalonia!
+    
+    <Design.DataContext>
+        <vm:DialogWindowViewModel Message="This is a test error message."/>
+    </Design.DataContext>
+    
+    <Border MinHeight="181" MinWidth="300"
+            BorderThickness="10"
+            BorderBrush="Transparent"
+            CornerRadius="28"
+            BoxShadow="0 1 8 2 #26000000"
+            Focusable="True"
+            Background="{DynamicResource Surface}">
+        <Grid RowDefinitions="Auto,*">
+            <!-- 标题 -->
+            <Border Grid.Row="0" Margin="10 12 10 0" >
+                <Grid Background="Transparent">
+                    <TextBlock FontWeight="Medium"
+                               VerticalAlignment="Center"
+                               FontSize="16" Text="Error" />
+                    <Button Content="123" HorizontalAlignment="Right"></Button>
+                </Grid>
+            </Border>
+            
+            <!-- 内容 -->
+            <Grid Grid.Row="1" RowDefinitions="*,Auto">
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Message}"
+                           Margin="30" VerticalAlignment="Center"/>
+                <Button Grid.Row="1" HorizontalAlignment="Right"
+                        Click="Button_OnClick"
+                        Content="Confirm"/>
+            </Grid>
+        </Grid>
+        
+    </Border>
 </Window>
