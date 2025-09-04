@@ -29,61 +29,74 @@
                 Focusable="True"
                 Background="{DynamicResource Surface}">
             <Grid RowDefinitions="Auto,*">
-                <!-- <Popup Grid.Row="1" ZIndex="1" IsOpen="{Binding ShowPopup}" Placement="Top" VerticalOffset="80"> -->
-                <!--     <Border Padding="5 3 5 3" Background="{DynamicResource PrimaryContainer}" CornerRadius="10" ClipToBounds="True"> -->
-                <!--         <TextBlock Text="{Binding PopupText}"/> -->
-                <!--     </Border> -->
-                <!-- </Popup> -->
-                <Grid Grid.Row="1" ZIndex="1" HorizontalAlignment="Center">
-                    <!-- 你的主要内容 -->
-                    <ItemsControl ItemsSource="{Binding Notifications}" Margin="10">
+                
+                  <Border Grid.Row="1" ZIndex="1" HorizontalAlignment="Center">
+                      <!-- 你的主要内容 -->
+                    <ItemsControl ItemsSource="{Binding Notifications}" Margin="6">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <!-- <Border HorizontalAlignment="Center" Background="{DynamicResource InversePrimary}" -->
-                                <!--         CornerRadius="18" Margin="0 5 0 0"> -->
-                                <!--     <Grid Margin="6" Background="Wheat" ColumnDefinitions="Auto,*"> -->
-                                <!--         <Path Grid.Column="0" Stroke="{DynamicResource OnSurface}" -->
-                                <!--               Opacity="0.5" -->
-                                <!--               StrokeThickness="2" -->
-                                <!--               Stretch="UniformToFill" -->
-                                <!--               HorizontalAlignment="Center" -->
-                                <!--               VerticalAlignment="Center" -->
-                                <!--               Margin="6 0 6 0" -->
-                                <!--               Data="M 0,0 L 8,8 M 0,8 L 8,0" /> -->
-                                <!--         <TextBlock Grid.Column="1" LineHeight="20" -->
-                                <!--                    FontSize="13" -->
-                                <!--                    HorizontalAlignment="Center" -->
-                                <!--                    Text="{Binding Message}" -->
-                                <!--                    Foreground="{DynamicResource OnPrimary}"/> -->
-                                <!--     </Grid> -->
-                                <!-- </Border>    -->
-                                <Border HorizontalAlignment="Center" Background="{DynamicResource InversePrimary}"
-                                        CornerRadius="18" ClipToBounds="True" Margin="0 5 0 0">
-                                    <Grid ShowGridLines="False" ColumnDefinitions="Auto,*">
-                                        <Border Height="13" Background="Transparent" Grid.Column="0" >
-                                            <Path Stroke="{DynamicResource OnSurface}"
-                                                  Opacity="0.5"
-                                                  StrokeThickness="2"
-                                                  Stretch="Uniform"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"
-                                                  Margin="8 0 6 0"
-                                                  Data="M 0,0 L 8,8 M 0,8 L 8,0" />
-                                        </Border>
-                                        <Grid Grid.Column="1" Margin="0 6 6 6" 
-                                              HorizontalAlignment="Left">
-                                            <TextBlock LineHeight="20"
-                                                       FontSize="13"
-                                                       Text="{Binding Message}"
-                                                       Foreground="{DynamicResource OnPrimary}"/>
-                                        </Grid>
-                                    </Grid>
-                                </Border>
-                               
+                                    <Border Margin="5" CornerRadius="100" Height="40"
+                                            BoxShadow="0 1 8 2 #26000000" HorizontalAlignment="Center">
+                                        
+                                        <Border.RenderTransform>
+                                            <TranslateTransform Y="0"/>
+                                        </Border.RenderTransform>
+                                        
+                                        <Border.Styles>
+                                            <Style Selector="Border">
+                                                <Style.Animations>
+                                                    <Animation Duration="0.2" Easing="CubicEaseInOut" FillMode="Forward">
+                                                        <KeyFrame Cue="0%">
+                                                            <Setter Property="TranslateTransform.Y" Value="-20"/>
+                                                            <Setter Property="Opacity" Value="0"/>
+                                                        </KeyFrame>
+                                                        <KeyFrame Cue="100%">
+                                                            <Setter Property="TranslateTransform.Y" Value="0"/>
+                                                            <Setter Property="Opacity" Value="1"/>
+                                                        </KeyFrame>
+                                                    </Animation>
+                                                </Style.Animations>
+                                            </Style>
+                                        </Border.Styles>
+                                        
+                                    
+                                 
+    
+                                      
+
+                                        
+                                        <Border Background="{DynamicResource Primary}"  CornerRadius="18" ClipToBounds="True">
+                                           <Grid Margin="10 0 10 0"
+                                                 ShowGridLines="False"
+                                                 ColumnDefinitions="Auto,*">
+                                        
+                                               <Viewbox Grid.Column="0" Width="20" Height="20" Stretch="Uniform" Margin="6 0 6 0"
+                                                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                   <Path Data="{StaticResource NoticeGeometry}"
+                                                         Fill="{DynamicResource OnPrimary}"
+                                                         Opacity="0.8">
+                                                       <!-- WPF 的 TranslateTransform 对应 Avalonia 的 RenderTransform -->
+                                                       <Path.RenderTransform>
+                                                           <TranslateTransform X="0" Y="960" />
+                                                       </Path.RenderTransform>
+                                                   </Path>
+                                               </Viewbox>
+                                               
+                                               <TextBlock Grid.Column="1" LineHeight="20"
+                                                          HorizontalAlignment="Left"
+                                                          Margin="0 0 10 0"
+                                                          VerticalAlignment="Center"
+                                                          FontSize="13"
+                                                          Text="{Binding Message}"
+                                                          Foreground="{DynamicResource OnPrimary}"/>
+                                        
+                                           </Grid>
+                                       </Border>
+                                    </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </Grid>
+                </Border>
                 
                 <!-- 标题栏 -->
                 <Border Grid.Row="0"
@@ -134,9 +147,26 @@
                                     </Style>
                                 </Button.Styles>
                                 <StackPanel Orientation="Horizontal">
-                                    <Svg Path="/Assets/Icons/Windowed.svg"
-                                         Margin="5 0 0 0"
-                                         Width="16" Height="16" />
+                             
+                                    
+                                    <!-- <Svg Path="/Assets/Icons/Windowed.svg" -->
+                                    <!--      Margin="5 0 0 0" -->
+                                    <!--      Width="16" Height="16" /> -->
+                                    
+                                    <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="5 0 0 0"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Path Data="{StaticResource WindowedGeometry}"
+                                                Fill="{DynamicResource OnSurface}"
+                                                Opacity="0.8">
+                                            <!-- WPF 的 TranslateTransform 对应 Avalonia 的 RenderTransform -->
+                                            <Path.RenderTransform>
+                                                <TranslateTransform X="0" Y="960" />
+                                            </Path.RenderTransform>
+                                        </Path>
+                                    </Viewbox>
+                                
+
+                                  
                                     <TextBlock VerticalAlignment="Center"
                                                HorizontalAlignment="Left"
                                                FontSize="12"

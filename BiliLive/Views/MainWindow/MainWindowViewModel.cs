@@ -39,7 +39,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IBiliService? _biliService;
     
     [ObservableProperty]
-    private ObservableCollection<NotificationItem> _notifications = [new("test"), new("任务完成啦")];
+    private ObservableCollection<NotificationItem> _notifications = [];
     
     //构造子控件viewmodel
     [ObservableProperty] private AccountManagerViewMode _acVm;

@@ -6,6 +6,7 @@
         <entry key="BiliLive/App.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Controls/RippleButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/MDColors.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Resources/MDIcons.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdCheckBox.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccManager.axaml" value="BiliLive/BiliLive.csproj" />
