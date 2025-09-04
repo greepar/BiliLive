@@ -37,4 +37,6 @@ public class BiliServiceImpl : IBiliService
     
     public async Task<LiveRoomInfo> GetRoomInfoAsync() => await _liveService.GetRoomInfoAsync();
     public async Task<string?> StartLiveAsync() => await _liveService.StartLiveAsync();
+    
+    public async Task<string?> StopLiveAsync() => await _liveService.StopLiveAsync();
 }

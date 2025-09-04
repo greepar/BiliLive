@@ -10,7 +10,7 @@
         SystemDecorations="None"
         TransparencyLevelHint="Transparent"
         Background="Transparent"
-        TransparencyBackgroundFallback="Transparent">
+        TransparencyBackgroundFallback="{DynamicResource Surface}">
 
     <Design.DataContext>
         <mainWindow:MainWindowViewModel/>
@@ -20,6 +20,8 @@
         <Border.Transitions>
             
         </Border.Transitions>
+       
+        
         <Border Width="800" Height="450" 
                 Margin="10"
                 CornerRadius="28"
@@ -27,7 +29,62 @@
                 Focusable="True"
                 Background="{DynamicResource Surface}">
             <Grid RowDefinitions="Auto,*">
-
+                <!-- <Popup Grid.Row="1" ZIndex="1" IsOpen="{Binding ShowPopup}" Placement="Top" VerticalOffset="80"> -->
+                <!--     <Border Padding="5 3 5 3" Background="{DynamicResource PrimaryContainer}" CornerRadius="10" ClipToBounds="True"> -->
+                <!--         <TextBlock Text="{Binding PopupText}"/> -->
+                <!--     </Border> -->
+                <!-- </Popup> -->
+                <Grid Grid.Row="1" ZIndex="1" HorizontalAlignment="Center">
+                    <!-- 你的主要内容 -->
+                    <ItemsControl ItemsSource="{Binding Notifications}" Margin="10">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- <Border HorizontalAlignment="Center" Background="{DynamicResource InversePrimary}" -->
+                                <!--         CornerRadius="18" Margin="0 5 0 0"> -->
+                                <!--     <Grid Margin="6" Background="Wheat" ColumnDefinitions="Auto,*"> -->
+                                <!--         <Path Grid.Column="0" Stroke="{DynamicResource OnSurface}" -->
+                                <!--               Opacity="0.5" -->
+                                <!--               StrokeThickness="2" -->
+                                <!--               Stretch="UniformToFill" -->
+                                <!--               HorizontalAlignment="Center" -->
+                                <!--               VerticalAlignment="Center" -->
+                                <!--               Margin="6 0 6 0" -->
+                                <!--               Data="M 0,0 L 8,8 M 0,8 L 8,0" /> -->
+                                <!--         <TextBlock Grid.Column="1" LineHeight="20" -->
+                                <!--                    FontSize="13" -->
+                                <!--                    HorizontalAlignment="Center" -->
+                                <!--                    Text="{Binding Message}" -->
+                                <!--                    Foreground="{DynamicResource OnPrimary}"/> -->
+                                <!--     </Grid> -->
+                                <!-- </Border>    -->
+                                <Border HorizontalAlignment="Center" Background="{DynamicResource InversePrimary}"
+                                        CornerRadius="18" ClipToBounds="True" Margin="0 5 0 0">
+                                    <Grid ShowGridLines="False" ColumnDefinitions="Auto,*">
+                                        <Border Height="13" Background="Transparent" Grid.Column="0" >
+                                            <Path Stroke="{DynamicResource OnSurface}"
+                                                  Opacity="0.5"
+                                                  StrokeThickness="2"
+                                                  Stretch="Uniform"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="8 0 6 0"
+                                                  Data="M 0,0 L 8,8 M 0,8 L 8,0" />
+                                        </Border>
+                                        <Grid Grid.Column="1" Margin="0 6 6 6" 
+                                              HorizontalAlignment="Left">
+                                            <TextBlock LineHeight="20"
+                                                       FontSize="13"
+                                                       Text="{Binding Message}"
+                                                       Foreground="{DynamicResource OnPrimary}"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                               
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+                
                 <!-- 标题栏 -->
                 <Border Grid.Row="0"
                         PointerPressed="InputElement_OnPointerPressed"
@@ -46,7 +103,7 @@
                                    Margin="18 2 0 0" />
                         
                    
-                        <!-- only debug mode -->
+                        <!-- only exist in debug mode -->
                         <Grid Grid.Column="1"
                               ColumnDefinitions="Auto,*,Auto"
                               IsVisible="{x:Static local:BuildInfo.IsDebugMode}">

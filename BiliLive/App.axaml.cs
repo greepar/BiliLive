@@ -27,7 +27,6 @@ public class App : Application
                 services.AddTransient<AccountManagerView>();
                 services.AddTransient<AccountManagerViewMode>();
                 
-                
                 // 更多服务...
             })
             .Build();

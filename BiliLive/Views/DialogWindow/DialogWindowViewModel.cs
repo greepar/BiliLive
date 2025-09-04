@@ -6,3 +6,8 @@ public partial class DialogWindowViewModel : ViewModelBase
 {
     [ObservableProperty] private string? _message;
 }
+
+public class ErrorDialogWindowViewModel : DialogWindowViewModel
+{
+    
+}

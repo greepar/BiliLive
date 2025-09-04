@@ -56,7 +56,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
             var responseString = await response.Content.ReadAsStringAsync();
             using var jsonDoc = JsonDocument.Parse(responseString);
             var responseCode = jsonDoc.RootElement.GetProperty("code").GetInt32();
-            if (responseCode == 60024) return "错误:当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
+            if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
             var apiKey = jsonDoc.RootElement.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
             return apiKey;
         }
@@ -66,6 +66,12 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         }
     }
 
+    public async Task<string?> StopLiveAsync()
+    {
+        await Task.Delay(1);
+        return "test";
+    }
+    
     private async Task<string?> GetRoomIdAsync()
     {
         var response = await httpClient.GetAsync(RoomIdUrl);

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -13,15 +15,31 @@ using BiliLive.Core.Models.BiliService;
 using BiliLive.Models;
 using BiliLive.Services;
 using BiliLive.Views.MainWindow.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow;
+
+public class ShowNotificationMessage(string value) : ValueChangedMessage<string>(value);
+
+public partial class NotificationItem : ObservableObject
+{
+    [ObservableProperty]
+    private string _message;
+
+    public NotificationItem(string msg)
+    {
+        Message = msg;
+    }
+}
 
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IBiliService? _biliService;
     
-    //构造QR轮询CTS
+    [ObservableProperty]
+    private ObservableCollection<NotificationItem> _notifications = [new("test"), new("任务完成啦")];
     
     //构造子控件viewmodel
     [ObservableProperty] private AccountManagerViewMode _acVm;
@@ -30,6 +48,9 @@ public partial class MainWindowViewModel : ViewModelBase
     
     
     //主窗口内容
+    [ObservableProperty] private bool _showPopup;
+    [ObservableProperty] private string _popupText = "This is a popup!";
+    
     [ObservableProperty] private string? _userName = "Not Login";
     [ObservableProperty] private long? _userId = 196431435;
     [ObservableProperty] private Bitmap? _userFace ;
@@ -38,7 +59,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string? _roomArea = "开播后获取..";
     
     private string? _apiKey;
-    [ObservableProperty] private string _maskedApiKey = "Will be generated after start start...";
+    [ObservableProperty] private string _maskedApiKey = "Will be generated after start...";
     
     [ObservableProperty] private string? _status = "Not Login";
 
@@ -55,6 +76,16 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public MainWindowViewModel(IServiceProvider? serviceProvider = null)
     {
+        WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
+        {
+            var item = new NotificationItem(m.Value);
+            Notifications.Add(item);
+
+            // 启动后台任务，5秒后移除
+            _ =  DelayRemoveNotification(item);
+        });
+
+        
         var coverStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/a.png"));
         var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 314, 178);
         RoomCover = roomBm;
@@ -92,10 +123,16 @@ public partial class MainWindowViewModel : ViewModelBase
         AsVm.AutoStart = appConfig.AutoStart;
         AsVm.Check60MinTask = appConfig.Check60MinTask;
        
-        
+        //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
         var loginResult = await _biliService!.LoginAsync(appConfig.BiliCookie);
+        
         await LoadLoginResult(loginResult);
+        //检查是否需要自动开播
+        if (AsVm.AutoStart && loginResult is LoginSuccess)
+        {
+            await StartServiceAsync();
+        }
     }
 
 
@@ -130,12 +167,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartServiceAsync()
     {
-      
         _apiKey = await _biliService!.StartLiveAsync();
         
         if (_apiKey == null || _apiKey.Length <=1 || _apiKey.StartsWith("Error"))
         {
-            if (_apiKey != null) await DialogWindowHelper.ShowDialogAsync(_apiKey);
+            if (_apiKey != null) await DialogWindowHelper.ShowDialogAsync(DialogWindowHelper.Status.Error,_apiKey);
             IsStreaming = false;
             // await DialogWindowHelper.ShowDialogAsync();
             return;
@@ -154,6 +190,12 @@ public partial class MainWindowViewModel : ViewModelBase
         });
     }
 
+    private async Task DelayRemoveNotification(NotificationItem item)
+    {
+       await Task.Delay(3000);
+         Notifications.Remove(item);
+    }
+    
     private async Task LoadLoginResult(LoginResult loginResult)
     {
         if (loginResult is LoginSuccess result)

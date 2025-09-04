@@ -13,7 +13,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         
 #if DEBUG
-        Topmost = true;
+        // Topmost = true;
 #endif
     
     }
