@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Controls"
+             xmlns:resources="clr-namespace:BiliLive.Resources"
              x:DataType="vm:DanmakuPanelViewModel"
              mc:Ignorable="d" d:DesignWidth="263" d:DesignHeight="387"
              x:Class="BiliLive.Views.MainWindow.Controls.DanmakuPanelView">
@@ -34,8 +35,16 @@
                                                         Value="{DynamicResource SecondaryContainer}" />
                                             </Style>
                                         </Button.Styles>
-                                        <Svg Path="/Assets/Icons/Windowed.svg"
-                                             Width="16" Height="16" />
+                                        
+                                        <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="0 0 0 0"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Path Fill="{DynamicResource OnSurface}" 
+                                                  Data="{resources:Geometry {x:Static resources:MdIcons.Copy}}"  Opacity="0.8">
+                                                <Path.RenderTransform>
+                                                    <TranslateTransform X="0" Y="960" />
+                                                </Path.RenderTransform>
+                                            </Path>
+                                        </Viewbox>
                                     </Button>
                                 </Grid>
 

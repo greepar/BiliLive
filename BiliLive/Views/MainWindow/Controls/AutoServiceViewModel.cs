@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Avalonia.Media;
 using BiliLive.Core.Services;
 using BiliLive.Models;
+using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -22,7 +24,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     [RelayCommand]
     private async Task ToggleOptions()
     {
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("任务完成啦！"));
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("任务完成啦！",Geometry.Parse(MdIcons.Check)));
         await ConfigManager.SaveConfigAsync(ConfigType.ShowAsOption,ShowOptions);
     }
 
@@ -36,7 +38,12 @@ public partial class AutoServiceViewModel : ViewModelBase
         if (await FfmpegWrapper.CheckFfmpegAvailableAsync(pickFile))
         {
             FfmpegPath = pickFile;
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Ffmpeg路径有效",Geometry.Parse(MdIcons.Check)));
             await ConfigManager.SaveConfigAsync(ConfigType.FfmpegPath,FfmpegPath);
+        }
+        else
+        {
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Ffmpeg路径无效，请重新选择",Geometry.Parse(MdIcons.Error)));
         }
     }
     
@@ -45,19 +52,20 @@ public partial class AutoServiceViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(FfmpegPath))
         {
-            Debug.WriteLine("ffmpeg path is empty.");
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先设置Ffmpeg路径",Geometry.Parse(MdIcons.Notice)));
             return;
         }
         var pickFile = await FolderPickHelper.PickFileAsync("Choose Video Path",[".mp4",".flv",".mkv",".mov",".avi"]);
         if (string.IsNullOrWhiteSpace(pickFile))
             return;
         if (!await FfmpegWrapper.CheckVideoAvailableAsync(FfmpegPath,pickFile))
-        {
-            Debug.WriteLine("video is not available.");
+        { 
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("视频文件无效，请重新选择",Geometry.Parse(MdIcons.Error)));
             return;
         }
      
         VideoPath = pickFile;
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("视频文件有效",Geometry.Parse(MdIcons.Check)));
         await ConfigManager.SaveConfigAsync(ConfigType.VideoPath,VideoPath);
     }
     

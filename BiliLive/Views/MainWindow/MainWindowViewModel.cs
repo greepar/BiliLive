@@ -3,7 +3,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
@@ -13,6 +15,7 @@ using CommunityToolkit.Mvvm.Input;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Models;
+using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Views.MainWindow.Controls;
 using CommunityToolkit.Mvvm.Messaging;
@@ -21,15 +24,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow;
 
-public class ShowNotificationMessage(string value) : ValueChangedMessage<string>(value);
+public class ShowNotificationMessage(string value, Geometry geometry) 
+    : ValueChangedMessage<string>(value)
+{
+    public Geometry Geometry { get; } = geometry;
+}
 
 public partial class NotificationItem : ObservableObject
 {
-    [ObservableProperty]
-    private string _message;
-
-    public NotificationItem(string msg)
+    [ObservableProperty] private string _message;
+    [ObservableProperty] private Geometry _geometry;
+    public NotificationItem(string msg, Geometry geometry)
     {
+        Geometry = geometry;
         Message = msg;
     }
 }
@@ -37,9 +44,14 @@ public partial class NotificationItem : ObservableObject
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IBiliService? _biliService;
-    
-    [ObservableProperty]
-    private ObservableCollection<NotificationItem> _notifications = [];
+
+    [ObservableProperty] private ObservableCollection<NotificationItem> _notifications =
+    [
+        //test icon
+        // new("Welcome to BiliLive!", Geometry.Parse(MdIcons.Notice)),
+        // new("Check for updates every week", Geometry.Parse(MdIcons.Check)),
+        // new("Report issues on GitHub", Geometry.Parse(MdIcons.Error))
+    ];
     
     //构造子控件viewmodel
     [ObservableProperty] private AccountManagerViewMode _acVm;
@@ -48,9 +60,6 @@ public partial class MainWindowViewModel : ViewModelBase
     
     
     //主窗口内容
-    [ObservableProperty] private bool _showPopup;
-    [ObservableProperty] private string _popupText = "This is a popup!";
-    
     [ObservableProperty] private string? _userName = "Not Login";
     [ObservableProperty] private long? _userId = 196431435;
     [ObservableProperty] private Bitmap? _userFace ;
@@ -78,7 +87,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
         {
-            var item = new NotificationItem(m.Value);
+            var item = new NotificationItem(m.Value,m.Geometry);
             Notifications.Add(item);
 
             // 启动后台任务，5秒后移除
@@ -159,7 +168,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task CopyApiKeyToClipboard()
     {
+        if (string.IsNullOrWhiteSpace(_apiKey))
+        {
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开始直播",Geometry.Parse(MdIcons.Notice)));
+            return;
+        }
         var clipboard = ClipboardHelper.Get();
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Copied to clipboard",Geometry.Parse(MdIcons.Check)));
         await clipboard.SetTextAsync(_apiKey);
     }
     

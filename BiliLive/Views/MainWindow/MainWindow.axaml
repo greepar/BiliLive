@@ -3,6 +3,7 @@
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
         xmlns:controls="clr-namespace:BiliLive.Views.MainWindow.Controls"
         xmlns:local="clr-namespace:BiliLive"
+        xmlns:res="clr-namespace:BiliLive.Resources"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
@@ -72,10 +73,9 @@
                                         
                                                <Viewbox Grid.Column="0" Width="20" Height="20" Stretch="Uniform" Margin="6 0 6 0"
                                                         HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                   <Path Data="{StaticResource NoticeGeometry}"
+                                                   <Path Data="{Binding Geometry}"
                                                          Fill="{DynamicResource OnPrimary}"
                                                          Opacity="0.8">
-                                                       <!-- WPF 的 TranslateTransform 对应 Avalonia 的 RenderTransform -->
                                                        <Path.RenderTransform>
                                                            <TranslateTransform X="0" Y="960" />
                                                        </Path.RenderTransform>
@@ -155,9 +155,8 @@
                                     
                                     <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="5 0 0 0"
                                              HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Path Data="{StaticResource WindowedGeometry}"
-                                                Fill="{DynamicResource OnSurface}"
-                                                Opacity="0.8">
+                                        <Path Fill="{DynamicResource OnSurface}" 
+                                              Data="{res:Geometry {x:Static res:MdIcons.Windowed}}"  Opacity="0.8">
                                             <!-- WPF 的 TranslateTransform 对应 Avalonia 的 RenderTransform -->
                                             <Path.RenderTransform>
                                                 <TranslateTransform X="0" Y="960" />
@@ -327,9 +326,18 @@
                                                         Theme="{StaticResource MdButton}"
                                                         VerticalAlignment="Center"
                                                         Command="{Binding CopyApiKeyToClipboardCommand}">
-                                                    <Svg VerticalAlignment="Bottom"
-                                                         Width="18" Height="18"
-                                                         Path="/Assets/Icons/Copy.svg" />
+                                                   
+                                                    <!-- 复制图标 -->
+                                                    <Viewbox Width="18" Height="18" Stretch="Uniform" Margin="0 0 0 0"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Path Fill="{DynamicResource OnSurface}" 
+                                                              Data="{res:Geometry {x:Static res:MdIcons.Copy}}"  Opacity="0.8">
+                                                            <Path.RenderTransform>
+                                                                <TranslateTransform X="0" Y="960" />
+                                                            </Path.RenderTransform>
+                                                        </Path>
+                                                    </Viewbox>
+                                                    
                                                 </Button>
                                             </Grid>
 
@@ -392,9 +400,19 @@
 
                                     <StackPanel VerticalAlignment="Center" Margin="0 0 0 5" Background="Transparent"
                                                 Orientation="Vertical">
-                                        <Svg VerticalAlignment="Bottom"
-                                             Width="32" Height="32"
-                                             Path="/Assets/Icons/ChangeArea.svg" />
+                                        <!-- <Svg VerticalAlignment="Bottom" -->
+                                        <!--      Width="32" Height="32" -->
+                                        <!--      Path="/Assets/Icons/ChangeArea.svg" /> -->
+                                        <Viewbox Width="32" Height="32" Stretch="Uniform" Margin="6 0 6 0"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Path Data="{ res:Geometry {x:Static res:MdIcons.Notice}}"
+                                                  Fill="{DynamicResource OnSurface}"
+                                                  Opacity="0.8">
+                                                <Path.RenderTransform>
+                                                    <TranslateTransform X="0" Y="960" />
+                                                </Path.RenderTransform>
+                                            </Path>
+                                        </Viewbox>
 
                                         <StackPanel>
                                             <TextBlock HorizontalAlignment="Center"
