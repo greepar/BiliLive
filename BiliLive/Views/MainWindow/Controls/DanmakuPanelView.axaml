@@ -7,9 +7,14 @@
              x:DataType="vm:DanmakuPanelViewModel"
              mc:Ignorable="d" d:DesignWidth="263" d:DesignHeight="387"
              x:Class="BiliLive.Views.MainWindow.Controls.DanmakuPanelView">
-        <Border Background="{DynamicResource SurfaceContainer}"
-                                CornerRadius="12"
-                                ClipToBounds="True">
+    
+    <Design.DataContext>
+        <vm:DanmakuPanelViewModel />
+    </Design.DataContext>
+    
+    <Border Background="{DynamicResource SurfaceContainer}"
+            CornerRadius="12"
+            ClipToBounds="True">
                             <Grid RowDefinitions="Auto,*">
                                 <!-- 弹幕标题栏 -->
                                 <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
@@ -27,6 +32,7 @@
                                             Width="30"
                                             Margin="-3 -3 5 -3"
                                             Background="Transparent"
+                                            Command="{Binding SeparatePanelCommand}"
                                             Theme="{StaticResource MdButton}">
                                         <Button.Styles>
                                             <Style Selector="Button:pointerover /template/ ContentPresenter">

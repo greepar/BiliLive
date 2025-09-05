@@ -17,15 +17,17 @@ public partial class AutoServiceViewModel : ViewModelBase
 {
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
-    [ObservableProperty] private bool _showOptions;
+    [ObservableProperty] private bool _isEnabled;
     [ObservableProperty] private bool _autoStart;
     [ObservableProperty] private bool _check60MinTask;
     
     [RelayCommand]
     private async Task ToggleOptions()
     {
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("任务完成啦！",Geometry.Parse(MdIcons.Check)));
-        await ConfigManager.SaveConfigAsync(ConfigType.ShowAsOption,ShowOptions);
+        var popupMsg = IsEnabled ? "已启用自动开播服务" : "已关闭自动开播服务";
+        var icon = IsEnabled ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error);
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(popupMsg,icon));
+        await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsEnabled);
     }
 
     [RelayCommand]

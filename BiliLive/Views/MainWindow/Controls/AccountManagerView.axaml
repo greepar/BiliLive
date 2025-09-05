@@ -11,6 +11,7 @@
     
     <Grid>
         <Border Name="LoginBorder"
+                Focusable="True"
                 Opacity="1"
                 IsVisible="True"
                 Background="Transparent"
@@ -18,18 +19,25 @@
                 VerticalAlignment="Top" HorizontalAlignment="Right"
                 BorderThickness="15" BorderBrush="Transparent">
                                             <!-- 动画部分 -->
-                                            <Border.RenderTransform>
-                                                <ScaleTransform ScaleX="1" ScaleY="1"/>
-                                            </Border.RenderTransform>
-                                            <Border.Transitions>
-                                                <Transitions>
+                                            <!-- <Border.RenderTransform> -->
+                                            <!--     <ScaleTransform ScaleX="1" ScaleY="1"/> -->
+                                            <!-- </Border.RenderTransform> -->
+                                            <!-- <Border.Transitions> -->
+                                            <!--     <Transitions> -->
                                                     <!-- <TransformOperationsTransition Property="Border.RenderTransform" -->
                                                     <!--         Duration="0.3" -->
                                                     <!--         Easing="ExponentialEaseOut" /> -->
-                                                  <DoubleTransition Property="Opacity" Duration="0.3"
-                                                                      Easing="ExponentialEaseOut" />
-                                                </Transitions>
-                                            </Border.Transitions>
+                                            <!--       <DoubleTransition Property="Opacity" Duration="0.3" -->
+                                            <!--                           Easing="ExponentialEaseOut" /> -->
+                                            <!--     </Transitions> -->
+                                            <!-- </Border.Transitions> -->
+                                            
+                                            <Border.Styles>
+                                                <Style Selector="Border">
+                                                    
+                                                </Style>
+                                            </Border.Styles>
+                                            
                                             <!-- BoxShadow & 背景 border -->
                                             <Border CornerRadius="28" Background="{DynamicResource Surface}"
                                                     Width="341" Height="183"

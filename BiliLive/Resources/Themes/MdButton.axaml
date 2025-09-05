@@ -24,7 +24,7 @@
         <Setter Property="Margin" Value="-3"/>
         
         <Style Selector="^:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
             <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
         </Style>
         
@@ -35,7 +35,8 @@
         </Style>
         
         <Style Selector="^:disabled /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
             <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
         </Style>
     </ControlTheme>

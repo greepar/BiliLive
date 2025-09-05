@@ -11,11 +11,15 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
         
+        // MainBorder.GotFocus += LoginButton_OnClick;
+
+
 #if DEBUG
         // Topmost = true;
 #endif
-    
+
     }
 
 
@@ -41,19 +45,18 @@ public partial class MainWindow : Window
     {
         try
         {
-            await Task.Delay(1);
             LoginButton.IsEnabled = false;
-            // if (LoginBorder.IsVisible)
-            // {
-            //     LoginBorder.Opacity = 0;
-            //     await Task.Delay(300);
-            //     LoginBorder.IsVisible = !LoginBorder.IsVisible;
-            // }
-            // else
-            // {
-            //     LoginBorder.IsVisible = !LoginBorder.IsVisible;
-            //     LoginBorder.Opacity = 1;
-            // }
+            if (LoginBorder.IsVisible)
+            {
+                LoginBorder.Opacity = 0;
+                await Task.Delay(300);
+                LoginBorder.IsVisible = !LoginBorder.IsVisible;
+            }
+            else
+            {
+                LoginBorder.IsVisible = !LoginBorder.IsVisible;
+                LoginBorder.Opacity = 1;
+            }
         }
         catch (Exception ex)
         {

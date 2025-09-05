@@ -4,8 +4,6 @@
     <ResourceDictionary.ThemeDictionaries>
         
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="TransparentBackground" Color="#00FEF7FF" />
-            
             <SolidColorBrush x:Key="Surface" Color="#FEF7FF" />
             <SolidColorBrush x:Key="SurfaceVariant" Color="#E7E0EB" />
             <SolidColorBrush x:Key="OnSurface" Color="#1D1B20" />
@@ -22,8 +20,6 @@
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="TransparentBackground" Color="#001E1B24" />
-            
             <SolidColorBrush x:Key="Surface" Color="#1E1B24" />
             <SolidColorBrush x:Key="SurfaceVariant" Color="#49454F" />
             <SolidColorBrush x:Key="OnSurface" Color="#E7E0E8" />

@@ -46,7 +46,7 @@ public static class FfmpegWrapper
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = ffmpegPath,
-                Arguments = $"-v error -i \"{videoPath}\" -f null -",
+                Arguments = $"-v error -i \"{videoPath}\" -t 5 -f null -",
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
@@ -70,4 +70,40 @@ public static class FfmpegWrapper
         }
     }
     
+    public static async Task<bool> StartStreamingAsync(string ffmpegPath, string videoPath, string rtmpUrl,string apiKey)
+    {
+        try
+        {
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = ffmpegPath,
+                //直播参数
+                Arguments = "",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = new Process();
+            process.StartInfo = processStartInfo;
+            process.Start();
+
+            // string output = await process.StandardOutput.ReadToEndAsync();
+            string errorOutput = await process.StandardError.ReadToEndAsync();
+
+            await process.WaitForExitAsync();
+            if (process.ExitCode == 0)
+            {
+                return true;
+            }
+            Debug.WriteLine($"Ffmpeg error output: {errorOutput}");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error starting streaming: {ex.Message}");
+            return false;
+        }
+    }
 }
