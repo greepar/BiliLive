@@ -20,7 +20,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private string? _videoPath;
     
     [ObservableProperty] private bool _isEnabled;
-    [ObservableProperty] private double _asHeight;
+    [ObservableProperty] private double _asHeight = 35;
 
     
     [ObservableProperty] private bool _autoStart;
