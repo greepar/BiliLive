@@ -10,6 +10,7 @@
     <Border Background="{DynamicResource SurfaceContainer}"
             CornerRadius="12"
             Name="MainBorder"
+            Height="{Binding AsHeight}"
             ClipToBounds="True">
         <Border.Transitions>
             <Transitions>

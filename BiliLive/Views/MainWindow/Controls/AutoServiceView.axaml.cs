@@ -22,10 +22,6 @@ public partial class AutoServiceView : UserControl
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
-        // if (string.IsNullOrWhiteSpace(MainBorder.Height))
-        // {
-        //     
-        // }
         Console.WriteLine(MainBorder.Height);
         if (MainBorder.Height - 35 > 0 || ToggleSwitch.IsChecked == false)
         {

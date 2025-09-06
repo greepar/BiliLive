@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Media;
+using Avalonia.Styling;
 using BiliLive.Core.Services;
 using BiliLive.Models;
 using BiliLive.Resources;
@@ -17,7 +18,11 @@ public partial class AutoServiceViewModel : ViewModelBase
 {
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
+    
     [ObservableProperty] private bool _isEnabled;
+    [ObservableProperty] private double _asHeight;
+
+    
     [ObservableProperty] private bool _autoStart;
     [ObservableProperty] private bool _check60MinTask;
     

@@ -132,6 +132,7 @@ public partial class MainWindowViewModel : ViewModelBase
         AsVm.VideoPath = appConfig.VideoPath;
         AsVm.FfmpegPath = appConfig.FfmpegPath;
         AsVm.IsEnabled = appConfig.EnableAutoService;
+        AsVm.AsHeight = AsVm.IsEnabled ? 140 : 35;
         AsVm.AutoStart = appConfig.AutoStart;
         AsVm.Check60MinTask = appConfig.Check60MinTask;
        

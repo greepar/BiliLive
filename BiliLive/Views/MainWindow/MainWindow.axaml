@@ -8,7 +8,7 @@
         x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
-        SystemDecorations="Full"
+        SystemDecorations="None"
         TransparencyLevelHint="Transparent"
         Background="Transparent"
         TransparencyBackgroundFallback="{DynamicResource Surface}">
