@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace BiliLive.Views.MainWindow;
 
@@ -11,7 +12,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-
         
         // MainBorder.GotFocus += LoginButton_OnClick;
 
@@ -66,5 +66,16 @@ public partial class MainWindow : Window
         {
             LoginButton.IsEnabled = true;
         }
+    }
+
+
+    private void CoverBorder_OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        CoverBar.Height = 20;
+    }
+
+    private void CoverBorder_OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        CoverBar.Height = 0;
     }
 }

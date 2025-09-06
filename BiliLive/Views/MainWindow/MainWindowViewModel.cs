@@ -187,7 +187,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task StartServiceAsync()
     {
         _apiKey = await _biliService!.StartLiveAsync();
-
+        
+        
         if (_apiKey == null || _apiKey.Length <= 1 || _apiKey.StartsWith("Error"))
         {
             if (_apiKey != null) await DialogWindowHelper.ShowDialogAsync(DialogWindowHelper.Status.Error, _apiKey);
@@ -243,6 +244,15 @@ public partial class MainWindowViewModel : ViewModelBase
         });
     }
 
+    [RelayCommand]
+    private async Task UpdateCoverAsync()
+    {
+        //选择图片
+        var imagePath = await FolderPickHelper.PickFileAsync("Choose an image", [".png", ".jpg", ".jpeg"]);
+        WeakReferenceMessenger.Default.Send(
+            new ShowNotificationMessage($"封面目录 {imagePath}", Geometry.Parse(MdIcons.Check)));
+    }
+    
     private async Task DelayRemoveNotification(NotificationItem item)
     {
        await Task.Delay(3000);
