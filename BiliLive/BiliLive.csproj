@@ -12,6 +12,8 @@
         <SelfContained>true</SelfContained>
     </PropertyGroup>
 
+    
+    
 <!--    Aot publish-->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <PublishAot>true</PublishAot>

@@ -189,7 +189,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _apiKey = await _biliService!.StartLiveAsync();
         
-        
         if (_apiKey == null || _apiKey.Length <= 1 || _apiKey.StartsWith("Error"))
         {
             if (_apiKey != null) await DialogWindowHelper.ShowDialogAsync(DialogWindowHelper.Status.Error, _apiKey);
@@ -197,7 +196,7 @@ public partial class MainWindowViewModel : ViewModelBase
             // await DialogWindowHelper.ShowDialogAsync();
             return;
         }
-
+        
         MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
 
         //自动服务

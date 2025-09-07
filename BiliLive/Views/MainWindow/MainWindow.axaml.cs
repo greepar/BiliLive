@@ -1,9 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace BiliLive.Views.MainWindow;
 
@@ -12,9 +15,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        
-        // MainBorder.GotFocus += LoginButton_OnClick;
-
 
 #if DEBUG
         // Topmost = true;
@@ -22,6 +22,8 @@ public partial class MainWindow : Window
 
     }
 
+    
+   
 
     private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {

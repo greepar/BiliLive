@@ -342,6 +342,7 @@
                                                                     IsVisible="True"
                                                                     Height="0"
                                                                     Name="CoverBar"
+                                                                    IsHitTestVisible="False"
                                                                     Background="#80808080">
                                                                 <Border.Transitions>
                                                                     <Transitions>
@@ -382,6 +383,7 @@
                                                              MinHeight="35" CornerRadius="10"
                                                              Margin="0 3 0 0"
                                                              BorderThickness="0"
+                                                             MaxLength="100"
                                                              VerticalContentAlignment="Center"
                                                              Background="{DynamicResource Surface}"
                                                              SelectionBrush="Transparent"
