@@ -15,6 +15,8 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     private const string StartLiveUrl = "https://api.live.bilibili.com/room/v1/Room/startLive";
     private const string RoomInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/preLive/PreLive?platform=web&mobi_app=web&build=1";
     private const string RoomIdUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/highlight/getRoomHighlightState";
+    private const string AreasInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/index/areaListForLive";
+    
 
     public async Task<LiveRoomInfo> GetRoomInfoAsync()
     {
@@ -111,10 +113,9 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         
         // 移除最后一个多余的 '&'
         if (stringToSignBuilder.Length > 0)
-            stringToSignBuilder.Length--; // 移除最后一个 '&'
+            stringToSignBuilder.Length--;
         
         string stringToSign = stringToSignBuilder.ToString();
-        // var sign = BiliSignHelper.GetSignFromDll(stringToSign);
         var response = await httpClient.PostAsync("https://api.greepar.uk/getSign", new StringContent(stringToSign));
         var sign = await response.Content.ReadAsStringAsync();
         parameters.Add("sign", sign ?? "");

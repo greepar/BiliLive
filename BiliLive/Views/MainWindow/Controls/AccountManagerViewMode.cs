@@ -98,6 +98,7 @@ public partial class AccountManagerViewMode : ViewModelBase
                     case 86090:
                         //已扫码，等待手机确认登录
                         Status = "Scanned";
+                        IsScanned = true;
                         LoginProgressValue = 50;
                         break;
                     case 0:

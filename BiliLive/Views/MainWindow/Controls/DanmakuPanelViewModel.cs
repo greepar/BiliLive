@@ -1,8 +1,5 @@
-﻿using System.Threading.Tasks;
-using Avalonia.Media;
-using BiliLive.Models;
+﻿using Avalonia.Media;
 using BiliLive.Resources;
-using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;

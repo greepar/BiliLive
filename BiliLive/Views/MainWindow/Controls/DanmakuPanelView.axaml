@@ -45,7 +45,7 @@
                                         <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="0 0 0 0"
                                                  HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Path Fill="{DynamicResource OnSurface}" 
-                                                  Data="{resources:Geometry {x:Static resources:MdIcons.Copy}}"  Opacity="0.8">
+                                                  Data="{resources:Geometry {x:Static resources:MdIcons.Windowed}}"  Opacity="0.8">
                                                 <Path.RenderTransform>
                                                     <TranslateTransform X="0" Y="960" />
                                                 </Path.RenderTransform>
