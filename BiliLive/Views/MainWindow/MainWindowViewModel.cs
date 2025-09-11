@@ -197,6 +197,8 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
         
+    
+        
         MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
 
         //自动服务
@@ -231,6 +233,9 @@ public partial class MainWindowViewModel : ViewModelBase
             WeakReferenceMessenger.Default.Send(
                 new ShowNotificationMessage("自动推流已启动", Geometry.Parse(MdIcons.Check)));
         }
+        WeakReferenceMessenger.Default.Send(
+            new ShowNotificationMessage("开始推流成功", Geometry.Parse(MdIcons.Check))
+        );
     }
 
     [RelayCommand]
