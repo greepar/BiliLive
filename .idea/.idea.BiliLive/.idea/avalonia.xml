@@ -26,6 +26,7 @@
         <entry key="BiliLive/Views/ErrorWindow/ErrorWindow.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/AccountManagerView.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Controls/AccountsView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/AutoServiceControl.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/AutoServiceView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/ChangeAreaView.axaml" value="BiliLive/BiliLive.csproj" />

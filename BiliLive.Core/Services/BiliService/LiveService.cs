@@ -15,7 +15,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     private const string StartLiveUrl = "https://api.live.bilibili.com/room/v1/Room/startLive";
     private const string RoomInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/preLive/PreLive?platform=web&mobi_app=web&build=1";
     private const string RoomIdUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/highlight/getRoomHighlightState";
-    private const string AreasInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/index/areaListForLive";
+    private const string AreasInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/preLive/GetAreaListForLive";
     
 
     public async Task<LiveRoomInfo> GetRoomInfoAsync()
@@ -34,6 +34,28 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         };
     }
 
+    public async Task GetAreasListAsync()
+    {
+        var response = await httpClient.GetAsync(AreasInfoUrl);
+        var responseString = await response.Content.ReadAsStringAsync();
+        using var jsonDoc = JsonDocument.Parse(responseString);
+        var v1Area = jsonDoc.RootElement.GetProperty("data").GetProperty("area_v1_info");
+        foreach (var area in v1Area.EnumerateArray())
+        {
+            var areaId = area.GetProperty("id").GetInt32();
+            var areaName = area.GetProperty("name").GetString() ?? "未知分区";
+            Console.WriteLine($"一级分区: {areaId} - {areaName}");
+            var v2Areas = area.GetProperty("area_v2_info");
+            foreach (var subArea in v2Areas.EnumerateArray())
+            {
+                var subAreaId = subArea.GetProperty("id").GetInt32();
+                var subAreaName = subArea.GetProperty("name").GetString() ?? "未知子分区";
+                Console.WriteLine($"\t二级分区: {subAreaId} - {subAreaName}");
+            }
+        }
+        
+    }
+    
     public async Task<string?> StartLiveAsync()
     {
         var csrfValue = GetCsrfFromCookie();
@@ -118,6 +140,6 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         string stringToSign = stringToSignBuilder.ToString();
         var response = await httpClient.PostAsync("https://api.greepar.uk/getSign", new StringContent(stringToSign));
         var sign = await response.Content.ReadAsStringAsync();
-        parameters.Add("sign", sign ?? "");
+        parameters.Add("sign", sign);
     }
 }

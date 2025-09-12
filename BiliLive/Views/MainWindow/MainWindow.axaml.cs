@@ -1,12 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Avalonia.Animation;
-using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Styling;
 
 namespace BiliLive.Views.MainWindow;
 
@@ -19,11 +15,8 @@ public partial class MainWindow : Window
 #if DEBUG
         // Topmost = true;
 #endif
-
     }
 
-    
-   
 
     private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
@@ -40,8 +33,6 @@ public partial class MainWindow : Window
         WindowState = WindowState.Minimized;
     }
 
-
-    
 
     private async void LoginButton_OnClick(object? sender, RoutedEventArgs e)
     {
