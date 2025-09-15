@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -34,41 +33,46 @@ public partial class MainWindow : Window
     }
 
 
-    private async void LoginButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        try
-        {
-            LoginButton.IsEnabled = false;
-            if (LoginBorder.IsVisible)
-            {
-                LoginBorder.Opacity = 0;
-                await Task.Delay(300);
-                LoginBorder.IsVisible = !LoginBorder.IsVisible;
-            }
-            else
-            {
-                LoginBorder.IsVisible = !LoginBorder.IsVisible;
-                LoginBorder.Opacity = 1;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error in LoginButton_OnClick: {ex.Message}");
-        }
-        finally
-        {
-            LoginButton.IsEnabled = true;
-        }
-    }
+    // private async void LoginButton_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     try
+    //     {
+    //         LoginButton.IsEnabled = false;
+    //         if (LoginBorder.IsVisible)
+    //         {
+    //             LoginBorder.Opacity = 0;
+    //             await Task.Delay(300);
+    //             LoginBorder.IsVisible = !LoginBorder.IsVisible;
+    //         }
+    //         else
+    //         {
+    //             LoginBorder.IsVisible = !LoginBorder.IsVisible;
+    //             LoginBorder.Opacity = 1;
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine($"Error in LoginButton_OnClick: {ex.Message}");
+    //     }
+    //     finally
+    //     {
+    //         LoginButton.IsEnabled = true;
+    //     }
+    // }
 
 
-    private void CoverBorder_OnPointerEntered(object? sender, PointerEventArgs e)
-    {
-        CoverBar.Height = 20;
-    }
+    // private void CoverBorder_OnPointerEntered(object? sender, PointerEventArgs e)
+    // {
+    //     CoverBar.Height = 20;
+    // }
+    //
+    // private void CoverBorder_OnPointerExited(object? sender, PointerEventArgs e)
+    // {
+    //     CoverBar.Height = 0;
+    // }
 
-    private void CoverBorder_OnPointerExited(object? sender, PointerEventArgs e)
+    private void AccountBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        CoverBar.Height = 0;
+        
     }
 }

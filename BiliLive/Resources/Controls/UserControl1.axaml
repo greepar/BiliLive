@@ -1,0 +1,94 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="clr-namespace:BiliLive.Resources"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="BiliLive.Resources.Controls.UserControl1">
+    
+    <StackPanel Spacing="10">
+        <Border CornerRadius="12"
+              
+                ClipToBounds="True">
+            <Grid>
+                <Border Background="#F7F2FA"/>
+                <Grid RowDefinitions="Auto,*">
+                <Border Grid.Row="0" Height="28" 
+                        VerticalAlignment="Top"
+                        Background="#F8EAF3">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Text="自动服务核心"
+                                   Margin="8 0 0 0"
+                                   VerticalAlignment="Center"></TextBlock>
+                        <Button CornerRadius="10" Height="25" Width="25"
+                                Margin="0 0 0 0"
+                                Grid.Column="2" Theme="{StaticResource MdButton}">
+                            <SvgBox Height="" Opacity="0.5" PathData="{res:Geometry {x:Static res:MdIcons.Expand}}"></SvgBox>
+                        </Button>
+                    </Grid>
+                </Border>
+                    
+                <Border Grid.Row="1">
+                    <StackPanel Margin="13" Spacing="10">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock LineHeight="20" Grid.Column="0">Ffmpeg目录</TextBlock>
+                            <Button Margin="5 0 5 0" 
+                                    CornerRadius="10" Opacity="0.65" Grid.Column="1" Background="#FFFFFF"></Button>
+                            <Button Grid.Column="2" HorizontalAlignment="Right" Theme="{StaticResource MdButton}">Browse</Button>
+                        </Grid>
+                        
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Margin="18 0 0 0" LineHeight="20" Grid.Column="0">视频目录</TextBlock>
+                            <Button Margin="5 0 5 0" 
+                                    CornerRadius="10" Opacity="0.65" Grid.Column="1" Background="#FFFFFF"></Button>
+                            <Button Grid.Column="2" HorizontalAlignment="Right" Theme="{StaticResource MdButton}">Browse</Button>
+                        </Grid>
+                        
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="6" Padding="6">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <!-- 小时 -->
+                                <TextBox Width="40" Text="12" HorizontalContentAlignment="Center"/>
+                                <TextBlock Text=":" VerticalAlignment="Center"/>
+
+                                <!-- 分钟 -->
+                                <TextBox Width="40" Text="34" HorizontalContentAlignment="Center"/>
+                                <TextBlock Text=":" VerticalAlignment="Center"/>
+
+                                <!-- 秒 -->
+                                <TextBox Width="40" Text="56" HorizontalContentAlignment="Center"/>
+
+                                <!-- AM/PM 切换 -->
+                                <ComboBox Width="60">
+                                    <ComboBoxItem Content="AM"/>
+                                    <ComboBoxItem Content="PM"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        
+                    </StackPanel>
+                </Border>
+                </Grid>
+                
+            </Grid>
+        </Border>
+        
+        <Border CornerRadius="12"
+                Height="60"
+                ClipToBounds="True">
+            <Grid>
+                <Border Background="#F7F2FA"/>
+                <Border Height="28" 
+                        VerticalAlignment="Top"
+                        Background="#F8EAF3">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Grid.Column="0" Text="定时直播任务"
+                                   Margin="8 0 0 0"
+                                   VerticalAlignment="Center"/>
+                        <ToggleButton Grid.Column="2">123</ToggleButton>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </StackPanel>
+</UserControl>

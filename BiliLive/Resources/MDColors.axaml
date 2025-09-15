@@ -7,6 +7,7 @@
             <SolidColorBrush x:Key="Surface" Color="#FEF7FF" />
             <SolidColorBrush x:Key="SurfaceVariant" Color="#E7E0EB" />
             <SolidColorBrush x:Key="OnSurface" Color="#1D1B20" />
+            <SolidColorBrush x:Key="InverseOnSurface" Color="#F5EFF7" />
             <SolidColorBrush x:Key="SurfaceContainer" Color="#F2ECF4" />
             <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#ECE6EE" />
             <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#E7E0E8" />

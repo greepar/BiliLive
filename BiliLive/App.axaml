@@ -10,19 +10,25 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <FluentTheme />
+        <!-- <FluentTheme /> -->
     </Application.Styles>
 
     <Application.Resources>
+    
         <ResourceDictionary>
+            <FontFamily x:Key="NotoRegular">avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular</FontFamily>
+            
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Resources/MDColors.axaml" />
-                <ResourceInclude Source="/Resources/MDIcons.axaml" />
                 <ResourceInclude Source="/Resources/Themes/MdCheckBox.axaml" />
                 <ResourceInclude Source="/Resources/Themes/MdButton.axaml"/>
                 <ResourceInclude Source="/Resources/Themes/MdToggleButton.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
+    
+
+    
     
 </Application>

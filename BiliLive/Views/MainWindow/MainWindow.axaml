@@ -1,9 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
-        xmlns:controls="clr-namespace:BiliLive.Views.MainWindow.Controls"
-        xmlns:local="clr-namespace:BiliLive"
         xmlns:res="clr-namespace:BiliLive.Resources"
+        xmlns:controls="clr-namespace:BiliLive.Views.MainWindow.Controls"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
@@ -17,559 +16,203 @@
     </Design.DataContext>
 
     <Border Name="MainBorder" Background="Transparent">
-
-        <Border Width="800" Height="450"
+        <!-- 使用Margin留出间隙 -->
+        <Border Width="800" Height="470"
                 Margin="10"
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"
                 Focusable="True"
                 Background="{DynamicResource Surface}">
+            <!-- 切割圆角 -->
+            <Border CornerRadius="28" ClipToBounds="True">
+                <!-- 总背景 -->
+                <Grid Background="{DynamicResource Surface}">
+                <!-- 可拖拽区域 -->
+                <Border Height="45"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        PointerPressed="InputElement_OnPointerPressed">
+                    <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <!-- 最小化按钮 -->
+                        <Button Width="30"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                CornerRadius="10"
+                                Background="{DynamicResource SurfaceContainer}"
+                                Theme="{StaticResource MdButton}"
+                                Click="MinimizeButton_OnClick">
+                            <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"
+                                    Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
+                        </Button>
 
-            <Grid>
-                <Border IsVisible="False" Name="Cover" CornerRadius="28" ZIndex="1" Grid.Row="0" Background="Gray"
-                        Opacity="0.3" />
+                        <!-- 关闭按钮 -->
+                        <Button Width="30"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                CornerRadius="10"
+                                Background="{DynamicResource SurfaceContainer}"
+                                Margin="9 0 15 0"
+                                Theme="{StaticResource MdButton}"
+                                Click="CloseButton_OnClick">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="BoxShadow" Value="0 1 2 0 #26000000" />
+                                    <Setter Property="Background" Value="#C94F4F" />
+                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+                                </Style>
+                            </Button.Styles>
+                            <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Error}}"
+                                    Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
+                        </Button>
 
-                <Grid RowDefinitions="Auto,*">
-                    <!-- <Border ZIndex="1" Grid.Row="0" Background="SkyBlue"></Border> -->
-                    <Border Grid.Row="1" ZIndex="1" HorizontalAlignment="Center">
-                        <!-- 你的主要内容 -->
+                    </StackPanel>
+                </Border>
 
-                        <!-- 上方通知 -->
-                        <ItemsControl ItemsSource="{Binding Notifications}" Margin="6">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Margin="5" CornerRadius="100" Height="40"
-                                            BoxShadow="0 1 8 2 #26000000" HorizontalAlignment="Center">
-
-                                        <Border.RenderTransform>
-                                            <TranslateTransform Y="0" />
-                                        </Border.RenderTransform>
-
-                                        <Border.Styles>
-                                            <Style Selector="Border">
-                                                <Style.Animations>
-                                                    <Animation Duration="0.2" Easing="CubicEaseInOut"
-                                                               FillMode="Forward">
-                                                        <KeyFrame Cue="0%">
-                                                            <Setter Property="TranslateTransform.Y" Value="-20" />
-                                                            <Setter Property="Opacity" Value="0" />
-                                                        </KeyFrame>
-                                                        <KeyFrame Cue="100%">
-                                                            <Setter Property="TranslateTransform.Y" Value="0" />
-                                                            <Setter Property="Opacity" Value="1" />
-                                                        </KeyFrame>
-                                                    </Animation>
-                                                </Style.Animations>
-                                            </Style>
-                                        </Border.Styles>
-
-                                        <Border Background="{DynamicResource Primary}" CornerRadius="18"
-                                                ClipToBounds="True">
-                                            <Grid Margin="10 0 10 0"
-                                                  ShowGridLines="False"
-                                                  ColumnDefinitions="Auto,*">
-
-                                                <Viewbox Grid.Column="0" Width="20" Height="20" Stretch="Uniform"
-                                                         Margin="6 0 6 0"
-                                                         HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                    <Path Data="{Binding Geometry}"
-                                                          Fill="{DynamicResource OnPrimary}"
-                                                          Opacity="0.8">
-                                                        <Path.RenderTransform>
-                                                            <TranslateTransform X="0" Y="960" />
-                                                        </Path.RenderTransform>
-                                                    </Path>
-                                                </Viewbox>
-
-                                                <TextBlock Grid.Column="1" LineHeight="20"
-                                                           HorizontalAlignment="Left"
-                                                           Margin="0 0 10 0"
-                                                           VerticalAlignment="Center"
-                                                           FontSize="13"
-                                                           Text="{Binding Message}"
-                                                           Foreground="{DynamicResource OnPrimary}" />
-
-                                            </Grid>
-                                        </Border>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Border>
-
-                    <!-- 标题栏 -->
-                    <Border Grid.Row="0"
-                            PointerPressed="InputElement_OnPointerPressed"
-                            Height="45"
-                            ClipToBounds="False"
-                            Background="Transparent"
-                            CornerRadius="28 28 0 0"
-                            BoxShadow="0 0.56 0 0 #26000000">
-                        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                            <TextBlock Grid.Column="0"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"
-                                       FontSize="16"
-                                       FontWeight="Medium"
-                                       Text="BiliStream Enabler"
-                                       Margin="18 2 0 0" />
-
-
-                            <!-- only exist in debug mode -->
-                            <Grid Grid.Column="1"
-                                  ColumnDefinitions="Auto,*,Auto"
-                                  IsVisible="{x:Static local:BuildInfo.IsDebugMode}">
-                                <Border Grid.Column="0" Opacity="0.6"
-                                        CornerRadius="8"
-                                        Margin="5 12.5 5 10"
-                                        Background="Gray">
-                                    <TextBlock VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"
-                                               FontSize="12"
-                                               FontWeight="Medium"
-                                               Text="Debug Mode"
-                                               Margin="5 0 5 0" />
-                                </Border>
-                                <Button Grid.Column="2" HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        CornerRadius="8"
-                                        Height="28"
-                                        Margin="-3 1.8 5 0"
-                                        Command="{Binding OpenCurrentFolderCommand}"
-                                        Background="{DynamicResource SurfaceContainer}"
-                                        Theme="{StaticResource MdButton}">
-                                    <Button.Styles>
-                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                            <Setter Property="BoxShadow" Value="0 1 3 0 #26000000" />
-                                            <Setter Property="Background"
-                                                    Value="{DynamicResource SecondaryContainer}" />
-                                        </Style>
-                                    </Button.Styles>
-                                    <StackPanel Orientation="Horizontal">
-
-
-                                        <!-- <Svg Path="/Assets/Icons/Windowed.svg" -->
-                                        <!--      Margin="5 0 0 0" -->
-                                        <!--      Width="16" Height="16" /> -->
-
-                                        <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="5 0 0 0"
-                                                 HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Path Fill="{DynamicResource OnSurface}"
-                                                  Data="{res:Geometry {x:Static res:MdIcons.Windowed}}" Opacity="0.8">
-                                                <!-- WPF 的 TranslateTransform 对应 Avalonia 的 RenderTransform -->
-                                                <Path.RenderTransform>
-                                                    <TranslateTransform X="0" Y="960" />
-                                                </Path.RenderTransform>
-                                            </Path>
-                                        </Viewbox>
-
-
-                                        <TextBlock VerticalAlignment="Center"
-                                                   HorizontalAlignment="Left"
-                                                   FontSize="12"
-                                                   FontWeight="Medium"
-                                                   Text="Open Runtime Folder"
-                                                   Margin="5 0 5 0" />
-                                    </StackPanel>
-                                </Button>
-                            </Grid>
-
-
-                            <!-- debug mode -->
-
-                            <Button Grid.Column="2"
-                                    Width="30"
-                                    Height="30"
-                                    HorizontalAlignment="Right"
+                <!-- 左侧导航栏 -->
+                <Grid HorizontalAlignment="Left">
+                    <!-- 背景Border -->
+                    <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7"/>
+                    
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <!-- 顶部时间 -->
+                        <TextBlock Grid.Row="0" Margin="15 15 0 0"
+                                   FontSize="12" FontWeight="Regular"
+                                   Foreground="{DynamicResource OnSurface}"
+                                   Text="01:12"/>
+                        
+                        <!-- 中间导航部分 -->
+                        <StackPanel Grid.Row="1" Margin="13 30 0 30" Spacing="7"
+                                    Orientation="Vertical"
+                                    >
+                            <Button Width="38" Height="38"
+                                    HorizontalAlignment="Left"
                                     CornerRadius="10"
                                     Background="{DynamicResource SurfaceContainer}"
                                     Theme="{StaticResource MdButton}"
-                                    Click="MinimizeButton_OnClick">
-                                <Path Stroke="{DynamicResource OnSurface}"
-                                      Opacity="0.5"
-                                      StrokeThickness="1"
-                                      Stretch="None"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Margin="0 0 0 0"
-                                      Data="M 0,0 L 8,0" />
+                                    >
+                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.MenuOpen}}"
+                                        Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
                             </Button>
-                            <Button Grid.Column="3"
-                                    Width="30"
-                                    Height="30"
-                                    HorizontalAlignment="Right"
+                            
+                            <Button Height="45"
+                                    Margin="0 2 0 0"
+                                    HorizontalAlignment="Left"
                                     CornerRadius="10"
-                                    Background="{DynamicResource SurfaceContainer}"
-                                    Margin="11 0 15 0"
+                                    Background="{DynamicResource InversePrimary}"
                                     Theme="{StaticResource MdButton}"
-                                    Click="CloseButton_OnClick">
-                                <Button.Styles>
-                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                        <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
-                                        <Setter Property="Background" Value="#C94F4F" />
-                                        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-                                    </Style>
-                                </Button.Styles>
-                                <Path Stroke="{DynamicResource OnSurface}"
-                                      Opacity="0.5"
-                                      StrokeThickness="1"
-                                      Stretch="None"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Margin="0 0 0 0"
-                                      Data="M 0,0 L 8,8 M 0,8 L 8,0" />
+                            >
+                               <Border Margin="5 0 5 0" ClipToBounds="True">
+                                   <Grid  RowDefinitions="*,*,*">
+                                       <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                                           <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.Start}}"
+                                                    Height="20" Margin="0 0 5 0"
+                                                    VerticalAlignment="Center"
+                                                    Fill="{DynamicResource OnSurface}" />
+                                           <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center" Text="Start Service"></TextBlock>
+                                       </Grid>
+                                   </Grid>
+                               </Border>
                             </Button>
-                        </Grid>
-                    </Border>
-
-                    <ProgressBar IsIndeterminate="True" Width="15" Grid.Row="1"
-                                 IsVisible="{Binding PreLoadCommand.IsRunning}" />
-                    <!-- 主界面区域 -->
-                    <Grid Grid.Row="1"
-                          IsVisible="{Binding !PreLoadCommand.IsRunning}"
-                          ColumnDefinitions="*,2*"
-                          Margin="19 7 19 0">
-                        <!-- 弹幕姬 + UID-->
-                        <Grid Grid.Column="0"
-                              Margin="0 0 0 14"
-                              RowDefinitions="*,Auto">
-                            <!-- 弹幕板 -->
-                            <controls:DanmakuPanelView Grid.Row="0"
-                                                       DataContext="{Binding DanmakuPanelVm }" />
-                            <!-- 左下角展示UID -->
-                            <TextBlock Margin="0 7 0 0"
-                                       FontSize="12"
-                                       Opacity="0.75"
-                                       Grid.Row="1"
-                                       Text="{Binding UserId, StringFormat='[UID:{0}]'}" />
-                        </Grid>
-
-                        <!-- 右侧内容区域 -->
-
-                        <!-- 悬浮border，登录窗口,叠层 -->
-                        <Border Name="LoginBorder" HorizontalAlignment="Right" Margin="0 30 -10 0"
-                                VerticalAlignment="Top" Grid.Column="1" ZIndex="1" Background="Transparent"
-                                IsVisible="False" Opacity="0">
-                            <Border.Transitions>
-                                <Transitions>
-                                    <DoubleTransition Property="Opacity" Duration="0.2" Easing="CubicEaseOut" />
-
-                                </Transitions>
-                            </Border.Transitions>
-                            <controls:AccountManagerView ZIndex="1"
-                                                         IsVisible="True" DataContext="{Binding AcVm }" />
-                            <!-- <Border.Styles> -->
-                            <!-- <Style Selector="Border"> -->
-                            <!--     <Style.Animations> -->
-                            <!--         <Animation Duration="0.2" Easing="CubicEaseOut" FillMode="Forward"> -->
-                            <!--             <KeyFrame Cue="0%"> -->
-                            <!--                 <Setter Property="ScaleTransform.ScaleX" Value="0"></Setter> -->
-                            <!--                 <Setter Property="ScaleTransform.ScaleY" Value="0"></Setter> -->
-                            <!--                 ~1~ <Setter Property="TranslateTransform.Y" Value="-20"/> @1@ -->
-                            <!--                 <Setter Property="Opacity" Value="0.3"/> -->
-                            <!--             </KeyFrame> -->
-                            <!--             <KeyFrame Cue="100%"> -->
-                            <!--                 <Setter Property="ScaleTransform.ScaleX" Value="1"></Setter> -->
-                            <!--                 <Setter Property="ScaleTransform.ScaleY" Value="1"></Setter> -->
-                            <!--                 ~1~ <Setter Property="TranslateTransform.Y" Value="0"/> @1@ -->
-                            <!--                 <Setter Property="Opacity" Value="1"/> -->
-                            <!--             </KeyFrame> -->
-                            <!--         </Animation> -->
-                            <!--     </Style.Animations> -->
-                            <!-- </Style> -->
-                            <!-- </Border.Styles> -->
-
-                        </Border>
-
-
-                        <Grid Grid.Column="1"
-                              Margin="9 0 0 0"
-                              RowDefinitions="*,Auto,Auto">
-
-                            <!-- 直播间信息 ,登录按钮， 直播分区-->
-                            <Grid Grid.Row="0"
-                                  ColumnDefinitions="*,Auto">
-
-                                <!-- 直播间信息标题栏 -->
-                                <Border Grid.Column="0"
-                                        Background="{DynamicResource SurfaceContainer}"
-                                        CornerRadius="12"
-                                        ClipToBounds="True">
-                                    <Grid RowDefinitions="Auto,*">
-                                        <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
-                                            <Border Background="{DynamicResource SurfaceContainer}" Opacity="0.7"
-                                                    BoxShadow="0 0.56 0 0 #37000000" />
-                                            <TextBlock Text="Live Room Info"
-                                                       FontWeight="Medium"
-                                                       Margin="14 0 0 0"
-                                                       Foreground="{DynamicResource OnSurface}"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Left" />
-
+                            
+                            
+                            <!-- 分割线 -->
+                            <Border Margin="8"></Border>
+                            
+                            <!-- 主页按钮 -->
+                            <Button Height="45" Width="140"
+                                    HorizontalAlignment="Left"
+                                    CornerRadius="20"
+                                    Background="{DynamicResource SecondaryContainer}"
+                                    Theme="{StaticResource MdButton}"
+                            >
+                                <Border Margin="5 0 5 0">
+                                        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                                            <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.Home}}"
+                                                     Height="20" Margin="0 0 5 0"
+                                                     VerticalAlignment="Center"
+                                                     Fill="{DynamicResource OnSurface}" />
+                                            <TextBlock Grid.Column="1" LineHeight="20"  VerticalAlignment="Center" Text="Home Page"></TextBlock>
                                         </Grid>
-
-                                        <Border Grid.Row="1" Margin="14 0 14 0">
-                                            <Grid VerticalAlignment="Center" RowDefinitions="Auto,*">
-                                                <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
-                                                    <!-- 封面 -->
-
-                                                    <Border Grid.Column="0"
-                                                            Name="CoverBorder"
-                                                            PointerEntered="CoverBorder_OnPointerEntered"
-                                                            PointerExited="CoverBorder_OnPointerExited"
-                                                            Width="157" Height="89" CornerRadius="12"
-                                                            Background="Transparent">
-                                                        <Border.Styles>
-                                                            <Style Selector="Border:pointerover">
-                                                                <Setter Property="BoxShadow" Value="0 1 6 1 #26000000" />
-                                                            </Style>
-                                                        </Border.Styles>
-
-                                                        <Border Background="Wheat" CornerRadius="12"
-                                                                ClipToBounds="True">
-                                                            <Grid>
-                                                                <Button VerticalAlignment="Stretch"
-                                                                        HorizontalAlignment="Stretch"
-                                                                        Theme="{StaticResource MdButton}"
-                                                                        Command="{Binding UpdateCoverCommand}"
-                                                                        Background="Transparent" />
-                                                                <Image Stretch="UniformToFill"
-                                                                       IsVisible="True"
-                                                                       IsHitTestVisible="False"
-                                                                       Source="{Binding RoomCover}"
-                                                                       RenderOptions.BitmapInterpolationMode="HighQuality" />
-                                                                <Border HorizontalAlignment="Stretch"
-                                                                        VerticalAlignment="Bottom"
-                                                                        IsVisible="True"
-                                                                        Height="0"
-                                                                        Name="CoverBar"
-                                                                        IsHitTestVisible="False"
-                                                                        Background="#80808080">
-                                                                    <Border.Transitions>
-                                                                        <Transitions>
-                                                                            <DoubleTransition Property="Height"
-                                                                                    Duration="0.2"
-                                                                                    Easing="CubicEaseOut" />
-                                                                        </Transitions>
-                                                                    </Border.Transitions>
-                                                                    <Border HorizontalAlignment="Stretch"
-                                                                            ClipToBounds="True">
-                                                                        <Grid ColumnDefinitions="*,Auto,Auto,*">
-                                                                            <Viewbox Grid.Column="1" Width="15"
-                                                                                    Height="15" Stretch="Uniform"
-                                                                                    Margin="0 0 2 0"
-                                                                                    HorizontalAlignment="Center"
-                                                                                    VerticalAlignment="Center">
-                                                                                <Path
-                                                                                    Fill="{DynamicResource OnSurface}"
-                                                                                    Data="{res:Geometry {x:Static res:MdIcons.Edit}}"
-                                                                                    Opacity="0.8">
-                                                                                    <Path.RenderTransform>
-                                                                                        <TranslateTransform X="0"
-                                                                                            Y="960" />
-                                                                                    </Path.RenderTransform>
-                                                                                </Path>
-                                                                            </Viewbox>
-                                                                            <TextBlock Grid.Column="2"
-                                                                                    HorizontalAlignment="Center"
-                                                                                    VerticalAlignment="Center"
-                                                                                    FontSize="12"
-                                                                                    FontWeight="Regular"
-                                                                                    Text="Edit Cover" />
-
-                                                                        </Grid>
-                                                                    </Border>
-                                                                </Border>
-                                                            </Grid>
-                                                        </Border>
-                                                    </Border>
-                                                    <!-- 标题 -->
-                                                    <Grid Grid.Column="1"
-                                                          Margin="14 0 0 0"
-                                                          VerticalAlignment="Center"
-                                                          RowDefinitions="*,*">
-                                                        <TextBlock Grid.Row="0"
-                                                                   VerticalAlignment="Bottom"
-                                                                   Text="Stream Title"
-                                                                   Margin="0 0 0 3" />
-                                                        <TextBox Name="PathBox"
-                                                                 MinHeight="35" CornerRadius="10"
-                                                                 Margin="0 3 0 0"
-                                                                 BorderThickness="0"
-                                                                 MaxLength="100"
-                                                                 VerticalContentAlignment="Center"
-                                                                 Background="{DynamicResource Surface}"
-                                                                 SelectionBrush="Transparent"
-                                                                 IsReadOnly="False"
-                                                                 Text="{Binding RoomTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                 Focusable="True" Grid.Row="1"
-                                                                 VerticalAlignment="Center" />
-                                                    </Grid>
-                                                </Grid>
-
-                                                <Grid Grid.Row="1"
-                                                      Margin="0 9 0 0" ColumnDefinitions="*,Auto">
-                                                    <TextBlock Grid.Column="0"
-                                                               Margin="1 4.4 0 0"
-                                                               Text="{Binding MaskedApiKey,StringFormat=API Key : {0}}" />
-                                                    <Button Grid.Column="1"
-                                                            Background="Transparent"
-                                                            Height="30"
-                                                            CornerRadius="8"
-                                                            Theme="{StaticResource MdButton}"
-                                                            VerticalAlignment="Center"
-                                                            Command="{Binding CopyApiKeyToClipboardCommand}">
-
-                                                        <!-- 复制图标 -->
-                                                        <Viewbox Width="18" Height="18" Stretch="Uniform"
-                                                                 Margin="0 0 0 0"
-                                                                 HorizontalAlignment="Center"
-                                                                 VerticalAlignment="Center">
-                                                            <Path Fill="{DynamicResource OnSurface}"
-                                                                  Data="{res:Geometry {x:Static res:MdIcons.Copy}}"
-                                                                  Opacity="0.8">
-                                                                <Path.RenderTransform>
-                                                                    <TranslateTransform X="0" Y="960" />
-                                                                </Path.RenderTransform>
-                                                            </Path>
-                                                        </Viewbox>
-
-                                                    </Button>
-                                                </Grid>
-
-                                            </Grid>
-                                        </Border>
-
+                                </Border>
+                            </Button>
+                            
+                            <!-- 直播间按钮 -->
+                            <Button Height="40" Width="140"
+                                    HorizontalAlignment="Left"
+                                    CornerRadius="20"
+                                    Background="Transparent"
+                                    Theme="{StaticResource MdButton}"
+                            >
+                                <Border Margin="5 0 5 0">
+                                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                                        <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.AutoMation}}"
+                                                 Height="20" Margin="0 0 5 0"
+                                                 VerticalAlignment="Center"
+                                                 Fill="{DynamicResource OnSurface}" />
+                                        <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center" Text="Auto Service"></TextBlock>
                                     </Grid>
                                 </Border>
-
-
-                                <!-- 登录和直播分区 -->
-                                <Grid RowDefinitions="Auto,*"
-                                      Margin="7 0 0 0"
-                                      Grid.Column="1">
-
-                                    <!-- 头像部分 -->
-                                    <Grid Grid.Row="0"
-                                          Margin="0 0 0 7">
-                                        <Button Name="LoginButton"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Bottom"
-                                                CornerRadius="12"
-                                                Height="36"
-                                                Background="{DynamicResource SurfaceContainerHigh}"
-                                                Theme="{StaticResource MdButton}"
-                                                Command="{Binding LoginCommand}"
-                                                Click="LoginButton_OnClick">
-                                            <TextBlock Text="{Binding UserName}" Margin="6 0 37 0"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        </Button>
-
-
-                                        <Border HorizontalAlignment="Right"
-                                                ClipToBounds="True"
-                                                CornerRadius="18.5">
-
-                                            <Grid>
-                                                <Image Stretch="UniformToFill" Width="37" Height="37"
-                                                       RenderOptions.BitmapInterpolationMode="LowQuality"
-                                                       Source="{Binding UserFace}" />
-                                            </Grid>
-
-                                        </Border>
+                            </Button>
+                            
+                            <!-- 设置按钮 -->
+                            <Button Height="40" Width="140"
+                                    HorizontalAlignment="Left"
+                                    CornerRadius="20"
+                                    Background="Transparent"
+                                    Theme="{StaticResource MdButton}"
+                            >
+                                <Border Margin="5 0 5 0">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"
+                                                 Height="20" Margin="0 0 5 0"
+                                                 VerticalAlignment="Center"
+                                                 Fill="{DynamicResource OnSurface}" />
+                                        <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center" Text="About"></TextBlock>
                                     </Grid>
-
-
-                                    <Button Grid.Row="1"
-                                            VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch"
-                                            CornerRadius="12"
-                                            Margin="-3 -3 2 -3"
-                                            Background="{DynamicResource SecondaryContainer}"
-                                            Theme="{StaticResource MdButton}">
-                                        <Button.Styles>
-                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                <Setter Property="BoxShadow" Value="0 1 1 0 #26000000" />
-                                                <Setter Property="Background"
-                                                        Value="{DynamicResource PrimaryContainer}" />
-                                                <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-                                            </Style>
-                                        </Button.Styles>
-
-                                        <StackPanel VerticalAlignment="Center" Margin="0 0 0 5"
-                                                    Background="Transparent"
-                                                    Orientation="Vertical">
-                                            <!-- <Svg VerticalAlignment="Bottom" -->
-                                            <!--      Width="32" Height="32" -->
-                                            <!--      Path="/Assets/Icons/ChangeArea.svg" /> -->
-                                            <Viewbox Width="32" Height="32" Stretch="Uniform" Margin="6 0 6 0"
-                                                     HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <Path Data="{ res:Geometry {x:Static res:MdIcons.Notice}}"
-                                                      Fill="{DynamicResource OnSurface}"
-                                                      Opacity="0.8">
-                                                    <Path.RenderTransform>
-                                                        <TranslateTransform X="0" Y="960" />
-                                                    </Path.RenderTransform>
-                                                </Path>
-                                            </Viewbox>
-
-                                            <StackPanel>
-                                                <TextBlock HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center">
-                                                    Change Area
-                                                </TextBlock>
-
-                                                <TextBlock HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"
-                                                           Text="[手游-原神]" />
-                                            </StackPanel>
-
-                                        </StackPanel>
-                                    </Button>
+                                </Border>
+                            </Button>
+                        </StackPanel>
+                        
+                        <!-- 底部用户信息栏 -->
+                        <Border Grid.Row="2" VerticalAlignment="Bottom" Margin="10 0 8 10"
+                                CornerRadius="15" Height="38" BoxShadow="0 0 10 0 #12000000">
+                            <Grid>
+                                <Button Name="AccountBtn" HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Background="Transparent"
+                                        Click="AccountBtn_OnClick"
+                                        />
+                                <Grid ColumnDefinitions="Auto,*" IsVisible="True" IsHitTestVisible="False">
+                                    <!-- 头像 -->
+                                    <Border Grid.Column="0" Margin="4 0 4 0"
+                                            VerticalAlignment="Center" 
+                                            CornerRadius="60" ClipToBounds="True">
+                                        <Image Source="{Binding UserFace}"
+                                               Width="33" Height="33"
+                                               Stretch="Uniform" ></Image>
+                                    </Border>
+                            
+                                    <!-- 用户名 -->
+                                    <TextBlock Grid.Column="1" Margin="10 0 15 0" 
+                                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               FontWeight="Bold" Text="IsPVP_Good_"/>
                                 </Grid>
                             </Grid>
-
-                            <!-- AutoStream区域 -->
-                            <Border Grid.Row="1">
-                                <!-- <Border.Transitions> -->
-                                <!--     <Transitions> -->
-                                <!--         <DoubleTransition Property="Height" Duration="1.0" Easing="CubicEaseOut"/> -->
-                                <!--     </Transitions> -->
-                                <!-- </Border.Transitions> -->
-                                <controls:AutoServiceView DataContext="{Binding AsVm}"
-                                                          Margin="0 7 5 0" />
-                            </Border>
-
-
-                            <!-- 开始直播和状态区域 -->
-                            <Grid Grid.Row="2"
-                                  Height="53"
-                                  Margin="0 7 0 -4.5"
-                                  ColumnDefinitions="*,Auto">
-                                <TextBlock Margin="0 8 15 0" Grid.Column="0"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Top"
-                                           Text="{Binding Status,StringFormat=Status - {0}}" />
-                                <ToggleButton Grid.Column="1"
-                                              Height="41"
-
-                                              IsChecked="{Binding IsStreaming}"
-                                              CornerRadius="12"
-                                              VerticalAlignment="Top"
-                                              HorizontalAlignment="Right"
-                                              Command="{Binding StartServiceCommand}"
-                                              Theme="{StaticResource MdToggleButton}">
-                                    <TextBlock Text="{Binding StreamButtonText}"
-                                               FontWeight="Medium"
-                                               Margin="16 0 16 0"
-                                               VerticalAlignment="Center" />
-                                </ToggleButton>
-                            </Grid>
-                        </Grid>
-
+                        </Border>
                     </Grid>
                 </Grid>
+                
+                <Grid Margin="300 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <!-- <controls:AccountsView Grid.Row="0" -->
+                    <!--                            DataContext="{Binding DanmakuPanelVm }" /> -->
+                    
+                    <!-- <ContentControl ></ContentControl> -->
+                 
+                </Grid>
+                
             </Grid>
+            </Border>
+
         </Border>
     </Border>
 

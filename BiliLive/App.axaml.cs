@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Services.BiliService;
@@ -36,6 +37,7 @@ public class App : Application
     
     public override void OnFrameworkInitializationCompleted()
     {
+      
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             //通过DI获取MainWindow
@@ -46,6 +48,5 @@ public class App : Application
         }
         base.OnFrameworkInitializationCompleted();
     }
-    
 
 }

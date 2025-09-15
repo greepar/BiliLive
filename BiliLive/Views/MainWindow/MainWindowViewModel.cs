@@ -103,7 +103,7 @@ public partial class MainWindowViewModel : ViewModelBase
         RoomCover = roomBm;
         
         var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 47, 47);
+        var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
         UserFace = userPicBm;
         
         if (Design.IsDesignMode || serviceProvider == null)

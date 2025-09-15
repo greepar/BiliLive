@@ -3,6 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Controls"
+             xmlns:resources="clr-namespace:BiliLive.Resources"
+             FontFamily="{StaticResource NotoRegular}"
              mc:Ignorable="d"
              x:Class="BiliLive.Views.MainWindow.Controls.AccountsView"
              x:DataType="vm:AccountsViewModel">
@@ -13,6 +15,7 @@
     <Grid>
         <Border Name="LoginBorder"
                 Focusable="True"
+                MinHeight="221" MinWidth="206"
                 Opacity="1"
                 IsVisible="True"
                 Background="Transparent"
@@ -20,38 +23,111 @@
                 VerticalAlignment="Top" HorizontalAlignment="Right"
                 BorderThickness="15" BorderBrush="Transparent">
             <Border CornerRadius="28" Background="{DynamicResource Surface}"
-                    MinWidth="206" MinHeight="231"
                     BoxShadow="0 1 8 2 #26000000">
             <Grid RowDefinitions="Auto,Auto,Auto">
-                <Border Grid.Row="0"
-                        Margin="0 10 0 0"
-                        CornerRadius="24 24 10 10"
-                        Width="189" Height="119"
-                        VerticalAlignment="Top"
-                        Background="{DynamicResource SurfaceContainer}"
-                        >
+                <!-- 当前账号 -->
+                <Border Grid.Row="0" Background="{DynamicResource SurfaceContainer}"
+                        Margin="7 7 7 0"
+                        CornerRadius="24 24 10 10">
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <Border Width="49" CornerRadius="60" ClipToBounds="True" Margin="0 15 0 0">
+                            <Image Width="49" Height="49"  RenderOptions.BitmapInterpolationMode="HighQuality"
+                                   Source="/Assets/Pics/userPic.jpg"/>
+                        </Border>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   
+                                   FontSize="16"
+                                   Text="格瑞普"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   FontWeight="Medium"
+                                   Margin="0 -10 0 15"
+                                   Text="UID 196341435"/>
+                    </StackPanel>
+                </Border>
+                        
+                <!-- 账号列表 -->
+                <Border Grid.Row="1" Background="{DynamicResource SurfaceContainer}"
+                        Margin="7 5 7 7"
+                        CornerRadius="10 10 10 10">
+                    
+                    <Grid>
+                    
+                        <!-- <Button Background="Red" Content="123"></Button> -->
+                        
+                        <Grid ZIndex="1" ColumnDefinitions="*,*,*">
+                            <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto">
+                                <Border Grid.Column="0" Width="26" Height="26" CornerRadius="60" ClipToBounds="True" Margin="5 5 5 5">
+                                    <Image Width="26" Height="26"  RenderOptions.BitmapInterpolationMode="HighQuality"
+                                           Source="/Assets/Pics/PVPGOODFace.jpg"/>
+                                </Border>
+                            
+                                <Border Grid.Column="1" VerticalAlignment="Center" >
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               FontSize="12"
+                                               Text="这是PVPGOOD"/>
+                                </Border>
+                         
+                            
+                                <Button Grid.Column="2" Background="{DynamicResource SurfaceContainerHighest}"
+                                        CornerRadius="8"
+                                        Width="26" Height="26"
+                                        Margin="5 5 5 5"
+                                        HorizontalAlignment="Stretch"
+                                        Theme="{StaticResource MdButton}">
+                                    <SvgBox  PathData="{resources:Geometry {x:Static resources:MdIcons.Error}}"
+                                             Height="17" Margin="0"
+                                             VerticalAlignment="Center"
+                                             Fill="{DynamicResource OnSurface}" />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    
+                        
+                    </Grid>
+                    
                 </Border>
                 
-                <Border Grid.Row="1"
-                        Margin="0 5 0 5"
-                        CornerRadius="24 24 10 10"
-                        Width="189" Height="50"
-                        VerticalAlignment="Top"
-                        Background="{DynamicResource SurfaceContainer}"
-                />
-                
-                <Grid Grid.Row="2" Background="Red"
-                      VerticalAlignment="Top"
-                      ColumnDefinitions="*,*">
-                    <Border Grid.Column="0">
-                        <Button></Button>
-                    </Border>
-                    
-                </Grid>
-                        
-                        
-                        
-            
+                <!-- 账号相关 -->
+                <Border Grid.Row="2" HorizontalAlignment="Stretch" Margin="0 0 0 7">
+                   <Grid ColumnDefinitions="*,*">
+                       <Button Grid.Column="0" Background="{DynamicResource SurfaceContainer}"
+                               CornerRadius="10"
+                               Width="90"
+                               Margin="7 0 0 0"
+                               HorizontalAlignment="Stretch"
+                               Theme="{StaticResource MdButton}">
+                           <StackPanel Orientation="Horizontal">
+                               <SvgBox  PathData="{resources:Geometry {x:Static resources:MdIcons.Logout}}"
+                                        Height="17" Margin="0 0 11 0"
+                                        VerticalAlignment="Center"
+                                        Fill="{DynamicResource OnSurface}" />
+                               <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                          FontWeight="Medium"
+                                          FontSize="9"
+                                          Text="Log out"/>
+                           </StackPanel>
+                       </Button>
+                       
+                       <Button Grid.Column="1" Background="{DynamicResource SurfaceContainer}"
+                               CornerRadius="10"
+                               Width="90"
+                               Margin="0 0 5 0"
+                               HorizontalAlignment="Stretch"
+                               Theme="{StaticResource MdButton}">
+                           <StackPanel Orientation="Horizontal">
+                               <SvgBox  PathData="{resources:Geometry {x:Static resources:MdIcons.Add}}"
+                                        Height="17" Margin="0 0 3 0"
+                                        VerticalAlignment="Center"
+                                        Fill="{DynamicResource OnSurface}" />
+                               
+                               <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                          FontWeight="Medium"
+                                          FontSize="9"
+                                          Text="Add account"/>
+                           </StackPanel>
+                       </Button>
+                   </Grid>
+                </Border>
             </Grid>
             </Border>                      
                                         
