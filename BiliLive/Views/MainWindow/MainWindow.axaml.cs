@@ -1,4 +1,3 @@
-using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -73,6 +72,5 @@ public partial class MainWindow : Window
 
     private void AccountBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        
     }
 }

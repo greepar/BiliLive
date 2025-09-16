@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
         xmlns:res="clr-namespace:BiliLive.Resources"
-        xmlns:controls="clr-namespace:BiliLive.Views.MainWindow.Controls"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
@@ -15,7 +14,7 @@
         <mainWindow:MainWindowViewModel />
     </Design.DataContext>
 
-    <Border Name="MainBorder" Background="Transparent">
+    <Border Background="Transparent">
         <!-- 使用Margin留出间隙 -->
         <Border Width="800" Height="470"
                 Margin="10"
@@ -27,190 +26,189 @@
             <Border CornerRadius="28" ClipToBounds="True">
                 <!-- 总背景 -->
                 <Grid Background="{DynamicResource Surface}">
-                <!-- 可拖拽区域 -->
-                <Border Height="45"
-                        VerticalAlignment="Top"
-                        Background="Transparent"
-                        PointerPressed="InputElement_OnPointerPressed">
-                    <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <!-- 最小化按钮 -->
-                        <Button Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                CornerRadius="10"
-                                Background="{DynamicResource SurfaceContainer}"
-                                Theme="{StaticResource MdButton}"
-                                Click="MinimizeButton_OnClick">
-                            <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"
-                                    Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
-                        </Button>
-
-                        <!-- 关闭按钮 -->
-                        <Button Width="30"
-                                Height="30"
-                                HorizontalAlignment="Right"
-                                CornerRadius="10"
-                                Background="{DynamicResource SurfaceContainer}"
-                                Margin="9 0 15 0"
-                                Theme="{StaticResource MdButton}"
-                                Click="CloseButton_OnClick">
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                    <Setter Property="BoxShadow" Value="0 1 2 0 #26000000" />
-                                    <Setter Property="Background" Value="#C94F4F" />
-                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-                                </Style>
-                            </Button.Styles>
-                            <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Error}}"
-                                    Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
-                        </Button>
-
-                    </StackPanel>
-                </Border>
-
-                <!-- 左侧导航栏 -->
-                <Grid HorizontalAlignment="Left">
-                    <!-- 背景Border -->
-                    <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7"/>
-                    
-                    <Grid RowDefinitions="Auto,*,Auto">
-                        <!-- 顶部时间 -->
-                        <TextBlock Grid.Row="0" Margin="15 15 0 0"
-                                   FontSize="12" FontWeight="Regular"
-                                   Foreground="{DynamicResource OnSurface}"
-                                   Text="01:12"/>
-                        
-                        <!-- 中间导航部分 -->
-                        <StackPanel Grid.Row="1" Margin="13 30 0 30" Spacing="7"
-                                    Orientation="Vertical"
-                                    >
-                            <Button Width="38" Height="38"
-                                    HorizontalAlignment="Left"
+                    <!-- 可拖拽区域 -->
+                    <Border ZIndex="1"
+                            Height="45"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            PointerPressed="InputElement_OnPointerPressed">
+                        <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <!-- 最小化按钮 -->
+                            <Button Width="30"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
                                     CornerRadius="10"
                                     Background="{DynamicResource SurfaceContainer}"
                                     Theme="{StaticResource MdButton}"
-                                    >
-                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.MenuOpen}}"
-                                        Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
+                                    Click="MinimizeButton_OnClick">
+                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"
+                                        Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
                             </Button>
-                            
-                            <Button Height="45"
-                                    Margin="0 2 0 0"
-                                    HorizontalAlignment="Left"
+
+                            <!-- 关闭按钮 -->
+                            <Button Width="30"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
                                     CornerRadius="10"
-                                    Background="{DynamicResource InversePrimary}"
+                                    Background="{DynamicResource SurfaceContainer}"
+                                    Margin="9 0 15 0"
                                     Theme="{StaticResource MdButton}"
-                            >
-                               <Border Margin="5 0 5 0" ClipToBounds="True">
-                                   <Grid  RowDefinitions="*,*,*">
-                                       <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
-                                           <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.Start}}"
-                                                    Height="20" Margin="0 0 5 0"
-                                                    VerticalAlignment="Center"
-                                                    Fill="{DynamicResource OnSurface}" />
-                                           <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center" Text="Start Service"></TextBlock>
-                                       </Grid>
-                                   </Grid>
-                               </Border>
+                                    Click="CloseButton_OnClick">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="BoxShadow" Value="0 1 2 0 #26000000" />
+                                        <Setter Property="Background" Value="#C94F4F" />
+                                        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+                                    </Style>
+                                </Button.Styles>
+                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Error}}"
+                                        Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
                             </Button>
-                            
-                            
-                            <!-- 分割线 -->
-                            <Border Margin="8"></Border>
-                            
-                            <!-- 主页按钮 -->
-                            <Button Height="45" Width="140"
-                                    HorizontalAlignment="Left"
-                                    CornerRadius="20"
-                                    Background="{DynamicResource SecondaryContainer}"
-                                    Theme="{StaticResource MdButton}"
-                            >
-                                <Border Margin="5 0 5 0">
-                                        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
-                                            <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.Home}}"
-                                                     Height="20" Margin="0 0 5 0"
-                                                     VerticalAlignment="Center"
-                                                     Fill="{DynamicResource OnSurface}" />
-                                            <TextBlock Grid.Column="1" LineHeight="20"  VerticalAlignment="Center" Text="Home Page"></TextBlock>
-                                        </Grid>
-                                </Border>
-                            </Button>
-                            
-                            <!-- 直播间按钮 -->
-                            <Button Height="40" Width="140"
-                                    HorizontalAlignment="Left"
-                                    CornerRadius="20"
-                                    Background="Transparent"
-                                    Theme="{StaticResource MdButton}"
-                            >
-                                <Border Margin="5 0 5 0">
-                                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
-                                        <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.AutoMation}}"
-                                                 Height="20" Margin="0 0 5 0"
-                                                 VerticalAlignment="Center"
-                                                 Fill="{DynamicResource OnSurface}" />
-                                        <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center" Text="Auto Service"></TextBlock>
-                                    </Grid>
-                                </Border>
-                            </Button>
-                            
-                            <!-- 设置按钮 -->
-                            <Button Height="40" Width="140"
-                                    HorizontalAlignment="Left"
-                                    CornerRadius="20"
-                                    Background="Transparent"
-                                    Theme="{StaticResource MdButton}"
-                            >
-                                <Border Margin="5 0 5 0">
-                                    <Grid ColumnDefinitions="Auto,*">
-                                        <SvgBox  PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"
-                                                 Height="20" Margin="0 0 5 0"
-                                                 VerticalAlignment="Center"
-                                                 Fill="{DynamicResource OnSurface}" />
-                                        <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center" Text="About"></TextBlock>
-                                    </Grid>
-                                </Border>
-                            </Button>
+
                         </StackPanel>
+                    </Border>
+
+                    <Grid ColumnDefinitions="Auto,*">
                         
-                        <!-- 底部用户信息栏 -->
-                        <Border Grid.Row="2" VerticalAlignment="Bottom" Margin="10 0 8 10"
-                                CornerRadius="15" Height="38" BoxShadow="0 0 10 0 #12000000">
-                            <Grid>
-                                <Button Name="AccountBtn" HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Background="Transparent"
-                                        Click="AccountBtn_OnClick"
-                                        />
-                                <Grid ColumnDefinitions="Auto,*" IsVisible="True" IsHitTestVisible="False">
-                                    <!-- 头像 -->
-                                    <Border Grid.Column="0" Margin="4 0 4 0"
-                                            VerticalAlignment="Center" 
-                                            CornerRadius="60" ClipToBounds="True">
-                                        <Image Source="{Binding UserFace}"
-                                               Width="33" Height="33"
-                                               Stretch="Uniform" ></Image>
-                                    </Border>
-                            
-                                    <!-- 用户名 -->
-                                    <TextBlock Grid.Column="1" Margin="10 0 15 0" 
-                                               VerticalAlignment="Center" HorizontalAlignment="Center"
-                                               FontWeight="Bold" Text="IsPVP_Good_"/>
-                                </Grid>
+                        <!-- 左侧导航栏 -->
+                        <Grid Grid.Column="0" HorizontalAlignment="Left">
+                            <!-- 背景Border -->
+                            <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7" />
+
+                            <Grid RowDefinitions="Auto,*,Auto">
+                                <!-- 顶部时间 -->
+                                <TextBlock Grid.Row="0" Margin="15 15 0 0"
+                                           FontSize="12" FontWeight="Regular"
+                                           Foreground="{DynamicResource OnSurface}"
+                                           Text="01:12" />
+
+                                <!-- 中间导航部分 -->
+                                <StackPanel Grid.Row="1" Margin="13 30 0 30" Spacing="7"
+                                            Orientation="Vertical">
+                                    <Button Width="38" Height="38"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="10"
+                                            Background="{DynamicResource SurfaceContainer}"
+                                            Theme="{StaticResource MdButton}">
+                                        <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.MenuOpen}}"
+                                                Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
+                                    </Button>
+
+                                    <Button Height="45"
+                                            Margin="0 2 0 0"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="10"
+                                            Background="{DynamicResource InversePrimary}"
+                                            Theme="{StaticResource MdButton}">
+                                        <Border Margin="5 0 5 0" ClipToBounds="True">
+                                            <Grid RowDefinitions="*,*,*">
+                                                <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                                                    <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Start}}"
+                                                            Height="20" Margin="0 0 5 0"
+                                                            VerticalAlignment="Center"
+                                                            Fill="{DynamicResource OnSurface}" />
+                                                    <TextBlock Grid.Column="1" LineHeight="20"
+                                                               VerticalAlignment="Center" Text="Start Service" />
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+
+
+                                    <!-- 分割线 -->
+                                    <Border Margin="8" />
+
+                                    <!-- 主页按钮 -->
+                                    <Button Height="45" Width="140"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="20"
+                                            Background="{DynamicResource SecondaryContainer}"
+                                            Theme="{StaticResource MdButton}">
+                                        <Border Margin="5 0 5 0">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Home}}"
+                                                        Height="20" Margin="0 0 5 0"
+                                                        VerticalAlignment="Center"
+                                                        Fill="{DynamicResource OnSurface}" />
+                                                <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center"
+                                                           Text="Home Page" />
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+
+                                    <!-- 直播间按钮 -->
+                                    <Button Height="40" Width="140"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="20"
+                                            Background="Transparent"
+                                            Theme="{StaticResource MdButton}">
+                                        <Border Margin="5 0 5 0">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.AutoMation}}"
+                                                        Height="20" Margin="0 0 5 0"
+                                                        VerticalAlignment="Center"
+                                                        Fill="{DynamicResource OnSurface}" />
+                                                <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center"
+                                                           Text="Auto Service" />
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+
+                                    <!-- 设置按钮 -->
+                                    <Button Height="40" Width="140"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="20"
+                                            Background="Transparent"
+                                            Theme="{StaticResource MdButton}">
+                                        <Border Margin="5 0 5 0">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"
+                                                        Height="20" Margin="0 0 5 0"
+                                                        VerticalAlignment="Center"
+                                                        Fill="{DynamicResource OnSurface}" />
+                                                <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center"
+                                                           Text="About" />
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+                                </StackPanel>
+
+                                <!-- 底部用户信息栏 -->
+                                <Border Grid.Row="2" VerticalAlignment="Bottom" Margin="10 0 8 10"
+                                        CornerRadius="15" Height="38" BoxShadow="0 0 10 0 #12000000">
+                                    <Grid>
+                                        <Button Name="AccountBtn" HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Background="Transparent"
+                                                Click="AccountBtn_OnClick" />
+                                        <Grid ColumnDefinitions="Auto,*" IsVisible="True" IsHitTestVisible="False">
+                                            <!-- 头像 -->
+                                            <Border Grid.Column="0" Margin="4 0 4 0"
+                                                    VerticalAlignment="Center"
+                                                    CornerRadius="60" ClipToBounds="True">
+                                                <Image Source="{Binding UserFace}"
+                                                       Width="33" Height="33"
+                                                       Stretch="Uniform" />
+                                            </Border>
+
+                                            <!-- 用户名 -->
+                                            <TextBlock Grid.Column="1" Margin="10 0 15 0"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                       FontWeight="Bold" Text="IsPVP_Good_" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
                             </Grid>
-                        </Border>
+                        </Grid>
+                        
+                        <!-- 右侧内容区域 -->
+                        <Grid Grid.Column="1" Margin="20 45 20 20">
+                            <Border Background="Wheat"></Border>
+                            <ContentControl Content="{Binding AcVm}"></ContentControl>
+                        </Grid>
+                        
                     </Grid>
                 </Grid>
-                
-                <Grid Margin="300 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                    <!-- <controls:AccountsView Grid.Row="0" -->
-                    <!--                            DataContext="{Binding DanmakuPanelVm }" /> -->
-                    
-                    <!-- <ContentControl ></ContentControl> -->
-                 
-                </Grid>
-                
-            </Grid>
             </Border>
 
         </Border>
