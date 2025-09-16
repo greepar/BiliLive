@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Controls"
              xmlns:resources="clr-namespace:BiliLive.Resources"
-             FontFamily="PingFang SC Regular"
+             FontFamily="{StaticResource PingFangRegular}"
              x:DataType="vm:AutoServiceViewModel"
              mc:Ignorable="d" d:DesignHeight="200"
 
@@ -159,7 +159,13 @@
                             <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
                                           VerticalAlignment="Center"
                                           RenderTransform="scale(0.8)"
-                                          OffContent="" OnContent="" />
+                                          OffContent="" OnContent="" >
+                                <ToggleSwitch.Styles>
+                                    <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+                                        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                                    </Style>
+                                </ToggleSwitch.Styles>
+                            </ToggleSwitch>
                         </Grid>
                     </Border>
 
@@ -234,7 +240,13 @@
                             <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
                                           VerticalAlignment="Center"
                                           RenderTransform="scale(0.8)"
-                                          OffContent="" OnContent="" />
+                                          OffContent="" OnContent="" >
+                                <ToggleSwitch.Styles>
+                                    <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+                                        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                                    </Style>
+                                </ToggleSwitch.Styles>
+                            </ToggleSwitch>
                         </Grid>
                     </Border>
 
@@ -267,7 +279,13 @@
                             <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
                                           VerticalAlignment="Center"
                                           RenderTransform="scale(0.8)"
-                                          OffContent="" OnContent="" />
+                                          OffContent="" OnContent="" >
+                                <ToggleSwitch.Styles>
+                                    <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+                                        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                                    </Style>
+                                </ToggleSwitch.Styles>
+                            </ToggleSwitch>
                         </Grid>
                     </Border>
 

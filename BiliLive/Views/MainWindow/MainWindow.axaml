@@ -7,7 +7,7 @@
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
-        FontFamily="PingFang SC Regular"
+        FontFamily="{StaticResource PingFangRegular}"
         
         TransparencyLevelHint="Transparent"
         Background="Transparent">
