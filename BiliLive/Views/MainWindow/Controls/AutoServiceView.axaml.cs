@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls; 
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 namespace BiliLive.Views.MainWindow.Controls;
@@ -7,10 +7,7 @@ public partial class AutoServiceView : UserControl
 {
     public AutoServiceView()
     {
-        if (Design.IsDesignMode)
-        {
-            DataContext = new AutoServiceViewModel();
-        }
+        if (Design.IsDesignMode) DataContext = new AutoServiceViewModel();
         InitializeComponent();
     }
 
@@ -22,13 +19,9 @@ public partial class AutoServiceView : UserControl
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
         // Console.WriteLine(MainBorder.Height);
-        if (MainBorder.Height - 35 > 0 || ToggleSwitch.IsChecked == false)
-        {
-            MainBorder.Height = 35;
-        }
+        if (MainBorder.Height - 32 > 0)
+            MainBorder.Height = 32;
         else
-        {
-            MainBorder.Height = 140;
-        }
+            MainBorder.Height = 115;
     }
 }

@@ -79,4 +79,9 @@
     <ItemGroup>
       <ProjectReference Include="..\BiliLive.Core\BiliLive.Core.csproj" />
     </ItemGroup>
+
+    
+    <ItemGroup>
+      <Folder Include="Views\MainWindow\Pages\AutoService\" />
+    </ItemGroup>
 </Project>

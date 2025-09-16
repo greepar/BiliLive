@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:BiliLive.Resources"
+             FontFamily="PingFang SC Regular"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
              x:Class="BiliLive.Resources.Controls.UserControl1">
     

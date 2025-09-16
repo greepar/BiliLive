@@ -3,127 +3,284 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Controls"
+             xmlns:resources="clr-namespace:BiliLive.Resources"
+             FontFamily="PingFang SC Regular"
              x:DataType="vm:AutoServiceViewModel"
-             mc:Ignorable="d" d:DesignWidth="500" 
-             x:Class="BiliLive.Views.MainWindow.Controls.AutoServiceView">
-    
-    <Border Background="{DynamicResource SurfaceContainer}"
-            CornerRadius="12"
-            Name="MainBorder"
-            Height="{Binding AsHeight}"
-            ClipToBounds="True">
-        <Border.Transitions>
-            <Transitions>
-                <DoubleTransition Property="Height" Duration="0:0:0.3" Easing="CubicEaseInOut"/>
-            </Transitions>
-        </Border.Transitions>
-        <Grid RowDefinitions="Auto,*">
-                                <Grid Grid.Row="0" Height="35" VerticalAlignment="Top">
-                                    <Border Background="{DynamicResource SurfaceContainer}"
-                                            BoxShadow="0 0.56 0 0 #26000000" />
-                                    <Grid ColumnDefinitions="Auto,*">
-                                        <TextBlock Text="AutoStream Service [Optional]"
-                                                   FontWeight="Medium"
-                                                   Margin="14 0 0 0"
-                                                   Foreground="{DynamicResource OnSurface}"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Left" />
-                                        <ToggleSwitch Name="ToggleSwitch" Grid.Column="1" HorizontalAlignment="Right" 
-                                                      OnContent="" OffContent=""
-                                                      Click="Button_OnClick"
-                                                      Command="{Binding ToggleOptionsCommand}"
-                                                      IsChecked="{Binding IsEnabled}">
-                                            <ToggleSwitch.Styles>
-                                                <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-                                                    <Setter Property="Background" Value="{DynamicResource Primary}"/>
-                                                </Style>
-                                            </ToggleSwitch.Styles>
-                                        </ToggleSwitch>
-                                    </Grid>
-                                </Grid>
-            
-                                
-                                <Grid Grid.Row="1"
-                                      Margin="8"
-                                      IsVisible="{Binding IsEnabled}"
-                                      RowDefinitions="*,*,*">
-                                    <Grid Grid.Row="0"
-                                          ColumnDefinitions="Auto,*">
-                                        <TextBlock Grid.Column="0"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center"
-                                                   Margin="6 0 7 2"
-                                                   FontSize="13"
-                                                   FontWeight="Bold"
-                                                  >
-                                            Ffmpeg Path
-                                        </TextBlock>
-                                            <Button Grid.Column="1" Name="FfmpegPathBtn" 
-                                                    HorizontalAlignment="Stretch"
-                                                    CornerRadius="12"
-                                                    Height="30"
-                                                    FontSize="12"
-                                                    Command="{Binding PickFfmpegPathCommand}"
-                                                    Content="{Binding FfmpegPath,StringFormat=' {0}'}"
-                                                    Background="{DynamicResource Surface}"
-                                                    Theme="{StaticResource MdButton}">
-                                                <Button.Styles>
-                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                        <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
-                                                        <Setter Property="Background"
-                                                                Value="{DynamicResource SurfaceVariant}" />
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource OnSurface}" />
-                                                    </Style>
-                                                </Button.Styles>
-                                            </Button>
-                                    </Grid>
-                                    <Grid Grid.Row="1"
-                                          Margin="0 8 0 5"
-                                          ColumnDefinitions="Auto,*">
-                                        <TextBlock Grid.Column="0"
-                                                   Margin="16 0 7 2"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="13"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Right">
-                                            Video Path
-                                        </TextBlock>
-                                        <Border Grid.Column="1">
-                                            <Button HorizontalAlignment="Stretch"
-                                                    CornerRadius="12"
-                                                    Height="30"
-                                                    FontSize="12"
-                                                    Content="{Binding VideoPath,StringFormat=' {0}'}"
-                                                    Command="{Binding PickVideoPathCommand}"
-                                                    Background="{DynamicResource Surface}"
-                                                    Theme="{StaticResource MdButton}">
-                                                <Button.Styles>
-                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                        <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
-                                                        <Setter Property="Background"
-                                                                Value="{DynamicResource SurfaceVariant}" />
-                                                        <Setter Property="Foreground"
-                                                                Value="{DynamicResource OnSurface}" />
-                                                    </Style>
-                                                </Button.Styles>
-                                            </Button>
-                                        </Border>
+             mc:Ignorable="d" d:DesignHeight="200"
 
-                                    </Grid>
-                                    <StackPanel Margin="8 0 0 0" Grid.Row="2" Orientation="Horizontal">
-                                        <CheckBox Theme="{StaticResource MdCheckBox}"
-                                                  IsChecked="{Binding AutoStart}"
-                                                  Command="{Binding AutoStartOptionCommand}"
-                                                  Content="Start with windows" />
-                                        <CheckBox Theme="{StaticResource MdCheckBox}"
-                                                  IsChecked="{Binding Check60MinTask}"
-                                                  Margin="8 0 0 0" 
-                                                  Command="{Binding Check60MinTaskCommand}"
-                                                  Content="Check 60min task" />
-                                    </StackPanel>
-                                </Grid>
-                            </Grid>
+             x:Class="BiliLive.Views.MainWindow.Controls.AutoServiceView">
+
+
+    <StackPanel Spacing="10">
+        <!-- 设置核心部分 -->
+        <Border Background="#F7F2FA"
+                CornerRadius="12"
+                Name="MainBorder"
+                Height="32"
+                ClipToBounds="True">
+            <!-- 高度相关动画 -->
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Height" Duration="0:0:0.3" Easing="CubicEaseOut" />
+                </Transitions>
+            </Border.Transitions>
+
+            <Grid RowDefinitions="Auto,*">
+
+                <Grid ZIndex="1" Grid.Row="0" Height="32" VerticalAlignment="Top">
+                    <Border Background="#F8EAF3" />
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Grid.Column="0" Text="自动直播核心"
+                                   FontWeight="Medium"
+                                   Margin="14 0 0 0"
+                                   Foreground="{DynamicResource OnSurface}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+
+                        <Border Grid.Column="1"
+                                Margin="5 0 0 0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                BoxShadow="0 0.56 0 0 #26000000"
+                                Height="23" CornerRadius="12"
+                                Background="#FDDEE9">
+                            <StackPanel Margin="8 0 10 0" Orientation="Horizontal">
+                                <SvgBox Height="15" Margin="0 2 2 0"
+                                        PathData="{resources:Geometry {x:Static resources:MdIcons.Check}}" />
+                                <TextBlock
+                                    FontSize="11"
+                                    VerticalAlignment="Center"
+                                    LineHeight="20"
+                                    Text="已设置" />
+                            </StackPanel>
                         </Border>
+
+                        <Button Grid.Column="2"
+                                CornerRadius="10" Height="30" Width="30"
+                                Margin="0 0 5 0"
+                                HorizontalAlignment="Right"
+                                Click="Button_OnClick"
+                                Command="{Binding ToggleOptionsCommand}"
+                                Theme="{StaticResource MdButton}">
+                            <SvgBox Height="" Opacity="0.5"
+                                    PathData="{resources:Geometry {x:Static resources:MdIcons.Expand}}" />
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <Grid Grid.Row="1"
+                      Margin="8"
+                      IsVisible="{Binding IsEnabled}"
+                      RowDefinitions="*,*">
+                    <Grid Grid.Row="0"
+                          ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Margin="6 0 7 2"
+                                   FontSize="13"
+                                   FontWeight="Bold">
+                            Ffmpeg 目录
+                        </TextBlock>
+                        <Button Grid.Column="1" Name="FfmpegPathBtn"
+                                HorizontalAlignment="Stretch"
+                                CornerRadius="12"
+                                Height="30"
+                                FontSize="12"
+                                Command="{Binding PickFfmpegPathCommand}"
+                                Content="{Binding FfmpegPath,StringFormat=' {0}'}"
+                                Background="{DynamicResource Surface}"
+                                Theme="{StaticResource MdButton}">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+                                    <Setter Property="Background"
+                                            Value="{DynamicResource SurfaceVariant}" />
+                                    <Setter Property="Foreground"
+                                            Value="{DynamicResource OnSurface}" />
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                    </Grid>
+                    <Grid Grid.Row="1"
+                          Margin="0 8 0 5"
+                          ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0"
+                                   Margin="16 0 7 2"
+                                   VerticalAlignment="Center"
+                                   FontSize="13"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Right">
+                            Video Path
+                        </TextBlock>
+                        <Border Grid.Column="1">
+                            <Button HorizontalAlignment="Stretch"
+                                    CornerRadius="12"
+                                    Height="30"
+                                    FontSize="12"
+                                    Content="{Binding VideoPath,StringFormat=' {0}'}"
+                                    Command="{Binding PickVideoPathCommand}"
+                                    Background="{DynamicResource Surface}"
+                                    Theme="{StaticResource MdButton}">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+                                        <Setter Property="Background"
+                                                Value="{DynamicResource SurfaceVariant}" />
+                                        <Setter Property="Foreground"
+                                                Value="{DynamicResource OnSurface}" />
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
+                        </Border>
+
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </Border>
+
+
+        <!-- 任务相关部分 -->
+        <Border CornerRadius="12"
+
+                ClipToBounds="True">
+            <Grid>
+                <Border Background="#F7F2FA" />
+                <Grid RowDefinitions="Auto,*">
+                    <!-- 总开关 -->
+                    <Border Grid.Row="0" Height="32"
+                            VerticalAlignment="Top"
+                            Background="#F8EAF3">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Grid.Column="0" Text="定时直播任务"
+                                       Margin="14 0 0 0"
+                                       VerticalAlignment="Center" />
+                            <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
+                                          VerticalAlignment="Center"
+                                          RenderTransform="scale(0.8)"
+                                          OffContent="" OnContent="" />
+                        </Grid>
+                    </Border>
+
+                    <!-- 内容区域 -->
+                    <StackPanel Grid.Row="1" Orientation="Vertical"
+                                Margin="14 0 14 8">
+
+                        <!-- 设置开始直播时间 -->
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10">
+                            <TextBlock VerticalAlignment="Center">开始直播时间 (从每日24:00开始) :</TextBlock>
+                            <Border CornerRadius="6" Padding="6">
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- 小时 -->
+                                    <TextBox Width="40" MinWidth="0"
+                                             CornerRadius="12"
+                                             HorizontalContentAlignment="Left" Text="H" />
+                                    <TextBlock Text=" : " VerticalAlignment="Center" />
+
+                                    <!-- 分钟 -->
+                                    <TextBox Width="40" MinWidth="0"
+                                             CornerRadius="12"
+                                             HorizontalContentAlignment="Left" Text="M" />
+                                    <TextBlock Text=" : " VerticalAlignment="Center" />
+
+                                    <!-- 秒 -->
+                                    <TextBox Width="40" MinWidth="0"
+                                             CornerRadius="12"
+                                             HorizontalContentAlignment="Left" Text="S" />
+
+
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Margin="0 0 0 0"
+                                      Content="随软件自启"
+                                      Theme="{StaticResource MdCheckBox}" />
+
+                            <CheckBox Margin="0 0 0 0"
+                                      Content="秒数随机"
+                                      Theme="{StaticResource MdCheckBox}" />
+
+
+                            <CheckBox Margin="0 0 0 0"
+                                      Content="检查是否完成每日直播任务(60min)"
+                                      Theme="{StaticResource MdCheckBox}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+        </Border>
+
+
+        <!-- 小号自动投喂 -->
+        <Border CornerRadius="12"
+
+                ClipToBounds="True">
+            <Grid>
+                <Border Background="#F7F2FA" />
+                <Grid RowDefinitions="Auto,*">
+                    <!-- 总开关 -->
+                    <Border Grid.Row="0" Height="32"
+                            VerticalAlignment="Top"
+                            Background="#F8EAF3">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Grid.Column="0" Text="小号自动投喂(在完成后)"
+                                       Margin="14 0 0 0"
+                                       VerticalAlignment="Center" />
+                            <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
+                                          VerticalAlignment="Center"
+                                          RenderTransform="scale(0.8)"
+                                          OffContent="" OnContent="" />
+                        </Grid>
+                    </Border>
+
+                    <!-- 内容区域 -->
+                    <StackPanel Grid.Row="1" Orientation="Vertical"
+                                Margin="14 0 14 0" />
+                    
+                    
+                    
+                    
+                </Grid>
+            </Grid>
+        </Border>
+        
+        <!-- 自动领取激励 -->
+        <Border CornerRadius="12"
+
+                ClipToBounds="True">
+            <Grid>
+                <Border Background="#F7F2FA" />
+                <Grid RowDefinitions="Auto,*">
+                    <!-- 总开关 -->
+                    <Border Grid.Row="0" Height="32"
+                            VerticalAlignment="Top"
+                            Background="#F8EAF3">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Grid.Column="0" Text="自动领取激励"
+                                       Margin="14 0 0 0"
+                                       VerticalAlignment="Center" />
+                            <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
+                                          VerticalAlignment="Center"
+                                          RenderTransform="scale(0.8)"
+                                          OffContent="" OnContent="" />
+                        </Grid>
+                    </Border>
+
+                    <!-- 内容区域 -->
+                    <StackPanel Grid.Row="1" Orientation="Vertical"
+                                Margin="14 0 14 0" />
+                    
+                    
+                    
+                    
+                </Grid>
+            </Grid>
+        </Border>
+    </StackPanel>
 
 </UserControl>

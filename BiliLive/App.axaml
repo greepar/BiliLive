@@ -10,7 +10,7 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <!-- <FluentTheme /> -->
+        <FluentTheme />
     </Application.Styles>
 
     <Application.Resources>

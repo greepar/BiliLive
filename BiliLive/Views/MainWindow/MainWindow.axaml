@@ -7,6 +7,8 @@
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
+        FontFamily="PingFang SC Regular"
+        
         TransparencyLevelHint="Transparent"
         Background="Transparent">
 
@@ -107,7 +109,8 @@
                                                             Height="20" Margin="0 0 5 0"
                                                             VerticalAlignment="Center"
                                                             Fill="{DynamicResource OnSurface}" />
-                                                    <TextBlock Grid.Column="1" LineHeight="20"
+                                                    <TextBlock Grid.Column="1"
+                                                               FontSize="12"
                                                                VerticalAlignment="Center" Text="Start Service" />
                                                 </Grid>
                                             </Grid>
@@ -130,7 +133,8 @@
                                                         Height="20" Margin="0 0 5 0"
                                                         VerticalAlignment="Center"
                                                         Fill="{DynamicResource OnSurface}" />
-                                                <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center"
+                                                <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                                                           FontSize="12"
                                                            Text="Home Page" />
                                             </Grid>
                                         </Border>
@@ -148,7 +152,8 @@
                                                         Height="20" Margin="0 0 5 0"
                                                         VerticalAlignment="Center"
                                                         Fill="{DynamicResource OnSurface}" />
-                                                <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center"
+                                                <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                                                           FontSize="12"
                                                            Text="Auto Service" />
                                             </Grid>
                                         </Border>
@@ -166,7 +171,8 @@
                                                         Height="20" Margin="0 0 5 0"
                                                         VerticalAlignment="Center"
                                                         Fill="{DynamicResource OnSurface}" />
-                                                <TextBlock Grid.Column="1" LineHeight="20" VerticalAlignment="Center"
+                                                <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                                                           FontSize="12"
                                                            Text="About" />
                                             </Grid>
                                         </Border>
@@ -180,7 +186,17 @@
                                         <Button Name="AccountBtn" HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch"
                                                 Background="Transparent"
-                                                Click="AccountBtn_OnClick" />
+                                                CornerRadius="15"
+                                                Theme="{StaticResource MdButton}"
+                                                Click="AccountBtn_OnClick" >
+                                            <Button.Styles>
+                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                    <Setter Property="BoxShadow" Value="0 0 4 0 #12000000"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+                                                </Style>
+                                            </Button.Styles>
+                                        </Button>
                                         <Grid ColumnDefinitions="Auto,*" IsVisible="True" IsHitTestVisible="False">
                                             <!-- 头像 -->
                                             <Border Grid.Column="0" Margin="4 0 4 0"
@@ -194,7 +210,8 @@
                                             <!-- 用户名 -->
                                             <TextBlock Grid.Column="1" Margin="10 0 15 0"
                                                        VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                       FontWeight="Bold" Text="IsPVP_Good_" />
+                                                       FontSize="13"
+                                                       Text="IsPVP_Good_" />
                                         </Grid>
                                     </Grid>
                                 </Border>
@@ -202,9 +219,10 @@
                         </Grid>
                         
                         <!-- 右侧内容区域 -->
-                        <Grid Grid.Column="1" Margin="20 45 20 20">
-                            <Border Background="Wheat"></Border>
-                            <ContentControl Content="{Binding AcVm}"></ContentControl>
+                        <Grid Grid.Column="1" Margin="20 50 20 20">
+                            <Border Background="Transparent"></Border>
+                            <!-- <TextBlock Text="{Binding UserName}"></TextBlock> -->
+                            <ContentControl VerticalAlignment="Top" Content="{Binding AsVm}"></ContentControl>
                         </Grid>
                         
                     </Grid>
