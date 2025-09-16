@@ -12,7 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 
-namespace BiliLive.Views.MainWindow.Controls;
+namespace BiliLive.Views.MainWindow.Pages.AutoService;
 
 public partial class AutoServiceViewModel : ViewModelBase
 {

@@ -6,6 +6,7 @@ using BiliLive.Core.Interface;
 using BiliLive.Core.Services.BiliService;
 using BiliLive.Views.MainWindow;
 using BiliLive.Views.MainWindow.Controls;
+using BiliLive.Views.MainWindow.Pages.AutoService;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

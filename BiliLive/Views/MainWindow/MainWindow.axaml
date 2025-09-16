@@ -7,7 +7,7 @@
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
-        FontFamily="{StaticResource PingFangRegular}"
+        FontFamily="{StaticResource NotoRegular}"
         
         TransparencyLevelHint="Transparent"
         Background="Transparent">
@@ -73,7 +73,20 @@
                     <Grid ColumnDefinitions="Auto,*">
                         
                         <!-- 左侧导航栏 -->
-                        <Grid Grid.Column="0" HorizontalAlignment="Left">
+                        <Border Name="SideNavBar"
+                                ZIndex="1"
+                                ClipToBounds="True"
+                                Grid.Column="0">
+                            
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Duration="0:0:0.2"
+                                                      Property="Width"
+                                                      Easing="ExponentialEaseOut"/>
+                                </Transitions>
+                            </Border.Transitions>
+                            
+                            <Grid HorizontalAlignment="Left">
                             <!-- 背景Border -->
                             <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7" />
 
@@ -87,15 +100,18 @@
                                 <!-- 中间导航部分 -->
                                 <StackPanel Grid.Row="1" Margin="13 30 0 30" Spacing="7"
                                             Orientation="Vertical">
-                                    <Button Width="38" Height="38"
+                                    <!-- 缩小侧边栏按钮 -->
+                                    <Button Name="MenuOpenBtn" Width="38" Height="38"
                                             HorizontalAlignment="Left"
                                             CornerRadius="10"
                                             Background="{DynamicResource SurfaceContainer}"
-                                            Theme="{StaticResource MdButton}">
+                                            Theme="{StaticResource MdButton}"
+                                            Click="MenuOpenBtn_OnClick"
+                                            >
                                         <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.MenuOpen}}"
                                                 Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
                                     </Button>
-
+                                    
                                     <Button Height="45"
                                             Margin="0 2 0 0"
                                             HorizontalAlignment="Left"
@@ -126,7 +142,8 @@
                                             HorizontalAlignment="Left"
                                             CornerRadius="20"
                                             Background="{DynamicResource SecondaryContainer}"
-                                            Theme="{StaticResource MdButton}">
+                                            Theme="{StaticResource MdButton}"
+                                            Command="{Binding SwitchHomePageCommand}">
                                         <Border Margin="5 0 5 0">
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Home}}"
@@ -145,7 +162,8 @@
                                             HorizontalAlignment="Left"
                                             CornerRadius="20"
                                             Background="Transparent"
-                                            Theme="{StaticResource MdButton}">
+                                            Theme="{StaticResource MdButton}"
+                                            Command="{Binding SwitchAutoServiceCommand}">
                                         <Border Margin="5 0 5 0">
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.AutoMation}}"
@@ -164,7 +182,9 @@
                                             HorizontalAlignment="Left"
                                             CornerRadius="20"
                                             Background="Transparent"
-                                            Theme="{StaticResource MdButton}">
+                                            Theme="{StaticResource MdButton}"
+                                            Command="{Binding SwitchAboutCommand}"
+                                          >
                                         <Border Margin="5 0 5 0">
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"
@@ -217,12 +237,99 @@
                                 </Border>
                             </Grid>
                         </Grid>
+                        </Border>
                         
                         <!-- 右侧内容区域 -->
-                        <Grid Grid.Column="1" Margin="20 50 20 20">
+                        <Grid Grid.Column="1" >
                             <Border Background="Transparent"></Border>
                             <!-- <TextBlock Text="{Binding UserName}"></TextBlock> -->
-                            <ContentControl VerticalAlignment="Top" Content="{Binding AsVm}"></ContentControl>
+                            <ContentControl Margin="20 50 20 20" VerticalAlignment="Top" Content="{Binding CurrentVm}"/>
+                            
+                            <!-- 左下方弹出登录窗口 -->
+                            <Border Name="LoginBorder"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom"
+                                    RenderTransformOrigin="0,0"
+                                    IsVisible="False"
+                                    Opacity="1">
+                                <Border.RenderTransform>
+                                    <TranslateTransform X="-250" />
+                                </Border.RenderTransform>
+
+                                <ContentControl Content="{Binding AccountVm}" />
+                            </Border>
+
+                            
+                            <!-- 右下方Popup通知 -->
+                            <ItemsControl ItemsSource="{Binding Notifications}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Bottom"
+                                          Margin="0 0 8 10">
+                                
+                                <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="popup" Margin="5" CornerRadius="100" Height="40"
+                                            BoxShadow="0 1 8 2 #26000000" HorizontalAlignment="Right">
+
+                                        <Border.RenderTransform>
+                                            <TranslateTransform Y="0" />
+                                        </Border.RenderTransform>
+
+                                        <Border.Styles>
+                                            <Style Selector="Border.popup">
+                                                <Style.Animations>
+                                                    <Animation Duration="0.2" Easing="ExponentialEaseInOut"
+                                                               FillMode="Forward">
+                                                        <KeyFrame Cue="0%">
+                                                            <Setter Property="TranslateTransform.X" Value="30" />
+                                                            <Setter Property="Opacity" Value="0" />
+                                                        </KeyFrame>
+                                                        <KeyFrame Cue="100%">
+                                                            <Setter Property="TranslateTransform.X" Value="0" />
+                                                            <Setter Property="Opacity" Value="1" />
+                                                        </KeyFrame>
+                                                    </Animation>
+                                                </Style.Animations>
+                                            </Style>
+                                        </Border.Styles>
+
+                                        
+                                        <Grid>
+                                            <Border Background="{DynamicResource Primary}" CornerRadius="18"
+                                                    Opacity="0.9"
+                                                    ClipToBounds="True"/>
+                                            
+                                            <StackPanel Margin="10 0 10 0"
+                                                        Orientation="Horizontal">
+
+                                                <Viewbox Grid.Column="0" Width="20" Height="20" Stretch="Uniform"
+                                                         Margin="6 0 6 0"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Path Data="{Binding Geometry}"
+                                                          Fill="{DynamicResource OnPrimary}"
+                                                          Opacity="0.8">
+                                                        <Path.RenderTransform>
+                                                            <TranslateTransform X="0" Y="960" />
+                                                        </Path.RenderTransform>
+                                                    </Path>
+                                                </Viewbox>
+
+                                                <TextBlock HorizontalAlignment="Left"
+                                                           Margin="0 0 10 0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="13"
+                                                           Text="{Binding Message}"
+                                                           Foreground="{DynamicResource OnPrimary}" />
+
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                            
+                            
                         </Grid>
                         
                     </Grid>

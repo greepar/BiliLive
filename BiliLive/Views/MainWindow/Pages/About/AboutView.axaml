@@ -1,0 +1,15 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="870" d:DesignHeight="535"
+             x:Class="BiliLive.Views.MainWindow.Pages.About.AboutView">
+    <Border Background="Transparent"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Grid VerticalAlignment="Center"
+              HorizontalAlignment="Center">
+            <TextBlock>123</TextBlock>
+        </Grid>
+    </Border>
+</UserControl>

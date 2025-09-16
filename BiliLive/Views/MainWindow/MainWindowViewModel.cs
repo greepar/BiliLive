@@ -17,6 +17,9 @@ using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Views.MainWindow.Controls;
+using BiliLive.Views.MainWindow.Pages.About;
+using BiliLive.Views.MainWindow.Pages.AutoService;
+using BiliLive.Views.MainWindow.Pages.HomePage;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,14 +52,19 @@ public partial class MainWindowViewModel : ViewModelBase
     [
         //test icon
         // new("Welcome to BiliLive!", Geometry.Parse(MdIcons.Notice)),
+        // new("Report issues on GitHub", Geometry.Parse(MdIcons.Error)),
         // new("Check for updates every week", Geometry.Parse(MdIcons.Check)),
-        // new("Report issues on GitHub", Geometry.Parse(MdIcons.Error))
     ];
     
     //构造子控件viewmodel
     [ObservableProperty] private AccountManagerViewMode _acVm;
+    [ObservableProperty] private AccountsViewModel _accountVm = new ();
     [ObservableProperty] private AutoServiceViewModel _asVm = new ();
     [ObservableProperty] private DanmakuPanelViewModel _danmakuPanelVm = new ();
+    private readonly HomeViewModel _homeVm = new ();
+    
+    [ObservableProperty] private object _currentVm = new AutoServiceViewModel();
+    
     
     
     //主窗口内容
@@ -299,4 +307,28 @@ public partial class MainWindowViewModel : ViewModelBase
         AcVm.UserFace = UserFace;
         AcVm.UserId = UserId;
     }
+    
+    
+    [RelayCommand]
+    private void SwitchAbout()
+    {
+        // if (_biliService==null) {return;}
+        CurrentVm = new AboutView();
+    }
+    
+    [RelayCommand]
+    private void SwitchAutoService()
+    {
+        // if (_biliService==null) {return;}
+        CurrentVm = AsVm;
+    }    
+    
+    [RelayCommand]
+    private void SwitchHomePage()
+    {
+        // if (_biliService==null) {return;}
+        CurrentVm = _homeVm;
+    }
+    
+    
 }

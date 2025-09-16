@@ -73,15 +73,14 @@
         <DependentUpon>QrLoginPage.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\MainWindow\Pages\AutoService\AutoServiceView.axaml.cs">
+        <DependentUpon>AutoServiceView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
     
     <ItemGroup>
       <ProjectReference Include="..\BiliLive.Core\BiliLive.Core.csproj" />
-    </ItemGroup>
-
-    
-    <ItemGroup>
-      <Folder Include="Views\MainWindow\Pages\AutoService\" />
     </ItemGroup>
 </Project>

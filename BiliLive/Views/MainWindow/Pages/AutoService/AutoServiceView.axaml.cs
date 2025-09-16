@@ -1,7 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace BiliLive.Views.MainWindow.Controls;
+
+namespace BiliLive.Views.MainWindow.Pages.AutoService;
 
 public partial class AutoServiceView : UserControl
 {
@@ -10,13 +11,8 @@ public partial class AutoServiceView : UserControl
         if (Design.IsDesignMode) DataContext = new AutoServiceViewModel();
         InitializeComponent();
     }
-
-    // public AutoServiceControl(AutoServiceControlViewModel vm) : this()
-    // {
-    //     DataContext = vm;
-    // }
-
-    private void Button_OnClick(object? sender, RoutedEventArgs e)
+    
+    private void ExpandButton_OnClick(object? sender, RoutedEventArgs e)
     {
         // Console.WriteLine(MainBorder.Height);
         if (MainBorder.Height - 32 > 0)
