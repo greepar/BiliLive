@@ -47,13 +47,13 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "9.0.x"
+          dotnet-version: "9.0.305"
 
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish -c Release -o publish
+        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish
 
       - name: Archive release files (Windows)
         if: runner.os == 'Windows'
