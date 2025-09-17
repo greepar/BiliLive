@@ -2,8 +2,13 @@ name: .NET Multi-Platform Native Publish
 
 on:
   push:
+    branches:
+      - 'main'  # 当有代码推送到 main 分支时触发
     tags:
-      - 'v*' # 仅在创建 v 开头的 tag 时触发
+      - 'v*'    # 当有 v 开头的 tag 推送到仓库时触发
+
+  # 增加这个可以让你在Actions页面手动点击运行，非常适合测试
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
