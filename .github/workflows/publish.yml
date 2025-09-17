@@ -55,10 +55,24 @@ jobs:
       - name: Publish
         run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish
 
+      - name: Clean up debug symbols (Windows)
+        if: runner.os == 'Windows'
+        run: Get-ChildItem -Path ./publish -Recurse -Include *.pdb | Remove-Item -Force -WhatIf
+        shell: bash
+
+
       - name: Archive release files (Windows)
         if: runner.os == 'Windows'
         run: 7z a release-${{ matrix.os }}-${{ matrix.arch }}.zip ./publish/*
         shell: pwsh
+
+      - name: Clean up debug symbols (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+            find ./publish -type f -name "*.pdb" -delete
+            find ./publish -type f -name "*.dbg" -delete
+            find ./publish -type f -name "*.dsym" -delete
+        shell: bash
 
       - name: Archive release files (Linux/macOS)
         if: runner.os != 'Windows'
