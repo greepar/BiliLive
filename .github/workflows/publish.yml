@@ -57,7 +57,7 @@ jobs:
 
       - name: Clean up debug symbols (Windows)
         if: runner.os == 'Windows'
-        run: Get-ChildItem -Path ./publish -Recurse -Include *.pdb | Remove-Item -Force -WhatIf
+        run: Get-ChildItem -Path ./publish -Recurse -Include *.pdb | Remove-Item -Force
         shell: bash
 
 
@@ -76,7 +76,7 @@ jobs:
 
       - name: Archive release files (Linux/macOS)
         if: runner.os != 'Windows'
-        run: tar -czf release-${{ matrix.os }}-${{ matrix.arch }}.tar.gz -C publish .
+        run: tar -cJf release-${{ matrix.os }}-${{ matrix.arch }}.tar.xz -C publish .
         shell: bash
 
       - name: Upload Artifact
