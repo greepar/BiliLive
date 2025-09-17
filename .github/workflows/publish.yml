@@ -57,12 +57,12 @@ jobs:
 
       - name: Archive release files (Windows)
         if: runner.os == 'Windows'
-        run: 7z a release-${{ matrix.rid }}.zip ./publish/*
+        run: 7z a release-${{ matrix.os }}-${{ matrix.arch }}.zip ./publish/*
         shell: pwsh
 
       - name: Archive release files (Linux/macOS)
         if: runner.os != 'Windows'
-        run: tar -czf release-${{ matrix.rid }}.tar.gz -C publish .
+        run: tar -czf release-${{ matrix.os }}-${{ matrix.arch }}.tar.gz -C publish .
         shell: bash
 
       - name: Upload Artifact
