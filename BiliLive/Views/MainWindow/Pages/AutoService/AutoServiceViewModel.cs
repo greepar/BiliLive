@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Media;
-using Avalonia.Styling;
 using BiliLive.Core.Services;
 using BiliLive.Models;
 using BiliLive.Resources;
@@ -19,16 +17,38 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
     
-    [ObservableProperty] private bool _isEnabled = true;
-    [ObservableProperty] private double _asHeight = 35;
-
+    [ObservableProperty] private bool _isEnabled;
+    [ObservableProperty] private bool _isAutoStart;
+    [ObservableProperty] private bool _isRandomSecond;
+    [ObservableProperty] private bool _isCheck60MinTask;
     
-    [ObservableProperty] private bool _autoStart;
-    [ObservableProperty] private bool _check60MinTask;
+    //时间
+    [ObservableProperty] private int? _startHour;
+    [ObservableProperty] private int? _startMinute;
+    [ObservableProperty] private int? _startSecond;
     
     [RelayCommand]
     private async Task ToggleOptions()
     {
+        var random = new Random();
+        var seconds = (StartHour ?? 0) * 3600 +
+                      (StartMinute ?? 0) * 60.0 + 
+                      (IsRandomSecond ? random.Next(-240,-120) : (StartSecond ?? 0));
+
+        if (seconds <= 0)
+        {
+            return;
+        }
+        
+        //设置第二天基准
+        var streamTime = DateTime.Today.AddDays(1).AddSeconds(seconds);
+
+       
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"设置时间{streamTime}",Geometry.Parse(MdIcons.Error)));
+        
+          
+       
+        
         var popupMsg = IsEnabled ? "已启用自动开播服务" : "已关闭自动开播服务";
         var icon = IsEnabled ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error);
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(popupMsg,icon));
@@ -79,12 +99,15 @@ public partial class AutoServiceViewModel : ViewModelBase
     [RelayCommand]
     private async Task AutoStartOptionAsync()
     {
-        await ConfigManager.SaveConfigAsync(ConfigType.AutoStart,AutoStart);
+        await ConfigManager.SaveConfigAsync(ConfigType.AutoStart,IsAutoStart);
     }
     
     [RelayCommand]
     private async Task Check60MinTaskAsync()
     {
-        await ConfigManager.SaveConfigAsync(ConfigType.Check60MinTask,Check60MinTask);
+        await ConfigManager.SaveConfigAsync(ConfigType.Check60MinTask,IsCheck60MinTask);
     }
+    
+    
+    
 }

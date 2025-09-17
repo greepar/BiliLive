@@ -8,7 +8,6 @@
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
         FontFamily="{StaticResource NotoRegular}"
-        
         TransparencyLevelHint="Transparent"
         Background="Transparent">
 
@@ -74,7 +73,7 @@
                         
                         <!-- 左侧导航栏 -->
                         <Border Name="SideNavBar"
-                                ZIndex="1"
+                               
                                 ClipToBounds="True"
                                 Grid.Column="0">
                             
@@ -88,7 +87,7 @@
                             
                             <Grid HorizontalAlignment="Left">
                             <!-- 背景Border -->
-                            <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7" />
+                            <Border Background="{DynamicResource InverseOnSurface}" Opacity="1.0" />
 
                             <Grid RowDefinitions="Auto,*,Auto">
                                 <!-- 顶部时间 -->
@@ -243,7 +242,7 @@
                         <Grid Grid.Column="1" >
                             <Border Background="Transparent"></Border>
                             <!-- <TextBlock Text="{Binding UserName}"></TextBlock> -->
-                            <ContentControl Margin="20 50 20 20" VerticalAlignment="Top" Content="{Binding CurrentVm}"/>
+                            <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch" Content="{Binding CurrentVm}"/>
                             
                             <!-- 左下方弹出登录窗口 -->
                             <Border Name="LoginBorder"
@@ -252,9 +251,10 @@
                                     VerticalAlignment="Bottom"
                                     RenderTransformOrigin="0,0"
                                     IsVisible="False"
-                                    Opacity="1">
+                                    Margin="-20 0 0 -10"
+                                    Opacity="0">
                                 <Border.RenderTransform>
-                                    <TranslateTransform X="-250" />
+                                    <TranslateTransform X="-50" />
                                 </Border.RenderTransform>
 
                                 <ContentControl Content="{Binding AccountVm}" />

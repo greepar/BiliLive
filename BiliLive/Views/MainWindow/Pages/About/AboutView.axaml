@@ -2,14 +2,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.About"
              mc:Ignorable="d" d:DesignWidth="870" d:DesignHeight="535"
-             x:Class="BiliLive.Views.MainWindow.Pages.About.AboutView">
-    <Border Background="Transparent"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-        <Grid VerticalAlignment="Center"
-              HorizontalAlignment="Center">
-            <TextBlock>123</TextBlock>
-        </Grid>
-    </Border>
+             x:Class="BiliLive.Views.MainWindow.Pages.About.AboutView"
+             x:DataType="vm:AboutViewModel">
+   
+    <Design.DataContext>
+        <vm:AboutViewModel/>
+    </Design.DataContext>
+    
+    <Grid VerticalAlignment="Center"
+          HorizontalAlignment="Center">
+        <Border>
+            <StackPanel>
+                <TextBlock>这里是关于页面</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="60" Height="60"
+                            CornerRadius="60" ClipToBounds="True">
+                        <Image Source="{Binding DeveloperAvatar }"
+                               RenderOptions.BitmapInterpolationMode="HighQuality"
+                               Stretch="UniformToFill"/>
+                    </Border>
+                    <TextBlock  VerticalAlignment="Center">[Dev:格瑞普]</TextBlock>
+                </StackPanel>
+             
+            </StackPanel>
+        </Border>
+       
+       
+    </Grid>
+  
 </UserControl>

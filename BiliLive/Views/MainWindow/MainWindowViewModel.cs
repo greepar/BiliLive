@@ -140,9 +140,9 @@ public partial class MainWindowViewModel : ViewModelBase
         AsVm.VideoPath = appConfig.VideoPath;
         AsVm.FfmpegPath = appConfig.FfmpegPath;
         AsVm.IsEnabled = appConfig.EnableAutoService;
-        AsVm.AsHeight = AsVm.IsEnabled ? 140 : 35;
-        AsVm.AutoStart = appConfig.AutoStart;
-        AsVm.Check60MinTask = appConfig.Check60MinTask;
+        // AsVm.AsHeight = AsVm.IsEnabled ? 140 : 35;
+        // AsVm.AutoStart = appConfig.AutoStart;
+        // AsVm.Check60MinTask = appConfig.Check60MinTask;
        
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
@@ -150,10 +150,10 @@ public partial class MainWindowViewModel : ViewModelBase
         
         await LoadLoginResult(loginResult);
         //检查是否需要自动开播
-        if (AsVm is { AutoStart: true, IsEnabled: true } && loginResult is LoginSuccess)
-        {
-            await StartServiceAsync();
-        }
+        // if (AsVm is { AutoStart: true, IsEnabled: true } && loginResult is LoginSuccess)
+        // {
+        //     await StartServiceAsync();
+        // }
     }
 
 
@@ -313,7 +313,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void SwitchAbout()
     {
         // if (_biliService==null) {return;}
-        CurrentVm = new AboutView();
+        CurrentVm = new AboutViewModel();
     }
     
     [RelayCommand]

@@ -60,7 +60,6 @@
                                 Margin="0 0 5 0"
                                 HorizontalAlignment="Right"
                                 Click="ExpandButton_OnClick"
-                                Command="{Binding ToggleOptionsCommand}"
                                 Theme="{StaticResource MdButton}">
                             <SvgBox Height="" Opacity="0.5"
                                     PathData="{resources:Geometry {x:Static resources:MdIcons.Expand}}" />
@@ -68,9 +67,8 @@
                     </Grid>
                 </Grid>
 
-                <Grid Grid.Row="1"
+                <Grid Name="CoreSettingsCotent" Grid.Row="1"
                       Margin="8"
-                      IsVisible="{Binding IsEnabled}"
                       RowDefinitions="*,*">
                     <Grid Grid.Row="0"
                           ColumnDefinitions="Auto,*">
@@ -159,7 +157,10 @@
                             <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
                                           VerticalAlignment="Center"
                                           RenderTransform="scale(0.8)"
-                                          OffContent="" OnContent="" >
+                                          OffContent="" OnContent="" 
+                                          IsChecked="{Binding IsEnabled}"
+                                          Command="{Binding ToggleOptionsCommand}"
+                                          >
                                 <ToggleSwitch.Styles>
                                     <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
                                         <Setter Property="Background" Value="{DynamicResource Primary}"/>
@@ -182,21 +183,36 @@
                                     <!-- 小时 -->
                                     <TextBox Width="40" MinWidth="0"
                                              CornerRadius="12"
-                                             HorizontalContentAlignment="Left" Text="H" />
+                                             MaxLength="2"
+                                             HorizontalContentAlignment="Left"
+                                             Watermark="H"
+                                             Text="{Binding StartHour
+                                             , Mode=TwoWay,FallbackValue=00,TargetNullValue=00}"
+                                             
+                                            >
+                                        <TextBox.Styles>
+                                            
+                                        </TextBox.Styles>
+                                    </TextBox>
                                     <TextBlock Text=" : " VerticalAlignment="Center" />
 
                                     <!-- 分钟 -->
                                     <TextBox Width="40" MinWidth="0"
                                              CornerRadius="12"
-                                             HorizontalContentAlignment="Left" Text="M" />
+                                             MaxLength="2"
+                                             HorizontalContentAlignment="Left" 
+                                             Text="{Binding StartMinute}"
+                                             Watermark="M" />
                                     <TextBlock Text=" : " VerticalAlignment="Center" />
 
                                     <!-- 秒 -->
                                     <TextBox Width="40" MinWidth="0"
                                              CornerRadius="12"
-                                             HorizontalContentAlignment="Left" Text="S" />
-
-
+                                             MaxLength="2"
+                                             HorizontalContentAlignment="Left"
+                                             Text="{Binding StartSecond}"
+                                             Watermark="S" />
+                                    
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -204,15 +220,18 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Margin="0 0 0 0"
                                       Content="随软件自启"
+                                      IsChecked="{Binding IsAutoStart}"
                                       Theme="{StaticResource MdCheckBox}" />
 
                             <CheckBox Margin="0 0 0 0"
                                       Content="秒数随机"
+                                      IsChecked="{Binding IsRandomSecond}"
                                       Theme="{StaticResource MdCheckBox}" />
 
 
                             <CheckBox Margin="0 0 0 0"
                                       Content="检查是否完成每日直播任务(60min)"
+                                      IsChecked="{Binding IsCheck60MinTask}"
                                       Theme="{StaticResource MdCheckBox}" />
                         </StackPanel>
                     </StackPanel>

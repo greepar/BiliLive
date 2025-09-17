@@ -25,10 +25,9 @@ public partial class MainWindow : Window
             {
                 var w = SideNavBar.Bounds.Width;
                 SideNavBar.Width = w;
+                _initialNavBarWidth = SideNavBar.Bounds.Width;
             }, DispatcherPriority.Render);
         };
-
-
         
         
 #if DEBUG
@@ -110,11 +109,12 @@ public partial class MainWindow : Window
         // 动画完成后隐藏元素（可选）
         if (!LoginBorder.IsVisible)
         {
+            Console.WriteLine("start");
             LoginBorder.IsVisible = true;
             var animation = new Animation
             {
                 Duration = TimeSpan.FromMilliseconds(300),
-                Easing = new CubicEaseOut(), // 平滑缓动
+                Easing = new ExponentialEaseOut(), // 平滑缓动
                 FillMode = FillMode.Forward, // 保留动画结束时状态
                 Children =
                 {
@@ -123,21 +123,22 @@ public partial class MainWindow : Window
                         Cue = new Cue(1d), // 1 表示动画结束
                         Setters =
                         {
+                            new Setter(OpacityProperty, 1.0),
                             new Setter(TranslateTransform.XProperty, 0.0)
                         }
                     }
                 }
             };
             await animation.RunAsync(LoginBorder);
-           
+           Console.WriteLine("done");
         }
         else
         {
-   
-            var animation = new Animation
+            Console.WriteLine("start back");
+            var backAnimation = new Animation
             {
                 Duration = TimeSpan.FromMilliseconds(300),
-                Easing = new CubicEaseOut(), // 平滑缓动
+                Easing = new ExponentialEaseOut(), // 平滑缓动
                 FillMode = FillMode.Forward, // 保留动画结束时状态
                 Children =
                 {
@@ -146,12 +147,14 @@ public partial class MainWindow : Window
                         Cue = new Cue(1d), // 1 表示动画结束
                         Setters =
                         {
-                            new Setter(TranslateTransform.XProperty, -250)
+                            new Setter(OpacityProperty, 0.0),
+                            new Setter(TranslateTransform.XProperty, -50.0)
                         }
                     }
                 }
             };
-            await animation.RunAsync(LoginBorder);
+            await backAnimation.RunAsync(LoginBorder);
+            Console.WriteLine("done back");
             LoginBorder.IsVisible = false;
         }
     }
@@ -163,17 +166,10 @@ public partial class MainWindow : Window
         if (SideNavBar.Width < 100)
         {
             SideNavBar.Width = _initialNavBarWidth;
-            // SideNavBar.Margin = new Avalonia.Thickness(200, 0, 0, 0);
         }
         else
         {
-            _initialNavBarWidth = SideNavBar.Bounds.Width;
-            Console.WriteLine(_initialNavBarWidth);
-        
-            SideNavBar.Width = _initialNavBarWidth;
-   
             SideNavBar.Width = 50;
-            // SideNavBar.Margin = new Avalonia.Thickness(50, 0, 0, 0);
         }
     }
 }

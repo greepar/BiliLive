@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 
@@ -16,8 +17,17 @@ public partial class AutoServiceView : UserControl
     {
         // Console.WriteLine(MainBorder.Height);
         if (MainBorder.Height - 32 > 0)
+        {
             MainBorder.Height = 32;
+            // CoreSettingsCotent.IsVisible = false;
+        }
         else
+        {
             MainBorder.Height = 115;
+            CoreSettingsCotent.IsVisible = true;
+        }
     }
+    
+  
+
 }
