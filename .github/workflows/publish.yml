@@ -3,87 +3,127 @@ name: .NET Multi-Platform Native Publish
 on:
   push:
     branches:
-      - "main"
+      - 'main'  # 当有代码推送到 main 分支时触发
     tags:
-      - "v*"
+      - 'v*'    # 当有 v 开头的 tag 推送到仓库时触发
+
+  # 增加这个可以让你在Actions页面手动点击运行，非常适合测试
   workflow_dispatch:
 
 jobs:
   build-and-publish:
+    # Job 名称会动态显示平台和架构，例如 "Build and Publish (windows-latest, x64)"
     name: Build and Publish (${{ matrix.os }}, ${{ matrix.arch }})
+    
+    # **核心改动**: 直接使用矩阵中定义的原生 Runner
     runs-on: ${{ matrix.runner }}
+    
     strategy:
+      # fail-fast: false 可以确保即使一个平台的构建失败，其他平台的构建也会继续进行
       fail-fast: false
       matrix:
+        # 定义每个原生构建环境的配置
         include:
           # --- Windows ---
           - os: windows
             arch: x64
-            runner: windows-latest
+            runner: windows-latest # 这是 x64 环境
+            rid: win-x64
           - os: windows
             arch: arm64
-            runner: windows-latest-arm64
+            runner: windows-latest-arm64 # 这是原生的 Windows ARM64 环境
+            rid: win-arm64
 
           # --- Linux ---
           - os: linux
             arch: x64
-            runner: ubuntu-latest
+            runner: ubuntu-latest # 这是 x64 环境
+            rid: linux-x64
           - os: linux
             arch: arm64
-            runner: ubuntu-latest-arm64
-
+            runner: ubuntu-latest-arm64 # 这是原生的 Linux ARM64 环境
+            rid: linux-arm64
+            
           # --- macOS ---
           - os: macos
             arch: x64
-            runner: macos-13
+            runner: macos-latest # 目前 macos-latest 是 Intel (x64) 环境
+            rid: osx-x64
           - os: macos
             arch: arm64
-            runner: macos-14
+            runner: macos-14 # macos-14 是 Apple Silicon (ARM64) 原生环境
+            rid: osx-arm64
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "9.0.x"
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.305' # 根据你的项目需求指定 .NET 版本
 
-      - name: Restore dependencies
-        run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Publish
-        run: dotnet publish -c Release -o publish
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
 
-      - name: Archive release files (Windows)
-        if: runner.os == 'Windows'
-        run: Compress-Archive -Path publish\* -DestinationPath release-${{ matrix.os }}-${{ matrix.arch }}.zip
-        shell: pwsh
+    - name: Publish
+      # 在原生环境上发布。虽然不完全是交叉编译，但明确指定 RID 是一个好习惯，特别是对于自包含发布。
+      run: dotnet publish -r ${{ matrix.rid }} -o publish
+      
+    - name: Package (Windows)
+         if: runner.os== 'Windows'
+        run: |
+          7z a release-${{ matrix.rid }}.zip ./publish/*
 
-      - name: Archive release files (Linux/macOS)
+      - name: Package (Linux/macOS)
         if: runner.os != 'Windows'
-        run: tar -czvf release-${{ matrix.os }}-${{ matrix.arch }}.tar.gz -C publish .
-        shell: bash
-
+        run: |
+          tar -czf release-${{ matrix.rid }}.tar.gz -C publish .
+          
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-${{ matrix.os }}-${{ matrix.arch }}
-          path: release-${{ matrix.os }}-${{ matrix.arch }}.*
+          name: ${{ matrix.rid }}
+          path: |
+            release-${{ matrix.rid }}.zip
+            release-${{ matrix.rid }}.tar.gz
 
   create-release:
     name: Create Release and Upload Assets
     needs: build-and-publish
     runs-on: ubuntu-latest
     steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Automated native builds for all platforms.
+          draft: false
+          prerelease: false
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          path: artifacts # 下载所有产物到 artifacts 文件夹
 
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          files: artifacts/**/*.{zip,tar.gz}
+        # 这个步骤使用通配符一次性上传所有下载的产物
+        run: |
+          for dir in artifacts/*; do
+            if [ -d "$dir" ]; then
+              asset_path=$(find "$dir" -type f \( -name "*.zip" -o -name "*.tar.gz" \))
+              asset_name=$(basename "$asset_path")
+              echo "Uploading $asset_name from $asset_path"
+              gh release upload ${{ github.ref }} "$asset_path" --clobber
+            fi
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
