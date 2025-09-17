@@ -71,7 +71,7 @@ jobs:
 
     - name: Publish
       # 在原生环境上发布。虽然不完全是交叉编译，但明确指定 RID 是一个好习惯，特别是对于自包含发布。
-      run: dotnet publish --configuration Release --no-build --output ./publish -r ${{ matrix.rid }}
+      run: dotnet publish -r ${{ matrix.rid }}
 
     - name: Archive release files
       # 为每个平台创建唯一的压缩包名称
