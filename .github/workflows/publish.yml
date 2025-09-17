@@ -58,7 +58,7 @@ jobs:
       - name: Clean up debug symbols (Windows)
         if: runner.os == 'Windows'
         run: Get-ChildItem -Path ./publish -Recurse -Include *.pdb | Remove-Item -Force
-        shell: bash
+        shell: pwsh
 
 
       - name: Archive release files (Windows)
