@@ -186,7 +186,7 @@
                                              MaxLength="2"
                                              HorizontalContentAlignment="Left"
                                              Watermark="H"
-                                             TextChanged="TextBox_OnTextChanged"
+                                             TextChanged="TextBox_CheckNum"
                                              Text="{Binding StartHour}"
                                             >
                                     </TextBox>
@@ -198,6 +198,7 @@
                                              MaxLength="2"
                                              HorizontalContentAlignment="Left" 
                                              Text="{Binding StartMinute}"
+                                             TextChanged="TextBox_CheckNum"
                                              Watermark="M" />
                                     <TextBlock Text=" : " VerticalAlignment="Center" />
 
@@ -207,6 +208,7 @@
                                              MaxLength="2"
                                              HorizontalContentAlignment="Left"
                                              Text="{Binding StartSecond}"
+                                             TextChanged="TextBox_CheckNum"
                                              Watermark="S" />
                                     
                                 </StackPanel>

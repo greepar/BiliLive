@@ -31,7 +31,7 @@ public partial class AutoServiceView : UserControl
     }
     
     
-    private void TextBox_OnTextChanged(object? sender, TextChangedEventArgs e)
+    private void TextBox_CheckNum(object? sender, TextChangedEventArgs e)
     {
         if (sender is not TextBox textBox || string.IsNullOrEmpty(textBox.Text)) return;
         // 移除所有非数字字符

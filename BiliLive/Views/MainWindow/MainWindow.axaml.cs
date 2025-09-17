@@ -17,7 +17,7 @@ public partial class MainWindow : Window
     private CancellationTokenSource? _animationCts;
     private double _initialNavBarWidth;
     
-    private bool _isTargetVisible;
+    private bool _isTargetVisible = true;
 
     public MainWindow()
     {

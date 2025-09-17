@@ -17,7 +17,7 @@
     
         <ResourceDictionary>
             <FontFamily x:Key="NotoRegular">avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular</FontFamily>
-            <FontFamily x:Key="PingFangRegular">avares://BiliLive/Assets/Fonts/PingFang-Regular.ttf#PingFang SC Regular</FontFamily>
+            <!-- <FontFamily x:Key="PingFangRegular">avares://BiliLive/Assets/Fonts/PingFang-Regular.ttf#PingFang SC Regular</FontFamily> -->
             
             
             <ResourceDictionary.MergedDictionaries>
