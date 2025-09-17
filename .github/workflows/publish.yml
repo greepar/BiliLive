@@ -1,0 +1,103 @@
+name: .NET Multi-Platform Native Publish
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    name: Build and Publish (${{ matrix.os }}, ${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # --- Windows ---
+          - os: windows
+            arch: x64
+            runner: windows-latest
+          - os: windows
+            arch: arm64
+            runner: windows-latest-arm64
+
+          # --- Linux ---
+          - os: linux
+            arch: x64
+            runner: ubuntu-latest
+          - os: linux
+            arch: arm64
+            runner: ubuntu-latest-arm64
+
+          # --- macOS ---
+          - os: macos
+            arch: x64
+            runner: macos-13
+          - os: macos
+            arch: arm64
+            runner: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.305"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish
+
+      - name: Clean up debug symbols (Windows)
+        if: runner.os == 'Windows'
+        run: Get-ChildItem -Path ./publish -Recurse -Include *.pdb | Remove-Item -Force
+        shell: pwsh
+
+
+      - name: Archive release files (Windows)
+        if: runner.os == 'Windows'
+        run: 7z a release-${{ matrix.os }}-${{ matrix.arch }}.zip ./publish/*
+        shell: pwsh
+
+      - name: Clean up debug symbols (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+            find ./publish -type f -name "*.pdb" -delete
+            find ./publish -type f -name "*.dbg" -delete
+            find ./publish -type f -name "*.dsym" -delete
+        shell: bash
+
+      - name: Archive release files (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: tar -cJf release-${{ matrix.os }}-${{ matrix.arch }}.tar.xz -C publish .
+        shell: bash
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os }}-${{ matrix.arch }}
+          path: release-${{ matrix.os }}-${{ matrix.arch }}.*
+
+  create-release:
+    name: Create Release and Upload Assets
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*.{zip,tar.gz}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
