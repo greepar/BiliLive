@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 
@@ -28,6 +30,14 @@ public partial class AutoServiceView : UserControl
         }
     }
     
-  
-
+    
+    private void TextBox_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (sender is not TextBox textBox || string.IsNullOrEmpty(textBox.Text)) return;
+        // 移除所有非数字字符
+        var newText = new string(textBox.Text.Where(char.IsDigit).ToArray());
+        if (newText == textBox.Text) return;
+        textBox.Text = newText;
+        textBox.CaretIndex = newText.Length;
+    }
 }

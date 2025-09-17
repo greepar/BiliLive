@@ -186,13 +186,9 @@
                                              MaxLength="2"
                                              HorizontalContentAlignment="Left"
                                              Watermark="H"
-                                             Text="{Binding StartHour
-                                             , Mode=TwoWay,FallbackValue=00,TargetNullValue=00}"
-                                             
+                                             TextChanged="TextBox_OnTextChanged"
+                                             Text="{Binding StartHour}"
                                             >
-                                        <TextBox.Styles>
-                                            
-                                        </TextBox.Styles>
                                     </TextBox>
                                     <TextBlock Text=" : " VerticalAlignment="Center" />
 

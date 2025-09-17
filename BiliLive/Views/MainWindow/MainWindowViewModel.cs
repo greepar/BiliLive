@@ -63,7 +63,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private DanmakuPanelViewModel _danmakuPanelVm = new ();
     private readonly HomeViewModel _homeVm = new ();
     
-    [ObservableProperty] private object _currentVm = new AutoServiceViewModel();
+    [ObservableProperty] private object _currentVm;
     
     
     
@@ -96,6 +96,8 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public MainWindowViewModel(IServiceProvider? serviceProvider = null)
     {
+        CurrentVm = _homeVm;
+        
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
         {
             var item = new NotificationItem(m.Value,m.Geometry);
@@ -256,15 +258,7 @@ public partial class MainWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
     }
-
-    [RelayCommand]
-    private async Task UpdateCoverAsync()
-    {
-        //选择图片
-        var imagePath = await FolderPickHelper.PickFileAsync("Choose an image", [".png", ".jpg", ".jpeg"]);
-        WeakReferenceMessenger.Default.Send(
-            new ShowNotificationMessage($"封面目录 {imagePath}", Geometry.Parse(MdIcons.Check)));
-    }
+    
     
     private async Task DelayRemoveNotification(NotificationItem item)
     {
@@ -282,7 +276,7 @@ public partial class MainWindowViewModel : ViewModelBase
             var faceBytes = result.UserFaceBytes;
             var stream = new MemoryStream(faceBytes);
             UserFace = PicHelper.ResizeStreamToBitmap(stream, 37, 37);
-
+    
             var roomInfo = await _biliService!.GetRoomInfoAsync();
             var roomCover = roomInfo.RoomCover;
             var rcStream = new MemoryStream(roomCover);

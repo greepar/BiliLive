@@ -23,33 +23,33 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private bool _isCheck60MinTask;
     
     //时间
-    [ObservableProperty] private int? _startHour;
-    [ObservableProperty] private int? _startMinute;
-    [ObservableProperty] private int? _startSecond;
+    [ObservableProperty] private string? _startHour;
+    [ObservableProperty] private string? _startMinute;
+    [ObservableProperty] private string? _startSecond;
     
     [RelayCommand]
     private async Task ToggleOptions()
     {
         var random = new Random();
-        var seconds = (StartHour ?? 0) * 3600 +
-                      (StartMinute ?? 0) * 60.0 + 
-                      (IsRandomSecond ? random.Next(-240,-120) : (StartSecond ?? 0));
+        var hour   = int.TryParse(StartHour,   out var h) ? h : 0;
+        var minute = int.TryParse(StartMinute, out var m) ? m : 0;
+        var second = int.TryParse(StartSecond, out var s) ? s : 0;
 
-        if (seconds <= 0)
-        {
-            return;
-        }
+        var seconds = hour * 3600 +
+                      minute * 60 +
+                      (IsRandomSecond ? random.Next(-240, -120) : second);
+        
         
         //设置第二天基准
         var streamTime = DateTime.Today.AddDays(1).AddSeconds(seconds);
-
-       
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"设置时间{streamTime}",Geometry.Parse(MdIcons.Error)));
+        
+        
+        // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"设置时间{streamTime}",Geometry.Parse(MdIcons.Check)));
         
           
        
         
-        var popupMsg = IsEnabled ? "已启用自动开播服务" : "已关闭自动开播服务";
+        var popupMsg = IsEnabled ? $"自动开播将在 {streamTime} 开始" : "已关闭自动开播服务";
         var icon = IsEnabled ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error);
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(popupMsg,icon));
         await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsEnabled);
