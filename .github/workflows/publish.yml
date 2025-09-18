@@ -53,7 +53,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish
+        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish -r ${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Clean up debug symbols (Windows)
         if: runner.os == 'Windows'
