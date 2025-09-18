@@ -22,6 +22,7 @@
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Resources/MDColors.axaml" />
+                <ResourceInclude Source="/Views/MainWindow/Controls/PageSwitchButton.axaml"/>
                 <ResourceInclude Source="/Resources/Themes/MdCheckBox.axaml" />
                 <ResourceInclude Source="/Resources/Themes/MdButton.axaml"/>
                 <ResourceInclude Source="/Resources/Themes/MdToggleButton.axaml"/>

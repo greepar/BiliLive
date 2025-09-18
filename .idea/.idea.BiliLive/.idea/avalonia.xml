@@ -14,6 +14,7 @@
         <entry key="BiliLive/Resources/Themes/MdButtonTest.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdCheckBox.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdToggleButton.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Resources/Themes/PageSwitchButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccManager.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccountPage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccountWindow.axaml" value="BiliLive/BiliLive.csproj" />
@@ -37,6 +38,7 @@
         <entry key="BiliLive/Views/MainWindow/Controls/ChangeAreaView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/ChooseAreaView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/DanmakuPanelView.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Controls/PageSwitchButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/MainWindow.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/About/AboutPage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/About/AboutView.axaml" value="BiliLive/BiliLive.csproj" />

@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
+
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -144,6 +146,14 @@ public partial class MainWindow : Window
         if (SideNavBar.Width < 100)
             SideNavBar.Width = _initialNavBarWidth;
         else
-            SideNavBar.Width = 50;
+            SideNavBar.Width = 60;
+    }
+
+    private void Button_CancelBtn(object? sender, RoutedEventArgs e)
+    {
+        if (sender is ToggleButton btn)
+        {
+            btn.IsChecked = true;
+        }
     }
 }

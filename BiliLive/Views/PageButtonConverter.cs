@@ -12,18 +12,13 @@ namespace BiliLive.Views;
 
 public class PageButtonConverter: MarkupExtension, IValueConverter
 {
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is NavigationPage selected && parameter is NavigationPage current)
         {
-            if (Application.Current != null)
-            {
-                var btnColor = Application.Current.GetResourceObservable("PrimaryContainer");
-                return selected == current ? btnColor : Brushes.Transparent;
-            }
-
+            return selected == current;
         }
-        return Brushes.Yellow;
+        return false;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

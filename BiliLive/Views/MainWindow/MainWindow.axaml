@@ -98,7 +98,7 @@
                                                Text="01:12" />
 
                                     <!-- 中间导航部分 -->
-                                    <StackPanel Grid.Row="1" Margin="13 30 0 30" Spacing="7"
+                                    <StackPanel Grid.Row="1" Margin="10 30 10 30" Spacing="7"
                                                 Orientation="Vertical">
                                         <!-- 缩小侧边栏按钮 -->
                                         <Button Name="MenuOpenBtn" Width="38" Height="38"
@@ -137,16 +137,18 @@
                                         <Border Margin="8" />
 
                                         <!-- 主页按钮 -->
-                                        <ToggleButton Height="45" Width="140"
-                                                HorizontalAlignment="Left"
-                                                CornerRadius="20"
-                                                Background="{Binding CurrentBtn ,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
-                                                Theme="{StaticResource MdToggleButton}"
+                                        <ToggleButton Height="45"
+                                                HorizontalAlignment="Stretch"
+                                                CornerRadius="18"
+                                                Background="Transparent"
+                                                Theme="{StaticResource PageSwitchBtn}"
+                                                Click="Button_CancelBtn"
+                                                IsChecked="{Binding CurrentBtn,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
                                                 Command="{Binding SwitchHomePageCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Home}}"
-                                                            Height="20" Margin="0 0 5 0"
+                                                            Height="20" Margin="2 0 5 0"
                                                             VerticalAlignment="Center"
                                                             Fill="{DynamicResource OnSurface}" />
                                                     <TextBlock Grid.Column="1" VerticalAlignment="Center"
@@ -156,17 +158,18 @@
                                             </Border>
                                         </ToggleButton>
 
-                                        <!-- 直播按钮 -->
-                                        <Button Height="40" Width="140"
-                                                HorizontalAlignment="Left"
-                                                CornerRadius="20"
-                                                Background="{Binding CurrentBtn ,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
-                                                Theme="{StaticResource MdButton}"
+                                        <!-- 自动直播按钮 -->
+                                        <ToggleButton Height="45"
+                                                HorizontalAlignment="Stretch"
+                                                CornerRadius="18"
+                                                Click="Button_CancelBtn"
+                                                Theme="{StaticResource PageSwitchBtn}"
+                                                IsChecked="{Binding CurrentBtn,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
                                                 Command="{Binding SwitchAutoServiceCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.AutoMation}}"
-                                                            Height="20" Margin="0 0 5 0"
+                                                            Height="20" Margin="2 0 5 0"
                                                             VerticalAlignment="Center"
                                                             Fill="{DynamicResource OnSurface}" />
                                                     <TextBlock Grid.Column="1" VerticalAlignment="Center"
@@ -174,19 +177,20 @@
                                                                Text="Auto Service" />
                                                 </Grid>
                                             </Border>
-                                        </Button>
+                                        </ToggleButton>
 
-                                        <!-- 设置按钮 -->
-                                        <Button Height="40" Width="140"
-                                                HorizontalAlignment="Left"
-                                                CornerRadius="20"
-                                                Background="{Binding CurrentBtn ,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
-                                                Theme="{StaticResource MdButton}"
+                                        <!-- 关于按钮 -->
+                                        <ToggleButton Height="45"
+                                                HorizontalAlignment="Stretch"
+                                                CornerRadius="18"
+                                                Click="Button_CancelBtn"
+                                                Theme="{StaticResource PageSwitchBtn}"
+                                                IsChecked="{Binding CurrentBtn,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
                                                 Command="{Binding SwitchAboutCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"
-                                                            Height="20" Margin="0 0 5 0"
+                                                            Height="20" Margin="2 0 5 0"
                                                             VerticalAlignment="Center"
                                                             Fill="{DynamicResource OnSurface}" />
                                                     <TextBlock Grid.Column="1" VerticalAlignment="Center"
@@ -194,7 +198,7 @@
                                                                Text="About" />
                                                 </Grid>
                                             </Border>
-                                        </Button>
+                                        </ToggleButton>
                                     </StackPanel>
 
                                     <!-- 底部用户信息栏 -->
