@@ -22,7 +22,7 @@ jobs:
             runner: windows-latest
           - os: windows
             arch: arm64
-            runner: windows-latest
+            runner: windows-11-arm
 
           # --- Linux ---
           - os: linux
@@ -30,7 +30,7 @@ jobs:
             runner: ubuntu-latest
           - os: linux
             arch: arm64
-            runner: ubuntu-latest
+            runner: ubuntu-22.04-arm
 
           # --- macOS ---
           - os: macos
@@ -69,9 +69,9 @@ jobs:
       - name: Clean up debug symbols (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
-            find ./publish -type f -name "*.pdb" -delete
-            find ./publish -type f -name "*.dbg" -delete
-            find ./publish -type f -name "*.dsym" -delete
+            find ./publish -type f -name "*.pdb" -delete || true
+            find ./publish -type f -name "*.dbg" -delete || true
+            find ./publish -type d -name "*.dSYM" -exec rm -rf {} + || true
         shell: bash
 
       - name: Archive release files (Linux/macOS)
