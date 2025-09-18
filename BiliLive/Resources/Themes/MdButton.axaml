@@ -9,6 +9,7 @@
                     Theme="{DynamicResource MdButton}"
                     CornerRadius="12"
                     Padding="10"
+                    Margin="0"
                     Background="{DynamicResource SurfaceContainer}">Test Button</Button>
                 <Button
                     Theme="{DynamicResource MdButton}"

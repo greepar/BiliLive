@@ -9,9 +9,13 @@
                     Theme="{DynamicResource MdToggleButton}"
                     CornerRadius="12"
                     Padding="10"
+                    Margin="0"
                     Background="{DynamicResource SurfaceContainer}">
                     Test Button
                 </ToggleButton>
+                
+               
+                
                 <ToggleButton
                     Theme="{DynamicResource MdToggleButton}"
                     Padding="10"

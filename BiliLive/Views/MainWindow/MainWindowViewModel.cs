@@ -32,6 +32,8 @@ public class ShowNotificationMessage(string value, Geometry geometry)
 {
     public Geometry Geometry { get; } = geometry;
 }
+
+//单个通知项
 public partial class NotificationItem : ObservableObject
 {
     [ObservableProperty] private string _message;
@@ -43,11 +45,19 @@ public partial class NotificationItem : ObservableObject
     }
 }
 
+//导航页面
+public enum NavigationPage
+{
+    Home,
+    AutoService,
+    About
+}
 
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IBiliService? _biliService;
 
+    
     [ObservableProperty] private ObservableCollection<NotificationItem> _notifications =
     [
         //test icon
@@ -58,11 +68,14 @@ public partial class MainWindowViewModel : ViewModelBase
     
     //构造子控件viewmodel
     [ObservableProperty] private AccountManagerViewMode _acVm;
-    [ObservableProperty] private AccountsViewModel _accountVm = new ();
+    [ObservableProperty] private AccountsViewModel _accountVm;
     [ObservableProperty] private AutoServiceViewModel _asVm = new ();
     [ObservableProperty] private DanmakuPanelViewModel _danmakuPanelVm = new ();
     private readonly HomeViewModel _homeVm = new ();
     
+    
+    //设置默认页面
+    [ObservableProperty]private NavigationPage _currentBtn = NavigationPage.Home;
     [ObservableProperty] private object _currentVm;
     
     
@@ -120,10 +133,13 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             // 设计时用默认实现
             AcVm = new AccountManagerViewMode();
+            AccountVm = new AccountsViewModel();
+
         }
         else
         {
             _biliService = serviceProvider.GetRequiredService<IBiliService>();
+            AccountVm = serviceProvider.GetRequiredService<AccountsViewModel>();
             AcVm = serviceProvider.GetRequiredService<AccountManagerViewMode>();
             PreLoadCommand.Execute(null);
         }
@@ -307,6 +323,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void SwitchAbout()
     {
         // if (_biliService==null) {return;}
+        CurrentBtn = NavigationPage.About;
         CurrentVm = new AboutViewModel();
     }
     
@@ -314,6 +331,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void SwitchAutoService()
     {
         // if (_biliService==null) {return;}
+        CurrentBtn = NavigationPage.AutoService;
         CurrentVm = AsVm;
     }    
     
@@ -321,8 +339,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private void SwitchHomePage()
     {
         // if (_biliService==null) {return;}
+        CurrentBtn = NavigationPage.Home;
         CurrentVm = _homeVm;
     }
-    
     
 }

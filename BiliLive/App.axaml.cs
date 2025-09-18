@@ -28,6 +28,7 @@ public class App : Application
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<AccountManagerView>();
                 services.AddTransient<AccountManagerViewMode>();
+                services.AddTransient<AccountsViewModel>();
                 
                 // 更多服务...
             })

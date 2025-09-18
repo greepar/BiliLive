@@ -13,6 +13,7 @@
         <entry key="BiliLive/Resources/Themes/MdButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdButtonTest.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdCheckBox.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Resources/Themes/MdToggleButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccManager.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccountPage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccountWindow.axaml" value="BiliLive/BiliLive.csproj" />

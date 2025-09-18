@@ -16,7 +16,7 @@ public partial class MainWindow : Window
     // 账号窗口
     private CancellationTokenSource? _animationCts;
     private double _initialNavBarWidth;
-    
+
     private bool _isTargetVisible = true;
 
     public MainWindow()
@@ -66,7 +66,7 @@ public partial class MainWindow : Window
             _animationCts?.Cancel();
             // 为本次动画创建一个新取消令牌
             _animationCts = new CancellationTokenSource();
-            var token = _animationCts.Token;
+       
 
             // 在动画进行时禁用交互
             LoginBorder.IsHitTestVisible = false;
@@ -78,13 +78,13 @@ public partial class MainWindow : Window
                 var animation = new Animation
                 {
                     Duration = TimeSpan.FromMilliseconds(300),
-                    Easing = new ExponentialEaseOut(), 
+                    Easing = new ExponentialEaseOut(),
                     FillMode = FillMode.Forward,
                     Children =
                     {
                         new KeyFrame
                         {
-                            Cue = new Cue(1d), 
+                            Cue = new Cue(1d),
                             Setters =
                             {
                                 new Setter(OpacityProperty, 1.0),
@@ -93,7 +93,7 @@ public partial class MainWindow : Window
                         }
                     }
                 };
-                await animation.RunAsync(LoginBorder, token);
+                await animation.RunAsync(LoginBorder, _animationCts.Token);
             }
             else
             {
@@ -117,10 +117,10 @@ public partial class MainWindow : Window
                         }
                     }
                 };
-                await backAnimation.RunAsync(LoginBorder, token);
+                await backAnimation.RunAsync(LoginBorder, _animationCts.Token);
 
                 // 只有在动画正常完成后才隐藏
-                if (!token.IsCancellationRequested) LoginBorder.IsVisible = false;
+                if (!_animationCts.Token.IsCancellationRequested) LoginBorder.IsVisible = false;
             }
         }
         catch (OperationCanceledException)
