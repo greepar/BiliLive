@@ -20,9 +20,9 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
 
     public async Task<LiveRoomInfo> GetRoomInfoAsync()
     {
-        var response = await httpClient.GetAsync(RoomInfoUrl);
-        var responseString = await response.Content.ReadAsStringAsync();
-        using var jsonDoc = JsonDocument.Parse(responseString);
+        using var response = await httpClient.GetAsync(RoomInfoUrl);
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
 
         var roomCoverUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("cover").GetProperty("url").GetString();
         var rcBytes = await httpClient.GetByteArrayAsync(roomCoverUrl);
@@ -36,9 +36,9 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
 
     public async Task GetAreasListAsync()
     {
-        var response = await httpClient.GetAsync(AreasInfoUrl);
-        var responseString = await response.Content.ReadAsStringAsync();
-        using var jsonDoc = JsonDocument.Parse(responseString);
+        using var response = await httpClient.GetAsync(AreasInfoUrl);
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
         var v1Area = jsonDoc.RootElement.GetProperty("data").GetProperty("area_v1_info");
         foreach (var area in v1Area.EnumerateArray())
         {
@@ -78,9 +78,9 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
                 { "appkey", "aae92bc66f3edfab" },
             };
             await GetSignAsync(formData);
-            var response = await httpClient.PostAsync(StartLiveUrl, new FormUrlEncodedContent(formData));
-            var responseString = await response.Content.ReadAsStringAsync();
-            using var jsonDoc = JsonDocument.Parse(responseString);
+            using var response = await httpClient.PostAsync(StartLiveUrl, new FormUrlEncodedContent(formData));
+            await using var stream = await response.Content.ReadAsStreamAsync();
+            using var jsonDoc = await JsonDocument.ParseAsync(stream);
             var responseCode = jsonDoc.RootElement.GetProperty("code").GetInt32();
             if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
             var apiKey = jsonDoc.RootElement.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
@@ -100,9 +100,9 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     
     private async Task<string?> GetRoomIdAsync()
     {
-        var response = await httpClient.GetAsync(RoomIdUrl);
-        var responseString = await response.Content.ReadAsStringAsync();
-        using var jsonDoc = JsonDocument.Parse(responseString);
+        using var response = await httpClient.GetAsync(RoomIdUrl);
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
         var roomId = jsonDoc.RootElement.GetProperty("data").GetProperty("room_id").GetInt64().ToString();
         return roomId;
     }
@@ -138,7 +138,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
             stringToSignBuilder.Length--;
         
         string stringToSign = stringToSignBuilder.ToString();
-        var response = await httpClient.PostAsync("https://api.greepar.uk/getSign", new StringContent(stringToSign));
+        using var response = await httpClient.PostAsync("https://api.greepar.uk/getSign", new StringContent(stringToSign));
         var sign = await response.Content.ReadAsStringAsync();
         parameters.Add("sign", sign);
     }

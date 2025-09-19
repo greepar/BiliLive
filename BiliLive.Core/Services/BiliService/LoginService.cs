@@ -42,10 +42,9 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
         try
         {
             var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
-            var response = await httpClient.GetAsync(checkLoginApi);
-
-            using var jsonDoc = JsonDocument.Parse(response.Content.ReadAsStringAsync().Result);
-
+            using var response = await httpClient.GetAsync(checkLoginApi);
+            await using var stream = await response.Content.ReadAsStreamAsync();
+            using var jsonDoc = await JsonDocument.ParseAsync(stream);
 
             if (response.IsSuccessStatusCode)
             {
@@ -85,13 +84,13 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
     public async Task<QrLoginInfo?> GetLoginUrlAsync()
     {
         var loginApi = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate";
-        var loginResponse = await httpClient.GetAsync(loginApi);
+        using var loginResponse = await httpClient.GetAsync(loginApi);
         if (loginResponse.IsSuccessStatusCode)
-        {
-            var loginResponseString = await loginResponse.Content.ReadAsStringAsync();
+        { 
+            await using var loginResponseStream = await loginResponse.Content.ReadAsStreamAsync();
             try
             {
-                using var loginJsonDoc = JsonDocument.Parse(loginResponseString);
+                using var loginJsonDoc = await JsonDocument.ParseAsync(loginResponseStream);
 
                 var loginUrl = loginJsonDoc.RootElement.GetProperty("data").GetProperty("url").GetString() ??
                                throw new InvalidOperationException();
@@ -177,8 +176,9 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
     {
         var loginCheckApi = $"https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key={qrCodeKey}";
         using var response = await httpClient.GetAsync(loginCheckApi);
-        var stringResponse = await response.Content.ReadAsStringAsync();
-        using var jsonDoc = JsonDocument.Parse(stringResponse);
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+
 
         if (response.IsSuccessStatusCode)
             try

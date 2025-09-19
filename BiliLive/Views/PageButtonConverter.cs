@@ -1,11 +1,7 @@
 using System;
 using System.Globalization;
-using System.Net.Mime;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
 using BiliLive.Views.MainWindow;
 
 namespace BiliLive.Views;

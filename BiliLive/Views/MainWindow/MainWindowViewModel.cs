@@ -290,12 +290,12 @@ public partial class MainWindowViewModel : ViewModelBase
             UserName = result.UserName;
             UserId = result.UserId;
             var faceBytes = result.UserFaceBytes;
-            var stream = new MemoryStream(faceBytes);
+            using var stream = new MemoryStream(faceBytes);
             UserFace = PicHelper.ResizeStreamToBitmap(stream, 37, 37);
     
             var roomInfo = await _biliService!.GetRoomInfoAsync();
             var roomCover = roomInfo.RoomCover;
-            var rcStream = new MemoryStream(roomCover);
+            using var rcStream = new MemoryStream(roomCover);
             RoomTitle = roomInfo.Title;
             RoomCover = PicHelper.ResizeStreamToBitmap(rcStream, 314, 178);
             LoadAcVm();
