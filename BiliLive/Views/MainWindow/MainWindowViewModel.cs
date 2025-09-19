@@ -69,8 +69,8 @@ public partial class MainWindowViewModel : ViewModelBase
     //构造子控件viewmodel
     [ObservableProperty] private AccountManagerViewMode _acVm;
     [ObservableProperty] private AccountsViewModel _accountVm;
-    [ObservableProperty] private AutoServiceViewModel _asVm = new ();
-    [ObservableProperty] private DanmakuPanelViewModel _danmakuPanelVm = new ();
+    [ObservableProperty] private AutoServiceViewModel _asVm;
+    // [ObservableProperty] private DanmakuPanelViewModel _danmakuPanelVm = new ();
     private readonly HomeViewModel _homeVm = new ();
     
     
@@ -121,26 +121,27 @@ public partial class MainWindowViewModel : ViewModelBase
         });
 
         
-        var coverStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/a.png"));
-        var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 314, 178);
-        RoomCover = roomBm;
-        
-        var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
-        UserFace = userPicBm;
+        // var coverStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/a.png"));
+        // var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 314, 178);
+        // RoomCover = roomBm;
+        //
+        // var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        // var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
+        // UserFace = userPicBm;
         
         if (Design.IsDesignMode || serviceProvider == null)
         {
             // 设计时用默认实现
             AcVm = new AccountManagerViewMode();
             AccountVm = new AccountsViewModel();
-
+            AsVm = new AutoServiceViewModel();
         }
         else
         {
             _biliService = serviceProvider.GetRequiredService<IBiliService>();
             AccountVm = serviceProvider.GetRequiredService<AccountsViewModel>();
             AcVm = serviceProvider.GetRequiredService<AccountManagerViewMode>();
+            AsVm = serviceProvider.GetRequiredService<AutoServiceViewModel>();
             PreLoadCommand.Execute(null);
         }
     }

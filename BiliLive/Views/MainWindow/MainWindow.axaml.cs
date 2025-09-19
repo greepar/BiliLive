@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-
+using System.Threading.Tasks;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -73,11 +73,33 @@ public partial class MainWindow : Window
             // 在动画进行时禁用交互
             LoginBorder.IsHitTestVisible = false;
 
-            if (_isTargetVisible)
+             if (_isTargetVisible)
             {
                 LoginBorder.IsVisible = true;
                 _isTargetVisible = false;
-                var animation = new Animation
+                // var animation = new Animation
+                // {
+                //     Duration = TimeSpan.FromMilliseconds(300),
+                //     // Easing = new ExponentialEaseOut(),
+                //     Easing = new BackEaseOut(),
+                //     
+                //     FillMode = FillMode.Forward,
+                //     Children =
+                //     {
+                //         new KeyFrame
+                //         {
+                //             Cue = new Cue(1d),
+                //             Setters =
+                //             {
+                //                 new Setter(OpacityProperty, 1.0),
+                //                 new Setter(TranslateTransform.XProperty, 0.0)
+                //             }
+                //         }
+                //     }
+                // };
+                // await animation.RunAsync(LoginBorder, _animationCts.Token);
+                
+                var opacityAnim = new Animation
                 {
                     Duration = TimeSpan.FromMilliseconds(300),
                     Easing = new ExponentialEaseOut(),
@@ -89,13 +111,37 @@ public partial class MainWindow : Window
                             Cue = new Cue(1d),
                             Setters =
                             {
-                                new Setter(OpacityProperty, 1.0),
+                                new Setter(OpacityProperty, 1.0)
+                            }
+                        }
+                    }
+                };
+
+                var translateAnim = new Animation
+                {
+                    Duration = TimeSpan.FromMilliseconds(300),
+                    Easing = new BackEaseOut(),
+                    FillMode = FillMode.Forward,
+                    Children =
+                    {
+                        new KeyFrame
+                        {
+                            Cue = new Cue(1d),
+                            Setters =
+                            {
                                 new Setter(TranslateTransform.XProperty, 0.0)
                             }
                         }
                     }
                 };
-                await animation.RunAsync(LoginBorder, _animationCts.Token);
+                
+                // 并行播放
+                await Task.WhenAll(
+                    opacityAnim.RunAsync(LoginBorder, _animationCts.Token),
+                    translateAnim.RunAsync(LoginBorder, _animationCts.Token)
+                );
+
+                
             }
             else
             {

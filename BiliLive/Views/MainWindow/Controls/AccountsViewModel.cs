@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Services.BiliService;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -42,13 +43,14 @@ public partial class AccountsViewModel : ViewModelBase
         {
             var qrInfo = await _biliService!.GetLoginUrlAsync();
             if (qrInfo == null){return;}
-        
+
             //生成登录二维码
             using var qrGenerator = new QRCodeGenerator();
             using var qrCodeData = qrGenerator.CreateQrCode(qrInfo.QrCodeUrl, QRCodeGenerator.ECCLevel.Q);
             using var qrCode = new PngByteQRCode(qrCodeData);
             var qrCodeImage = qrCode.GetGraphic(20);
             using var stream = new MemoryStream(qrCodeImage);
+
             
             // 释放旧的 Bitmap 资源
             QrCodePic?.Dispose();

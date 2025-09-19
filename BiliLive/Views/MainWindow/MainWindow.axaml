@@ -143,7 +143,7 @@
                                                 Background="Transparent"
                                                 Theme="{StaticResource PageSwitchBtn}"
                                                 Click="Button_CancelBtn"
-                                                IsChecked="{Binding CurrentBtn,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
+                                                IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
                                                 Command="{Binding SwitchHomePageCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
@@ -164,11 +164,11 @@
                                                 CornerRadius="18"
                                                 Click="Button_CancelBtn"
                                                 Theme="{StaticResource PageSwitchBtn}"
-                                                IsChecked="{Binding CurrentBtn,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
+                                                IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
                                                 Command="{Binding SwitchAutoServiceCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
-                                                    <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.AutoMation}}"
+                                                    <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}"
                                                             Height="20" Margin="2 0 5 0"
                                                             VerticalAlignment="Center"
                                                             Fill="{DynamicResource OnSurface}" />
@@ -185,7 +185,7 @@
                                                 CornerRadius="18"
                                                 Click="Button_CancelBtn"
                                                 Theme="{StaticResource PageSwitchBtn}"
-                                                IsChecked="{Binding CurrentBtn,Converter={views:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
+                                                IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
                                                 Command="{Binding SwitchAboutCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">

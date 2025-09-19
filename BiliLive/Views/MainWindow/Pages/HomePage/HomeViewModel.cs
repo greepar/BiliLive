@@ -15,7 +15,7 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty] private string? _roomTitle;
     [ObservableProperty] private string? _roomArea = "开播后获取..";
     
-    private string? _apiKey = null;
+    // private string? _apiKey = null;
     [ObservableProperty] private string _maskedApiKey = "Will be generated after start...";
     
     [ObservableProperty] private Bitmap? _roomCover ;
@@ -23,7 +23,7 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty] private string _statusText = "未直播";
     public HomeViewModel()
     {
-        var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 60, 60) ?? new Bitmap(faceMs);
+        // var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        // UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 60, 60) ?? new Bitmap(faceMs);
     }
 }

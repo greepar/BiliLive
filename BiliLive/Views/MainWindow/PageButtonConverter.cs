@@ -2,9 +2,8 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
-using BiliLive.Views.MainWindow;
 
-namespace BiliLive.Views;
+namespace BiliLive.Views.MainWindow;
 
 public class PageButtonConverter: MarkupExtension, IValueConverter
 {
@@ -17,8 +16,9 @@ public class PageButtonConverter: MarkupExtension, IValueConverter
         return false;
     }
 
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        => throw new Exception();
-    
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return null;
+    }
     public override object ProvideValue(IServiceProvider serviceProvider) => this;
 }
