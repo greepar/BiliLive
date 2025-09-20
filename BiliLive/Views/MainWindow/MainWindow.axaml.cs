@@ -60,6 +60,8 @@ public partial class MainWindow : Window
         WindowState = WindowState.Minimized;
     }
 
+    
+    
     private async void AccountBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         try
@@ -195,11 +197,36 @@ public partial class MainWindow : Window
             SideNavBar.Width = 60;
     }
 
-    private void Button_CancelBtn(object? sender, RoutedEventArgs e)
+    private async void Button_CancelBtn(object? sender, RoutedEventArgs e)
     {
         if (sender is ToggleButton btn)
         {
             btn.IsChecked = true;
         }
+        
+        ContentBorder.Opacity = 0;
+        ContentBorder.RenderTransform = new ScaleTransform(0.9, 0.9);
+        
+        var animation = new Animation
+        {
+            Duration = TimeSpan.FromMilliseconds(300),
+            Easing = new QuarticEaseOut(),
+            FillMode = FillMode.Forward,
+            Children =
+            {
+                new KeyFrame
+                {
+                    Cue = new Cue(1d),
+                    Setters =
+                    {
+                        new Setter(ScaleTransform.ScaleXProperty, 1.0d),
+                        new Setter(ScaleTransform.ScaleYProperty, 1.0d),
+                        new Setter(OpacityProperty, 1.0),
+                    }
+                }
+            }
+        };
+        
+        await animation.RunAsync(ContentBorder);
     }
 }

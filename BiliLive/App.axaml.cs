@@ -7,6 +7,7 @@ using BiliLive.Core.Services.BiliService;
 using BiliLive.Views.MainWindow;
 using BiliLive.Views.MainWindow.Controls;
 using BiliLive.Views.MainWindow.Pages.AutoService;
+using BiliLive.Views.MainWindow.Pages.HomePage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -30,6 +31,8 @@ public class App : Application
                 services.AddTransient<AccountManagerViewMode>();
                 services.AddTransient<AccountsViewModel>();
                 services.AddTransient<AutoServiceViewModel>();
+                services.AddTransient<HomeViewModel>();
+                services.AddTransient<DanmakuPanelViewModel>();
                 
                 // 更多服务...
             })

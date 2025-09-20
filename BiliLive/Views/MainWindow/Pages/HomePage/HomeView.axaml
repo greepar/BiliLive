@@ -10,24 +10,29 @@
         <vm:HomeViewModel/>
     </Design.DataContext>
     
-    <StackPanel Orientation="Vertical">
-        <TextBlock Text="{Binding UserName,StringFormat=用户名{0}}"/>
-        <TextBlock Text="{Binding UserId,StringFormat=Uid:{0}}"/>
-        <TextBlock Text="{Binding MaskedApiKey,StringFormat=ApiKey:{0}}"/>
-        <TextBlock Text="{Binding MaskedApiKey,StringFormat=StreamUrl:{0}}"/>
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Left">
-            <TextBlock>头像:</TextBlock>
-            <Border Height="30" Width="30"
-                    ClipToBounds="True"
-                    CornerRadius="30">
-                <Image Source="{Binding UserFace}"/>
-            </Border>
-        </StackPanel>
-        <TextBlock Text="{Binding StatusText,StringFormat=Status:{0}}"/>
-          
- 
+    <StackPanel Orientation="Horizontal">
+        <Border MinWidth="300">
+            <ContentControl Content="{Binding DanmakuVm}"/>
+        </Border>
+
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="{Binding UserName,StringFormat=用户名{0}}"/>
+            <TextBlock Text="{Binding UserId,StringFormat=Uid:{0}}"/>
+            <TextBlock Text="{Binding MaskedApiKey,StringFormat=ApiKey:{0}}"/>
+            <TextBlock Text="{Binding MaskedApiKey,StringFormat=StreamUrl:{0}}"/>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Left">
+                <TextBlock>头像:</TextBlock>
+                <Border Height="30" Width="30"
+                        ClipToBounds="True"
+                        CornerRadius="30">
+                    <Image Source="{Binding UserFace}"/>
+                </Border>
+            </StackPanel>
+            <TextBlock Text="{Binding StatusText,StringFormat=Status:{0}}"/>
         
+        </StackPanel>
     </StackPanel>
+  
     
 </UserControl>

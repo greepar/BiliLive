@@ -69,9 +69,8 @@ public partial class MainWindowViewModel : ViewModelBase
     //构造子控件viewmodel
     [ObservableProperty] private AccountManagerViewMode _acVm;
     [ObservableProperty] private AccountsViewModel _accountVm;
-    [ObservableProperty] private AutoServiceViewModel _asVm;
-    // [ObservableProperty] private DanmakuPanelViewModel _danmakuPanelVm = new ();
-    private readonly HomeViewModel _homeVm = new ();
+    private readonly AutoServiceViewModel _asVm;
+    private readonly HomeViewModel _homeVm;
     
     
     //设置默认页面
@@ -109,7 +108,6 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public MainWindowViewModel(IServiceProvider? serviceProvider = null)
     {
-        CurrentVm = _homeVm;
         
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
         {
@@ -134,16 +132,19 @@ public partial class MainWindowViewModel : ViewModelBase
             // 设计时用默认实现
             AcVm = new AccountManagerViewMode();
             AccountVm = new AccountsViewModel();
-            AsVm = new AutoServiceViewModel();
+            _asVm = new AutoServiceViewModel();
+            _homeVm = new HomeViewModel();
         }
         else
         {
             _biliService = serviceProvider.GetRequiredService<IBiliService>();
             AccountVm = serviceProvider.GetRequiredService<AccountsViewModel>();
             AcVm = serviceProvider.GetRequiredService<AccountManagerViewMode>();
-            AsVm = serviceProvider.GetRequiredService<AutoServiceViewModel>();
+            _asVm = serviceProvider.GetRequiredService<AutoServiceViewModel>();
+            _homeVm = serviceProvider.GetRequiredService<HomeViewModel>();
             PreLoadCommand.Execute(null);
         }
+        CurrentVm = _homeVm;
     }
     
     
@@ -156,9 +157,9 @@ public partial class MainWindowViewModel : ViewModelBase
         if (appConfig == null) { return; }
         
         //初始化AutoService配置
-        AsVm.VideoPath = appConfig.VideoPath;
-        AsVm.FfmpegPath = appConfig.FfmpegPath;
-        AsVm.IsEnabled = appConfig.EnableAutoService;
+        _asVm.VideoPath = appConfig.VideoPath;
+        _asVm.FfmpegPath = appConfig.FfmpegPath;
+        _asVm.IsEnabled = appConfig.EnableAutoService;
         // AsVm.AsHeight = AsVm.IsEnabled ? 140 : 35;
         // AsVm.AutoStart = appConfig.AutoStart;
         // AsVm.Check60MinTask = appConfig.Check60MinTask;
@@ -229,9 +230,9 @@ public partial class MainWindowViewModel : ViewModelBase
         MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
 
         //自动服务
-        if (AsVm.IsEnabled)
+        if (_asVm.IsEnabled)
         {
-            if (string.IsNullOrWhiteSpace(AsVm.VideoPath) || string.IsNullOrWhiteSpace(AsVm.FfmpegPath))
+            if (string.IsNullOrWhiteSpace(_asVm.VideoPath) || string.IsNullOrWhiteSpace(_asVm.FfmpegPath))
             {
                 WeakReferenceMessenger.Default.Send(
                     new ShowNotificationMessage("请先设置Ffmpeg和视频路径", Geometry.Parse(MdIcons.Notice))
@@ -240,7 +241,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             var startResult = await FfmpegWrapper.StartStreamingAsync(
-                AsVm.FfmpegPath!, AsVm.VideoPath!, "", _apiKey!
+                _asVm.FfmpegPath!, _asVm.VideoPath!, "", _apiKey!
             );
 
             if (!startResult)
@@ -333,7 +334,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         // if (_biliService==null) {return;}
         CurrentBtn = NavigationPage.AutoService;
-        CurrentVm = AsVm;
+        CurrentVm = _asVm;
     }    
     
     [RelayCommand]

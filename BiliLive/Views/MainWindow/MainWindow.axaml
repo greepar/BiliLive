@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
         xmlns:res="clr-namespace:BiliLive.Resources"
-        xmlns:views="clr-namespace:BiliLive.Views"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         SizeToContent="WidthAndHeight"
@@ -10,6 +9,7 @@
         SystemDecorations="None"
         FontFamily="{StaticResource NotoRegular}"
         TransparencyLevelHint="Transparent"
+        Topmost="True"
         Background="Transparent">
 
     <Design.DataContext>
@@ -18,7 +18,7 @@
 
     <Border Background="Transparent">
         <!-- 使用Margin留出间隙 -->
-        <Border Width="800" Height="470"
+        <Border MinWidth="800" MinHeight="470"
                 Margin="10"
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"
@@ -246,8 +246,12 @@
                         <Grid Grid.Column="1">
                             <Border Background="Transparent" />
                             <!-- <TextBlock Text="{Binding UserName}"></TextBlock> -->
-                            <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch"
-                                            Content="{Binding CurrentVm}" />
+                            
+                            <Border Name="ContentBorder">
+                                <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch"
+                                                Content="{Binding CurrentVm}" />
+                            </Border>
+                           
 
                             <!-- 左下方弹出登录窗口 -->
                             <Border Name="LoginBorder"
