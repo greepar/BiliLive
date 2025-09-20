@@ -6,7 +6,7 @@
              xmlns:resources="clr-namespace:BiliLive.Resources"
              FontFamily="{StaticResource NotoRegular}"
              x:DataType="vm:AutoServiceViewModel"
-             mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="570"
+             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="570"
 
              x:Class="BiliLive.Views.MainWindow.Pages.AutoService.AutoServiceView">
 
@@ -269,7 +269,12 @@
 
                     <!-- 内容区域 -->
                     <StackPanel Grid.Row="1" Orientation="Vertical"
-                                Margin="14 0 14 0" />
+                                Margin="14 0 14 0" 
+                                >
+                        <Button Command="{Binding TestActionCommand}">
+                            TEST
+                        </Button>
+                    </StackPanel>
                     
                     
                     
