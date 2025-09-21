@@ -1,0 +1,54 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:utility="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components.Utility"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BiliLive.Resources.Controls.DialControl">
+    <Border Background="#f0f0f0" Padding="20">
+        <Grid>
+      
+            <Canvas Name="dragCanvas" Width="500" Height="400" Background="LightGray">
+                
+                <TextBlock Name="blackTextBlock"
+                           ZIndex="3"
+                           Canvas.Left="100" Canvas.Top="100"
+                           Text="123"
+                           Foreground="Black"
+                           FontSize="24">
+                    <!-- <TextBlock.Clip> -->
+                    <!--     <RectangleGeometry Rect="0,0,20,20" RadiusX="5" RadiusY="5"/> -->
+                    <!-- </TextBlock.Clip> -->
+                </TextBlock>
+                
+                <TextBlock Name="whiteTextBlock"
+                           IsVisible="True"
+                           Canvas.Left="100" Canvas.Top="100"
+                           Text="123"
+                           Foreground="White"
+                           FontSize="24">
+                    
+                </TextBlock>
+                
+              
+                <utility:CircularPanel RadiusFactor="0.8" />
+                
+                <Border Name="draggableBorder"
+                        Width="100" Height="100"
+                        Background="Wheat"
+                        CornerRadius="200"
+                        Cursor="Hand"
+                        Canvas.Left="0" Canvas.Top="0"
+                        PointerPressed="OnPointerPressed"
+                        PointerMoved="OnPointerMoved"
+                        PointerReleased="OnPointerReleased">
+                    <!-- <Border.Clip> -->
+                    <!--     <RectangleGeometry Rect="0,0,50,100" RadiusX="5" RadiusY="5"/> -->
+                    <!-- </Border.Clip> -->
+                </Border>
+                
+            </Canvas>
+        </Grid>
+       
+    </Border>
+</UserControl>
