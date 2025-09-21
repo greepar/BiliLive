@@ -40,11 +40,11 @@
             <Setter Property="CornerRadius" Value="20"/>
         </Style>
 
-        <Style Selector="Button.ClockTick.Selected">
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
+        <!-- <Style Selector="Button.ClockTick.Selected"> -->
+        <!--     <Setter Property="Background" Value="#406750A4"/> -->
+        <!--     <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}"/> -->
+        <!--     <Setter Property="FontWeight" Value="Bold"/> -->
+        <!-- </Style> -->
 
         <Style Selector="Button.ClockTick:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="#406750A4"/>
@@ -188,11 +188,19 @@
                                   Canvas.Left="130" Canvas.Top="130"
                                   RenderTransformOrigin="0.5,0">
                                 <Grid.RenderTransform>
-                                    <RotateTransform Angle="{Binding HandAngle}" />
+                                    <RotateTransform Angle="{Binding HandAngle}">
+                                        <RotateTransform.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Angle" Duration="0:0:0.3" Easing="CubicEaseOut" />
+                                            </Transitions>
+                                        </RotateTransform.Transitions>
+                                    </RotateTransform>
                                 </Grid.RenderTransform>
 
+                                <!-- 线 -->
                                 <Rectangle Width="2" Height="{Binding HandLength}" Fill="{StaticResource PrimaryBrush}"
                                            VerticalAlignment="Top" HorizontalAlignment="Center" />
+                                <!-- 指针头 -->
                                 <Ellipse Width="38" Height="38" Fill="{StaticResource PrimaryBrush}"
                                          VerticalAlignment="Top" HorizontalAlignment="Center">
                                     <Ellipse.RenderTransform>
@@ -200,7 +208,8 @@
                                     </Ellipse.RenderTransform>
                                 </Ellipse>
                             </Grid>
-
+                            
+                            <!-- 圆心 -->
                             <Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryBrush}" Canvas.Left="126" Canvas.Top="126" />
                         </Canvas>
 

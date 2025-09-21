@@ -15,8 +15,15 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
         public event Action<TimeSpan>? OnConfirm;
         public event Action? OnCancel;
 
-        public enum EditMode { Hour, Minute }
-        public enum AmPmState { AM, PM }
+        public enum EditMode
+        {
+            Hour, Minute
+        }
+
+        public enum AmPmState
+        {
+            AM, PM
+        }
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsHourMode)), NotifyPropertyChangedFor(nameof(IsMinuteMode))]
@@ -33,57 +40,38 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
         [ObservableProperty]
         private int _minute;
 
-        private bool _isDragging = false;
+        private bool _isDragging;
         private int _displayHour24;
+
+        [ObservableProperty]
+        private double _handAngle;
 
         public bool IsHourMode => CurrentMode == EditMode.Hour;
         public bool IsMinuteMode => CurrentMode == EditMode.Minute;
         public bool IsAm => CurrentAmPm == AmPmState.AM;
 
-        public List<ClockTickViewModel> HourTicks { get; private set; }
-        public List<ClockTickViewModel> MinuteTicks { get; private set; }
+        public List<ClockTickViewModel> HourTicks
+        {
+            get; private set;
+        }
+
+        public List<ClockTickViewModel> MinuteTicks
+        {
+            get; private set;
+        }
 
         public int DisplayHour24 => GetHour24();
         public double HandLength => IsHourMode ? 75 : 105;
 
-        public double HandAngle
+        public TimePickerViewModel()
         {
-            get
-            {
-                int hourForCalc = DisplayHour % 12;
-                return CurrentMode switch
-                {
-                    EditMode.Hour => (hourForCalc * 30) + (Minute * 0.5) - 180,
-                    EditMode.Minute => (Minute * 6) - 180,
-                    _ => -180
-                };
-            }
+            Initialize(DateTime.Now.TimeOfDay);
         }
 
-        public double ClockCenterX { get; set; } = 130;
-        public double ClockCenterY { get; set; } = 130;
-        public double HandTipDiameter { get; set; } = 12;
-
-        public double HandTipOffsetX
+        public TimePickerViewModel(TimeSpan initialTime)
         {
-            get
-            {
-                var rad = (HandAngle + 180) * Math.PI / 180;
-                return ClockCenterX + HandLength * Math.Sin(rad) - HandTipDiameter / 2;
-            }
+            Initialize(initialTime);
         }
-
-        public double HandTipOffsetY
-        {
-            get
-            {
-                var rad = (HandAngle + 180) * Math.PI / 180;
-                return ClockCenterY - HandLength * Math.Cos(rad) - HandTipDiameter / 2;
-            }
-        }
-
-        public TimePickerViewModel() { Initialize(DateTime.Now.TimeOfDay); }
-        public TimePickerViewModel(TimeSpan initialTime) { Initialize(initialTime); }
 
         private void Initialize(TimeSpan time)
         {
@@ -97,9 +85,43 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
             DisplayHour = _displayHour24 % 12;
             if (DisplayHour == 0) DisplayHour = 12;
 
+            Minute = time.Minutes;
             CurrentMode = EditMode.Hour;
             UpdateHourTicks();
-            OnPropertyChanged(nameof(HandAngle));
+            
+            UpdateHandAngle(false);
+        }
+        
+        private double CalculateTargetHandAngle()
+        {
+            var hourForCalc = DisplayHour % 12;
+            var baseAngle = CurrentMode switch
+            {
+                EditMode.Hour => (hourForCalc * 30.0) + (Minute * 0.5),
+                EditMode.Minute => Minute * 6.0,
+                _ => 0.0
+            };
+            
+            return baseAngle - 180;
+        }
+        
+        private void UpdateHandAngle(bool animate = true)
+        {
+            var targetAngle = CalculateTargetHandAngle();
+
+            if (!animate)
+            {
+                HandAngle = targetAngle;
+                return;
+            }
+
+            var currentAngle = HandAngle;
+            
+            var diff = targetAngle - currentAngle;
+            while (diff < -180) diff += 360;
+            while (diff > 180) diff -= 360;
+            
+            HandAngle = currentAngle + diff;
         }
 
         private void UpdateHourTicks()
@@ -137,7 +159,7 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
             UpdateHourTicks();
             OnPropertyChanged(nameof(IsAm));
             UpdateDisplayHour24();
-            OnPropertyChanged(nameof(HandAngle));
+            UpdateHandAngle();
             OnPropertyChanged(nameof(DisplayHour24));
         }
 
@@ -145,20 +167,20 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
         {
             UpdateDisplayHour24();
             UpdateTickSelection();
-            OnPropertyChanged(nameof(HandAngle));
+            UpdateHandAngle();
             OnPropertyChanged(nameof(DisplayHour24));
         }
 
         partial void OnMinuteChanged(int value)
         {
             UpdateTickSelection();
-            OnPropertyChanged(nameof(HandAngle));
+            UpdateHandAngle();
         }
 
         partial void OnCurrentModeChanged(EditMode value)
         {
             UpdateTickSelection();
-            OnPropertyChanged(nameof(HandAngle));
+            UpdateHandAngle();
         }
 
         private void UpdateTickSelection()
@@ -205,10 +227,6 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
             {
                 Minute = tick.Value;
             }
-
-            UpdateTickSelection();
-            OnPropertyChanged(nameof(HandAngle));
-            OnPropertyChanged(nameof(DisplayHour24));
         }
 
         [RelayCommand]
