@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService"
              xmlns:resources="clr-namespace:BiliLive.Resources"
+             xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
              FontFamily="{StaticResource NotoRegular}"
              x:DataType="vm:AutoServiceViewModel"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="570"
@@ -178,41 +179,19 @@
                         <StackPanel Orientation="Horizontal"
                                     Spacing="10">
                             <TextBlock VerticalAlignment="Center">开始直播时间 (从每日24:00开始) :</TextBlock>
-                            <Border CornerRadius="6" Padding="6">
-                                <StackPanel Orientation="Horizontal">
-                                    <!-- 小时 -->
-                                    <TextBox Width="40" MinWidth="0"
-                                             CornerRadius="12"
-                                             MaxLength="2"
-                                             HorizontalContentAlignment="Left"
-                                             Watermark="H"
-                                             TextChanged="TextBox_CheckNum"
-                                             Text="{Binding StartHour}"
-                                            >
-                                    </TextBox>
-                                    <TextBlock Text=" : " VerticalAlignment="Center" />
-
-                                    <!-- 分钟 -->
-                                    <TextBox Width="40" MinWidth="0"
-                                             CornerRadius="12"
-                                             MaxLength="2"
-                                             HorizontalContentAlignment="Left" 
-                                             Text="{Binding StartMinute}"
-                                             TextChanged="TextBox_CheckNum"
-                                             Watermark="M" />
-                                    <TextBlock Text=" : " VerticalAlignment="Center" />
-
-                                    <!-- 秒 -->
-                                    <TextBox Width="40" MinWidth="0"
-                                             CornerRadius="12"
-                                             MaxLength="2"
-                                             HorizontalContentAlignment="Left"
-                                             Text="{Binding StartSecond}"
-                                             TextChanged="TextBox_CheckNum"
-                                             Watermark="S" />
-                                    
-                                </StackPanel>
-                            </Border>
+                            <Button Name="TimePickerButton"
+                                    Height="30"
+                                    CornerRadius="8"
+                                    Click="TimePickerButton_OnClick"
+                                    Content="{Binding FormattedStartTime}"
+                                    Theme="{StaticResource MdButton}"
+                                    VerticalAlignment="Center">
+                                <Button.Flyout>
+                                    <Flyout Placement="Bottom">
+                                        <components:TimePickerView />
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">

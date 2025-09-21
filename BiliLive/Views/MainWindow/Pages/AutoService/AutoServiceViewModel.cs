@@ -34,6 +34,13 @@ public partial class AutoServiceViewModel : ViewModelBase
     private readonly IBiliService _biliService;
  
     
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedStartTime))]
+    private TimeSpan _startTime = new(0, 5, 0);
+    public string FormattedStartTime => StartTime.ToString(@"hh\:mm\:ss");
+
+    
     public AutoServiceViewModel(IServiceProvider? serviceProvider = null)
     {
         if (Design.IsDesignMode)
@@ -59,8 +66,15 @@ public partial class AutoServiceViewModel : ViewModelBase
                       minute * 60 +
                       (IsRandomSecond ? random.Next(-240, -120) : second);
         
+        
         //设置第二天基准
-        var streamTime = DateTime.Today.AddDays(1).AddSeconds(seconds);
+  
+        var baseSeconds = StartTime.TotalSeconds;
+        var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
+        var streamTime = DateTime.Today.AddDays(1).AddSeconds(finalSeconds);
+        
+        // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"设置时间{streamTime}",Geometry.Parse(MdIcons.Check)));
+        
         
         var popupMsg = IsEnabled ? $"自动开播将在 {streamTime} 开始" : "已关闭自动开播服务";
         var icon = IsEnabled ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error);
