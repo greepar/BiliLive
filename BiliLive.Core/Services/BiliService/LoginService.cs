@@ -19,7 +19,6 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
             biliCookie = string.Join(";", cookie.Select(c => $"{c.Name}={c.Value}"));
         }
 
-
         //已存在Cookie，直接检查Cookie是否有效
         var cookiePairs = biliCookie.Split(';');
 
@@ -78,6 +77,7 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
         {
             ErrorMsg = "登录信息失效了，请重新扫码登录..."
         };
+        
     }
 
 
@@ -176,13 +176,13 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
     {
         var loginCheckApi = $"https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key={qrCodeKey}";
         using var response = await httpClient.GetAsync(loginCheckApi);
-        await using var stream = await response.Content.ReadAsStreamAsync();
-        using var jsonDoc = await JsonDocument.ParseAsync(stream);
-
+        
 
         if (response.IsSuccessStatusCode)
             try
             {
+                await using var stream = await response.Content.ReadAsStreamAsync();
+                using var jsonDoc = await JsonDocument.ParseAsync(stream);
                 var apiResultCode = jsonDoc.RootElement.GetProperty("data").GetProperty("code")
                     .GetInt32();
                 return apiResultCode;

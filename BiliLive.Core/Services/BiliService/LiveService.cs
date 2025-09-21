@@ -100,9 +100,8 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     
     private async Task<string?> GetRoomIdAsync()
     {
-        using var response = await httpClient.GetAsync(RoomIdUrl);
-        await using var stream = await response.Content.ReadAsStreamAsync();
-        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+        await using var response = await httpClient.GetStreamAsync(RoomIdUrl);
+        using var jsonDoc = await JsonDocument.ParseAsync(response);
         var roomId = jsonDoc.RootElement.GetProperty("data").GetProperty("room_id").GetInt64().ToString();
         return roomId;
     }

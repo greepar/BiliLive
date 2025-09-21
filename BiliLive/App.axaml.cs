@@ -27,8 +27,6 @@ public class App : Application
                 services.AddTransient<MainWindowViewModel>();
                 services.AddTransient<AutoServiceView>();
                 services.AddTransient<AutoServiceViewModel>();
-                services.AddTransient<AccountManagerView>();
-                services.AddTransient<AccountManagerViewMode>();
                 services.AddTransient<AccountsViewModel>();
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<HomeViewModel>();

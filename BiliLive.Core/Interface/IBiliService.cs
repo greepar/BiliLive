@@ -9,6 +9,7 @@ public interface IBiliService
     Task<LoginResult> LoginAsync(string? biliCookie = null);
     Task<QrLoginInfo?> GetLoginUrlAsync();
     Task<int?> GeQrStatusCodeAsync(string qrCodeKey);
+    
 
     // 直播相关
     Task<LiveRoomInfo> GetRoomInfoAsync();

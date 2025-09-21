@@ -54,8 +54,9 @@
                                     CornerRadius="10"
                                     HorizontalAlignment="Right"
                                     Margin="0 0 10 0"
-                                    Command="{Binding LoginStatusConverterCommand}"
+                                    Command="{Binding CancelLoginCommand}"
                                     Background="{DynamicResource SurfaceContainer}"
+                                    
                                     Click="AccountBtn_OnClick">
                                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                     <SvgBox Opacity="0.6"
@@ -125,7 +126,7 @@
                                             <Border Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
                                                            FontSize="12"
-                                                           Text="这是PVPGOOD" />
+                                                           Text="这是PVP_GOOD" />
                                             </Border>
 
 

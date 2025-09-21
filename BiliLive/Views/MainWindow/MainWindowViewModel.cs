@@ -67,7 +67,6 @@ public partial class MainWindowViewModel : ViewModelBase
     ];
     
     //构造子控件viewmodel
-    [ObservableProperty] private AccountManagerViewMode _acVm;
     [ObservableProperty] private AccountsViewModel _accountVm;
     private readonly AutoServiceViewModel _asVm;
     private readonly HomeViewModel _homeVm;
@@ -130,7 +129,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (Design.IsDesignMode || serviceProvider == null)
         {
             // 设计时用默认实现
-            AcVm = new AccountManagerViewMode();
+       
             AccountVm = new AccountsViewModel();
             _asVm = new AutoServiceViewModel();
             _homeVm = new HomeViewModel();
@@ -139,7 +138,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             _biliService = serviceProvider.GetRequiredService<IBiliService>();
             AccountVm = serviceProvider.GetRequiredService<AccountsViewModel>();
-            AcVm = serviceProvider.GetRequiredService<AccountManagerViewMode>();
+          
             _asVm = serviceProvider.GetRequiredService<AutoServiceViewModel>();
             _homeVm = serviceProvider.GetRequiredService<HomeViewModel>();
             PreLoadCommand.Execute(null);
@@ -315,9 +314,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void LoadAcVm()
     {
         //初始化账号面板
-        AcVm.UserName = UserName;
-        AcVm.UserFace = UserFace;
-        AcVm.UserId = UserId;
+      
     }
     
     

@@ -19,8 +19,12 @@ public class GiftService : IDisposable
     private readonly CookieContainer _cookieContainer= new ();
     private bool _disposed;
     
-    public GiftService(string biliCookie,string? proxyAddress = null,string? username = null,string? password = null)
+    private readonly string _roomId;
+    
+    public GiftService(string roomId,string biliCookie,string? proxyAddress = null,string? username = null,string? password = null)
     {
+        //传入RoomId
+        _roomId = roomId;
         //添加Cookie
         var cookiePairs = biliCookie.Split(';');
         foreach (var pair in cookiePairs)
@@ -46,36 +50,33 @@ public class GiftService : IDisposable
         if (!string.IsNullOrWhiteSpace(proxyAddress))
         {
             var proxy = new WebProxy(proxyAddress);
-
             if (!string.IsNullOrWhiteSpace(username))
             {
                 proxy.Credentials = new NetworkCredential(username, password);
             }
-
             handler.UseProxy = true;
             handler.Proxy = proxy;
-            
-            _httpClient = new HttpClient(handler, disposeHandler: true);
         }
-        else
-        {           
-            _httpClient = new HttpClient(handler, disposeHandler: true);
-        }
-        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
 
+        _httpClient = new HttpClient(handler, disposeHandler: true);
+        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
     }
- 
     
-    public async Task SendDanmakuAsync()
+    //测试用，获取当前IP
+    // public async Task GetCurrentIp()
+    // {
+    //     var aAResponseSting = await _httpClient.GetAsync(new Uri("https://4.ipw.cn"));
+    //     var rResponseContent = await aAResponseSting.Content.ReadAsStringAsync();
+    //     Console.WriteLine(rResponseContent);
+    // }
+    
+    
+    public async Task<bool> SendDanmakuAsync(String message)
     { 
-        var responseStinga = await _httpClient.GetAsync(new Uri("https://4.ipw.cn"));
-        var responseContentb = await responseStinga.Content.ReadAsStringAsync();
-        Console.WriteLine(responseContentb);
-        
         var formData = new Dictionary<string, string>
         {
             { "bubble", "0"  },
-            { "msg", "主播您好，祝您直播愉快！" },
+            { "msg", message },
             { "color", "16777215"  },
             { "mode", "1"  },
             { "room_type", "0"  },
@@ -89,35 +90,32 @@ public class GiftService : IDisposable
             { "data_extend", "{\"trackid\":\"-99998\"}"  },
             { "fontsize", "25"  },
             { "rnd", ((int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds())).ToString()  },
-            { "roomid", "10431980"  },
+            { "roomid", _roomId  },
             { "csrf", GetCsrfFromCookie() ?? ""  },
             { "csrf_token", GetCsrfFromCookie() ?? ""  }
         };
         
-       
-        var responseSting = await _httpClient.PostAsync(new Uri(" https://api.live.bilibili.com/msg/send"),new FormUrlEncodedContent(formData));
-        var responseContent = await responseSting.Content.ReadAsStringAsync();
-        Console.WriteLine(responseContent);
+        var response = await _httpClient.PostAsync(new Uri(" https://api.live.bilibili.com/msg/send"),new FormUrlEncodedContent(formData));
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(responseStream);
+        var code = jsonDoc.RootElement.GetProperty("code").GetInt32();
+        return code == 0;
     }
     
-    public async Task SendGiftAsync()
+    public async Task<bool> SendGiftAsync()
     { 
-        var responseStinga = await _httpClient.GetAsync(new Uri("https://4.ipw.cn"));
-        var responseContentb = await responseStinga.Content.ReadAsStringAsync();
-        Console.WriteLine(responseContentb);
-        
         var formData = new Dictionary<string, string>
         {
-            { "uid", "3493081477286220"  },//自己的uid
-            { "gift_id", "31039" },//礼物ID
-            { "ruid", "196431435"  },//主播的uid
+            { "uid", (await GetSelfUidAsyncAsync()).ToString()  }, //自己的uid
+            { "gift_id", "31039" }, //礼物Id , 31039为牛蛙牛蛙
+            { "ruid", (await GetTargetUidAsync(_roomId)).ToString()  }, //主播的uid
             { "send_ruid", "0"  },
             { "gift_num", "1"  },
             { "coin_type", "gold"  },
             { "bag_id", "0"  },
             { "platform", "pc"  },
             { "biz_code", "Live"  },
-            { "biz_id", "10431980"  },
+            { "biz_id", _roomId }, //RoomId
             { "storm_beat_id", "0"  },
             { "metadata", ""  },
             { "price", "100"  },
@@ -129,34 +127,54 @@ public class GiftService : IDisposable
             { "csrf_token", GetCsrfFromCookie() ?? ""  },
             { "wts", ((int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds())).ToString()  }
         };
-       
+        
+        //wbi签名
         var (imgKey, subKey) = await GetWbiKeys();
         Dictionary<string, string> signedParams = EncWbi(
             parameters: formData,
             imgKey: imgKey,
             subKey: subKey
         );
-
         string query = await new FormUrlEncodedContent(signedParams).ReadAsStringAsync();
-
-        Console.WriteLine(query);
+        var response = await _httpClient.PostAsync(new Uri(" https://api.live.bilibili.com/xlive/revenue/v1/gift/sendGold"),new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded"));
        
-        var responseSting = await _httpClient.PostAsync(new Uri(" https://api.live.bilibili.com/xlive/revenue/v1/gift/sendGold"),new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded"));
-        
-        var responseContent = await responseSting.Content.ReadAsStringAsync();
-        Console.WriteLine(responseContent);
-        // var responseSting = await _httpClient.PostAsync(new Uri(" https://api.live.bilibili.com/msg/send"),new FormUrlEncodedContent(formData));
-        // var responseContent = await responseSting.Content.ReadAsStringAsync();
-        // Console.WriteLine(responseContent);
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(responseStream);
+        var code = jsonDoc.RootElement.GetProperty("code").GetInt32();
+        if (code == 0)
+        {
+            return true;
+        }
+        var errMsg = jsonDoc.RootElement.GetProperty("message").GetString();
+        throw new Exception(errMsg);
     }
     
-    //test
-    // public async Task GetAccInfoAsync()
-    // {
-    //     var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
-    //     var responseString = await _httpClient.GetStringAsync(checkLoginApi);
-    //     Console.WriteLine(responseString);
-    // }
+    
+    
+    
+    //
+    //依赖方法
+    //
+    
+    private async Task<Int64> GetTargetUidAsync(string roomId)
+    {
+        var roomInfoApi = 
+            $"https://api.live.bilibili.com/xlive/play-interface/widgetService/GetWidgetBannerList?csrf={GetCsrfFromCookie()}&page_source=1&platform=pc&position=0&position_flag=0&room_id={roomId}&web_location=444.8";
+        
+        await using var responseStream = await _httpClient.GetStreamAsync(roomInfoApi);
+        using var jsonDoc = await JsonDocument.ParseAsync(responseStream);
+        var userId = jsonDoc.RootElement.GetProperty("data").GetProperty("ruid").GetInt64();
+        return userId;
+    }
+    
+    private async Task<Int64> GetSelfUidAsyncAsync()
+    {
+        var responseSting = await _httpClient.GetAsync(new Uri("https://api.bilibili.com/x/web-interface/nav"));
+        var responseContent = await responseSting.Content.ReadAsStringAsync();
+        var jsonDoc = JsonDocument.Parse(responseContent);
+        var userId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64();
+        return userId;
+    }
     
     private string? GetCsrfFromCookie()
     {
@@ -164,7 +182,6 @@ public class GiftService : IDisposable
         var cookie = cookies["bili_jct"];
         return cookie?.Value;
     }
-    
     
     // 算法
     private static readonly int[] MixinKeyEncTab =
@@ -206,10 +223,10 @@ public class GiftService : IDisposable
     }
 
     // 获取最新的 img_key 和 sub_key
-      private static async Task<(string, string)> GetWbiKeys()
+    private static async Task<(string, string)> GetWbiKeys()
       {
           var httpClient = new HttpClient();
-          httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+          httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (HTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
           httpClient.DefaultRequestHeaders.Referrer = new Uri("https://www.bilibili.com/");
       
           HttpResponseMessage responseMessage = await httpClient.SendAsync(new HttpRequestMessage
