@@ -23,12 +23,15 @@
                                RenderOptions.BitmapInterpolationMode="HighQuality"
                                Stretch="UniformToFill"/>
                     </Border>
-                    <TextBlock  VerticalAlignment="Center">[Dev:格瑞普]</TextBlock>
+                    <!-- <TextBlock  VerticalAlignment="Center">[Dev:格瑞普]</TextBlock> -->
                 </StackPanel>
-             
+                
+                <ContentControl Content="{Binding CurrentView}"></ContentControl>
+                
             </StackPanel>
+            
         </Border>
-       
+        
        
     </Grid>
   

@@ -123,9 +123,9 @@ public partial class MainWindowViewModel : ViewModelBase
         // var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 314, 178);
         // RoomCover = roomBm;
         //
-        // var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        // var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
-        // UserFace = userPicBm;
+        var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
+        UserFace = userPicBm;
         
         if (Design.IsDesignMode || serviceProvider == null)
         {

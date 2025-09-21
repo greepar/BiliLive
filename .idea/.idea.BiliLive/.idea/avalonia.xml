@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="BiliLive/App.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Resources/Controls/DialControl.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Controls/RippleButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Controls/SvgBox.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Controls/TemplatedControl1.axaml" value="BiliLive/BiliLive.csproj" />
@@ -46,6 +47,7 @@
         <entry key="BiliLive/Views/MainWindow/Pages/AccountPageView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoService/AutoServicePage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoService/AutoServiceView.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Pages/AutoService/Components/TimePickerView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoServicePage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/HomePage/HomeView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/QrLoginPage.axaml" value="BiliLive/BiliLive.csproj" />
