@@ -1,0 +1,60 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.AltsManager"
+        Title="AltsManager">
+    
+        <Border>
+                <Grid ColumnDefinitions="Auto,*">
+                        <!-- 二维码 或者 手动输入Cookie -->
+                        <StackPanel Orientation="Vertical" Grid.Column="0">
+                                <Border Width="120" Height="120" CornerRadius="12" ClipToBounds="True">
+                                        <Image Source=" avares://BiliLive/Assets/Pics/userPic.jpg "></Image>
+                                </Border>
+                                
+                                <StackPanel Orientation="Horizontal">
+                                        <TextBlock>扫描二维码登录</TextBlock>
+                                        <Button Content="Cookie"></Button>
+                                </StackPanel>
+                                
+                                <StackPanel Orientation="Horizontal">
+                                      
+                                        <TextBox Watermark="请输入Cookie"></TextBox>
+                                        <Button Content="Done"></Button>
+                                        <Button Content="X"></Button>
+                                </StackPanel>
+                        </StackPanel>
+                    
+                        
+                        <!-- 发送的消息 或者 设置代理 -->
+                        <Grid Grid.Column="1">
+                                <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+                                                <TextBlock>发送的消息:</TextBlock>
+                                                <TextBox Watermark="消息"></TextBox>
+                                                <TextBlock>:</TextBlock>
+                                                <Button>+</Button>
+                                                
+                                                <TextBlock Margin="25 0 0 0">发送牛蛙 x2</TextBlock>
+                                                <ToggleSwitch OnContent="" OffContent=""></ToggleSwitch>
+                                        </StackPanel>
+                                        
+                                        <StackPanel Orientation="Horizontal">
+                                                <TextBlock>Http Proxy:</TextBlock>
+                                                <TextBox Watermark="IP Address"></TextBox>
+                                                <TextBlock>:</TextBlock>
+                                                <TextBox Watermark="Username"></TextBox>
+                                                <TextBlock>:</TextBlock>
+                                                <TextBox Watermark="Password"></TextBox>
+                                        </StackPanel>
+                                        
+                                       
+                                </StackPanel>
+                           
+                        </Grid>
+                </Grid>
+        </Border>
+        
+</Window>

@@ -170,7 +170,8 @@
 
                 <!-- 时钟面盘 -->
                 <Grid Grid.Row="2" Width="260" Height="260" Margin="0,20">
-                    <Grid x:Name="ClockFaceGrid">
+                    <Grid x:Name="ClockFaceGrid"
+                          >
                         <Interaction.Behaviors>
                             <EventTriggerBehavior EventName="PointerPressed">
                                 <InvokeCommandAction Command="{Binding PointerPressedCommand}" PassEventArgsToCommand="True" />

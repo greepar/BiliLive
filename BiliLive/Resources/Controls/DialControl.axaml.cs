@@ -15,6 +15,10 @@ public partial class DialControl : UserControl
     private Point startPoint;
     private Point startOffset;
     
+    private double _lastAngle = 0.0; // 上一次原始角度
+    private double _totalAngle = 0;      // 连续角度
+    private bool _hasLastAngle = false;  // 是否第一次计算
+    
     public DialControl()
     {
         InitializeComponent();
@@ -81,12 +85,15 @@ public partial class DialControl : UserControl
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             isDragging = true;
+            Point currentPoint = e.GetPosition(Can1);
+            CalculateClip(currentPoint);
+
             // 获取鼠标在 Window 上的初始位置
-            startPoint = e.GetPosition(this);
-            // 获取 Border 相对于其父级 Canvas 的初始位置
-            startOffset = new Point(Canvas.GetLeft(draggableBorder), Canvas.GetTop(draggableBorder));
-            // 捕获鼠标，确保即使鼠标移出 Border 范围也能继续接收 PointerMoved 事件
-            e.Pointer.Capture(draggableBorder);
+            // startPoint = e.GetPosition(this);
+            // // 获取 Border 相对于其父级 Canvas 的初始位置
+            // startOffset = new Point(Canvas.GetLeft(draggableBorder), Canvas.GetTop(draggableBorder));
+            // // 捕获鼠标，确保即使鼠标移出 Border 范围也能继续接收 PointerMoved 事件
+            // e.Pointer.Capture(draggableBorder);
         }
     }
 
@@ -95,44 +102,48 @@ public partial class DialControl : UserControl
         if (isDragging)
         {
             // 获取当前鼠标位置
-            Point currentPoint = e.GetPosition(this);
-            // 计算鼠标移动的距离
-            Vector delta = currentPoint - startPoint;
-                
-            // 计算新的位置
-            double newLeft = startOffset.X + delta.X;
-            double newTop = startOffset.Y + delta.Y;
+            Point currentPoint = e.GetPosition(Can1);
+            CalculateClip(currentPoint);
             
-            
-            // 限制拖拽范围在 Canvas 内部
-            newLeft = Math.Max(0, Math.Min(newLeft, dragCanvas.Bounds.Width - draggableBorder.Bounds.Width));
-            newTop = Math.Max(0, Math.Min(newTop, dragCanvas.Bounds.Height - draggableBorder.Bounds.Height));
-
-            // 更新 Border 的位置
-            Canvas.SetLeft(draggableBorder, newLeft);
-            Canvas.SetTop(draggableBorder, newTop);
-            
-            // 更新 Clip 区域
-            
-            // 计算圆形裁剪区域
-            double centerX = (newLeft + draggableBorder.Bounds.Width / 2) ;
-            double centerY = (newTop + draggableBorder.Bounds.Height / 2) ;
-            double radius = draggableBorder.Bounds.Width / 2; // 假设是圆形，半径是宽度的一半
-        
-            // 创建圆形几何图形
-            var ellipseGeometry = new EllipseGeometry();
-            ellipseGeometry.Center = new Point(centerX , centerY );
-            ellipseGeometry.RadiusX = radius;
-            ellipseGeometry.RadiusY = radius;
-        
-            // 更新 TextBlock 的 Clip
-            
-            CalculateClip();
+            // // 计算鼠标移动的距离
+            // Vector delta = currentPoint - startPoint;
+            //     
+            // // 计算新的位置
+            // double newLeft = startOffset.X + delta.X;
+            // double newTop = startOffset.Y + delta.Y;
+            //
+            //
+            // // 限制拖拽范围在 Canvas 内部
+            // newLeft = Math.Max(0, Math.Min(newLeft, dragCanvas.Bounds.Width - draggableBorder.Bounds.Width));
+            // newTop = Math.Max(0, Math.Min(newTop, dragCanvas.Bounds.Height - draggableBorder.Bounds.Height));
+            //
+            // // 更新 Border 的位置
+            // Canvas.SetLeft(draggableBorder, newLeft);
+            // Canvas.SetTop(draggableBorder, newTop);
+            //
+            // // 更新 Clip 区域
+            //
+            // // 计算圆形裁剪区域
+            // double centerX = (newLeft + draggableBorder.Bounds.Width / 2) ;
+            // double centerY = (newTop + draggableBorder.Bounds.Height / 2) ;
+            // double radius = draggableBorder.Bounds.Width / 2; // 假设是圆形，半径是宽度的一半
+            //
+            // // 创建圆形几何图形
+            // var ellipseGeometry = new EllipseGeometry();
+            // ellipseGeometry.Center = new Point(centerX , centerY );
+            // ellipseGeometry.RadiusX = radius;
+            // ellipseGeometry.RadiusY = radius;
+            //
+            // // 更新 TextBlock 的 Clip
+            //
+            // CalculateClip();
         }
     }
 
     private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
     {
+        Point currentPoint = e.GetPosition(Can1);
+        CalculateClip(currentPoint);
         isDragging = false;
         // 释放鼠标捕获
         e.Pointer.Capture(null);
@@ -143,39 +154,56 @@ public partial class DialControl : UserControl
     {
       
         
-        // if (CurrentMode == EditMode.Hour)
-        // {
-        //     var hour = (int)Math.Round(angleDeg / 30.0);
-        //     if (hour == 0) hour = 12;
-        //     if (hour > 12) hour -= 12;
-        //     DisplayHour = hour;
-        // }
-        // else if (CurrentMode == EditMode.Minute)
-        // {
-        //     var minute = (int)Math.Round(angleDeg / 6.0);
-        //     if (minute >= 60) minute = 0;
-        //     Minute = minute;
-        // }
+       
     }
     
-    private void CalculateClip(double rotateAngle = 35)
+    private void CalculateClip(Point currentPoint)
     {
         
-        //校准位置
-        // Console.WriteLine(Stack1.Bounds.Width);
-        // var positonA = Stack1.Bounds.Width / 2 ;
-        // Canvas.SetLeft(Stack1,150 - positonA);
         
-        // Angle.Angle = 0;
-        
-        
-        rotateAngle = 80;
-        
-        var rotate = (RotateTransform)Stack1.RenderTransform;
-        rotate.Angle = rotateAngle; // 触发动画
-        
-        double radians = rotateAngle * Math.PI / 180.0;
+        // Console.WriteLine(currentPoint.X + " " + currentPoint.Y);
 
+        var origin = new Point(150, 150);
+
+        double dx = currentPoint.X - origin.X;
+        double dy = currentPoint.Y - origin.Y;
+
+        // 以 Y 正方向为 0°，顺时针为正
+        double radians = Math.Atan2(dx, -dy); // dx,-dy 对应 Y 正方向为0°
+        double angle = radians * 180.0 / Math.PI;
+        
+     
+
+        // --- 下面是“解包”逻辑 ---
+        if (!_hasLastAngle)
+        {
+            _lastAngle = angle;
+            _totalAngle = angle;
+            _hasLastAngle = true;
+        }
+        else
+        {
+            double delta = angle - _lastAngle;
+
+            // 处理跳变（例如 -179° → 179°）
+            if (delta > 180) delta -= 360;
+            if (delta < -180) delta += 360;
+
+            _totalAngle += delta;
+            _lastAngle = angle;
+        }
+
+        // Console.WriteLine($"Current Angle = {_totalAngle}°");
+
+        var rotate = (RotateTransform)Stack1.RenderTransform;
+        rotate.Angle = _totalAngle - 180; // 用连续角度驱动旋转
+        
+        
+         // double radians1 = angle * Math.PI / 180.0;
+
+         
+         radians = rotate.Angle * Math.PI / 180.0;
+         
 // 旋转中心
         double cx = 150;
         double cy = 150;
@@ -197,7 +225,7 @@ public partial class DialControl : UserControl
         ellipseGeometry.RadiusY = radius;
         
         BlackNumCanvas.Clip = ellipseGeometry;
-        
-        Console.WriteLine($"Center: ({centerX}, {centerY}), Radius: {radius}");
+//         
+//         Console.WriteLine($"Center: ({centerX}, {centerY}), Radius: {radius}");
     }
 }

@@ -250,9 +250,43 @@
                     <StackPanel Grid.Row="1" Orientation="Vertical"
                                 Margin="14 0 14 0" 
                                 >
-                        <Button Command="{Binding TestActionCommand}">
-                            TEST
-                        </Button>
+                        <!-- <Button Command="{Binding TestActionCommand}"> -->
+                        <!--     TEST -->
+                        <!-- </Button> -->
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>账号1</TextBlock>
+                            <Border Width="30" Height="30" CornerRadius="15" Margin="10 0 0 0" ClipToBounds="True">
+                                <Image Source="avares://BiliLive/Assets/Pics/userPic.jpg"></Image>
+                            </Border>
+                            <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">格瑞普[UID:1237657]</TextBlock>
+                            
+                            <Border Background="SkyBlue">
+                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">弹幕发送 x3 OK</TextBlock>
+                            </Border>
+                            <Border Margin="10 0 0 0" Background="SkyBlue">
+                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">发送牛蛙 x2 OK</TextBlock>
+                            </Border>
+                            <Button>Settings</Button>
+                            <Button>-</Button>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>账号2</TextBlock>
+                            <Border Width="30" Height="30" CornerRadius="15" Margin="10 0 0 0" ClipToBounds="True">
+                                <Image Source="avares://BiliLive/Assets/Pics/userPic.jpg"></Image>
+                            </Border>
+                            <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">格瑞普[UID:1237657]</TextBlock>
+                            
+                            <Border Background="SkyBlue">
+                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">弹幕发送 x3 OK</TextBlock>
+                            </Border>
+                            <Border Margin="10 0 0 0" Background="SkyBlue">
+                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">发送牛蛙 x2 OK</TextBlock>
+                            </Border>
+                            <Button>Settings</Button>
+                            <Button>+</Button>
+                        </StackPanel>
                     </StackPanel>
                     
                     
@@ -292,7 +326,13 @@
 
                     <!-- 内容区域 -->
                     <StackPanel Grid.Row="1" Orientation="Vertical"
-                                Margin="14 0 14 0" />
+                                Margin="14 0 14 0" >
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>奖励页面地址</TextBlock>
+                            <TextBox></TextBox>
+                            <TextBlock>状态:未领取</TextBlock>
+                        </StackPanel>
+                    </StackPanel>
                     
                     
                     

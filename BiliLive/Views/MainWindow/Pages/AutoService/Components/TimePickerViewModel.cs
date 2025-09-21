@@ -261,9 +261,11 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
 
         private void UpdateAngleFromPointer(Point position, Control control)
         {
+            // 计算中心点
             var centerX = control.Bounds.Width / 2;
             var centerY = control.Bounds.Height / 2;
 
+            // 计算与中心点的角度
             var deltaX = position.X - centerX;
             var deltaY = position.Y - centerY;
             var angleRad = Math.Atan2(deltaY, deltaX);

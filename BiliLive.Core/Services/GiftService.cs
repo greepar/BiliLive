@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using BiliLive.Core.Models.BiliService;
+using BiliLive.Core.Services.BiliService;
 
 namespace BiliLive.Core.Services;
 
@@ -15,6 +17,8 @@ public class GiftService : IDisposable
 {
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
 
+    private LoginService _loginService;
+    
     private readonly HttpClient _httpClient;
     private readonly CookieContainer _cookieContainer= new ();
     private bool _disposed;
@@ -60,6 +64,8 @@ public class GiftService : IDisposable
 
         _httpClient = new HttpClient(handler, disposeHandler: true);
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        
+        _loginService = new LoginService(_httpClient, _cookieContainer);
     }
     
     //测试用，获取当前IP
@@ -69,6 +75,10 @@ public class GiftService : IDisposable
     //     var rResponseContent = await aAResponseSting.Content.ReadAsStringAsync();
     //     Console.WriteLine(rResponseContent);
     // }
+    
+    public async Task<LoginResult> LoginAsync(string? biliCookie = null) => await _loginService.LoginAsync(biliCookie);
+    public async Task<QrLoginInfo?> GetLoginUrlAsync() => await _loginService.GetLoginUrlAsync();
+    public async Task<int?> GeQrStatusCodeAsync(string qrCodeKey) => await _loginService.GeQrStatusCodeAsync(qrCodeKey);
     
     
     public async Task<bool> SendDanmakuAsync(String message)
