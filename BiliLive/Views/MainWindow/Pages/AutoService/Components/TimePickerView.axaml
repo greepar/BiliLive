@@ -185,10 +185,11 @@
                         
                         <Ellipse Width="260" Height="260" Fill="{StaticResource SurfaceContainerHighestBrush}" />
                         
-                        <Canvas Background="SkyBlue"  Width="260" Height="260">
+                        <Canvas Background="Transparent"  Width="260" Height="260">
                             <Grid Width="2" Height="{Binding HandLength}"
                                   Canvas.Left="130" Canvas.Top="130"
-                                  RenderTransformOrigin="0.5,0">
+                                  RenderTransformOrigin="0.5,0"
+                                  >
                                 <Grid.RenderTransform>
                                     <RotateTransform Angle="{Binding HandAngle}">
                                         <RotateTransform.Transitions>
