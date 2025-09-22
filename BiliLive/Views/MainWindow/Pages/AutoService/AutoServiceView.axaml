@@ -285,7 +285,7 @@
                                 <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">发送牛蛙 x2 OK</TextBlock>
                             </Border>
                             <Button>Settings</Button>
-                            <Button>+</Button>
+                            <Button Command="{Binding AddAltsCommand}">+</Button>
                         </StackPanel>
                     </StackPanel>
                     

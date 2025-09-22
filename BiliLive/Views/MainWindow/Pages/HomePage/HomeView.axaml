@@ -30,7 +30,9 @@
                 </Border>
             </StackPanel>
             <TextBlock Text="{Binding StatusText,StringFormat=Status:{0}}"/>
-        
+            <Button Content="选择分区"
+                    Command="{Binding SelectAreaCommand}"/>
+            
         </StackPanel>
     </StackPanel>
   

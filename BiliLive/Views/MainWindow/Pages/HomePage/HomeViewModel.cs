@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using BiliLive.Services;
 using BiliLive.Utils;
+using BiliLive.Views.DialogWindow;
 using BiliLive.Views.MainWindow.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace BiliLive.Views.MainWindow.Pages.HomePage;
 
@@ -39,5 +43,17 @@ public partial class HomeViewModel : ViewModelBase
         DanmakuVm = serviceProvider.GetService(typeof(DanmakuPanelViewModel));
         var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
         UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 60, 60) ?? new Bitmap(faceMs);
+    }
+    
+    [RelayCommand]
+    private async Task SelectAreaAsync()
+    {
+        await ShowWindowHelper.ShowWindowAsync(new DialogWindow.DialogWindow()
+        {
+            DataContext = new DialogWindowViewModel()
+            {
+                Message = "hello"
+            }
+        });
     }
 }

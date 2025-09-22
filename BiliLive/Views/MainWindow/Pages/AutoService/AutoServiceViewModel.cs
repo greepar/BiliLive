@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
 using BiliLive.Core.Interface;
+using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
 using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Utils;
+using BiliLive.Views.MainWindow.Pages.AutoService.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -136,6 +138,8 @@ public partial class AutoServiceViewModel : ViewModelBase
     }
     
     [RelayCommand]
+    
+    
     private async Task TestAction()
     {
         var selfRoomId = (await _biliService.GetRoomInfoAsync()).RoomId;
@@ -148,5 +152,40 @@ public partial class AutoServiceViewModel : ViewModelBase
         // await giftService.SendGiftAsync();
   
     }
-    
+
+    [RelayCommand]
+    private async Task AddAltsAsync()
+    {
+        //弹出设置窗口
+
+        await ShowWindowHelper.ShowWindowAsync(new AltsManager());
+        
+        // var result = await _biliService.LoginAsync();
+        // if (result is LoginSuccess success)
+        // {
+        //     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"登录成功，当前账号 {success.UserName}",Geometry.Parse(MdIcons.Check)));
+        //     var userFaceBytes = success.UserFaceBytes;
+        //     var userName = success.UserName;
+        //     var userId = success.UserId;
+        //     
+        //     //将信息添加到一个列表中，并添加到UI
+        //     //待办
+        //     
+        //     //保存账号到本地
+        //     await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,success.BiliCookie);
+        // }
+        // else if (result is LoginFailed failed)
+        // {
+        //     var errorMsg = failed.IsCanceled ? "登录已取消" : $"登录失败 {failed.ErrorMsg}";
+        //     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(errorMsg,Geometry.Parse(MdIcons.Error)));
+        // }
+    }
+
+    [RelayCommand]
+    private async Task RemoveAltsAsync()
+    {
+        //清除所有账号
+        await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,string.Empty);
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除所有账号",Geometry.Parse(MdIcons.Check)));
+    }
 }

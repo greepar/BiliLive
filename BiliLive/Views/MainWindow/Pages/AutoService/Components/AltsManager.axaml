@@ -4,7 +4,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.AltsManager"
-        Title="AltsManager">
+        Title="AltsManager"
+        SizeToContent="WidthAndHeight"
+        >
     
         <Border>
                 <Grid ColumnDefinitions="Auto,*">
@@ -29,14 +31,13 @@
                     
                         
                         <!-- 发送的消息 或者 设置代理 -->
-                        <Grid Grid.Column="1">
-                                <StackPanel Orientation="Vertical">
+                        <Grid Grid.Column="1" RowDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal">
                                                 <TextBlock>发送的消息:</TextBlock>
                                                 <TextBox Watermark="消息"></TextBox>
                                                 <TextBlock>:</TextBlock>
                                                 <Button>+</Button>
-                                                
                                                 <TextBlock Margin="25 0 0 0">发送牛蛙 x2</TextBlock>
                                                 <ToggleSwitch OnContent="" OffContent=""></ToggleSwitch>
                                         </StackPanel>
@@ -51,6 +52,13 @@
                                         </StackPanel>
                                         
                                        
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Row="1" Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                        <Button>Cancle</Button>
+                                        <Button Click="Button_OnClick"
+                                              >Done</Button>
                                 </StackPanel>
                            
                         </Grid>

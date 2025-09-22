@@ -218,7 +218,7 @@ public partial class MainWindowViewModel : ViewModelBase
         
         if (_apiKey == null || _apiKey.Length <= 1 || _apiKey.StartsWith("Error"))
         {
-            if (_apiKey != null) await DialogWindowHelper.ShowDialogAsync(DialogWindowHelper.Status.Error, _apiKey);
+            // if (_apiKey != null) await ShowWindowHelper.ShowDialogAsync(ShowWindowHelper.Status.Error, _apiKey);
             IsStreaming = false;
             // await DialogWindowHelper.ShowDialogAsync();
             return;
@@ -245,10 +245,10 @@ public partial class MainWindowViewModel : ViewModelBase
 
             if (!startResult)
             {
-                await DialogWindowHelper.ShowDialogAsync(
-                    DialogWindowHelper.Status.Error,
-                    "自动推流启动失败，请检查Ffmpeg和视频路径"
-                );
+                // await ShowWindowHelper.ShowDialogAsync(
+                //     ShowWindowHelper.Status.Error,
+                //     "自动推流启动失败，请检查Ffmpeg和视频路径"
+                // );
                 IsStreaming = false;
                 return;
             }

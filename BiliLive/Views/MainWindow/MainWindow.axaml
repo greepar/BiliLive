@@ -9,7 +9,7 @@
         SystemDecorations="None"
         FontFamily="{StaticResource NotoRegular}"
         TransparencyLevelHint="Transparent"
-        Topmost="True"
+        Topmost="False"
         Background="Transparent">
 
     <Design.DataContext>
@@ -18,7 +18,8 @@
 
     <Border Background="Transparent">
         <!-- 使用Margin留出间隙 -->
-        <Border MinWidth="800" MinHeight="470"
+        <Border Name="MainBorder" 
+                MinWidth="800" MinHeight="470"
                 Margin="10"
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"
@@ -28,6 +29,8 @@
             <Border CornerRadius="28" ClipToBounds="True">
                 <!-- 总背景 -->
                 <Grid Background="{DynamicResource Surface}">
+                    <!-- 灰色遮罩 默认不可见 -->
+                    <Border IsHitTestVisible="False" Name="CoverBorder" ZIndex="2" Opacity="0" Background="Gray"></Border>
                     <!-- 可拖拽区域 -->
                     <Border ZIndex="1"
                             Height="45"

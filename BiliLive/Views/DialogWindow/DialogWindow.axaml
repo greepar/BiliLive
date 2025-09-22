@@ -10,37 +10,30 @@
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"
-        Title="ErrorWindow">
+        Title="ErrorWindow"
+        >
     
     <Design.DataContext>
         <vm:DialogWindowViewModel Message="This is a test error message."/>
     </Design.DataContext>
     
-    <Border MinHeight="181" MinWidth="300"
+    <Border Name="DialogMainBorder" MinHeight="181" MinWidth="300"
             BorderThickness="10"
             BorderBrush="Transparent"
             CornerRadius="28"
-            BoxShadow="0 1 8 2 #26000000"
+            BoxShadow="0 1 8 1 #26000000"
             Focusable="True"
-            Background="{DynamicResource Surface}">
-        <Border.Styles>
-            <Style Selector="Border">
-                <Style.Animations>
-                    <Animation Duration="0.6" Easing="ExponentialEaseOut" FillMode="Forward">
-                        <KeyFrame Cue="0%">
-                            <Setter Property="Opacity" Value="0.2"/>
-                            <Setter Property="ScaleTransform.ScaleX" Value="0.8"/>
-                            <Setter Property="ScaleTransform.ScaleY" Value="0.8"/>
-                        </KeyFrame>
-                        <KeyFrame Cue="100%">
-                            <Setter Property="ScaleTransform.ScaleX" Value="1"/>
-                            <Setter Property="ScaleTransform.ScaleY" Value="1"/>
-                            <Setter Property="Opacity" Value="1"/>
-                        </KeyFrame>
-                    </Animation>
-                </Style.Animations>
-            </Style>
-        </Border.Styles>
+            Background="{DynamicResource Surface}"
+            Opacity="0"
+            >
+        <Border.RenderTransform>
+            <ScaleTransform>
+                <ScaleTransform.ScaleX>0.9</ScaleTransform.ScaleX>
+                <ScaleTransform.ScaleY>0.9</ScaleTransform.ScaleY>
+            </ScaleTransform>
+        </Border.RenderTransform>
+        
+        
         <Grid RowDefinitions="Auto,*">
             <!-- 标题 -->
             <Border Grid.Row="0" Margin="10 12 10 0" >
