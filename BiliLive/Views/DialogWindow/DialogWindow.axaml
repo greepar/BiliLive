@@ -6,6 +6,7 @@
         TransparencyLevelHint="Transparent"
         x:Class="BiliLive.Views.DialogWindow.DialogWindow"
         x:DataType="vm:DialogWindowViewModel"
+        FontFamily="{StaticResource NotoRegular}"
         SystemDecorations="None"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
@@ -50,9 +51,17 @@
                 <TextBlock Grid.Row="0"
                            Text="{Binding Message}"
                            Margin="30" VerticalAlignment="Center"/>
-                <Button Grid.Row="1" HorizontalAlignment="Right"
-                        Click="Button_OnClick"
-                        Content="Confirm"/>
+                
+                <StackPanel Grid.Row="1" 
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <Button Click="Button_OnClick"
+                            Content="Cancel"/>
+                    <Button Click="Button_OnClick"
+                            Command="{Binding ConfirmCommand}"
+                            Content="Confirm"/>
+                </StackPanel>
+              
             </Grid>
         </Grid>
         

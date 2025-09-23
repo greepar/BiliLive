@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.IO.Pipelines;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
@@ -10,6 +15,7 @@ using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Utils;
+using BiliLive.Views.DialogWindow;
 using BiliLive.Views.MainWindow.Pages.AutoService.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,8 +24,68 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService;
 
+public partial class Alt : ObservableObject
+{
+    //序列
+    [ObservableProperty] private Int16 _index;
+    
+    [ObservableProperty] private Bitmap _userFace;
+    [ObservableProperty] private string _userName;
+    [ObservableProperty] private string _userId;
+    [ObservableProperty] private bool _isGiftSent;
+    [ObservableProperty] private bool _isDanmakuSent;
+    
+    private readonly Action<Alt> _removeCallback;
+    public IRelayCommand AltSettingsCommand { get; }
+    public IRelayCommand RemoveAltsCommand { get; }
+    
+    public Alt(UserInfo userInfo , Int16 index , Action<Alt> removeCallback,bool isDanmakuSent = false, bool isGiftSent = false)
+    {
+        //初始化
+        _removeCallback = removeCallback;
+        
+        using var ms = new MemoryStream(userInfo.UserFace);
+        UserFace = new Bitmap(ms);
+        
+        Index = index;
+        UserName = userInfo.UserName;
+        UserId = userInfo.UserId;
+        IsDanmakuSent = isDanmakuSent;
+        IsGiftSent = isGiftSent;
+        
+        AltSettingsCommand = new RelayCommand(async () =>
+        {
+            using var tempMs = new MemoryStream(userInfo.UserFace);
+            var altVm = new AltsManagerViewModel
+            {
+                //AltManagerVM后台会自动Dispose
+                QrCodePic = new Bitmap(tempMs),
+            };
+            await ShowWindowHelper.ShowWindowAsync(new AltsManager(){DataContext = altVm});
+        });
+        
+        RemoveAltsCommand = new RelayCommand(async () =>
+        {
+            //清除当前账号
+            var dialogVm = new DialogWindowViewModel
+            {
+                Message = $"确认清除账号 {UserName} 吗？",
+            };
+            await ShowWindowHelper.ShowWindowAsync(new DialogWindow.DialogWindow(){DataContext =dialogVm});
+            if (dialogVm.IsConfirmed)
+            {
+                removeCallback(this);
+                UserFace.Dispose();
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(MdIcons.Check)));
+            }
+        });
+    }
+}
+
 public partial class AutoServiceViewModel : ViewModelBase
 {
+    [ObservableProperty]private ObservableCollection<Alt> _altsList = new ();
+    
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
     
@@ -34,7 +100,8 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private string? _startSecond;
 
     private readonly IBiliService _biliService;
- 
+    
+    
     
     
     [ObservableProperty]
@@ -45,6 +112,29 @@ public partial class AutoServiceViewModel : ViewModelBase
     
     public AutoServiceViewModel(IServiceProvider? serviceProvider = null)
     {
+
+        using var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        
+        using var ms = new MemoryStream();
+        faceMs.CopyTo(ms);
+        ms.Position = 0;
+        
+        var userinfo = new UserInfo
+        {
+            UserFace =(ms).ToArray(),
+            UserName = "账号1",
+            UserId = "ID2"
+        };
+        
+        AltsList.Add(new Alt(userinfo,1,RemoveAlt,true,true));
+        
+        AltsList.Add(new Alt(new UserInfo
+        {
+            UserFace =(ms).ToArray(),
+            UserName = "账号2",
+            UserId = "ID3"
+        },2,RemoveAlt,true,false));
+        
         if (Design.IsDesignMode)
         {
             //设计时数据
@@ -181,11 +271,10 @@ public partial class AutoServiceViewModel : ViewModelBase
         // }
     }
 
-    [RelayCommand]
-    private async Task RemoveAltsAsync()
+
+    private void RemoveAlt(Alt alt)
     {
-        //清除所有账号
-        await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,string.Empty);
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除所有账号",Geometry.Parse(MdIcons.Check)));
+        if (AltsList.Contains(alt))
+            AltsList.Remove(alt);
     }
 }

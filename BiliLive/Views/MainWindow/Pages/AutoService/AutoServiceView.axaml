@@ -254,38 +254,40 @@
                         <!--     TEST -->
                         <!-- </Button> -->
                         
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock>账号1</TextBlock>
-                            <Border Width="30" Height="30" CornerRadius="15" Margin="10 0 0 0" ClipToBounds="True">
-                                <Image Source="avares://BiliLive/Assets/Pics/userPic.jpg"></Image>
-                            </Border>
-                            <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">格瑞普[UID:1237657]</TextBlock>
-                            
-                            <Border Background="SkyBlue">
-                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">弹幕发送 x3 OK</TextBlock>
-                            </Border>
-                            <Border Margin="10 0 0 0" Background="SkyBlue">
-                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">发送牛蛙 x2 OK</TextBlock>
-                            </Border>
-                            <Button>Settings</Button>
-                            <Button>-</Button>
-                        </StackPanel>
                         
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock>账号2</TextBlock>
-                            <Border Width="30" Height="30" CornerRadius="15" Margin="10 0 0 0" ClipToBounds="True">
-                                <Image Source="avares://BiliLive/Assets/Pics/userPic.jpg"></Image>
-                            </Border>
-                            <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">格瑞普[UID:1237657]</TextBlock>
-                            
-                            <Border Background="SkyBlue">
-                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">弹幕发送 x3 OK</TextBlock>
-                            </Border>
-                            <Border Margin="10 0 0 0" Background="SkyBlue">
-                                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">发送牛蛙 x2 OK</TextBlock>
-                            </Border>
-                            <Button>Settings</Button>
-                            <Button Command="{Binding AddAltsCommand}">+</Button>
+                        <ItemsControl ItemsSource="{Binding AltsList}" >
+                          <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                     
+                                            <Border Width="30" Height="30" CornerRadius="15" Margin="10 0 0 0" ClipToBounds="True">
+                                                <Image Source="{Binding UserFace}"></Image>
+                                            </Border>
+                                            
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                                                <TextBlock Text="{Binding UserName}" />
+                                                <TextBlock Text="{Binding UserId, StringFormat= [UID:{0}]}" />
+                                            </StackPanel>
+
+                                            
+                                            <ToggleButton  Background="SkyBlue" IsChecked="{Binding IsDanmakuSent}" Margin="10 0 0 0" VerticalAlignment="Center">弹幕发送 x3 OK</ToggleButton>
+                                        
+                                        
+                                            <ToggleButton  Background="SkyBlue" IsChecked="{Binding IsGiftSent}" Margin="10 0 0 0" VerticalAlignment="Center">发送牛蛙 x2 OK</ToggleButton>
+                                           
+                                            
+
+                                            <Button Content="Settings" Command="{Binding AltSettingsCommand}"/>
+                                            <Button Content="-" Command="{Binding RemoveAltsCommand}"></Button>
+                                            
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                          
+                            <Button  Command="{Binding AddAltsCommand}">+ Add Account</Button>
                         </StackPanel>
                     </StackPanel>
                     

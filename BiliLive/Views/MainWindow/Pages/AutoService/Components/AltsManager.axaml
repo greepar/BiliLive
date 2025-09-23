@@ -2,18 +2,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.AltsManager"
+        x:DataType="vm:AltsManagerViewModel"
         Title="AltsManager"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"
         >
     
+        <Design.DataContext>
+                <vm:AltsManagerViewModel/>
+        </Design.DataContext>
+        
         <Border>
                 <Grid ColumnDefinitions="Auto,*">
                         <!-- 二维码 或者 手动输入Cookie -->
                         <StackPanel Orientation="Vertical" Grid.Column="0">
                                 <Border Width="120" Height="120" CornerRadius="12" ClipToBounds="True">
-                                        <Image Source=" avares://BiliLive/Assets/Pics/userPic.jpg "></Image>
+                                        <Image Source="{Binding QrCodePic}"></Image>
                                 </Border>
                                 
                                 <StackPanel Orientation="Horizontal">
@@ -38,8 +46,9 @@
                                                 <TextBox Watermark="消息"></TextBox>
                                                 <TextBlock>:</TextBlock>
                                                 <Button>+</Button>
-                                                <TextBlock Margin="25 0 0 0">发送牛蛙 x2</TextBlock>
-                                                <ToggleSwitch OnContent="" OffContent=""></ToggleSwitch>
+                                                
+                                                <ToggleSwitch Margin="25 0 0 0" OnContent="发送牛蛙 x2" OffContent="发送牛蛙 x2"
+                                                              IsChecked="{Binding IsSendGift}"/>
                                         </StackPanel>
                                         
                                         <StackPanel Orientation="Horizontal">

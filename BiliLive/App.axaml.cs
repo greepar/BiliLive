@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using BiliLive.Core.Interface;
+using BiliLive.Core.Services;
 using BiliLive.Core.Services.BiliService;
 using BiliLive.Views.MainWindow;
 using BiliLive.Views.MainWindow.Controls;
@@ -31,6 +32,7 @@ public class App : Application
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<HomeViewModel>();
                 services.AddTransient<DanmakuPanelViewModel>();
+                services.AddTransient<GiftService>();
                 
                 // 更多服务...
             })
