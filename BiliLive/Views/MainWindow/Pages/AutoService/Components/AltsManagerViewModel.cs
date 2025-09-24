@@ -6,17 +6,20 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService.Components;
 
 public partial class AltsManagerViewModel : ViewModelBase
 {
+    [ObservableProperty]private bool _allowClose;
+    
     private readonly GiftService? _giftService;
 
     [ObservableProperty] private Bitmap? _qrCodePic;
     
-    [ObservableProperty] private string? _cookie;
+    [ObservableProperty] private string? _cookieValue;
     
     [ObservableProperty] private bool? _isSendGift;
     
@@ -42,6 +45,16 @@ public partial class AltsManagerViewModel : ViewModelBase
         _giftService = giftService;
     }
 
+    
+    [RelayCommand]
+    private void SaveExit()
+    {
+        if (CookieValue is not null)
+        {
+            AllowClose = true;
+        }
+    }
+    
     private async Task QrLoginAsync()
     {
         // await _giftService.GetLoginUrlAsync();

@@ -24,7 +24,7 @@ public partial class AutoServiceView : UserControl
         else
         {
             MainBorder.Height = 115;
-            CoreSettingsCotent.IsVisible = true;
+            CoreSettingsContent.IsVisible = true;
         }
     }
     

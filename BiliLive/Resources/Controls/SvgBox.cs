@@ -7,13 +7,13 @@ namespace BiliLive.Resources.Controls;
 
 public class SvgBox : Viewbox
 {
-    public static readonly StyledProperty<Geometry?> PathProperty =
+    public static readonly StyledProperty<Geometry?> PathDataProperty =
         AvaloniaProperty.Register<SvgBox, Geometry?>(nameof(PathData));
 
     public Geometry? PathData
     {
-        get => GetValue(PathProperty);
-        set => SetValue(PathProperty, value);
+        get => GetValue(PathDataProperty);
+        set => SetValue(PathDataProperty, value);
     }
 
     public static readonly StyledProperty<IBrush?> FillProperty =
@@ -24,31 +24,20 @@ public class SvgBox : Viewbox
         get => GetValue(FillProperty);
         set => SetValue(FillProperty, value);
     }
-    
+
+    private readonly Path _innerPath;
+
     public SvgBox()
     {
-        Child = CreatePath();
-    }
-
-    private Control CreatePath()
-    {
-        var innerPath = new Path
+        _innerPath = new Path
         {
             Opacity = 1,
             RenderTransform = new TranslateTransform(0, 960)
         };
 
-        
-        innerPath.Bind(
-            Shape.FillProperty,
-            this.GetObservable(FillProperty)
-        );
-        
-        innerPath.Bind(
-            Avalonia.Controls.Shapes.Path.DataProperty,
-            this.GetObservable(PathProperty)
-        );
+        _innerPath.Bind(Shape.FillProperty, this.GetObservable(FillProperty));
+        _innerPath.Bind(Path.DataProperty, this.GetObservable(PathDataProperty));
 
-        return innerPath;
+        Child = _innerPath;
     }
 }

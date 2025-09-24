@@ -31,7 +31,7 @@
                                 
                                 <StackPanel Orientation="Horizontal">
                                       
-                                        <TextBox Watermark="请输入Cookie"></TextBox>
+                                        <TextBox Text="{Binding CookieValue}" Watermark="请输入Cookie"></TextBox>
                                         <Button Content="Done"></Button>
                                         <Button Content="X"></Button>
                                 </StackPanel>
@@ -65,8 +65,8 @@
                                 
                                 <StackPanel Grid.Row="1" Orientation="Horizontal"
                                             HorizontalAlignment="Right">
-                                        <Button>Cancle</Button>
-                                        <Button Click="Button_OnClick"
+                                        <Button Click="Button_OnClick">Cancel</Button>
+                                        <Button Name="DoneBtn" Click="Button_OnClick"
                                               >Done</Button>
                                 </StackPanel>
                            

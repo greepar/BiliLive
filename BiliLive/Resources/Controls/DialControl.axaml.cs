@@ -198,9 +198,8 @@ public partial class DialControl : UserControl
         var rotate = (RotateTransform)Stack1.RenderTransform;
         rotate.Angle = _totalAngle - 180; // 用连续角度驱动旋转
         
+        Console.WriteLine(rotate.Angle);
         
-         // double radians1 = angle * Math.PI / 180.0;
-
          
          radians = rotate.Angle * Math.PI / 180.0;
          

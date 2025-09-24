@@ -23,6 +23,18 @@ public partial class AltsManager : Window
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
+        
+        if (sender is Button && DoneBtn.IsFocused)
+        {
+            if (DataContext is AltsManagerViewModel vm)
+            {
+                vm.SaveExitCommand.Execute(null);
+                if (!vm.AllowClose)
+                {
+                    return;
+                }
+            }
+        }
         Close();
     }
 }

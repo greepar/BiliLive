@@ -62,6 +62,11 @@ public partial class Alt : ObservableObject
                 QrCodePic = new Bitmap(tempMs),
             };
             await ShowWindowHelper.ShowWindowAsync(new AltsManager(){DataContext = altVm});
+            if (altVm.AllowClose)
+            {
+                var cookie = altVm.CookieValue;
+                Console.WriteLine(cookie);
+            }
         });
         
         RemoveAltsCommand = new RelayCommand(async () =>

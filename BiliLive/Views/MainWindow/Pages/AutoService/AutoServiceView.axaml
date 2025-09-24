@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService"
              xmlns:resources="clr-namespace:BiliLive.Resources"
+             xmlns:converters="clr-namespace:BiliLive.Converters"
              xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
              FontFamily="{StaticResource NotoRegular}"
              x:DataType="vm:AutoServiceViewModel"
@@ -68,7 +69,7 @@
                     </Grid>
                 </Grid>
 
-                <Grid Name="CoreSettingsCotent" Grid.Row="1"
+                <Grid Name="CoreSettingsContent" Grid.Row="1"
                       Margin="8"
                       RowDefinitions="*,*">
                     <Grid Grid.Row="0"
@@ -255,12 +256,13 @@
                         <!-- </Button> -->
                         
                         
-                        <ItemsControl ItemsSource="{Binding AltsList}" >
+                        <ItemsControl ItemsSource="{Binding AltsList}" 
+                                      Margin="5">
                           <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                      
-                                            <Border Width="30" Height="30" CornerRadius="15" Margin="10 0 0 0" ClipToBounds="True">
+                                            <Border Width="30" Height="30" CornerRadius="15" ClipToBounds="True">
                                                 <Image Source="{Binding UserFace}"></Image>
                                             </Border>
                                             
@@ -269,12 +271,49 @@
                                                 <TextBlock Text="{Binding UserId, StringFormat= [UID:{0}]}" />
                                             </StackPanel>
 
+                                            <StackPanel.Styles>
+                                                
+                                                <Style Selector="Button /template/ ContentPresenter">
+                                                    <Setter Property="BoxShadow" Value="  0 1 2 0 #26000000"></Setter>
+                                                </Style>
+                                                
+                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                    <!-- <Setter Property="Content" Value="重新发送"></Setter> -->
+                                                    
+                                                    
+                                                </Style>
+                                                
+                                            </StackPanel.Styles>
                                             
-                                            <ToggleButton  Background="SkyBlue" IsChecked="{Binding IsDanmakuSent}" Margin="10 0 0 0" VerticalAlignment="Center">弹幕发送 x3 OK</ToggleButton>
+                                            <Button  CornerRadius="30"
+                                                           Padding="3"
+                                                           Margin="10 0 0 0" 
+                                                           Theme="{StaticResource MdButton}"
+                                                           Background="{DynamicResource Surface}"
+                                                           VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal"
+                                                >
+                                                    <TextBlock Margin="7 0 7 0">弹幕发送 x3</TextBlock>
+                                                    <SvgBox Height="20" Fill="{Binding IsDanmakuSent,Converter={converters:BoolToColorConverter}}" 
+                                                            PathData="{Binding IsDanmakuSent,Converter={converters:BoolToGeometryConverter}}"></SvgBox>
+                                                </StackPanel>
+                                            </Button>
                                         
                                         
-                                            <ToggleButton  Background="SkyBlue" IsChecked="{Binding IsGiftSent}" Margin="10 0 0 0" VerticalAlignment="Center">发送牛蛙 x2 OK</ToggleButton>
-                                           
+                                            <Button  CornerRadius="30"
+                                                     Padding="3"
+                                                     Margin="10 0 0 0" 
+                                                     Theme="{StaticResource MdButton}"
+                                                     Background="{DynamicResource Surface}"
+                                                     VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal"
+                                                >
+                                                    <TextBlock Margin="7 0 7 0">发送牛蛙 x2</TextBlock>
+                                                    <SvgBox Height="20"
+                                                            Fill="{Binding IsGiftSent,Converter={converters:BoolToColorConverter}}"
+                                                            PathData="{Binding IsGiftSent,Converter={converters:BoolToGeometryConverter}}"></SvgBox>
+                                                </StackPanel>
+                                            </Button>                                           
                                             
 
                                             <Button Content="Settings" Command="{Binding AltSettingsCommand}"/>
