@@ -3,12 +3,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
+        xmlns:res="clr-namespace:BiliLive.Resources"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.AltsManager"
         x:DataType="vm:AltsManagerViewModel"
         Title="AltsManager"
         ShowInTaskbar="False"
+        SystemDecorations="None"
         WindowStartupLocation="CenterOwner"
+        Background="Transparent"
         SizeToContent="WidthAndHeight"
         >
     
@@ -16,26 +19,55 @@
                 <vm:AltsManagerViewModel/>
         </Design.DataContext>
         
-        <Border>
+        <Border BoxShadow="0 1 8 1 #26000000" Background="Transparent">
+                <Border CornerRadius="20" Background="{DynamicResource SurfaceContainer}">
+                <Border Margin="20" ClipToBounds="True">
                 <Grid ColumnDefinitions="Auto,*">
                         <!-- 二维码 或者 手动输入Cookie -->
-                        <StackPanel Orientation="Vertical" Grid.Column="0">
-                                <Border Width="120" Height="120" CornerRadius="12" ClipToBounds="True">
-                                        <Image Source="{Binding QrCodePic}"></Image>
-                                </Border>
+                        <Border Width="150"  Grid.Column="0" ClipToBounds="True">
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                        
+                                        <Border Width="140" Height="140" CornerRadius="12" ClipToBounds="True">
+                                                <Image Source="{Binding QrCodePic}"></Image>
+                                        </Border>
                                 
-                                <StackPanel Orientation="Horizontal">
-                                        <TextBlock>扫描二维码登录</TextBlock>
-                                        <Button Content="Cookie"></Button>
-                                </StackPanel>
                                 
-                                <StackPanel Orientation="Horizontal">
-                                      
-                                        <TextBox Text="{Binding CookieValue}" Watermark="请输入Cookie"></TextBox>
-                                        <Button Content="Done"></Button>
-                                        <Button Content="X"></Button>
+                                        <StackPanel Margin="2 7 5 0" Orientation="Horizontal" >
+                                                <StackPanel.RenderTransform>
+                                                        <TranslateTransform X="-2"/>
+                                                </StackPanel.RenderTransform>
+                                                
+                                                <StackPanel.Transitions>
+                                                        <Transitions>
+                                                                
+                                                           
+                                                                
+                                                        </Transitions>
+                                                </StackPanel.Transitions>
+                                                
+                                                <Border Background="{DynamicResource Surface}"
+                                                        Margin="0 0 4 0"
+                                                        CornerRadius="12">
+                                                        <TextBlock Margin="8 0 8 0" VerticalAlignment="Center">扫描二维码登录</TextBlock>
+                                                </Border>
+                                              
+                                                <Button Theme="{StaticResource MdButton}"
+                                                        Background="{DynamicResource PrimaryContainer}"
+                                                        CornerRadius="10"
+                                                        >
+                                                        <SvgBox Height="20" Margin="3 0 3 0"
+                                                                PathData="{res:Geometry {x:Static res:MdIcons.Edit}}"
+                                                                Fill="{DynamicResource OnSurface}"></SvgBox>
+                                                </Button>
+                                        
+                                                <TextBox Margin="10 0 0 0" Text="{Binding CookieValue}" Watermark="请输入Cookie"></TextBox>
+                                                <Button Content="Done"></Button>
+                                                <Button Content="X"></Button>
+                                        </StackPanel>
+                                
                                 </StackPanel>
-                        </StackPanel>
+                        </Border>
+                       
                     
                         
                         <!-- 发送的消息 或者 设置代理 -->
@@ -72,6 +104,8 @@
                            
                         </Grid>
                 </Grid>
+                </Border>
+                </Border>
         </Border>
         
 </Window>

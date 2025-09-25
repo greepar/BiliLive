@@ -16,7 +16,7 @@
     
 <!--    Aot publish-->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <PublishAot>true</PublishAot>
+        <PublishAot>false</PublishAot>
     </PropertyGroup>
     
 <!--    无运行时 publish-->

@@ -159,13 +159,12 @@
                             <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
                                           VerticalAlignment="Center"
                                           RenderTransform="scale(0.8)"
-                                          OffContent="" OnContent="" 
+                                          OffContent="" OnContent=""
                                           IsChecked="{Binding IsEnabled}"
-                                          Command="{Binding ToggleOptionsCommand}"
-                                          >
+                                          Command="{Binding ToggleOptionsCommand}">
                                 <ToggleSwitch.Styles>
                                     <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-                                        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                                        <Setter Property="Background" Value="{DynamicResource Primary}" />
                                     </Style>
                                 </ToggleSwitch.Styles>
                             </ToggleSwitch>
@@ -234,109 +233,197 @@
                             <TextBlock Grid.Column="0" Text="小号自动投喂(在完成后)"
                                        Margin="14 0 0 0"
                                        VerticalAlignment="Center" />
-                            <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
-                                          VerticalAlignment="Center"
-                                          RenderTransform="scale(0.8)"
-                                          OffContent="" OnContent="" >
-                                <ToggleSwitch.Styles>
-                                    <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-                                        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                            <Button Grid.Column="2"
+                                    Margin="0 0 2 0"
+                                    RenderTransform="scale(0.9)"
+                                    Background="#FDDEE9"
+                                    CornerRadius="6"
+                                    Theme="{StaticResource MdButton}"
+                                    Command="{Binding AddAltsCommand}">
+                                <Button.Styles>
+                                    <Style Selector="Button /template/ ContentPresenter">
+                                        <Setter Property="BoxShadow" Value=" 0 0.56 0 0 #26000000" />
                                     </Style>
-                                </ToggleSwitch.Styles>
-                            </ToggleSwitch>
+                                </Button.Styles>
+                                <TextBlock VerticalAlignment="Center"
+                                           Margin="8 0 8 0">
+                                    + Add account
+                                </TextBlock>
+                            </Button>
+
                         </Grid>
                     </Border>
 
                     <!-- 内容区域 -->
                     <StackPanel Grid.Row="1" Orientation="Vertical"
-                                Margin="14 0 14 0" 
-                                >
+                                Margin="14 0 14 0">
                         <!-- <Button Command="{Binding TestActionCommand}"> -->
                         <!--     TEST -->
                         <!-- </Button> -->
-                        
-                        
-                        <ItemsControl ItemsSource="{Binding AltsList}" 
-                                      Margin="5">
-                          <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                     
-                                            <Border Width="30" Height="30" CornerRadius="15" ClipToBounds="True">
-                                                <Image Source="{Binding UserFace}"></Image>
-                                            </Border>
-                                            
-                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
-                                                <TextBlock Text="{Binding UserName}" />
-                                                <TextBlock Text="{Binding UserId, StringFormat= [UID:{0}]}" />
-                                            </StackPanel>
 
-                                            <StackPanel.Styles>
-                                                
-                                                <Style Selector="Button /template/ ContentPresenter">
-                                                    <Setter Property="BoxShadow" Value="  0 1 2 0 #26000000"></Setter>
-                                                </Style>
-                                                
-                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                    <!-- <Setter Property="Content" Value="重新发送"></Setter> -->
-                                                    
-                                                    
-                                                </Style>
-                                                
-                                            </StackPanel.Styles>
+
+                        <!-- 账号列表 -->
+                        <ItemsControl ItemsSource="{Binding AltsList}"
+                                      Margin="5">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,Auto,*" HorizontalAlignment="Stretch">
+
+                                        <Border Grid.Column="0" Width="30" Height="30" CornerRadius="15" ClipToBounds="True">
+                                            <Image Source="{Binding UserFace}" />
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                                                    Margin="10,0,0,0">
+                                            <TextBlock Text="{Binding UserName}" />
+                                            <TextBlock Text="{Binding UserId, StringFormat= [UID:{0}]}" />
+                                        </StackPanel>
+                                        
+                                     
+                                        <Grid Grid.Column="2" HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto,Auto,*,Auto,Auto">
                                             
-                                            <Button  CornerRadius="30"
-                                                           Padding="3"
-                                                           Margin="10 0 0 0" 
-                                                           Theme="{StaticResource MdButton}"
-                                                           Background="{DynamicResource Surface}"
-                                                           VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal"
-                                                >
-                                                    <TextBlock Margin="7 0 7 0">弹幕发送 x3</TextBlock>
-                                                    <SvgBox Height="20" Fill="{Binding IsDanmakuSent,Converter={converters:BoolToColorConverter}}" 
-                                                            PathData="{Binding IsDanmakuSent,Converter={converters:BoolToGeometryConverter}}"></SvgBox>
-                                                </StackPanel>
+                                            <!-- 设置Button主题 -->
+                                            <Grid.Styles>
+                                                <Style Selector="Button.sender /template/ ContentPresenter">
+                                                    <Setter Property="BoxShadow" Value="  0 1 2 0 #26000000" />
+                                                </Style>
+                                                
+                                                <Style Selector="Button.sender:pointerover /template/ ContentPresenter">
+                                                    <Setter Property= "BoxShadow" Value="  0 1 6 1 #26000000" />
+                                                    <Setter Property= "Background" Value="{DynamicResource SurfaceContainerHighest}"></Setter>
+                                                    <Setter Property= "ContentTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate>
+                                                                <Border x:Name="ResendBtn"
+                                                                        Opacity="0"
+                                                                        Background="{DynamicResource SurfaceContainerHighest}">
+                                                        
+                                                                    <Border.RenderTransform>
+                                                                        <TranslateTransform Y="0"></TranslateTransform>
+                                                                    </Border.RenderTransform>
+                                                                    
+                                                                    <Border.Styles>
+                                                                        <Style Selector="Border">
+                                                                            <Style.Animations>
+                                                                                <Animation Duration="0.2" Easing="ExponentialEaseOut"
+                                                                                    FillMode="Forward">
+                                                                                    <KeyFrame Cue="0%">
+                                                                                        <Setter Property="TranslateTransform.Y" Value="30" />
+                                                                                        <Setter Property="Opacity" Value="0" />
+                                                                                    </KeyFrame>
+                                                                                    <KeyFrame Cue="100%">
+                                                                                        <Setter Property="TranslateTransform.Y" Value="0" />
+                                                                                        <Setter Property="Opacity" Value="1" />
+                                                                                    </KeyFrame>
+                                                                                </Animation>
+                                                                                
+                                                                            </Style.Animations>
+                                                                        </Style>
+                                                                    </Border.Styles>
+                                                        
+                                                                    <Grid ColumnDefinitions="*,Auto,Auto,*">
+                                                                        <SvgBox Grid.Column="1" Height="22"
+                                                                                Opacity="0.7"
+                                                                                Margin="0 -1 1 -1"
+                                                                                VerticalAlignment="Center"
+                                                                                Fill="{DynamicResource OnSurface}"
+                                                                                PathData="{resources:Geometry {x:Static resources:MdIcons.Restart} }"/>
+                                                                        <TextBlock Grid.Column="2" HorizontalAlignment="Center">重新发送</TextBlock>
+                                                                    </Grid>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Grid.Styles>
+                                            
+                                            
+                                            <!-- 发送弹幕 -->
+                                            <Button Grid.Column="1" CornerRadius="30"
+                                                    Command="{Binding SendDanmakuCommand}"
+                                                    Classes="sender"
+                                                    Padding="3"
+                                                    Width="130"
+                                                    Margin="10 0 0 0"
+                                                    Theme="{StaticResource MdButton}"
+                                                    Background="{DynamicResource Surface}"
+                                                    VerticalAlignment="Center">
+                                                    <Border ClipToBounds="True">
+                                                        <Grid>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Margin="7 0 7 0">弹幕发送 x3</TextBlock>
+                                                                <SvgBox Height="20"
+                                                                        Fill="{Binding IsDanmakuSent,Converter={converters:BoolToColorConverter}}"
+                                                                        PathData="{Binding IsDanmakuSent,Converter={converters:BoolToGeometryConverter}}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                    
                                             </Button>
-                                        
-                                        
-                                            <Button  CornerRadius="30"
-                                                     Padding="3"
-                                                     Margin="10 0 0 0" 
-                                                     Theme="{StaticResource MdButton}"
-                                                     Background="{DynamicResource Surface}"
-                                                     VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal"
-                                                >
+                                            
+                                            <!-- 发送礼物 -->
+                                            <Button Grid.Column="2" CornerRadius="30"
+                                                    Command="{Binding SendGiftCommand}"
+                                                    Classes="sender"
+                                                    Padding="3"
+                                                    Width="130"
+                                                    Margin="0 0 0 0"
+                                                    Theme="{StaticResource MdButton}"
+                                                    Background="{DynamicResource Surface}"
+                                                    VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
                                                     <TextBlock Margin="7 0 7 0">发送牛蛙 x2</TextBlock>
                                                     <SvgBox Height="20"
                                                             Fill="{Binding IsGiftSent,Converter={converters:BoolToColorConverter}}"
-                                                            PathData="{Binding IsGiftSent,Converter={converters:BoolToGeometryConverter}}"></SvgBox>
+                                                            PathData="{Binding IsGiftSent,Converter={converters:BoolToGeometryConverter}}" />
                                                 </StackPanel>
-                                            </Button>                                           
+                                            </Button>
                                             
+                                            
+                                              <!-- 设置 -->
+                                            <Button Grid.Column="4" Background="#FDDEE9"
+                                                    Margin="5 0 0 0"
+                                                    Padding="3"
+                                                    CornerRadius="12"
+                                                    Theme="{StaticResource MdButton}"
+                                                    Command="{Binding AltSettingsCommand}">
 
-                                            <Button Content="Settings" Command="{Binding AltSettingsCommand}"/>
-                                            <Button Content="-" Command="{Binding RemoveAltsCommand}"></Button>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <SvgBox Height="20" Width="20" Margin="2 0 2 0"
+                                                            PathData="{resources:Geometry {x:Static resources:MdIcons.Settings}}"
+                                                            Opacity="0.7"
+                                                            Fill="Black" />
+                                                </StackPanel>
+                                            </Button>
                                             
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                          
-                            <Button  Command="{Binding AddAltsCommand}">+ Add Account</Button>
-                        </StackPanel>
+                                            <!-- 删除 -->
+                                            <Button Grid.Column="5" Background="#FDDEE9"
+                                                    Margin="5 0 0 0"
+                                                    Padding="3"
+                                                    CornerRadius="12"
+                                                    Theme="{StaticResource MdButton}"
+                                                    Command="{Binding RemoveAltsCommand}">
+                                                <SvgBox Height="20" Width="20" Margin="2 0 2 0"
+                                                        PathData="{resources:Geometry {x:Static resources:MdIcons.Error}}"
+                                                        Opacity="0.7"
+                                                        Fill="Black" />
+                                            </Button>
+                                            
+                                        </Grid>
+
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+
                     </StackPanel>
-                    
-                    
-                    
-                    
+
+
                 </Grid>
             </Grid>
         </Border>
-        
+
         <!-- 自动领取激励 -->
         <Border CornerRadius="12"
 
@@ -355,10 +442,10 @@
                             <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
                                           VerticalAlignment="Center"
                                           RenderTransform="scale(0.8)"
-                                          OffContent="" OnContent="" >
+                                          OffContent="" OnContent="">
                                 <ToggleSwitch.Styles>
                                     <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-                                        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                                        <Setter Property="Background" Value="{DynamicResource Primary}" />
                                     </Style>
                                 </ToggleSwitch.Styles>
                             </ToggleSwitch>
@@ -367,17 +454,15 @@
 
                     <!-- 内容区域 -->
                     <StackPanel Grid.Row="1" Orientation="Vertical"
-                                Margin="14 0 14 0" >
+                                Margin="14 0 14 0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock>奖励页面地址</TextBlock>
-                            <TextBox></TextBox>
+                            <TextBox />
                             <TextBlock>状态:未领取</TextBlock>
                         </StackPanel>
                     </StackPanel>
-                    
-                    
-                    
-                    
+
+
                 </Grid>
             </Grid>
         </Border>

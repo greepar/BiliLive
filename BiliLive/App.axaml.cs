@@ -32,7 +32,7 @@ public class App : Application
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<HomeViewModel>();
                 services.AddTransient<DanmakuPanelViewModel>();
-                services.AddTransient<GiftService>();
+               
                 
                 // 更多服务...
             })
