@@ -13,11 +13,11 @@ using BiliLive.Core.Services.BiliService;
 
 namespace BiliLive.Core.Services;
 
-public class GiftService : IDisposable
+public class AltService : IDisposable
 {
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
 
-    private LoginService _loginService;
+    private readonly LoginService _loginService;
     
     private readonly HttpClient _httpClient;
     private readonly CookieContainer _cookieContainer= new ();
@@ -25,11 +25,11 @@ public class GiftService : IDisposable
     
     private readonly string _roomId;
     
-    public GiftService(string roomId,string biliCookie,string? proxyAddress = null,string? username = null,string? password = null)
+    public AltService(string biliCookie = "",string? proxyAddress = null,string? username = null,string? password = null)
     {
-        //传入RoomId
-        _roomId = roomId;
-        //添加Cookie
+        _roomId = "123"; 
+        
+        
         var cookiePairs = biliCookie.Split(';');
         foreach (var pair in cookiePairs)
         {

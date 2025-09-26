@@ -24,7 +24,7 @@
                 <Border Margin="20" ClipToBounds="True">
                 <Grid ColumnDefinitions="Auto,*">
                         <!-- 二维码 或者 手动输入Cookie -->
-                        <Border Width="150"  Grid.Column="0" ClipToBounds="True">
+                        <Border Width="150"  Grid.Column="0" ClipToBounds="False">
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                                         
                                         <Border Width="140" Height="140" CornerRadius="12" ClipToBounds="True">
