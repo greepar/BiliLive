@@ -1,7 +1,7 @@
 ﻿namespace BiliLive.Models;
 
 
-public class AltConfig
+public class AltSettings
 {
     public required string CookieString { get; set; }
     

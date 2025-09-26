@@ -8,6 +8,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
+using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QRCoder;
@@ -15,28 +16,28 @@ using QRCoder;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService.Components;
 
-public partial class AltsManagerViewModel : ViewModelBase
+public partial class AltsManagerViewModel : ViewModelBase , IDisposable
 {
-    [ObservableProperty]private bool _allowDoneClose;
-    
+    //AltService和二维码 将会自动Dispose 在View的CodeBehind Close事件种中
     private readonly AltService? _altService;
-
     [ObservableProperty] private Bitmap? _qrCodePic;
     
+    
+    [ObservableProperty]private bool _allowDoneClose;
     [ObservableProperty] private string? _userName;
     [ObservableProperty] private string? _cookieValue;
     
-    [ObservableProperty] private bool? _isSendGift;
+    [ObservableProperty] private bool _isSendGift;
     
-    //proxy
-    // [ObservableProperty] private ObservableCollection<AltAccount> _altAccounts = new();
+    //proxy 如果存在
     [ObservableProperty] private string? _proxyAddress;
     [ObservableProperty] private string? _proxyUsername;
     [ObservableProperty] private string? _proxyPassword;
 
     public AltsManagerViewModel()
     {
-       
+        _altService = new AltService();
+        
         //防止正常运行时调用
         if (Design.IsDesignMode)
         {
@@ -44,21 +45,53 @@ public partial class AltsManagerViewModel : ViewModelBase
         }
         
         //设计时或者未传入service时 使用默认值
-        var nullQrMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/nullQrCode.png"));
+        using var nullQrMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/nullQrCode.png"));
         QrCodePic = new Bitmap(nullQrMs);
 
     }
     
     //实际调用函数
-    public AltsManagerViewModel(AltService altService,bool isSettings = false) : this()
+    public AltsManagerViewModel(bool isSettings = false) : this()
     {
-        _altService = altService;
         if (!isSettings)
         {
             GenerateQrCodeCommand.Execute(null);
         }
     }
 
+    [RelayCommand]
+    private void EditCookie()
+    {
+        AllowDoneClose = false;
+    }
+    
+    [RelayCommand]
+    private async Task CheckCookieAsync()
+    {
+        if (CookieValue is null) return;
+        using var tempAltService = new AltService();
+        try
+        {
+            var loginResult = await tempAltService.LoginAsync(CookieValue);
+            if (loginResult is LoginSuccess result)
+            {
+                QrCodePic?.Dispose();
+                using var ms = new MemoryStream(result.UserFaceBytes);
+                QrCodePic = PicHelper.ResizeStreamToBitmap(ms,280,280);
+            
+                AllowDoneClose = true;
+                //赋值Cookie
+                CookieValue = result.BiliCookie;
+                UserName = result.UserName;
+            }
+        }
+        catch (Exception ex)
+        {
+            //登录失败
+            CookieValue = $"登录失败，请检查Cookie是否正确[{ex.Message}]";
+        }
+    }
+    
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
@@ -92,7 +125,8 @@ public partial class AltsManagerViewModel : ViewModelBase
                         break;
                     case 0:
                         //登录成功
-                        var loginResult = await _altService.LoginAsync(qrInfo.QrCodeKey);
+                        AllowDoneClose = true;
+                        var loginResult = await _altService.LoginAsync();
 
                         if (loginResult is LoginSuccess result)
                         {
@@ -135,4 +169,11 @@ public partial class AltsManagerViewModel : ViewModelBase
         }
     }
     
+    public void Dispose()
+    {
+        _altService?.Dispose();
+        QrCodePic?.Dispose();
+        QrCodePic = null;
+        GC.SuppressFinalize(this);
+    }
 }

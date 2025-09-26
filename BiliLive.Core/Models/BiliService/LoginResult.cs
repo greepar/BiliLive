@@ -12,8 +12,6 @@ public class LoginSuccess : LoginResult
 }
 
 public class LoginFailed : LoginResult
-{
+{ 
     public string? ErrorMsg { get; set;}
-    public bool IsCanceled { get; set;}
-    
 }

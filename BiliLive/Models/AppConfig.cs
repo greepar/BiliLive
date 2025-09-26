@@ -6,7 +6,7 @@ namespace BiliLive.Models;
 
 [JsonSourceGenerationOptions(DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true)]
 [JsonSerializable(typeof(AppConfig))]
-[JsonSerializable(typeof(AltConfig))]
+[JsonSerializable(typeof(AltSettings))]
 public partial class SourceGenerateContext : JsonSerializerContext
 {
 }
@@ -33,7 +33,8 @@ public class AppConfig
     public bool Check60MinTask { get; set; }
     public bool EnableAutoService { get; set; }
     
-    //strings
+    //AltSettings
+    public AltSettings?[]? Alts { get; set; } = [];
     
 
     private static readonly Dictionary<ConfigType, Action<AppConfig, object?>> ConfigSetters

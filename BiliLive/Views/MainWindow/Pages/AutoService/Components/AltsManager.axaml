@@ -50,18 +50,25 @@
                                                         CornerRadius="12">
                                                         <TextBlock Margin="8 0 8 0" VerticalAlignment="Center">扫描二维码登录</TextBlock>
                                                 </Border>
-                                              
+                                                
                                                 <Button Theme="{StaticResource MdButton}"
                                                         Background="{DynamicResource PrimaryContainer}"
                                                         CornerRadius="10"
+                                                        Command="{Binding EditCookieCommand}"
                                                         >
                                                         <SvgBox Height="20" Margin="3 0 3 0"
                                                                 PathData="{res:Geometry {x:Static res:MdIcons.Edit}}"
                                                                 Fill="{DynamicResource OnSurface}"></SvgBox>
                                                 </Button>
                                         
-                                                <TextBox Margin="10 0 0 0" Text="{Binding CookieValue}" Watermark="请输入Cookie"></TextBox>
-                                                <Button Content="Done"></Button>
+                                                <TextBox Margin="10 0 0 0" 
+                                                         Width="30"
+                                                         IsEnabled="{Binding !AllowDoneClose}"
+                                                         Text="{Binding CookieValue}"
+                                                         Watermark="请输入Cookie"></TextBox>
+                                                <Button Content="Done"
+                                                        IsEnabled="{Binding !AllowDoneClose}"
+                                                        Command="{Binding CheckCookieCommand}"></Button>
                                                 <Button Content="X"></Button>
                                         </StackPanel>
                                 
@@ -85,11 +92,14 @@
                                         
                                         <StackPanel Orientation="Horizontal">
                                                 <TextBlock>Http Proxy:</TextBlock>
-                                                <TextBox Watermark="IP Address"></TextBox>
+                                                <TextBox Watermark="IP Address"
+                                                         Text="{Binding ProxyAddress}"/>
                                                 <TextBlock>:</TextBlock>
-                                                <TextBox Watermark="Username"></TextBox>
+                                                <TextBox Watermark="Username"
+                                                         Text="{Binding ProxyUsername}"/>
                                                 <TextBlock>:</TextBlock>
-                                                <TextBox Watermark="Password"></TextBox>
+                                                <TextBox Watermark="Password"
+                                                         Text="{Binding ProxyPassword}"/>
                                         </StackPanel>
                                         
                                        
@@ -99,6 +109,7 @@
                                             HorizontalAlignment="Right">
                                         <Button Click="Button_OnClick">Cancel</Button>
                                         <Button Name="DoneBtn" Click="Button_OnClick"
+                                                IsEnabled="{Binding AllowDoneClose}"
                                               >Done</Button>
                                 </StackPanel>
                            

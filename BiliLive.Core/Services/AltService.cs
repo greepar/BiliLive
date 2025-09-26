@@ -27,7 +27,7 @@ public class AltService : IDisposable
     
     public AltService(string biliCookie = "",string? proxyAddress = null,string? username = null,string? password = null)
     {
-        _roomId = "123"; 
+        _roomId = "10431980"; 
         
         
         var cookiePairs = biliCookie.Split(';');

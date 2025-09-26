@@ -197,6 +197,7 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Margin="0 0 0 0"
                                       Content="随软件自启"
+                                      Command="{Binding ToggleAutoStartOptionCommand}"
                                       IsChecked="{Binding IsAutoStart}"
                                       Theme="{StaticResource MdCheckBox}" />
 
@@ -208,6 +209,7 @@
 
                             <CheckBox Margin="0 0 0 0"
                                       Content="检查是否完成每日直播任务(60min)"
+                                      Command="{Binding ToggleCheck60MinTaskCommand}"
                                       IsChecked="{Binding IsCheck60MinTask}"
                                       Theme="{StaticResource MdCheckBox}" />
                         </StackPanel>
@@ -263,8 +265,8 @@
 
 
                         <!-- 账号列表 -->
-                        <ItemsControl ItemsSource="{Binding AltsList}"
-                                      Margin="5">
+                        <ItemsControl  ItemsSource="{Binding AltsList}"
+                                      Margin="0">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Grid ColumnDefinitions="Auto,Auto,*" HorizontalAlignment="Stretch">
@@ -402,7 +404,7 @@
                                                     Padding="3"
                                                     CornerRadius="12"
                                                     Theme="{StaticResource MdButton}"
-                                                    Command="{Binding RemoveAltsCommand}">
+                                                    Command="{Binding RemoveAltCommand}">
                                                 <SvgBox Height="20" Width="20" Margin="2 0 2 0"
                                                         PathData="{resources:Geometry {x:Static resources:MdIcons.Error}}"
                                                         Opacity="0.7"
