@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -48,11 +49,11 @@ public partial class AutoServiceViewModel : ViewModelBase
     {
         var config = await ConfigManager.LoadConfigAsync();
         if (config is null) return;
-        if (config.Alts?.Length > 0)
+        if (config.Alts.Count > 0)
         {
-            foreach (var altSettings in config.Alts)
+            foreach (var altSettings in config.Alts.OfType<AltSettings>())
             {
-                if (altSettings != null) AltsList.Add(await Alt.CreateAltAsync(altSettings, RemoveAlt));
+                AltsList.Add(await Alt.CreateAltAsync(altSettings, RemoveAlt));
             }
         }
     }

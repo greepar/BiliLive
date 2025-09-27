@@ -186,11 +186,11 @@
                                     Content="{Binding FormattedStartTime}"
                                     Theme="{StaticResource MdButton}"
                                     VerticalAlignment="Center">
-                                <Button.Flyout>
-                                    <Flyout Placement="Bottom">
-                                        <components:TimePickerView />
-                                    </Flyout>
-                                </Button.Flyout>
+                                <!-- <Button.Flyout> -->
+                                <!--     <Flyout Placement="Bottom"> -->
+                                <!--         <components:TimePickerView /> -->
+                                <!--     </Flyout> -->
+                                <!-- </Button.Flyout> -->
                             </Button>
                         </StackPanel>
 

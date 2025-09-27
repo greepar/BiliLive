@@ -83,6 +83,10 @@ public partial class AltsManagerViewModel : ViewModelBase , IDisposable
                 //赋值Cookie
                 CookieValue = result.BiliCookie;
                 UserName = result.UserName;
+            }else
+            {
+                //登录失败
+                CookieValue = "登录失败，请检查Cookie是否正确";
             }
         }
         catch (Exception ex)

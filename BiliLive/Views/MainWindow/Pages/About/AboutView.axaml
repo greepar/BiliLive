@@ -19,14 +19,14 @@
                 <StackPanel Orientation="Horizontal">
                     <Border Width="60" Height="60"
                             CornerRadius="60" ClipToBounds="True">
-                        <Image Source="{Binding DeveloperAvatar }"
-                               RenderOptions.BitmapInterpolationMode="HighQuality"
-                               Stretch="UniformToFill"/>
+                        <!-- <Image Source="{Binding DeveloperAvatar }" -->
+                        <!--        RenderOptions.BitmapInterpolationMode="HighQuality" -->
+                        <!--        Stretch="UniformToFill"/> -->
                     </Border>
                     <!-- <TextBlock  VerticalAlignment="Center">[Dev:格瑞普]</TextBlock> -->
                 </StackPanel>
                 
-                <ContentControl Content="{Binding CurrentView}"></ContentControl>
+                <!-- <ContentControl Content="{Binding CurrentView}"></ContentControl> -->
                 
             </StackPanel>
             

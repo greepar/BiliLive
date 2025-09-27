@@ -15,28 +15,11 @@ public static class ConfigManager
     {
         AppConfig existConfig = await LoadConfigAsync() ?? new AppConfig();
 
-        if (existConfig.Alts == null)
-        {
-            //没有alts数组 将新建一个
-            existConfig.Alts = [alt];
-        }
+        var index = existConfig.Alts.FindIndex(a => a.UserName == alt.UserName);
+        if (index == -1)
+            existConfig.Alts.Add(alt);
         else
-        {
-            //存在alt
-            var index = Array.FindIndex(existConfig.Alts, a => a.UserName == alt.UserName);
-            if (index == -1)
-            {
-                //但是未找到 将添加
-                var list = existConfig.Alts.ToList();
-                list.Add(alt);
-                existConfig.Alts = list.ToArray();
-            }
-            else
-            {
-                //找到对应alt 将替换
-                existConfig.Alts[index] = alt;
-            }
-        }
+            existConfig.Alts[index] = alt;
         
         //保存配置
         var configJsonString = JsonSerializer.Serialize(existConfig, SourceGenerateContext.Default.AppConfig);
@@ -47,24 +30,12 @@ public static class ConfigManager
     {
         AppConfig existConfig = await LoadConfigAsync() ?? new AppConfig();
 
-        if (existConfig.Alts == null)
-            return;
-
-        // 过滤掉要删除的 Alt
-        existConfig.Alts = existConfig.Alts
-            .Where(a => a != null && a.UserName != alt.UserName)
-            .ToArray();
-
-        // 如果数组空了，可以直接置 null
-        if (existConfig.Alts.Length == 0)
-            existConfig.Alts = null;
+        existConfig.Alts.RemoveAll(a => a.UserName == alt.UserName);
         
         //保存配置
         var configJsonString = JsonSerializer.Serialize(existConfig, SourceGenerateContext.Default.AppConfig);
         await File.WriteAllTextAsync(ConfigFilePath, configJsonString);
     }
-    
-    
     
     public static async Task SaveConfigAsync(ConfigType configType, object? config)
     {

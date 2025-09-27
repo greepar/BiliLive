@@ -9,6 +9,7 @@
         SystemDecorations="None"
         FontFamily="{StaticResource NotoRegular}"
         TransparencyLevelHint="Transparent"
+        WindowStartupLocation="CenterScreen"
         Topmost="False"
         Background="Transparent">
 

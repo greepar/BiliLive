@@ -34,8 +34,7 @@ public class AppConfig
     public bool EnableAutoService { get; set; }
     
     //AltSettings
-    public AltSettings?[]? Alts { get; set; } = [];
-    
+    public List<AltSettings> Alts { get; set; } = [];     
 
     private static readonly Dictionary<ConfigType, Action<AppConfig, object?>> ConfigSetters
         = new()
