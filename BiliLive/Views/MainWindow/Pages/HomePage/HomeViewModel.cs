@@ -20,12 +20,15 @@ public partial class HomeViewModel : ViewModelBase
 {
     [ObservableProperty] private object? _danmakuVm;
     
-    [ObservableProperty] private string? _userName = "Not Login";
+    [ObservableProperty] private string? _userName = "未登录";
     [ObservableProperty] private long? _userId = 196431435;
     [ObservableProperty] private Bitmap? _userFace ;
     
     [ObservableProperty] private string? _roomTitle;
     [ObservableProperty] private string? _roomArea = "开播后获取..";
+    
+    [ObservableProperty] private bool? _isFinishing = null;
+    
     
     // private string? _apiKey = null;
     [ObservableProperty] private string _maskedApiKey = "Will be generated after start...";
@@ -38,7 +41,7 @@ public partial class HomeViewModel : ViewModelBase
     public HomeViewModel(IServiceProvider? serviceProvider = null)
     {
         using var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 80*2, 80*2) ?? new Bitmap(faceMs);
+        UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 71*2, 71*2) ?? new Bitmap(faceMs);
         
         if (Design.IsDesignMode || serviceProvider == null)
         {
@@ -61,11 +64,11 @@ public partial class HomeViewModel : ViewModelBase
             UserName = result.UserName;
             UserId = result.UserId;
             using var ms = new MemoryStream(result.UserFaceBytes);
-            UserFace = PicHelper.ResizeStreamToBitmap(ms, 80*2, 80*2) ?? new Bitmap(ms);
+            UserFace = PicHelper.ResizeStreamToBitmap(ms, 71*2, 71*2) ?? new Bitmap(ms);
             var roomInfo = await _biliService.GetRoomInfoAsync();
             RoomCover?.Dispose();
             using var rcMs = new MemoryStream(roomInfo.RoomCover);
-            RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 157*2, 91*2) ?? new Bitmap(rcMs);
+            RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 132*2, 74*2) ?? new Bitmap(rcMs);
             RoomTitle = roomInfo.Title;
         }
     }

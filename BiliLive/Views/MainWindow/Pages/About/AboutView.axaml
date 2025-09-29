@@ -16,6 +16,11 @@
         <Border>
             <StackPanel>
                 <TextBlock>这里是关于页面</TextBlock>
+                <RippleButton Content="粉色涟漪"
+                                    RippleColor="#FF4081"
+                                    Background="SkyBlue"
+                                    Width="200"
+                                    Height="40"/>
                 <StackPanel Orientation="Horizontal">
                     <Border Width="60" Height="60"
                             CornerRadius="60" ClipToBounds="True">

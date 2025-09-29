@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -58,6 +59,7 @@ public enum NavigationPage
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IBiliService _biliService;
+    private DispatcherTimer? _minuteTimer;
     
     [ObservableProperty] private ObservableCollection<NotificationItem> _notifications =
     [
@@ -78,9 +80,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private object _currentVm;
     
     //主窗口内容
-    [ObservableProperty] private string? _userName = "Not Login";
+    [ObservableProperty] private string? _currentTime = "01:19" ;
+    [ObservableProperty] private string? _userName = "未登录";
     [ObservableProperty] private Bitmap? _userFace ;
-    
     
     
     [ObservableProperty]
@@ -145,6 +147,7 @@ public partial class MainWindowViewModel : ViewModelBase
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
         var loginResult = await _biliService.LoginAsync(appConfig.BiliCookie);
+        StartUpdateTimeService();
         
         await LoadLoginResult(loginResult);
     }
@@ -160,7 +163,34 @@ public partial class MainWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
     }
-    
+    private void StartUpdateTimeService() 
+    {
+        CurrentTime = DateTime.Now.ToString("HH:mm");
+        
+        // 计算到下一分钟整点的时间
+        var now = DateTime.Now;
+        var secondsToNextMinute = 60 - now.Second;
+        
+        Task.Delay(TimeSpan.FromSeconds(secondsToNextMinute)).ContinueWith(_ =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                // 创建每分钟刷新一次的定时器
+                _minuteTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMinutes(1)
+                };
+                _minuteTimer.Tick += (_, _) => 
+                {
+                    CurrentTime = DateTime.Now.ToString("HH:mm");
+                };
+                _minuteTimer.Start();
+            
+                // 立即更新一次（整点时刻）
+                CurrentTime = DateTime.Now.ToString("HH:mm");
+            });
+        });
+    }
     
     private async Task DelayRemoveNotification(NotificationItem item)
     {

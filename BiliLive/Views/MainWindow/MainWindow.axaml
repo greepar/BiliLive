@@ -101,7 +101,7 @@
                                     <TextBlock Grid.Row="0" Margin="15 15 0 0"
                                                FontSize="12" FontWeight="Regular"
                                                Foreground="{DynamicResource OnSurface}"
-                                               Text="01:12" />
+                                               Text="{Binding CurrentTime}" />
 
                                     <!-- 中间导航部分 -->
                                     <StackPanel Grid.Row="1" Margin="10 30 10 30" Spacing="7"
