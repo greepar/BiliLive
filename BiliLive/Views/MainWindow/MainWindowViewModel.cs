@@ -227,6 +227,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void SwitchPage(NavigationPage navigationPage)
     {
+        if (CurrentBtn == navigationPage)return;
         switch (navigationPage)
         {
             case NavigationPage.Home:
