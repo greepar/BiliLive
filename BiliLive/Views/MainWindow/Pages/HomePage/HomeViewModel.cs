@@ -1,13 +1,18 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using BiliLive.Core.Interface;
+using BiliLive.Core.Models.BiliService;
+using BiliLive.Core.Services.BiliService;
 using BiliLive.Services;
 using BiliLive.Utils;
 using BiliLive.Views.MainWindow.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow.Pages.HomePage;
 
@@ -29,19 +34,40 @@ public partial class HomeViewModel : ViewModelBase
     
     [ObservableProperty] private string _statusText = "未直播";
 
-    public HomeViewModel()
+    private readonly IBiliService _biliService;
+    public HomeViewModel(IServiceProvider? serviceProvider = null)
     {
-        if (Design.IsDesignMode)
+        using var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 80*2, 80*2) ?? new Bitmap(faceMs);
+        
+        if (Design.IsDesignMode || serviceProvider == null)
         {
-            var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-            UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 60, 60) ?? new Bitmap(faceMs);
+            //设计时数据
+            DanmakuVm = new DanmakuPanelViewModel();
+            _biliService = new BiliServiceImpl();
+        }
+        else
+        {
+            DanmakuVm = serviceProvider.GetService(typeof(DanmakuPanelViewModel));
+            _biliService = serviceProvider.GetRequiredService<IBiliService>();
         }
     }
-    public HomeViewModel(IServiceProvider serviceProvider) : this()
+
+    
+    public async Task LoadHomeVmAsync(LoginResult loginResult)
     {
-        DanmakuVm = serviceProvider.GetService(typeof(DanmakuPanelViewModel));
-        var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 60, 60) ?? new Bitmap(faceMs);
+        if (loginResult is LoginSuccess result)
+        {
+            UserName = result.UserName;
+            UserId = result.UserId;
+            using var ms = new MemoryStream(result.UserFaceBytes);
+            UserFace = PicHelper.ResizeStreamToBitmap(ms, 80*2, 80*2) ?? new Bitmap(ms);
+            var roomInfo = await _biliService.GetRoomInfoAsync();
+            RoomCover?.Dispose();
+            using var rcMs = new MemoryStream(roomInfo.RoomCover);
+            RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 157*2, 91*2) ?? new Bitmap(rcMs);
+            RoomTitle = roomInfo.Title;
+        }
     }
     
     [RelayCommand]

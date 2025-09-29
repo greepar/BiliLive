@@ -31,7 +31,7 @@ public class BiliServiceImpl : IBiliService
         _loginService = new LoginService(httpClient, cookieContainer);
     }
 
-    public bool IsLogged  { get; private set; } = true;
+    public bool IsLogged  { get; private set; }
 
     public async Task<LoginResult> LoginAsync(string? biliCookie = null)
     {

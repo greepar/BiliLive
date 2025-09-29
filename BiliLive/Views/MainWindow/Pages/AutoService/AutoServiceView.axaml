@@ -8,7 +8,6 @@
              FontFamily="{StaticResource NotoRegular}"
              x:DataType="vm:AutoServiceViewModel"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="570"
-
              x:Class="BiliLive.Views.MainWindow.Pages.AutoService.AutoServiceView">
     
     <UserControl.Styles>
@@ -183,7 +182,6 @@
                             <Button Name="TimePickerButton"
                                     Height="30"
                                     CornerRadius="8"
-                                    Click="TimePickerButton_OnClick"
                                     Content="{Binding FormattedStartTime}"
                                     Theme="{StaticResource MdButton}"
                                     VerticalAlignment="Center">

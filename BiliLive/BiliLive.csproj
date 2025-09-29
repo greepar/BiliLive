@@ -32,10 +32,6 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.6" />
-        <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.3.0.6" />
-        <PackageReference Include="brokiem.Egolds.Avalonia.Xaml.Interactions.Animated" Version="11.2.1" />
-        <PackageReference Include="Egolds.Avalonia.Xaml.Interactions.Animated" Version="11.2.3" />
         <PackageReference Include="HotAvalonia" Version="3.0.0" PrivateAssets="All" Publish="True" />
         <PackageReference Include="Avalonia" Version="11.3.6" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
@@ -48,14 +44,11 @@
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0-preview.6.25358.103" />
-        <PackageReference Include="SmartMvvm.Avalonia.Xaml" Version="2.0.0" />
         <PackageReference Include="ViewLocator.Generator" Version="2025.8.4.737-manual">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="ViewLocator.Generator.Common" Version="2025.8.4.737-manual" />
-        <PackageReference Include="Zafiro.Avalonia.Xaml.Behaviors" Version="1.1.0" />
-        <PackageReference Include="Zafiro.Avalonia.Xaml.Interactions" Version="1.1.0" />
     </ItemGroup>
 
     

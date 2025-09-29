@@ -6,35 +6,83 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BiliLive.Views.MainWindow.Pages.HomePage.HomeView"
              x:DataType="vm:HomeViewModel">
+    
     <Design.DataContext>
         <vm:HomeViewModel/>
     </Design.DataContext>
     
-    <StackPanel Orientation="Horizontal">
-        <Border MinWidth="300">
-            <ContentControl Content="{Binding DanmakuVm}"/>
-        </Border>
-
-        <StackPanel Orientation="Vertical">
-            <TextBlock Text="{Binding UserName,StringFormat=用户名{0}}"/>
-            <TextBlock Text="{Binding UserId,StringFormat=Uid:{0}}"/>
-            <TextBlock Text="{Binding MaskedApiKey,StringFormat=ApiKey:{0}}"/>
-            <TextBlock Text="{Binding MaskedApiKey,StringFormat=StreamUrl:{0}}"/>
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Left">
-                <TextBlock>头像:</TextBlock>
-                <Border Height="30" Width="30"
-                        ClipToBounds="True"
-                        CornerRadius="30">
-                    <Image Source="{Binding UserFace}"/>
+    <Grid RowDefinitions="Auto,Auto,*">
+        
+        <TextBlock Grid.Row="0" Text="主页" FontSize="18"/>
+        <Border Grid.Row="1"
+                Margin="-5 10 0 0"
+                CornerRadius="23"
+                Background="{DynamicResource SurfaceContainer}">
+            <Grid ColumnDefinitions="Auto,*" Margin="8">
+                <!-- 封面 -->
+                <!-- <Border Grid.Column="0" Margin="5" -->
+                <!--         CornerRadius="18" ClipToBounds="True"> -->
+                <!--     <Image Source="{Binding RoomCover}" -->
+                <!--            Width="157" Height="91"> -->
+                <!--     </Image> -->
+                <!-- </Border> -->
+                
+                <!-- 头像 -->
+                <Border Grid.Column="0" Margin="5"
+                        Width="80" Height="80"
+                        CornerRadius="40" ClipToBounds="True">
+                    <Image Source="{Binding UserFace}"
+                           Width="80" Height="80">
+                    </Image>
                 </Border>
-            </StackPanel>
-            <TextBlock Text="{Binding StatusText,StringFormat=Status:{0}}"/>
-            <Button Content="选择分区"
-                    Command="{Binding SelectAreaCommand}"/>
+                
+                <StackPanel Grid.Column="1" Margin="10,0,0,0"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="{Binding UserName}"
+                               FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding UserId,StringFormat=Uid:{0}}"
+                               FontSize="12"/>
+                    <!-- <TextBlock Text="{Binding MaskedApiKey,StringFormat=ApiKey:{0}}" -->
+                    <!--            FontSize="14"/> -->
+                    <!-- <TextBlock Text="{Binding MaskedStreamUrl,StringFormat=推流地址:{0}}" -->
+                    <!--            FontSize="14" TextTrimming="CharacterEllipsis" MaxWidth="400"/> -->
+                    <!-- <TextBlock Text="{Binding StatusText,StringFormat=Status:{0}}" -->
+                    <!--            FontSize="14"/> -->
+                    <!-- <Button Content="选择分区" -->
+                    <!--         Command="{Binding SelectAreaCommand}" -->
+                    <!--         Width="80" Height="30" Margin="0,5,0,0"/> -->
+                </StackPanel>
+            </Grid>
             
-        </StackPanel>
-    </StackPanel>
+        </Border>
+        
+    </Grid>
+    
+    <!-- <StackPanel Orientation="Horizontal"> -->
+    <!--     ~1~ <Border MinWidth="300"> @1@ -->
+    <!--     ~1~     <ContentControl Content="{Binding DanmakuVm}"/> @1@ -->
+    <!--     ~1~ </Border> @1@ -->
+    <!-- -->
+    <!--     <StackPanel Orientation="Vertical"> -->
+    <!--         <TextBlock Text="{Binding UserName,StringFormat=用户名:{0}}"/> -->
+    <!--         <TextBlock Text="{Binding UserId,StringFormat=Uid:{0}}"/> -->
+    <!--         <TextBlock Text="{Binding MaskedApiKey,StringFormat=ApiKey:{0}}"/> -->
+    <!--         <TextBlock Text="{Binding MaskedApiKey,StringFormat=StreamUrl:{0}}"/> -->
+    <!--         <StackPanel Orientation="Horizontal" -->
+    <!--                     HorizontalAlignment="Left"> -->
+    <!--             <TextBlock>头像:</TextBlock> -->
+    <!--             <Border Height="30" Width="30" -->
+    <!--                     ClipToBounds="True" -->
+    <!--                     CornerRadius="30"> -->
+    <!--                 <Image Source="{Binding UserFace}"/> -->
+    <!--             </Border> -->
+    <!--         </StackPanel> -->
+    <!--         <TextBlock Text="{Binding StatusText,StringFormat=Status:{0}}"/> -->
+    <!--         <Button Content="选择分区" -->
+    <!--                 Command="{Binding SelectAreaCommand}"/> -->
+    <!--          -->
+    <!--     </StackPanel> -->
+    <!-- </StackPanel> -->
   
     
 </UserControl>

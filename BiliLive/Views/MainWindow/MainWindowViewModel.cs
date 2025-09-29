@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
+using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
 using BiliLive.Views.MainWindow.Controls;
 using BiliLive.Views.MainWindow.Pages.About;
@@ -56,7 +57,7 @@ public enum NavigationPage
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly IBiliService? _biliService;
+    private readonly IBiliService _biliService;
     
     [ObservableProperty] private ObservableCollection<NotificationItem> _notifications =
     [
@@ -109,6 +110,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (Design.IsDesignMode || serviceProvider == null)
         {
             // 设计时用默认实现
+            _biliService = new BiliServiceImpl();
             AccountVm = new AccountsViewModel();
             _asVm = new AutoServiceViewModel();
             _homeVm = new HomeViewModel();
@@ -142,7 +144,7 @@ public partial class MainWindowViewModel : ViewModelBase
        
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
-        var loginResult = await _biliService!.LoginAsync(appConfig.BiliCookie);
+        var loginResult = await _biliService.LoginAsync(appConfig.BiliCookie);
         
         await LoadLoginResult(loginResult);
     }
@@ -176,10 +178,10 @@ public partial class MainWindowViewModel : ViewModelBase
             var faceBytes = result.UserFaceBytes;
             using var stream = new MemoryStream(faceBytes);
             UserFace?.Dispose();
-            UserFace = PicHelper.ResizeStreamToBitmap(stream, 37, 37);
+            UserFace = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
             
             //刷新HomeView
-            // _homeVm.LoadUserInfoCommand.Execute(null);
+            await _homeVm.LoadHomeVmAsync(loginResult);
         }
         else
         {
@@ -187,34 +189,30 @@ public partial class MainWindowViewModel : ViewModelBase
             UserName = "Login Failed";
             var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/UserPic.jpg"));
             UserFace?.Dispose();
-            UserFace = new Bitmap(stream);
+            UserFace = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
         }
     }
     
     
-    
     [RelayCommand]
-    private void SwitchAbout()
+    private void SwitchPage(NavigationPage navigationPage)
     {
-        // if (_biliService==null) {return;}
-        CurrentBtn = NavigationPage.About;
-        CurrentVm = new AboutViewModel();
+        switch (navigationPage)
+        {
+            case NavigationPage.Home:
+                CurrentBtn = NavigationPage.Home;
+                CurrentVm = _homeVm;
+                break;
+            case NavigationPage.AutoService:
+                CurrentBtn = NavigationPage.AutoService;
+                CurrentVm = _asVm;
+                break;
+            case NavigationPage.About:
+                CurrentBtn = NavigationPage.About;
+                CurrentVm = new AboutViewModel();
+                break;
+        }
     }
-    
-    [RelayCommand]
-    private void SwitchAutoService()
-    {
-        // if (_biliService==null) {return;}
-        CurrentBtn = NavigationPage.AutoService;
-        CurrentVm = _asVm;
-    }    
-    
-    [RelayCommand]
-    private void SwitchHomePage()
-    {
-        // if (_biliService==null) {return;}
-        CurrentBtn = NavigationPage.Home;
-        CurrentVm = _homeVm;
-    }
+
     
 }

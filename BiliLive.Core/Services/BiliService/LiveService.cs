@@ -30,7 +30,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         {
             RoomCover = rcBytes,
             Title = jsonDoc.RootElement.GetProperty("data").GetProperty("title").GetString() ?? "未命名直播间",
-            RoomId = 1.ToString()
+            RoomId = await GetRoomIdAsync()
         };
     }
 
@@ -98,7 +98,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         return "test";
     }
     
-    private async Task<string?> GetRoomIdAsync()
+    private async Task<string> GetRoomIdAsync()
     {
         await using var response = await httpClient.GetStreamAsync(RoomIdUrl);
         using var jsonDoc = await JsonDocument.ParseAsync(response);

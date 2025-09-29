@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -25,13 +26,22 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
+        // Opened += (_, _) =>
+        // {
+        //     // SideNavBar.Measure(Size.Infinity);
+        //     w = w >= 170 ? w : 170;
+        //     SideNavBar.Width = w;
+        //     _initialNavBarWidth = 170;
+        // };
+        
         SideNavBar.AttachedToVisualTree += async (_, _) =>
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var w = SideNavBar.Bounds.Width;
+                var w = SideNavBar.DesiredSize.Width;
+                w = w >= 170 ? w : 170;
                 SideNavBar.Width = w;
-                _initialNavBarWidth = SideNavBar.Bounds.Width;
+                _initialNavBarWidth = 170;
             }, DispatcherPriority.Render);
         };
 

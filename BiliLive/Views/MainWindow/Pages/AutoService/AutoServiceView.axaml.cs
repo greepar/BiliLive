@@ -28,38 +28,38 @@ public partial class AutoServiceView : UserControl
         }
     }
     
-    private void TimePickerButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        if (sender is not Button timePickerButton || DataContext is not AutoServiceViewModel mainVm) return;
-
-        if (timePickerButton.Flyout is not Flyout flyout) return;
-
-        if (flyout.Content is not TimePickerView timePickerView) return;
-
-        var timePickerVm = new TimePickerViewModel(mainVm.StartTime);
-        timePickerView.DataContext = timePickerVm;
-
-        void OnConfirm(TimeSpan newTime)
-        {
-            mainVm.StartTime = newTime;
-            flyout.Hide();
-            Cleanup();
-        }
-
-        void OnCancel()
-        {
-            flyout.Hide();
-            Cleanup();
-        }
-
-        void Cleanup()
-        {
-            timePickerVm.OnConfirm -= OnConfirm;
-            timePickerVm.OnCancel -= OnCancel;
-        }
-
-        timePickerVm.OnConfirm += OnConfirm;
-        timePickerVm.OnCancel += OnCancel;
-        flyout.ShowAt(timePickerButton);
-    }
+    // private void TimePickerButton_OnClick(object? sender, RoutedEventArgs e)
+    // {
+    //     if (sender is not Button timePickerButton || DataContext is not AutoServiceViewModel mainVm) return;
+    //
+    //     if (timePickerButton.Flyout is not Flyout flyout) return;
+    //
+    //     if (flyout.Content is not TimePickerView timePickerView) return;
+    //
+    //     var timePickerVm = new TimePickerViewModel(mainVm.StartTime);
+    //     timePickerView.DataContext = timePickerVm;
+    //
+    //     void OnConfirm(TimeSpan newTime)
+    //     {
+    //         mainVm.StartTime = newTime;
+    //         flyout.Hide();
+    //         Cleanup();
+    //     }
+    //
+    //     void OnCancel()
+    //     {
+    //         flyout.Hide();
+    //         Cleanup();
+    //     }
+    //
+    //     void Cleanup()
+    //     {
+    //         timePickerVm.OnConfirm -= OnConfirm;
+    //         timePickerVm.OnCancel -= OnCancel;
+    //     }
+    //
+    //     timePickerVm.OnConfirm += OnConfirm;
+    //     timePickerVm.OnCancel += OnCancel;
+    //     flyout.ShowAt(timePickerButton);
+    // }
 }

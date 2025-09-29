@@ -92,9 +92,9 @@
                                 </Transitions>
                             </Border.Transitions>
 
-                            <Grid HorizontalAlignment="Left">
+                            <Grid HorizontalAlignment="Stretch">
                                 <!-- 背景Border -->
-                                <Border Background="{DynamicResource InverseOnSurface}" Opacity="1.0" />
+                                <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7" />
 
                                 <Grid RowDefinitions="Auto,*,Auto">
                                     <!-- 顶部时间 -->
@@ -167,7 +167,8 @@
                                         <!-- 主页按钮 -->
                                         <ToggleButton Click="SwitchPageAnime"
                                                       IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
-                                                      Command="{Binding SwitchHomePageCommand}">
+                                                      Command="{Binding SwitchPageCommand}"
+                                                      CommandParameter="{x:Static mainWindow:NavigationPage.Home}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Home}}"/>
@@ -179,7 +180,8 @@
                                         <!-- 自动直播按钮 -->
                                         <ToggleButton Click="SwitchPageAnime"
                                                       IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
-                                                      Command="{Binding SwitchAutoServiceCommand}">
+                                                      Command="{Binding SwitchPageCommand}"
+                                                      CommandParameter="{x:Static mainWindow:NavigationPage.AutoService}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}"/>
@@ -191,7 +193,8 @@
                                         <!-- 关于按钮 -->
                                         <ToggleButton Click="SwitchPageAnime"
                                                       IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
-                                                      Command="{Binding SwitchAboutCommand}">
+                                                      Command="{Binding SwitchPageCommand}"
+                                                      CommandParameter="{x:Static mainWindow:NavigationPage.About}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
