@@ -39,26 +39,30 @@
                             Background="Transparent"
                             PointerPressed="InputElement_OnPointerPressed">
                         <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
+                            
+                            <StackPanel.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="Width" Value="30"/>
+                                    <Setter Property="Height" Value="30"/>
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="CornerRadius" Value="10"/>
+                                    <Setter Property="Theme" Value="{StaticResource MdButton}"/>
+                                    <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+                                </Style>
+                                <Style Selector="SvgBox">
+                                    <Setter Property="Width" Value="15"/>
+                                    <Setter Property="Height" Value="15"/>
+                                    <Setter Property="Fill" Value="{DynamicResource OnSurface}"/>
+                                </Style>
+                            </StackPanel.Styles>
+                            
                             <!-- 最小化按钮 -->
-                            <Button Width="30"
-                                    Height="30"
-                                    HorizontalAlignment="Right"
-                                    CornerRadius="10"
-                                    Background="{DynamicResource SurfaceContainer}"
-                                    Theme="{StaticResource MdButton}"
-                                    Click="MinimizeButton_OnClick">
-                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"
-                                        Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
+                            <Button Click="MinimizeButton_OnClick">
+                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"/>
                             </Button>
 
                             <!-- 关闭按钮 -->
-                            <Button Width="30"
-                                    Height="30"
-                                    HorizontalAlignment="Right"
-                                    CornerRadius="10"
-                                    Background="{DynamicResource SurfaceContainer}"
-                                    Margin="9 0 15 0"
-                                    Theme="{StaticResource MdButton}"
+                            <Button Margin="9 0 15 0"
                                     Click="CloseButton_OnClick">
                                 <Button.Styles>
                                     <Style Selector="Button:pointerover /template/ ContentPresenter">
@@ -67,8 +71,7 @@
                                         <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
                                     </Style>
                                 </Button.Styles>
-                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Error}}"
-                                        Width="15" Height="15" Fill="{DynamicResource OnSurface}" />
+                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Error}}"/>
                             </Button>
 
                         </StackPanel>
@@ -78,7 +81,6 @@
 
                         <!-- 左侧导航栏 -->
                         <Border Name="SideNavBar"
-
                                 ClipToBounds="True"
                                 Grid.Column="0">
 
@@ -140,66 +142,60 @@
                                         <!-- 分割线 -->
                                         <Border Margin="8" />
 
+                                        
+                                        <!-- 设置切换页面按钮样式 -->
+                                        <StackPanel.Styles>
+                                            <Style Selector="ToggleButton">
+                                                <Setter Property="CornerRadius" Value="18"/>
+                                                <Setter Property="Theme" Value="{StaticResource PageSwitchBtn}"/>
+                                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                                <Setter Property="Height" Value="45"/>
+                                                <Setter Property="Background" Value="Transparent"></Setter>
+                                            </Style>
+                                            <Style Selector="SvgBox">
+                                                <Setter Property="Height" Value="20"/>
+                                                <Setter Property="Margin" Value="2 0 5 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="Fill" Value="{DynamicResource OnSurface}"/>
+                                            </Style>
+                                            <Style Selector="TextBlock">
+                                                <Setter Property="FontSize" Value="12"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </StackPanel.Styles>
+                                        
                                         <!-- 主页按钮 -->
-                                        <ToggleButton Height="45"
-                                                HorizontalAlignment="Stretch"
-                                                CornerRadius="18"
-                                                Background="Transparent"
-                                                Theme="{StaticResource PageSwitchBtn}"
-                                                Click="Button_CancelBtn"
-                                                IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
-                                                Command="{Binding SwitchHomePageCommand}">
+                                        <ToggleButton Click="SwitchPageAnime"
+                                                      IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
+                                                      Command="{Binding SwitchHomePageCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
-                                                    <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Home}}"
-                                                            Height="20" Margin="2 0 5 0"
-                                                            VerticalAlignment="Center"
-                                                            Fill="{DynamicResource OnSurface}" />
-                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center"
-                                                               FontSize="12"
-                                                               Text="Home Page" />
+                                                    <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Home}}"/>
+                                                    <TextBlock Grid.Column="1" Text="Home Page" />
                                                 </Grid>
                                             </Border>
                                         </ToggleButton>
 
                                         <!-- 自动直播按钮 -->
-                                        <ToggleButton Height="45"
-                                                HorizontalAlignment="Stretch"
-                                                CornerRadius="18"
-                                                Click="Button_CancelBtn"
-                                                Theme="{StaticResource PageSwitchBtn}"
-                                                IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
-                                                Command="{Binding SwitchAutoServiceCommand}">
+                                        <ToggleButton Click="SwitchPageAnime"
+                                                      IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
+                                                      Command="{Binding SwitchAutoServiceCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
-                                                    <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}"
-                                                            Height="20" Margin="2 0 5 0"
-                                                            VerticalAlignment="Center"
-                                                            Fill="{DynamicResource OnSurface}" />
-                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center"
-                                                               FontSize="12"
-                                                               Text="Auto Service" />
+                                                    <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}"/>
+                                                    <TextBlock Grid.Column="1" Text="Auto Service" />
                                                 </Grid>
                                             </Border>
                                         </ToggleButton>
 
                                         <!-- 关于按钮 -->
-                                        <ToggleButton Height="45"
-                                                HorizontalAlignment="Stretch"
-                                                CornerRadius="18"
-                                                Click="Button_CancelBtn"
-                                                Theme="{StaticResource PageSwitchBtn}"
-                                                IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
-                                                Command="{Binding SwitchAboutCommand}">
+                                        <ToggleButton Click="SwitchPageAnime"
+                                                      IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
+                                                      Command="{Binding SwitchAboutCommand}">
                                             <Border Margin="5 0 5 0">
                                                 <Grid ColumnDefinitions="Auto,*">
-                                                    <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"
-                                                            Height="20" Margin="2 0 5 0"
-                                                            VerticalAlignment="Center"
-                                                            Fill="{DynamicResource OnSurface}" />
-                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center"
-                                                               FontSize="12"
-                                                               Text="About" />
+                                                    <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
+                                                    <TextBlock Grid.Column="1" Text="About" />
                                                 </Grid>
                                             </Border>
                                         </ToggleButton>
@@ -238,7 +234,7 @@
                                                 <TextBlock Grid.Column="1" Margin="10 0 15 0"
                                                            VerticalAlignment="Center" HorizontalAlignment="Center"
                                                            FontSize="13"
-                                                           Text="IsPVP_Good_" />
+                                                           Text="{Binding UserName}" />
                                             </Grid>
                                         </Grid>
                                     </Border>
@@ -251,10 +247,17 @@
                             <Border Background="Transparent" />
                             <!-- <TextBlock Text="{Binding UserName}"></TextBlock> -->
                             
-                            <Border Name="ContentBorder">
-                                <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch"
-                                                Content="{Binding CurrentVm}" />
-                            </Border>
+                            <Grid>
+                                <ProgressBar IsIndeterminate="True"
+                                             Width="120" MinWidth="10"
+                                             IsVisible="{Binding LoadAccountCommand.IsRunning}"/>
+                                
+                                <Border Name="ContentBorder" IsVisible="{Binding !LoadAccountCommand.IsRunning}">
+                                    <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch"
+                                                    Content="{Binding CurrentVm}" />
+                                </Border>
+                            </Grid>
+                            
                            
 
                             <!-- 左下方弹出登录窗口 -->

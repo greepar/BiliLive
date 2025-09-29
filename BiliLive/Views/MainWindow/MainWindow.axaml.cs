@@ -197,7 +197,7 @@ public partial class MainWindow : Window
             SideNavBar.Width = 60;
     }
 
-    private async void Button_CancelBtn(object? sender, RoutedEventArgs e)
+    private async void SwitchPageAnime(object? sender, RoutedEventArgs e)
     {
         if (sender is ToggleButton btn)
         {

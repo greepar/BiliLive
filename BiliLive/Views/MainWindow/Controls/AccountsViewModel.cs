@@ -8,6 +8,7 @@ using BiliLive.Core.Interface;
 using BiliLive.Core.Services.BiliService;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using QRCoder;
 
 namespace BiliLive.Views.MainWindow.Controls;
@@ -73,8 +74,10 @@ public partial class AccountsViewModel : ViewModelBase
                             break;
                         case 0:
                             //登录成功
+                            
+                            var loginResult = await _biliService.LoginAsync();
+                            WeakReferenceMessenger.Default.Send(new LoginMessage(loginResult));
                             await _pollingCts.CancelAsync();
-                            await RefreshInfoAsync();
                             break;
                         case 86038:
                             //二维码失效
@@ -106,12 +109,6 @@ public partial class AccountsViewModel : ViewModelBase
         IsInLoginProcess = !IsInLoginProcess;
         _pollingCts.Cancel();
         QrCodePic?.Dispose();
-    }
-    
-    //通知MainViewModel刷新信息
-    private async Task RefreshInfoAsync()
-    {
-        await Task.Delay(1);
     }
     
 }

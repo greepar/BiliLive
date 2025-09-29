@@ -29,7 +29,6 @@ public class App : Application
                 services.AddTransient<AutoServiceView>();
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<AccountsViewModel>();
-                services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<HomeViewModel>();
                 services.AddTransient<DanmakuPanelViewModel>();
                

@@ -5,7 +5,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Services;
 using BiliLive.Utils;
-using BiliLive.Views.DialogWindow;
 using BiliLive.Views.MainWindow.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -48,12 +47,74 @@ public partial class HomeViewModel : ViewModelBase
     [RelayCommand]
     private async Task SelectAreaAsync()
     {
-        await ShowWindowHelper.ShowWindowAsync(new DialogWindow.DialogWindow()
-        {
-            DataContext = new DialogWindowViewModel()
-            {
-                Message = "hello"
-            }
-        });
+        await ShowWindowHelper.ShowErrorAsync("hello");
     }
+    
+        // [RelayCommand]
+    // private async Task CopyApiKeyToClipboard()
+    // {
+    //     if (string.IsNullOrWhiteSpace(_apiKey))
+    //     {
+    //         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开始直播",Geometry.Parse(MdIcons.Notice)));
+    //         return;
+    //     }
+    //     var clipboard = ClipboardHelper.Get();
+    //     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Copied to clipboard",Geometry.Parse(MdIcons.Check)));
+    //     await clipboard.SetTextAsync(_apiKey);
+    // }
+
+
+    // [RelayCommand]
+    // private async Task StartServiceAsync()
+    // {
+    //     _apiKey = await _biliService!.StartLiveAsync();
+    //     
+    //     if (_apiKey == null || _apiKey.Length <= 1 || _apiKey.StartsWith("Error"))
+    //     {
+    //         // if (_apiKey != null) await ShowWindowHelper.ShowDialogAsync(ShowWindowHelper.Status.Error, _apiKey);
+    //         IsStreaming = false;
+    //         // await DialogWindowHelper.ShowDialogAsync();
+    //         return;
+    //     }
+    //     
+    //
+    //     
+    //     MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
+    //
+    //     //自动服务
+    //     if (_asVm.IsEnabled)
+    //     {
+    //         if (string.IsNullOrWhiteSpace(_asVm.VideoPath) || string.IsNullOrWhiteSpace(_asVm.FfmpegPath))
+    //         {
+    //             WeakReferenceMessenger.Default.Send(
+    //                 new ShowNotificationMessage("请先设置Ffmpeg和视频路径", Geometry.Parse(MdIcons.Notice))
+    //             );
+    //             return;
+    //         }
+    //
+    //         var startResult = await FfmpegWrapper.StartStreamingAsync(
+    //             _asVm.FfmpegPath!, _asVm.VideoPath!, "", _apiKey!
+    //         );
+    //
+    //         if (!startResult)
+    //         {
+    //             // await ShowWindowHelper.ShowDialogAsync(
+    //             //     ShowWindowHelper.Status.Error,
+    //             //     "自动推流启动失败，请检查Ffmpeg和视频路径"
+    //             // );
+    //             IsStreaming = false;
+    //             return;
+    //         }
+    //
+    //
+    //         IsStreaming = true;
+    //         BtnWord = "Stop Stream";
+    //         Status = "Streaming";
+    //         WeakReferenceMessenger.Default.Send(
+    //             new ShowNotificationMessage("自动推流已启动", Geometry.Parse(MdIcons.Check)));
+    //     }
+    //     WeakReferenceMessenger.Default.Send(
+    //         new ShowNotificationMessage("开始推流成功", Geometry.Parse(MdIcons.Check))
+    //     );
+    // }
 }

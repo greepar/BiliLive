@@ -13,6 +13,7 @@ public class BiliServiceImpl : IBiliService
     private readonly LoginService _loginService;
     private readonly LiveService _liveService;
     
+    
     public BiliServiceImpl()
     {
         //初始化 HttpClient 和 CookieContainer
@@ -30,7 +31,15 @@ public class BiliServiceImpl : IBiliService
         _loginService = new LoginService(httpClient, cookieContainer);
     }
 
-    public async Task<LoginResult> LoginAsync(string? biliCookie = null) => await _loginService.LoginAsync(biliCookie);
+    public bool IsLogged  { get; private set; } = true;
+
+    public async Task<LoginResult> LoginAsync(string? biliCookie = null)
+    {
+        var loginResult = await _loginService.LoginAsync(biliCookie);
+        if (loginResult is LoginSuccess) { IsLogged = true; }
+        return loginResult;
+    }
+    
     public async Task<QrLoginInfo?> GetLoginUrlAsync() => await _loginService.GetLoginUrlAsync();
     public async Task<int?> GeQrStatusCodeAsync(string qrCodeKey) => await _loginService.GeQrStatusCodeAsync(qrCodeKey);
     

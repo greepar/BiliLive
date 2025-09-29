@@ -12,10 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Core.Services;
 using BiliLive.Models;
-using BiliLive.Resources;
-using BiliLive.Services;
 using BiliLive.Views.MainWindow.Controls;
 using BiliLive.Views.MainWindow.Pages.About;
 using BiliLive.Views.MainWindow.Pages.AutoService;
@@ -32,6 +29,10 @@ public class ShowNotificationMessage(string value, Geometry geometry)
 {
     public Geometry Geometry { get; } = geometry;
 }
+
+public class LoginMessage(LoginResult loginResult) 
+    : ValueChangedMessage<LoginResult>(loginResult){}
+
 
 //单个通知项
 public partial class NotificationItem : ObservableObject
@@ -56,11 +57,10 @@ public enum NavigationPage
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IBiliService? _biliService;
-
     
     [ObservableProperty] private ObservableCollection<NotificationItem> _notifications =
     [
-        //test icon
+        //图标列表
         // new("Welcome to BiliLive!", Geometry.Parse(MdIcons.Notice)),
         // new("Report issues on GitHub", Geometry.Parse(MdIcons.Error)),
         // new("Check for updates every week", Geometry.Parse(MdIcons.Check)),
@@ -76,60 +76,39 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]private NavigationPage _currentBtn = NavigationPage.Home;
     [ObservableProperty] private object _currentVm;
     
-    
-    
     //主窗口内容
     [ObservableProperty] private string? _userName = "Not Login";
-    [ObservableProperty] private long? _userId = 196431435;
     [ObservableProperty] private Bitmap? _userFace ;
     
-    [ObservableProperty] private string? _roomTitle;
-    [ObservableProperty] private string? _roomArea = "开播后获取..";
     
-    private string? _apiKey;
-    [ObservableProperty] private string _maskedApiKey = "Will be generated after start...";
-    
-    [ObservableProperty] private string? _status = "Not Login";
-    
-    
-    [ObservableProperty] private bool _showWindow;
-
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StreamButtonText))]
     private bool _isStreaming;
     public string StreamButtonText => IsStreaming ? "Stop stream" : "Start stream";
-
     
-    [ObservableProperty] private string? _btnWord = "Start Stream";
-
-    [ObservableProperty] private Bitmap? _roomCover ;
     
     public MainWindowViewModel(IServiceProvider? serviceProvider = null)
     {
-        
+        //传入服务
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
         {
             var item = new NotificationItem(m.Value,m.Geometry);
             Notifications.Add(item);
-
-            // 启动后台任务，5秒后移除
+            
             _ =  DelayRemoveNotification(item);
         });
-
+        WeakReferenceMessenger.Default.Register<LoginMessage>(this,  (o, m)  => 
+        {
+            _ = LoadLoginResult(m.Value,true);
+        });
         
-        // var coverStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/a.png"));
-        // var roomBm = PicHelper.ResizeStreamToBitmap(coverStream, 314, 178);
-        // RoomCover = roomBm;
-        //
-        var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        var userPicBm = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
-        UserFace = userPicBm;
+        using var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        UserFace = PicHelper.ResizeStreamToBitmap(stream, 66, 66);
         
         if (Design.IsDesignMode || serviceProvider == null)
         {
             // 设计时用默认实现
-       
             AccountVm = new AccountsViewModel();
             _asVm = new AutoServiceViewModel();
             _homeVm = new HomeViewModel();
@@ -141,17 +120,16 @@ public partial class MainWindowViewModel : ViewModelBase
           
             _asVm = serviceProvider.GetRequiredService<AutoServiceViewModel>();
             _homeVm = serviceProvider.GetRequiredService<HomeViewModel>();
-            PreLoadCommand.Execute(null);
+            LoadAccountCommand.Execute(null);
         }
         CurrentVm = _homeVm;
     }
     
-    
     //初始化内容
     [RelayCommand]
-    private async Task PreLoadAsync()
+    private async Task LoadAccountAsync()
     {
-        LoadAcVm();
+        await Task.Delay(1000);
         var appConfig = await ConfigManager.LoadConfigAsync();
         if (appConfig == null) { return; }
         
@@ -159,111 +137,16 @@ public partial class MainWindowViewModel : ViewModelBase
         _asVm.VideoPath = appConfig.VideoPath;
         _asVm.FfmpegPath = appConfig.FfmpegPath;
         _asVm.IsEnabled = appConfig.EnableAutoService;
-        // AsVm.AsHeight = AsVm.IsEnabled ? 140 : 35;
-        // AsVm.AutoStart = appConfig.AutoStart;
-        // AsVm.Check60MinTask = appConfig.Check60MinTask;
+        _asVm.IsAutoStart = appConfig.AutoStart;
+        _asVm.IsCheck60MinTask = appConfig.Check60MinTask;
        
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
         var loginResult = await _biliService!.LoginAsync(appConfig.BiliCookie);
         
         await LoadLoginResult(loginResult);
-        //检查是否需要自动开播
-        // if (AsVm is { AutoStart: true, IsEnabled: true } && loginResult is LoginSuccess)
-        // {
-        //     await StartServiceAsync();
-        // }
-    }
-
-
-    
-    //登录相关
-    [RelayCommand]
-    private async Task LoginAsync()
-    {
-        await Task.Delay(1);
-        ShowWindow = !ShowWindow;
-        // if (_biliService==null) {return;}
-        // AcVm.ShowWindow = !AcVm.ShowWindow;
     }
     
-
-    
-    //功能
-    [RelayCommand]
-    private async Task ChangeAreaAsync()
-    {
-        await Task.Delay(1);
-        UserName = "HelloArea";
-    }
-    
-    [RelayCommand]
-    private async Task CopyApiKeyToClipboard()
-    {
-        if (string.IsNullOrWhiteSpace(_apiKey))
-        {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开始直播",Geometry.Parse(MdIcons.Notice)));
-            return;
-        }
-        var clipboard = ClipboardHelper.Get();
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Copied to clipboard",Geometry.Parse(MdIcons.Check)));
-        await clipboard.SetTextAsync(_apiKey);
-    }
-
-
-    [RelayCommand]
-    private async Task StartServiceAsync()
-    {
-        _apiKey = await _biliService!.StartLiveAsync();
-        
-        if (_apiKey == null || _apiKey.Length <= 1 || _apiKey.StartsWith("Error"))
-        {
-            // if (_apiKey != null) await ShowWindowHelper.ShowDialogAsync(ShowWindowHelper.Status.Error, _apiKey);
-            IsStreaming = false;
-            // await DialogWindowHelper.ShowDialogAsync();
-            return;
-        }
-        
-    
-        
-        MaskedApiKey = $"{_apiKey?.Substring(0, 17)}**********{_apiKey?.Substring(_apiKey.Length - 8)}";
-
-        //自动服务
-        if (_asVm.IsEnabled)
-        {
-            if (string.IsNullOrWhiteSpace(_asVm.VideoPath) || string.IsNullOrWhiteSpace(_asVm.FfmpegPath))
-            {
-                WeakReferenceMessenger.Default.Send(
-                    new ShowNotificationMessage("请先设置Ffmpeg和视频路径", Geometry.Parse(MdIcons.Notice))
-                );
-                return;
-            }
-
-            var startResult = await FfmpegWrapper.StartStreamingAsync(
-                _asVm.FfmpegPath!, _asVm.VideoPath!, "", _apiKey!
-            );
-
-            if (!startResult)
-            {
-                // await ShowWindowHelper.ShowDialogAsync(
-                //     ShowWindowHelper.Status.Error,
-                //     "自动推流启动失败，请检查Ffmpeg和视频路径"
-                // );
-                IsStreaming = false;
-                return;
-            }
-
-
-            IsStreaming = true;
-            BtnWord = "Stop Stream";
-            Status = "Streaming";
-            WeakReferenceMessenger.Default.Send(
-                new ShowNotificationMessage("自动推流已启动", Geometry.Parse(MdIcons.Check)));
-        }
-        WeakReferenceMessenger.Default.Send(
-            new ShowNotificationMessage("开始推流成功", Geometry.Parse(MdIcons.Check))
-        );
-    }
 
     [RelayCommand]
     private void OpenCurrentFolder()
@@ -283,39 +166,31 @@ public partial class MainWindowViewModel : ViewModelBase
          Notifications.Remove(item);
     }
     
-    private async Task LoadLoginResult(LoginResult loginResult)
+    private async Task LoadLoginResult(LoginResult loginResult,bool saveCookie = false)
     {
         if (loginResult is LoginSuccess result)
         {
-            await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,result.BiliCookie);
+            if (saveCookie) await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,result.BiliCookie); 
+           
             UserName = result.UserName;
-            UserId = result.UserId;
             var faceBytes = result.UserFaceBytes;
             using var stream = new MemoryStream(faceBytes);
+            UserFace?.Dispose();
             UserFace = PicHelper.ResizeStreamToBitmap(stream, 37, 37);
-    
-            var roomInfo = await _biliService!.GetRoomInfoAsync();
-            var roomCover = roomInfo.RoomCover;
-            using var rcStream = new MemoryStream(roomCover);
-            RoomTitle = roomInfo.Title;
-            RoomCover = PicHelper.ResizeStreamToBitmap(rcStream, 314, 178);
-            LoadAcVm();
+            
+            //刷新HomeView
+            // _homeVm.LoadUserInfoCommand.Execute(null);
         }
         else
         {
             //登录失败
             UserName = "Login Failed";
-            UserId = null;
             var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/UserPic.jpg"));
+            UserFace?.Dispose();
             UserFace = new Bitmap(stream);
         }
     }
     
-    private void LoadAcVm()
-    {
-        //初始化账号面板
-      
-    }
     
     
     [RelayCommand]

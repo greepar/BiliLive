@@ -5,6 +5,9 @@ namespace BiliLive.Core.Interface;
 
 public interface IBiliService
 {
+    //状态相关
+    bool IsLogged { get; }
+    
     // 登录相关
     Task<LoginResult> LoginAsync(string? biliCookie = null);
     Task<QrLoginInfo?> GetLoginUrlAsync();

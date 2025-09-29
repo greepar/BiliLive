@@ -3,10 +3,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
+using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Services;
@@ -16,6 +19,7 @@ using BiliLive.Views.MainWindow.Pages.AutoService.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService;
 
@@ -31,6 +35,9 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private bool _isRandomSecond;
     [ObservableProperty] private bool _isCheck60MinTask;
     
+    //小号相关
+    [ObservableProperty] private bool _isAltServiceEnabled;
+    
     //时间
     [ObservableProperty] private string? _startHour;
     [ObservableProperty] private string? _startMinute;
@@ -41,22 +48,80 @@ public partial class AutoServiceViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(FormattedStartTime))]
     private TimeSpan _startTime = new(0, 5, 0);
     public string FormattedStartTime => StartTime.ToString(@"hh\:mm\:ss");
-    
+
+
+    private readonly IBiliService _biliService;
+    public AutoServiceViewModel(IServiceProvider? serviceProvider = null)
+    {
+        if (!Design.IsDesignMode && serviceProvider != null)
+        {
+            _biliService = serviceProvider.GetService<IBiliService>() ?? new BiliServiceImpl();
+        }
+        else
+        {
+            _biliService = new BiliServiceImpl();
+        }
+        InitializeCommand.Execute(null);
+    }
     
     //初始化数据
     [RelayCommand]
     private async Task InitializeAsync()
     {
+        //检查功能是否开启
+        if (!IsAltServiceEnabled)
+        {
+            foreach (var alt in AltsList.ToList())
+            {
+                alt.Dispose();
+            }
+            AltsList.Clear();
+            return;
+        }
+        
+        if (!_biliService.IsLogged)
+        {
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先登录主账号",Geometry.Parse(MdIcons.Error)));
+            IsAltServiceEnabled = false;
+            return;
+        }
+        
         var config = await ConfigManager.LoadConfigAsync();
         if (config is null) return;
         if (config.Alts.Count > 0)
         {
-            foreach (var altSettings in config.Alts.OfType<AltSettings>())
+            var tasks = config.Alts
+                .Where(_ => true)
+                .Select(async altSettings =>
+                {
+                    try
+                    {
+                        var alt = await Alt.CreateAltAsync(altSettings, RemoveAlt);
+                        return new { Result = (Alt?)alt , AltSettings = altSettings , ExceptionMsg = (string?)null };
+                    }
+                    catch (Exception ex)
+                    {
+                        return new { Result = (Alt?)null, AltSettings = altSettings , ExceptionMsg = (string?)ex.Message };
+                    }
+                });
+            var results = await Task.WhenAll(tasks);
+            
+            // 分别处理成功和失败的结果
+            foreach (var res in results)
             {
-                AltsList.Add(await Alt.CreateAltAsync(altSettings, RemoveAlt));
+                if (res.Result != null)
+                {
+                    AltsList.Add(res.Result);
+                }
+                if (res.ExceptionMsg != null)
+                {
+                    await ShowWindowHelper.ShowErrorAsync(
+                        $"账号 {res.AltSettings.UserName} 添加失败，可能是Cookie无效或网络异常，请重新添加。\n错误信息：{res.ExceptionMsg}");
+                }
             }
         }
     }
+    
     
     [RelayCommand]
     private async Task ToggleOptions()
@@ -72,7 +137,7 @@ public partial class AutoServiceViewModel : ViewModelBase
         
         
         //设置第二天基准
-  
+    
         var baseSeconds = StartTime.TotalSeconds;
         var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
         var streamTime = DateTime.Today.AddDays(1).AddSeconds(finalSeconds);
@@ -143,6 +208,11 @@ public partial class AutoServiceViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddAltsAsync()
     {
+        if (!IsAltServiceEnabled)
+        {
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先启用总服务",Geometry.Parse(MdIcons.Error)));
+            return;
+        }
         //弹出添加账号窗口
         using var altVm = new AltsManagerViewModel(false);
         await ShowWindowHelper.ShowWindowAsync(new AltsManager(){DataContext = altVm});
@@ -181,7 +251,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     }
 }
 
-public partial class Alt : ObservableObject
+public partial class Alt : ObservableObject , IDisposable
 {
     //先赋值
     [ObservableProperty] private string _userName;
@@ -255,9 +325,8 @@ public partial class Alt : ObservableObject
             _altSettings.ProxyAddress = altVm.ProxyAddress;
             _altSettings.ProxyUsername = altVm.ProxyUsername;
             _altSettings.ProxyPassword = altVm.ProxyPassword;
-
+            
             await SaveAltSettingsAsync();
-
         }
     }
     
@@ -309,8 +378,7 @@ public partial class Alt : ObservableObject
                 await ConfigManager.RemoveAltSettingsAsync(_altSettings);
                 
                 //删除账号时才释放服务
-                _altService.Dispose();
-                UserFace?.Dispose();
+                Dispose();
                 WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(MdIcons.Check)));
             }
        
@@ -320,5 +388,13 @@ public partial class Alt : ObservableObject
     private async Task SaveAltSettingsAsync()
     {
         await ConfigManager.SaveAltSettingsAsync(_altSettings);
+    }
+    
+    //释放资源
+    public void Dispose()
+    {
+        _altService.Dispose();
+        UserFace?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

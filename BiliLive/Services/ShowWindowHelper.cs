@@ -13,6 +13,18 @@ namespace BiliLive.Services;
 
 public static class ShowWindowHelper
 {
+    public static async Task ShowErrorAsync(string message)
+    {
+        var errorWindow = new DialogWindow()
+        {
+            DataContext = new DialogWindowViewModel()
+            {
+                Message = message
+            }
+        };
+        await ShowWindowAsync(errorWindow);
+    }
+    
     public static async Task ShowWindowAsync(Window window)
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: not null } desktop)

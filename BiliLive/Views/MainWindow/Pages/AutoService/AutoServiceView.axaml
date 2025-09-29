@@ -5,14 +5,20 @@
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService"
              xmlns:resources="clr-namespace:BiliLive.Resources"
              xmlns:converters="clr-namespace:BiliLive.Converters"
-             xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
              FontFamily="{StaticResource NotoRegular}"
              x:DataType="vm:AutoServiceViewModel"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="570"
 
              x:Class="BiliLive.Views.MainWindow.Pages.AutoService.AutoServiceView">
-
-
+    
+    <UserControl.Styles>
+        <!-- 设置全局的ToggleSwitch主题 -->
+        <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+        </Style>
+    </UserControl.Styles>
+    
+    
     <StackPanel Spacing="10">
         <!-- 设置核心部分 -->
         <Border Background="#F7F2FA"
@@ -162,11 +168,6 @@
                                           OffContent="" OnContent=""
                                           IsChecked="{Binding IsEnabled}"
                                           Command="{Binding ToggleOptionsCommand}">
-                                <ToggleSwitch.Styles>
-                                    <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-                                        <Setter Property="Background" Value="{DynamicResource Primary}" />
-                                    </Style>
-                                </ToggleSwitch.Styles>
                             </ToggleSwitch>
                         </Grid>
                     </Border>
@@ -227,14 +228,16 @@
             <Grid>
                 <Border Background="#F7F2FA" />
                 <Grid RowDefinitions="Auto,*">
+                    
                     <!-- 总开关 -->
                     <Border Grid.Row="0" Height="32"
                             VerticalAlignment="Top"
                             Background="#F8EAF3">
-                        <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                             <TextBlock Grid.Column="0" Text="小号自动投喂(在完成后)"
                                        Margin="14 0 0 0"
                                        VerticalAlignment="Center" />
+                            
                             <Button Grid.Column="2"
                                     Margin="0 0 2 0"
                                     RenderTransform="scale(0.9)"
@@ -252,7 +255,16 @@
                                     + Add account
                                 </TextBlock>
                             </Button>
-
+                            
+                            <ToggleSwitch Grid.Column="3" Margin="0 0 -4 0"
+                                          VerticalAlignment="Center"
+                                          RenderTransform="scale(0.8)"
+                                          OffContent="" OnContent=""
+                                          IsChecked="{Binding IsAltServiceEnabled}"
+                                          Command="{Binding InitializeCommand}"
+                                          >
+                            </ToggleSwitch>
+                            
                         </Grid>
                     </Border>
 
@@ -262,11 +274,19 @@
                         <!-- <Button Command="{Binding TestActionCommand}"> -->
                         <!--     TEST -->
                         <!-- </Button> -->
-
+                        
+                        <TextBlock Margin="0 15 0 15"
+                                   IsVisible="{Binding !IsAltServiceEnabled}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource OnSurfaceVariant}"
+                                   Text="未添加账号" />
 
                         <!-- 账号列表 -->
                         <ItemsControl  ItemsSource="{Binding AltsList}"
-                                      Margin="0">
+                                       IsVisible="{Binding IsAltServiceEnabled}"
+                                      Margin="5">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Grid ColumnDefinitions="Auto,Auto,*" HorizontalAlignment="Stretch">
@@ -445,11 +465,6 @@
                                           VerticalAlignment="Center"
                                           RenderTransform="scale(0.8)"
                                           OffContent="" OnContent="">
-                                <ToggleSwitch.Styles>
-                                    <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-                                        <Setter Property="Background" Value="{DynamicResource Primary}" />
-                                    </Style>
-                                </ToggleSwitch.Styles>
                             </ToggleSwitch>
                         </Grid>
                     </Border>
