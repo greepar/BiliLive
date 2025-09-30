@@ -133,7 +133,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAccountAsync()
     {
-        await Task.Delay(1000);
         var appConfig = await ConfigManager.LoadConfigAsync();
         if (appConfig == null) { return; }
         

@@ -1,4 +1,6 @@
 ﻿using Avalonia.Animation.Easings;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 
 namespace BiliLive.Resources.Controls;
@@ -18,8 +20,9 @@ public class RippleButton : Button
             Brushes.White);
 
     private static readonly StyledProperty<double> RippleDurationProperty =
-        AvaloniaProperty.Register<RippleButton, double>(nameof(RippleDuration), 600);
-
+        AvaloniaProperty.Register<RippleButton, double>(nameof(RippleDuration), 0.8);
+    
+    
     public IBrush RippleColor
     {
         get => GetValue(RippleColorProperty);
@@ -33,20 +36,46 @@ public class RippleButton : Button
     }
 
     private Canvas _rippleCanvas;
-    private Border _rippleElement;
+    // private Border _rippleElement;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
 
         // 获取模板中的涟漪元素
-        _rippleCanvas = e.NameScope.Find<Canvas>("PART_RippleCanvas");
-        _rippleElement = e.NameScope.Find<Border>("PART_RippleElement");
-        // _rippleElement = new Border()
-        // {
-        //     Width = 50, Height = 50,
-        //     CornerRadius = new CornerRadius(100),
-        // };
+        // _rippleCanvas = e.NameScope.Find<Canvas>("PART_RippleCanvas");
+        // _rippleElement = e.NameScope.Find<Border>("PART_RippleElement");
+        
+        // 创建一个 border 作为容器
+        
+        var border = new Border
+        {
+            Background = Brushes.Red,
+        };
+        
+        var panel = new Grid()
+        {
+            
+        };
+        border.Child = panel;
+        
+        _rippleCanvas = new Canvas
+        {
+            ClipToBounds = true
+        };
+            
+      
+        
+        // 把原来的 Content 放进去
+        if (Content is Control contentControl)
+        {
+            panel.Children.Add(contentControl);
+        }
+     
+
+        panel.Children.Add(_rippleCanvas);
+        Content = border;
+        
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -59,24 +88,41 @@ public class RippleButton : Button
 
     private async void StartRippleAnimation(Point position)
     {
-        if (_rippleCanvas == null || _rippleElement == null) return;
-
-        var rippleHeight = _rippleElement.Height;
+        // if (_rippleCanvas == null || _rippleElement == null) return;
         
-        _rippleElement.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
+        var rect = new Rect(Bounds.Size);
+
+        if (Content is Border border)
+        {
+            border.Width = Bounds.Width;
+            border.Height = Bounds.Height;
+            Clip = new RectangleGeometry(rect);
+            CornerRadius = CornerRadius;
+            ClipToBounds = true;
+        }
         
-        // 设置涟漪位置
-        Canvas.SetLeft(_rippleElement, position.X - rippleHeight / 2);
-        Canvas.SetTop(_rippleElement, position.Y - rippleHeight / 2);
+        Console.WriteLine(rect.Size);
+        // 涟漪元素
+        var ripple = new Border
+        {
+            Width = 100,
+            Height = 100,
+            Background = RippleColor,
+            CornerRadius = new CornerRadius(100),
+            RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative),
+            RenderTransform = new ScaleTransform(0, 0)
+        };
 
-        // 设置涟漪颜色
-        _rippleElement.Background = RippleColor;
+        Canvas.SetLeft(ripple, position.X - ripple.Width / 2);
+        Canvas.SetTop(ripple, position.Y - ripple.Height / 2);
 
-        // 创建动画
+        _rippleCanvas.Children.Add(ripple);
+
         var animation = new Animation
         {
-            Duration = TimeSpan.FromMilliseconds(RippleDuration),
+            Duration = TimeSpan.FromSeconds(1.0),
             Easing = new CubicEaseOut(),
+            FillMode = FillMode.Forward,
             Children =
             {
                 new KeyFrame
@@ -95,17 +141,16 @@ public class RippleButton : Button
                     Setters =
                     {
                         new Setter(OpacityProperty, 0.0),
-                        new Setter(ScaleTransform.ScaleXProperty, 2.5),
-                        new Setter(ScaleTransform.ScaleYProperty, 2.5)
+                        new Setter(ScaleTransform.ScaleXProperty, 3.0),
+                        new Setter(ScaleTransform.ScaleYProperty, 3.0)
                     }
                 }
             }
         };
 
-        // 运行动画
-        await animation.RunAsync(_rippleElement);
-        
-        // 动画完成后重置
-        _rippleElement.Opacity = 0;
+        await animation.RunAsync(ripple);
+
+        // 动画结束移除
+        _rippleCanvas.Children.Remove(ripple);
     }
 }
