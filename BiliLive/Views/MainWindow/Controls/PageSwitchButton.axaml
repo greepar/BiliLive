@@ -10,11 +10,10 @@
                     CornerRadius="12"
                     Padding="10"
                     Margin="0"
+                    Height="45"
                     Background="{DynamicResource SurfaceContainer}">
                     Test Button
                 </ToggleButton>
-                
-               
                 
                 <ToggleButton
                     Theme="{DynamicResource PageSwitchBtn}"
@@ -27,42 +26,83 @@
     </Design.PreviewWith>
 
     <ControlTheme x:Key="PageSwitchBtn" TargetType="ToggleButton">
-        <Setter Property="BorderThickness" Value="6" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Margin" Value="-3" />
+        
+        <Setter Property="RenderTransform" Value="{x:Null}"></Setter>
+        
+        
+        <!-- 添加ControlTemplate -->
+        <Setter Property="Template">
+            <ControlTemplate>
+               <Border Name="OutBorder" BorderThickness="3"
+                       BorderBrush="Transparent"
+                       Margin="{TemplateBinding Margin}"
+                       CornerRadius="{TemplateBinding CornerRadius}">
+                   <Border Name="InnerBorder"
+                           BorderBrush="Transparent"
+                           ClipToBounds="True"
+                           Margin="-1.5"
+                           Height="{TemplateBinding Height}"
+                           Background="{TemplateBinding Background}"
+                           CornerRadius="{TemplateBinding CornerRadius}">
+                       <Grid>
+                           <RippleBorder RippleColor="#73FFB6C1"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         Background="Transparent"
+                                         RippleDuration="1.2"
+                           >
+                           </RippleBorder>
+                           <ContentPresenter Name="PartContentPresenter"
+                                             IsHitTestVisible="False"
+                                             Content="{TemplateBinding Content}"
+                                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                             Margin="{TemplateBinding Padding}"/>
+                       </Grid> 
+                   </Border>
+               </Border>
+            </ControlTemplate>
+        </Setter>
+        
 
-        <Style Selector="^:unchecked /template/ ContentPresenter">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
-        </Style>
-
-        <Style Selector="^:unchecked:pointerover /template/ ContentPresenter">
+        <Style Selector="^:pressed /template/ Border#OutBorder">
             <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
-            <!-- <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}" /> -->
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
         </Style>
         
-        <Style Selector="^:checked /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Style Selector="^:pressed /template/ Border#InnerBorder">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        
+        <Style Selector="^:unchecked /template/ Border#InnerBorder">
+            <Setter Property="Background" Value="Transparent" />
         </Style>
 
-        <Style Selector="^:checked:pointerover /template/ ContentPresenter">
-            <Setter Property="BoxShadow" Value="0 0 2 0 #26000000" />
-            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Style Selector="^:unchecked:pointerover /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
+        </Style>  
+        
+        <Style Selector="^:unchecked:pointerover /template/ Border#InnerBorder">
+            <Setter Property="Background" Value="Transparent" />
         </Style>
         
-        <Style Selector="^:disabled /template/ ContentPresenter">
+        <Style Selector="^:checked /template/ Border#InnerBorder">
+            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+        </Style>
+
+        <Style Selector="^:checked:pointerover /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 0 2 0 #26000000" />
+        </Style> 
+        
+        <Style Selector="^:checked:pointerover /template/ Border#InnerBorder">
+            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+
+        </Style>
+        
+        <Style Selector="^:disabled /template/ Border#OutBorder">
             <Setter Property="BoxShadow" Value="0 0 3 1 #32000000" />
             <Setter Property="Background" Value="{DynamicResource InversePrimary}" />
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
         </Style>
 
-    
-
-   
-
+        
     </ControlTheme>
 </ResourceDictionary>

@@ -149,7 +149,7 @@
                                                 <Setter Property="CornerRadius" Value="18"/>
                                                 <Setter Property="Theme" Value="{StaticResource PageSwitchBtn}"/>
                                                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                                <Setter Property="Height" Value="45"/>
+                                                <Setter Property="Height" Value="40"/>
                                                 <Setter Property="Background" Value="Transparent"></Setter>
                                             </Style>
                                             <Style Selector="SvgBox">
@@ -169,12 +169,10 @@
                                                       IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
                                                       Command="{Binding SwitchPageCommand}"
                                                       CommandParameter="{x:Static mainWindow:NavigationPage.Home}">
-                                            <Border Margin="5 0 5 0">
-                                                <Grid ColumnDefinitions="Auto,*">
+                                                <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
                                                     <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Home}}"/>
                                                     <TextBlock Grid.Column="1" Text="Home Page" />
                                                 </Grid>
-                                            </Border>
                                         </ToggleButton>
 
                                         <!-- 自动直播按钮 -->
@@ -182,26 +180,26 @@
                                                       IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
                                                       Command="{Binding SwitchPageCommand}"
                                                       CommandParameter="{x:Static mainWindow:NavigationPage.AutoService}">
-                                            <Border Margin="5 0 5 0">
-                                                <Grid ColumnDefinitions="Auto,*">
+                                                <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
                                                     <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}"/>
                                                     <TextBlock Grid.Column="1" Text="Auto Service" />
                                                 </Grid>
-                                            </Border>
                                         </ToggleButton>
 
                                         <!-- 关于按钮 -->
                                         <ToggleButton Click="SwitchPageAnime"
                                                       IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
                                                       Command="{Binding SwitchPageCommand}"
-                                                      CommandParameter="{x:Static mainWindow:NavigationPage.About}">
-                                            <Border Margin="5 0 5 0">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
-                                                    <TextBlock Grid.Column="1" Text="About" />
+                                                      CommandParameter="{x:Static mainWindow:NavigationPage.About}"
+                                                      >
+                                                <Grid Margin="7 0 5 0">
+                                                    <Grid IsHitTestVisible="False" ColumnDefinitions="Auto,*">
+                                                        <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
+                                                        <TextBlock Grid.Column="1" Text="About" />
+                                                    </Grid>
                                                 </Grid>
-                                            </Border>
                                         </ToggleButton>
+                                        
                                     </StackPanel>
 
                                     <!-- 底部用户信息栏 -->

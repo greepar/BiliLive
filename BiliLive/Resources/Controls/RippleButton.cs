@@ -1,6 +1,4 @@
 ﻿using Avalonia.Animation.Easings;
-using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 
 namespace BiliLive.Resources.Controls;
@@ -19,7 +17,7 @@ public class RippleButton : Button
         AvaloniaProperty.Register<RippleButton, IBrush>(nameof(RippleColor), 
             Brushes.White);
 
-    private static readonly StyledProperty<double> RippleDurationProperty =
+    public static readonly StyledProperty<double> RippleDurationProperty =
         AvaloniaProperty.Register<RippleButton, double>(nameof(RippleDuration), 0.8);
     
     
@@ -35,7 +33,7 @@ public class RippleButton : Button
         set => SetValue(RippleDurationProperty, value);
     }
 
-    private Canvas _rippleCanvas;
+    private Canvas? _rippleCanvas;
     // private Border _rippleElement;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -47,10 +45,14 @@ public class RippleButton : Button
         // _rippleElement = e.NameScope.Find<Border>("PART_RippleElement");
         
         // 创建一个 border 作为容器
+
+        var radius = this.CornerRadius;
         
         var border = new Border
         {
-            Background = Brushes.Red,
+            ClipToBounds = true,
+            Background = Brushes.Transparent,
+            CornerRadius = radius
         };
         
         var panel = new Grid()
@@ -120,8 +122,8 @@ public class RippleButton : Button
 
         var animation = new Animation
         {
-            Duration = TimeSpan.FromSeconds(1.0),
-            Easing = new CubicEaseOut(),
+            Duration = TimeSpan.FromSeconds(2.8),
+            Easing = new QuinticEaseOut(),
             FillMode = FillMode.Forward,
             Children =
             {
@@ -131,8 +133,8 @@ public class RippleButton : Button
                     Setters =
                     {
                         new Setter(OpacityProperty, 1.0),
-                        new Setter(ScaleTransform.ScaleXProperty, 0.0),
-                        new Setter(ScaleTransform.ScaleYProperty, 0.0)
+                        new Setter(ScaleTransform.ScaleXProperty, 1.0),
+                        new Setter(ScaleTransform.ScaleYProperty, 1.0)
                     }
                 },
                 new KeyFrame
