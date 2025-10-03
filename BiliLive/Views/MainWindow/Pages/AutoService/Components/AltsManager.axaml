@@ -11,6 +11,8 @@
         ShowInTaskbar="False"
         SystemDecorations="None"
         WindowStartupLocation="CenterOwner"
+        TransparencyLevelHint="Transparent"
+        TransparencyBackgroundFallback="White"
         Background="Transparent"
         SizeToContent="WidthAndHeight"
         >

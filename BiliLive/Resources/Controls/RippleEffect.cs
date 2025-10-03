@@ -19,8 +19,6 @@ public class RippleBorder : Border
     public static readonly StyledProperty<double> RippleDurationProperty =
         AvaloniaProperty.Register<RippleBorder, double>(nameof(RippleDuration), 0.8);
     
- 
-    
     public IBrush RippleColor
     {
         get => GetValue(RippleColorProperty);
@@ -54,7 +52,6 @@ public class RippleBorder : Border
     {
         try
         {
-            
             // 计算从点击位置到最远边界的距离
             var toLeft = position.X;
             var toRight = Bounds.Width - position.X;
@@ -63,16 +60,18 @@ public class RippleBorder : Border
         
             // 取水平方向的最大距离，确保覆盖左右 边界
             var maxHorizontal = Math.Max(toLeft, toRight);
-        
-            // 如果需要同时覆盖上下边界，可以取对角线距离
             var maxVertical = Math.Max(toTop, toBottom);
-            var maxDistance = Math.Sqrt(maxHorizontal * maxHorizontal + maxVertical * maxVertical);
+            var maxDistance = Math.Max(maxHorizontal, maxVertical);
+            
+            // 取对角线距离
+            // var maxDistance = Math.Sqrt(maxHorizontal * maxHorizontal + maxVertical * maxVertical);
+
             
             // 涟漪元素
             var ripple = new Border
             {
-                Width = maxDistance,
-                Height = maxDistance,
+                Width = 2,
+                Height = 2,
                 Background = RippleColor,
                 CornerRadius = new CornerRadius(100),
                 RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative),
@@ -107,8 +106,8 @@ public class RippleBorder : Border
                         Setters =
                         {
                             new Setter(OpacityProperty, 0.0),
-                            new Setter(ScaleTransform.ScaleXProperty, 3.0),
-                            new Setter(ScaleTransform.ScaleYProperty, 3.0)
+                            new Setter(ScaleTransform.ScaleXProperty, 2* maxDistance),
+                            new Setter(ScaleTransform.ScaleYProperty, 2* maxDistance)
                         }
                     }
                 }
@@ -119,7 +118,7 @@ public class RippleBorder : Border
             // 动画结束移除
             _rippleCanvas.Children.Remove(ripple);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }

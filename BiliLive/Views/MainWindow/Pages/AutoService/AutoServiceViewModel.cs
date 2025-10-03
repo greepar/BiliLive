@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -25,7 +26,12 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService;
 
 public partial class AutoServiceViewModel : ViewModelBase
 {
-    [ObservableProperty]private ObservableCollection<Alt> _altsList = [];
+    public AppConfig? Config;
+
+    [ObservableProperty]
+    private ObservableCollection<Alt> _altsList = [];
+    public bool HasAlts => AltsList.Count > 0;
+    
     
     [ObservableProperty] private string? _ffmpegPath;
     [ObservableProperty] private string? _videoPath;
@@ -61,36 +67,21 @@ public partial class AutoServiceViewModel : ViewModelBase
         {
             _biliService = new BiliServiceImpl();
         }
-        InitializeCommand.Execute(null);
+        
+        //订阅AltsList变化 -> 更新HasAlts
+        AltsList.CollectionChanged += (_, _) => 
+        {
+            OnPropertyChanged(nameof(HasAlts));
+        };
     }
     
     //初始化数据
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        //检查功能是否开启
-        if (!IsAltServiceEnabled)
+        if ( Config is { Alts.Count: > 0 })
         {
-            foreach (var alt in AltsList.ToList())
-            {
-                alt.Dispose();
-            }
-            AltsList.Clear();
-            return;
-        }
-        
-        if (!_biliService.IsLogged)
-        {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先登录主账号",Geometry.Parse(MdIcons.Error)));
-            IsAltServiceEnabled = false;
-            return;
-        }
-        
-        var config = await ConfigManager.LoadConfigAsync();
-        if (config is null) return;
-        if (config.Alts.Count > 0)
-        {
-            var tasks = config.Alts
+            var tasks = Config.Alts
                 .Where(_ => true)
                 .Select(async altSettings =>
                 {
@@ -208,11 +199,6 @@ public partial class AutoServiceViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddAltsAsync()
     {
-        if (!IsAltServiceEnabled)
-        {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先启用总服务",Geometry.Parse(MdIcons.Error)));
-            return;
-        }
         //弹出添加账号窗口
         using var altVm = new AltsManagerViewModel(false);
         await ShowWindowHelper.ShowWindowAsync(new AltsManager(){DataContext = altVm});

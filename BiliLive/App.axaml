@@ -11,49 +11,6 @@
 
     <Application.Styles>
         <FluentTheme />
-    <!--     <Style Selector="RippleButton"> -->
-    <!-- <Setter Property="Background" Value="#1976D2"/> -->
-    <!-- <Setter Property="Foreground" Value="White"/> -->
-    <!-- <Setter Property="Padding" Value="16,8"/> -->
-    <!-- <Setter Property="BorderThickness" Value="0"/> -->
-    <!-- <Setter Property="Template"> -->
-    <!--     <ControlTemplate> -->
-    <!--         <Border Background="{TemplateBinding Background}" -->
-    <!--                 BorderBrush="{TemplateBinding BorderBrush}" -->
-    <!--                 BorderThickness="{TemplateBinding BorderThickness}" -->
-    <!--                 CornerRadius="4"> -->
-    <!--             <Grid> -->
-    <!--                 ~1~ 内容展示层 @1@ -->
-    <!--                 <ContentPresenter Name="PART_ContentPresenter" -->
-    <!--                                 Content="{TemplateBinding Content}" -->
-    <!--                                 ContentTemplate="{TemplateBinding ContentTemplate}" -->
-    <!--                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" -->
-    <!--                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" -->
-    <!--                                 Margin="{TemplateBinding Padding}"/> -->
-    <!--                  -->
-    <!--                 ~1~ 涟漪效果层 @1@ -->
-    <!--                 <Canvas Name="PART_RippleCanvas"  -->
-    <!--                        Background="Transparent" -->
-    <!--                        IsHitTestVisible="False"> -->
-    <!--                     <Border Name="PART_RippleElement" -->
-    <!--                            Width="100" -->
-    <!--                            Height="100" -->
-    <!--                            Background="{TemplateBinding RippleColor}" -->
-    <!--                            Opacity="0" -->
-    <!--                            CornerRadius="100" -->
-    <!--                            VerticalAlignment="Center" -->
-    <!--                            RenderTransformOrigin="0.5,0.5"> -->
-    <!--                         <Border.RenderTransform> -->
-    <!--                             <ScaleTransform ScaleX="0" ScaleY="0"/> -->
-    <!--                         </Border.RenderTransform> -->
-    <!--                     </Border> -->
-    <!--                 </Canvas> -->
-    <!--             </Grid> -->
-    <!--         </Border> -->
-    <!--     </ControlTemplate> -->
-    <!-- </Setter> -->
-<!-- </Style> -->
-
     </Application.Styles>
 
     <Application.Resources>

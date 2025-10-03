@@ -121,7 +121,6 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             _biliService = serviceProvider.GetRequiredService<IBiliService>();
             AccountVm = serviceProvider.GetRequiredService<AccountsViewModel>();
-          
             _asVm = serviceProvider.GetRequiredService<AutoServiceViewModel>();
             _homeVm = serviceProvider.GetRequiredService<HomeViewModel>();
             LoadAccountCommand.Execute(null);
@@ -134,7 +133,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task LoadAccountAsync()
     {
         var appConfig = await ConfigManager.LoadConfigAsync();
-        if (appConfig == null) { return; }
         
         //初始化AutoService配置
         _asVm.VideoPath = appConfig.VideoPath;
@@ -142,7 +140,10 @@ public partial class MainWindowViewModel : ViewModelBase
         _asVm.IsEnabled = appConfig.EnableAutoService;
         _asVm.IsAutoStart = appConfig.AutoStart;
         _asVm.IsCheck60MinTask = appConfig.Check60MinTask;
-       
+        _asVm.Config = appConfig;
+
+        _asVm.InitializeCommand.Execute(null);
+        
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
         var loginResult = await _biliService.LoginAsync(appConfig.BiliCookie);

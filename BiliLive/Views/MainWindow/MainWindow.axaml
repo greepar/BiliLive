@@ -21,6 +21,7 @@
         <!-- 使用Margin留出间隙 -->
         <Border Name="MainBorder" 
                 MinWidth="800" MinHeight="470"
+                Width="800" Height="470"
                 Margin="10"
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"

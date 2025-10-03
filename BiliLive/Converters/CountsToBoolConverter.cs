@@ -1,17 +1,21 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
+using BiliLive.Views.MainWindow.Pages.AutoService;
 
 namespace BiliLive.Converters;
 
-public class BoolToOpacityConverter : MarkupExtension, IValueConverter
+public class CountsToBoolConverter : MarkupExtension ,IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is bool b)
-            return b ? 0.0 : 1.0; // true → 不透明, false → 透明
-        return 0.0;
+        if (value is int i)
+        {
+            return i > 0;
+        }
+        return false;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

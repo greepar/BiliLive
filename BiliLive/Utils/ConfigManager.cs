@@ -3,7 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia.Controls.Notifications;
+using Avalonia.Media;
 using BiliLive.Models;
+using BiliLive.Resources;
+using BiliLive.Views.MainWindow;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace BiliLive.Utils;
 
@@ -49,13 +54,29 @@ public static class ConfigManager
         await File.WriteAllTextAsync(ConfigFilePath, configJsonString);
     }
     
-    public static async Task<AppConfig?> LoadConfigAsync()
+    public static async Task<AppConfig> LoadConfigAsync()
     {
         if (!File.Exists(ConfigFilePath))
         {
-            return null;
+            return new AppConfig();
         }
+        
         var configString = await File.ReadAllTextAsync(ConfigFilePath);
-        return JsonSerializer.Deserialize<AppConfig>(configString, SourceGenerateContext.Default.AppConfig);
+        
+        try
+        {
+            return JsonSerializer.Deserialize<AppConfig>(configString, SourceGenerateContext.Default.AppConfig) ?? new AppConfig();
+        }
+        catch (JsonException)
+        {
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("配置文件损坏，已重置为默认配置", Geometry.Parse(MdIcons.Error)));
+            var config = new AppConfig();
+            
+            //保存配置格式
+            var configJsonString = JsonSerializer.Serialize(config, SourceGenerateContext.Default.AppConfig);
+            await File.WriteAllTextAsync(ConfigFilePath, configJsonString);
+            
+            return config;
+        }
     }
 }

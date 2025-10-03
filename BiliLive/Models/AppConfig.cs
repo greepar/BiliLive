@@ -4,12 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace BiliLive.Models;
 
-[JsonSourceGenerationOptions(DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true)]
+[JsonSourceGenerationOptions(DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,WriteIndented = true)]
 [JsonSerializable(typeof(AppConfig))]
 [JsonSerializable(typeof(AltSettings))]
-public partial class SourceGenerateContext : JsonSerializerContext
-{
-}
+public partial class SourceGenerateContext : JsonSerializerContext;
 
 public enum ConfigType
 {

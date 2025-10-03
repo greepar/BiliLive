@@ -15,9 +15,9 @@ public class BoolToColorConverter : MarkupExtension, IValueConverter
         return Brush.Parse("#D3DA00");
     }
 
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        return false;
+        return null;
     }
     
     public override object ProvideValue(IServiceProvider serviceProvider) => this;
