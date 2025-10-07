@@ -43,8 +43,8 @@
                             
                             <StackPanel.Styles>
                                 <Style Selector="Button">
-                                    <Setter Property="Width" Value="30"/>
-                                    <Setter Property="Height" Value="30"/>
+                                    <Setter Property="Width" Value="25"/>
+                                    <Setter Property="Height" Value="25"/>
                                     <Setter Property="HorizontalAlignment" Value="Right"/>
                                     <Setter Property="CornerRadius" Value="10"/>
                                     <Setter Property="Theme" Value="{StaticResource MdButton}"/>
@@ -118,13 +118,14 @@
                                                     Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
                                         </Button>
 
-                                        <Button Height="45"
-                                                Margin="0 2 0 0"
+                                        <Button Height="40"
+                                                Margin="3 2 0 0"
                                                 HorizontalAlignment="Left"
                                                 CornerRadius="10"
                                                 Background="{DynamicResource InversePrimary}"
+                                                Command="{Binding StartMainServiceCommand}"
                                                 Theme="{StaticResource MdButton}">
-                                            <Border Margin="5 0 5 0" ClipToBounds="True">
+                                            <Border Margin="8 0 8 0" ClipToBounds="True" VerticalAlignment="Center">
                                                 <Grid RowDefinitions="*,*,*">
                                                     <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
                                                         <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Start}}"
@@ -211,7 +212,6 @@
                                                     VerticalAlignment="Stretch"
                                                     Background="Transparent"
                                                     CornerRadius="15"
-                                                    Theme="{StaticResource MdButton}"
                                                     Click="AccountBtn_OnClick">
                                                 <Button.Styles>
                                                     <Style Selector="Button:pointerover /template/ ContentPresenter">

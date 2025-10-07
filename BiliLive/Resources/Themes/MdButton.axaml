@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:resources="clr-namespace:BiliLive.Resources">
     <!-- Add Resources Here -->
     <Design.PreviewWith>
         <Border Background="{DynamicResource Surface}" Padding="20">
@@ -10,35 +11,71 @@
                     CornerRadius="12"
                     Padding="10"
                     Margin="0"
+                    Height="30"
+                    Width="200"
                     Background="{DynamicResource SurfaceContainer}">Test Button</Button>
                 <Button
                     Theme="{DynamicResource MdButton}"
                     Padding="10"
+                    Height="40"
+                    Width="50"
                     Background="{DynamicResource SurfaceContainer}">Test Button</Button>
+                
+                <Button Width="25" Height="25"                  
+                        CornerRadius="10" Background="Wheat"
+                        Theme="{DynamicResource MdButton}"
+                >
+                    <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Minimize}}"/>
+                </Button>
             </StackPanel>
         </Border>
     </Design.PreviewWith>
     
     <ControlTheme x:Key="MdButton" TargetType="Button">
-        <Setter Property="BorderThickness" Value="6"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="Margin" Value="-3"/>
         
-        <Style Selector="^:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="RenderTransform" Value="{x:Null}"></Setter>
+        <Setter Property="ClipToBounds" Value="False"></Setter>
+        
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="OutBorder"
+                        Height="{TemplateBinding Height}"
+                        Width="{TemplateBinding Width}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"
+                        >
+                    <Border Name="InnerBorder"
+                            BorderBrush="Transparent"
+                            ClipToBounds="True"
+                            Background="Transparent"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid>
+                            <ContentPresenter Name="PartContentPresenter"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Grid> 
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        
+        <Style Selector= "^:pressed /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 1 2 0 #32000000" />
         </Style>
         
-        <Style Selector="^:pointerover /template/ ContentPresenter">
-            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
-            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        
+        <Style Selector="^:pointerover /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 1 2 0 #32000000" />
+        </Style>  
+        
+        <Style Selector="^:disabled /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 1 2 0 #32000000" />
         </Style>
         
-        <Style Selector="^:disabled /template/ ContentPresenter">
-            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
-            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
-            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
-        </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
@@ -45,7 +46,7 @@ public class BiliServiceImpl : IBiliService
     
     
     public async Task<LiveRoomInfo> GetRoomInfoAsync() => await _liveService.GetRoomInfoAsync();
-    public async Task<string?> StartLiveAsync() => await _liveService.StartLiveAsync();
+    public async Task<JsonElement> StartLiveAsync() => await _liveService.StartLiveAsync();
     
     public async Task<string?> StopLiveAsync() => await _liveService.StopLiveAsync();
 }

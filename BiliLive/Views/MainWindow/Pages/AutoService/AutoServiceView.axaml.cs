@@ -1,8 +1,5 @@
-﻿using System;
-using Avalonia.Controls;
-using Avalonia.Input;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BiliLive.Views.MainWindow.Pages.AutoService.Components;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService;
 
@@ -27,7 +24,7 @@ public partial class AutoServiceView : UserControl
             CoreSettingsContent.IsVisible = true;
         }
     }
-    
+
     // private void TimePickerButton_OnClick(object? sender, RoutedEventArgs e)
     // {
     //     if (sender is not Button timePickerButton || DataContext is not AutoServiceViewModel mainVm) return;

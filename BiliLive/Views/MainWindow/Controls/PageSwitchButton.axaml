@@ -41,6 +41,7 @@
                            BorderBrush="Transparent"
                            ClipToBounds="True"
                            Margin="-1.5"
+                            Width="{TemplateBinding Width}"
                            Height="{TemplateBinding Height}"
                            Background="{TemplateBinding Background}"
                            CornerRadius="{TemplateBinding CornerRadius}">
@@ -48,9 +49,7 @@
                            <RippleBorder RippleColor="#73FFB6C1"
                                          CornerRadius="{TemplateBinding CornerRadius}"
                                          Background="Transparent"
-                                         RippleDuration="1.2"
-                           >
-                           </RippleBorder>
+                                         RippleDuration="1.2"/>
                            <ContentPresenter Name="PartContentPresenter"
                                              IsHitTestVisible="False"
                                              Content="{TemplateBinding Content}"

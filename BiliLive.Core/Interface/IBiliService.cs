@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.Json;
+using System.Threading.Tasks;
 using BiliLive.Core.Models.BiliService;
 
 namespace BiliLive.Core.Interface;
@@ -16,5 +17,5 @@ public interface IBiliService
 
     // 直播相关
     Task<LiveRoomInfo> GetRoomInfoAsync();
-    Task<string?> StartLiveAsync();
+    Task<JsonElement> StartLiveAsync();
 }

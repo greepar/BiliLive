@@ -41,13 +41,13 @@
                                     VerticalAlignment="Center">
                             <TextBlock Text="{Binding UserId,StringFormat=直播间ID:{0}}"
                                        FontSize="12"/> 
-                            <TextBlock Text="{Binding UserId,StringFormat=用户ID:{0}}"
+                            <TextBlock Text="{Binding RoomId,StringFormat=用户ID:{0}}"
                                        FontSize="12"/>
                             
                             <TextBlock Margin="0 4 0 0" Text="直播链接:" FontSize="12"/>
                             
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="live.bilibili.com/10431980" FontSize="12"
+                                <TextBlock Text="{Binding RoomId,StringFormat=live.bilibili.com/{0}}" FontSize="12"
                                            VerticalAlignment="Center"/>
                                 <Button Theme="{StaticResource MdButton}"
                                         CornerRadius="8"
@@ -81,32 +81,90 @@
               ColumnDefinitions="2*,*">
             <Border Grid.Column="0" CornerRadius="18" 
                     Background="{DynamicResource SurfaceContainer}">
-                <StackPanel Margin="15">
-                    <TextBlock Text="直播间信息"/>
-                    <StackPanel Orientation="Horizontal">
-                        <!-- 封面 -->
-                        <Border  Margin="0 7 5 5" Width="132" Height="74"
-                                 Background="Wheat"
-                                 CornerRadius="12" ClipToBounds="True">
-                            <Image Source="{Binding RoomCover}"
-                                   Width="132" Height="74">
-                            </Image>
-                        </Border>
+                <StackPanel Margin="15 0 15 15">
+                    
+                    <Grid Height="30" ColumnDefinitions="Auto,*,Auto" Margin="3 6.4 0 5">
+                        <TextBlock Grid.Column="0" FontSize="12"
+                                   VerticalAlignment="Center">直播间信息</TextBlock>
+                        <!-- <Button Grid.Column="2" Height="30" -->
+                        <!--         CornerRadius="10" Background="{DynamicResource SecondaryContainer}" -->
+                        <!--         Theme="{StaticResource MdButton}"> -->
+                        <!--     <StackPanel Margin="5" Orientation="Horizontal"> -->
+                        <!--         <SvgBox Margin="2 2 1 2" PathData="{resources:Geometry {x:Static resources:MdIcons.Save}}"/> -->
+                        <!--         <TextBlock FontSize="12" VerticalAlignment="Center">保存</TextBlock> -->
+                        <!--     </StackPanel> -->
+                        <!-- </Button> -->
+                    </Grid>
+                    
+
+                     <Grid ColumnDefinitions="Auto,*,Auto"
+                           VerticalAlignment="Center">
+                         <!-- 封面 -->
+                         <Border Grid.Column="0"  Margin="0 0 5 5" Width="132" Height="74"
+                                  Background="Wheat"
+                                  CornerRadius="12" ClipToBounds="True">
+                             <Image Source="{Binding RoomCover}"
+                                    Width="132" Height="74">
+                             </Image>
+                         </Border>
                         
-                        <StackPanel Spacing="3" Margin="10">
-                            <TextBlock FontSize="13" Text="标题"/>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Width="150" Height="36" CornerRadius="11"></TextBox>
-                                <Button Height="36" Theme="{StaticResource MdButton}" Margin="5,0,0,0" CornerRadius="11"
-                                        Background="{DynamicResource SecondaryContainer}">
-                                    <StackPanel Margin="3" Orientation="Horizontal">
-                                        <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Restart}}"/>
-                                        <TextBlock FontSize="12" VerticalAlignment="Center">分区</TextBlock>
-                                    </StackPanel>
-                                </Button>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
+                         <StackPanel Grid.Column="1" Spacing="3" Margin="10">
+                             <TextBlock FontSize="13" Text="标题"/>
+                             <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto">
+                                 <TextBox Grid.Column="0" Height="36" CornerRadius="11"/>
+                                 <Button Grid.Column="1" Height="34"
+                                         Theme="{StaticResource MdButton}"
+                                         Margin="5,0,-5,0" CornerRadius="11"
+                                         VerticalAlignment="Bottom"
+                                         Background="{DynamicResource SecondaryContainer}">
+                                     <StackPanel Spacing="3" Margin="3" Orientation="Horizontal">
+                                         <StackPanel Margin="5" Orientation="Horizontal">
+                                             <SvgBox Margin="2 2 1 2" PathData="{resources:Geometry {x:Static resources:MdIcons.Areas}}"/>
+                                             <TextBlock FontSize="12" VerticalAlignment="Center">分区</TextBlock>
+                                         </StackPanel>
+                                     </StackPanel>
+                                 </Button>
+                             </Grid>
+                         </StackPanel>
+                         
+                     </Grid>
+                   
+                    
+                    <StackPanel.Styles>
+                        <!-- <Style Selector="^:disabled /template/ Border#OutBorder"> -->
+                        <!--     <Setter Property="BoxShadow" Value="0 0 3 1 #32000000" /> -->
+                        <!--     <Setter Property="Background" Value="{DynamicResource InversePrimary}" /> -->
+                        <!-- </Style> -->
+                        <Style Selector="Button.copy:pressed">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="RenderTransform" Value="{x:Null}"/>
+                            
+                        </Style>
+                    </StackPanel.Styles>
+                    
+                    <Grid Margin="0 5 0 4">
+                        <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
+                                Background="{DynamicResource Surface}">
+                            <TextBlock VerticalAlignment="Center" FontSize="12"
+                                       Margin="60 0 0 0">srt://greepar.uk/upLive</TextBlock>
+                        </Button>
+                        <Border Margin="2 0 0 0" CornerRadius="12" Height="26"
+                                Background="{DynamicResource SurfaceContainerHighest}" HorizontalAlignment="Left">
+                            <TextBlock Margin="5" VerticalAlignment="Center" FontSize="12">推流地址:</TextBlock>
+                        </Border>
+                    </Grid>
+                    
+                    <Grid>
+                        <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
+                                Background="{DynamicResource Surface}">
+                            <TextBlock VerticalAlignment="Center" FontSize="12"
+                                       Margin="60 0 0 0" Text="?streamkey:127Ghfofb^89dbfjf********bbjbdvofobogboo"></TextBlock>
+                        </Button>
+                        <Border Margin="2 0 0 0" CornerRadius="12" Height="26"
+                                Background="{DynamicResource SurfaceContainerHighest}" HorizontalAlignment="Left">
+                            <TextBlock Margin="5" VerticalAlignment="Center" FontSize="12">推流密钥:</TextBlock>
+                        </Border>
+                    </Grid>
                    
                     
                 </StackPanel>
@@ -114,37 +172,56 @@
             
             <Border Grid.Column="1" CornerRadius="18" Margin="10 0 0 0"
                     Background="{DynamicResource SurfaceContainer}">
-                
+                <StackPanel Spacing="10" Margin="15 13 15 0">
+                    <TextBlock FontSize="12" Text="房间记录" />
+                    
+                    <StackPanel.Styles>
+                        <Style Selector="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="12"/>
+                        </Style>
+                    </StackPanel.Styles>
+                    
+                    <Border Height="35" CornerRadius="12"
+                            Background="{DynamicResource Surface}">
+                        <Grid Margin="10" 
+                              VerticalAlignment="Center"
+                              ColumnDefinitions="Auto,Auto,*,Auto">
+                            <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Viewers}}"/>
+                            <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="观看人数"/>
+                            <!-- 占位 grid 2 -->
+                            <TextBlock Grid.Column="3" Text="x2" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    
+                    <Border Height="35" CornerRadius="12"
+                            Background="{DynamicResource Surface}">
+                        <Grid Margin="10" 
+                              VerticalAlignment="Center"
+                              ColumnDefinitions="Auto,Auto,*,Auto">
+                            <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Comments}}"/>
+                            <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="收到弹幕"/>
+                            <!-- 占位 grid 2 -->
+                            <TextBlock Grid.Column="3" Text="x2" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    
+                    <Border Height="35" CornerRadius="12"
+                            Background="{DynamicResource Surface}">
+                        <Grid Margin="10" 
+                              VerticalAlignment="Center"
+                              ColumnDefinitions="Auto,Auto,*,Auto">
+                            <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Gift}}"/>
+                            <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="收到礼物"/>
+                            <!-- 占位 grid 2 -->
+                            <TextBlock Grid.Column="3" Text="x2" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    
+                </StackPanel>
             </Border>
         </Grid>
         
     </Grid>
-    
-    <!-- <StackPanel Orientation="Horizontal"> -->
-    <!--     ~1~ <Border MinWidth="300"> @1@ -->
-    <!--     ~1~     <ContentControl Content="{Binding DanmakuVm}"/> @1@ -->
-    <!--     ~1~ </Border> @1@ -->
-    <!-- -->
-    <!--     <StackPanel Orientation="Vertical"> -->
-    <!--         <TextBlock Text="{Binding UserName,StringFormat=用户名:{0}}"/> -->
-    <!--         <TextBlock Text="{Binding UserId,StringFormat=Uid:{0}}"/> -->
-    <!--         <TextBlock Text="{Binding MaskedApiKey,StringFormat=ApiKey:{0}}"/> -->
-    <!--         <TextBlock Text="{Binding MaskedApiKey,StringFormat=StreamUrl:{0}}"/> -->
-    <!--         <StackPanel Orientation="Horizontal" -->
-    <!--                     HorizontalAlignment="Left"> -->
-    <!--             <TextBlock>头像:</TextBlock> -->
-    <!--             <Border Height="30" Width="30" -->
-    <!--                     ClipToBounds="True" -->
-    <!--                     CornerRadius="30"> -->
-    <!--                 <Image Source="{Binding UserFace}"/> -->
-    <!--             </Border> -->
-    <!--         </StackPanel> -->
-    <!--         <TextBlock Text="{Binding StatusText,StringFormat=Status:{0}}"/> -->
-    <!--         <Button Content="选择分区" -->
-    <!--                 Command="{Binding SelectAreaCommand}"/> -->
-    <!--          -->
-    <!--     </StackPanel> -->
-    <!-- </StackPanel> -->
-  
     
 </UserControl>

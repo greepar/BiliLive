@@ -18,10 +18,9 @@ namespace BiliLive.Views.MainWindow.Pages.HomePage;
 
 public partial class HomeViewModel : ViewModelBase
 {
-    [ObservableProperty] private object? _danmakuVm;
-    
     [ObservableProperty] private string? _userName = "未登录";
-    [ObservableProperty] private long? _userId = 196431435;
+    [ObservableProperty] private long? _userId = null;
+    [ObservableProperty] private long? _roomId = null;
     [ObservableProperty] private Bitmap? _userFace ;
     
     [ObservableProperty] private string? _roomTitle;
@@ -45,13 +44,10 @@ public partial class HomeViewModel : ViewModelBase
         
         if (Design.IsDesignMode || serviceProvider == null)
         {
-            //设计时数据
-            DanmakuVm = new DanmakuPanelViewModel();
             _biliService = new BiliServiceImpl();
         }
         else
         {
-            DanmakuVm = serviceProvider.GetService(typeof(DanmakuPanelViewModel));
             _biliService = serviceProvider.GetRequiredService<IBiliService>();
         }
     }
@@ -61,11 +57,15 @@ public partial class HomeViewModel : ViewModelBase
     {
         if (loginResult is LoginSuccess result)
         {
+            //获取用户信息
             UserName = result.UserName;
             UserId = result.UserId;
             using var ms = new MemoryStream(result.UserFaceBytes);
             UserFace = PicHelper.ResizeStreamToBitmap(ms, 71*2, 71*2) ?? new Bitmap(ms);
+            
+            //获取直播间信息
             var roomInfo = await _biliService.GetRoomInfoAsync();
+            RoomId = roomInfo.RoomId;
             RoomCover?.Dispose();
             using var rcMs = new MemoryStream(roomInfo.RoomCover);
             RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 132*2, 74*2) ?? new Bitmap(rcMs);

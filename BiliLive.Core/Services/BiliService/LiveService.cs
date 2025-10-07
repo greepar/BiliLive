@@ -30,7 +30,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         {
             RoomCover = rcBytes,
             Title = jsonDoc.RootElement.GetProperty("data").GetProperty("title").GetString() ?? "未命名直播间",
-            RoomId = await GetRoomIdAsync()
+            RoomId = await GetRoomIdAsync() 
         };
     }
 
@@ -56,10 +56,9 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         
     }
     
-    public async Task<string?> StartLiveAsync()
+    public async Task<JsonElement> StartLiveAsync()
     {
         var csrfValue = GetCsrfFromCookie();
-        
         try
         {
             var roomId = await GetRoomIdAsync();
@@ -71,7 +70,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
                 { "csrf", csrfValue ?? "" },
                 { "csrf_token", csrfValue ?? "" },
                 { "platform", "pc_link" },
-                { "room_id", roomId ?? "1" },
+                { "room_id", roomId.ToString() },
                 { "type", "2"  },
                 { "version", "7.23.0.9579"  },
                 //版本特定key
@@ -81,14 +80,12 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
             using var response = await httpClient.PostAsync(StartLiveUrl, new FormUrlEncodedContent(formData));
             await using var stream = await response.Content.ReadAsStreamAsync();
             using var jsonDoc = await JsonDocument.ParseAsync(stream);
-            var responseCode = jsonDoc.RootElement.GetProperty("code").GetInt32();
-            if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
-            var apiKey = jsonDoc.RootElement.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
-            return apiKey;
+            var element = jsonDoc.RootElement;
+            return element;
         }
         catch (Exception ex)
         {
-            return $"Error-开播失败:{ex.Message}";
+            throw new Exception("开播失败:" + ex.Message);
         }
     }
 
@@ -98,11 +95,11 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         return "test";
     }
     
-    private async Task<string> GetRoomIdAsync()
+    private async Task<long> GetRoomIdAsync()
     {
         await using var response = await httpClient.GetStreamAsync(RoomIdUrl);
         using var jsonDoc = await JsonDocument.ParseAsync(response);
-        var roomId = jsonDoc.RootElement.GetProperty("data").GetProperty("room_id").GetInt64().ToString();
+        var roomId = jsonDoc.RootElement.GetProperty("data").GetProperty("room_id").GetInt64();
         return roomId;
     }
 
