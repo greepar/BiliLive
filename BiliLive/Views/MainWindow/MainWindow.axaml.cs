@@ -20,19 +20,16 @@ public partial class MainWindow : Window
     private CancellationTokenSource? _animationCts;
     private double _initialNavBarWidth;
 
+    private bool _isResizing;
+    private Point _startPoint;
+    private double _originalWidth;
+    private double _originalHeight;
+    
     private bool _isTargetVisible = true;
 
     public MainWindow()
     {
         InitializeComponent();
-
-        // Opened += (_, _) =>
-        // {
-        //     // SideNavBar.Measure(Size.Infinity);
-        //     w = w >= 170 ? w : 170;
-        //     SideNavBar.Width = w;
-        //     _initialNavBarWidth = 170;
-        // };
         
         SideNavBar.AttachedToVisualTree += async (_, _) =>
         {
@@ -53,11 +50,50 @@ public partial class MainWindow : Window
 
 
     // 拖动窗口
-    private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    private void MainWindowPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) BeginMoveDrag(e);
+        if (!e.GetCurrentPoint(MainBorder).Properties.IsLeftButtonPressed) return;
+        _isResizing = true;
+        _startPoint = e.GetPosition(MainBorder);
+        
+        var currentBorderSize = MainBorder.Bounds;
+        
+        Console.WriteLine("Pressed Positon: " + _startPoint);
+        
+        if (_startPoint.Y < 45)
+        {
+            Console.WriteLine($"Current Positon Y: {_startPoint.Y}, sub press drag event");
+            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) BeginMoveDrag(e);
+            
+        }else if (_startPoint.X < 0 || _startPoint.X > currentBorderSize.Width || _startPoint.Y > currentBorderSize.Height)
+        {
+            _originalWidth = MainBorder.Width;
+            _originalHeight = MainBorder.Height;
+            TotalBorder.PointerMoved += ResizeWindowMove; 
+            TotalBorder.PointerReleased += ResizeWindowRelease;
+            
+            Console.WriteLine("reach out border");
+            
+        }
     }
 
+    //窗口调整Move
+    private void ResizeWindowMove(object? sender, PointerEventArgs e)
+    {
+        var position = e.GetPosition(MainBorder);
+        Console.WriteLine(  $"Move Positon: {position}, StartPositon: {_startPoint}");
+        var deltaX = position.X - _startPoint.X;
+        var deltaY = position.Y - _startPoint.Y;
+        MainBorder.Width = _originalWidth + deltaX;
+        MainBorder.Height = _originalHeight + deltaY;
+    }
+    
+    private void ResizeWindowRelease(object? sender, PointerReleasedEventArgs e)
+    {
+        TotalBorder.PointerMoved -= ResizeWindowMove;
+        TotalBorder.PointerReleased -= ResizeWindowRelease;
+    }
+    
     // 关闭窗口
     private void CloseButton_OnClick(object? sender, RoutedEventArgs e)
     {

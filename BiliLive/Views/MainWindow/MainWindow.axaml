@@ -11,14 +11,16 @@
         TransparencyLevelHint="Transparent"
         WindowStartupLocation="CenterScreen"
         Topmost="False"
+
         Background="Transparent">
 
     <Design.DataContext>
         <mainWindow:MainWindowViewModel />
     </Design.DataContext>
 
-    <Border Background="Transparent">
-        <!-- 使用Margin留出间隙 -->
+    <Border Background="Transparent"
+            Name="TotalBorder"
+            PointerPressed="MainWindowPointerPressed">        <!-- 使用Margin留出间隙 -->
         <Border Name="MainBorder" 
                 MinWidth="800" MinHeight="470"
                 Width="800" Height="470"
@@ -38,7 +40,7 @@
                             Height="45"
                             VerticalAlignment="Top"
                             Background="Transparent"
-                            PointerPressed="InputElement_OnPointerPressed">
+                            >
                         <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
                             
                             <StackPanel.Styles>
