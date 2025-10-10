@@ -1,4 +1,6 @@
-﻿namespace BiliLive.Models;
+﻿using BiliLive.Core.Models.BiliService;
+
+namespace BiliLive.Models;
 
 
 public class AltSettings
@@ -9,8 +11,6 @@ public class AltSettings
     public string[]? DanmakuList { get; set; } = null;
     public bool IsSendGift { get; set; }
     
-    public string? ProxyAddress { get; set; }
-    public string? ProxyUsername { get; set; }
-    public string? ProxyPassword { get; set; }
+    public ProxyInfo? ProxyInfo { get; set; }
     
 }

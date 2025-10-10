@@ -11,6 +11,7 @@ public interface IBiliService
 {
     //状态相关
     bool IsLogged { get; }
+    long RoomId { get; }
     
     // 登录相关
     Task<LoginResult> LoginAsync(string? biliCookie = null);
@@ -35,12 +36,16 @@ public interface IBiliService
 public class BiliServiceImpl : IBiliService
 {
     public bool IsLogged  { get; private set; }
+    public long RoomId  { get; private set; }
     
     //登录相关
     public async Task<LoginResult> LoginAsync(string? biliCookie = null)
     {
         var loginResult = await _loginService.LoginAsync(biliCookie);
         if (loginResult is LoginSuccess) { IsLogged = true; }
+
+        var roomInfo = await _liveService.GetRoomInfoAsync();
+        RoomId = roomInfo.RoomId;
         return loginResult;
     }
     

@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -10,7 +9,6 @@ using Avalonia.Media.Imaging;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Services;
@@ -59,14 +57,17 @@ public partial class AutoServiceViewModel : ViewModelBase
     private readonly IBiliService _biliService;
     public AutoServiceViewModel(IServiceProvider? serviceProvider = null)
     {
-        if (!Design.IsDesignMode && serviceProvider != null)
-        {
-            _biliService = serviceProvider.GetService<IBiliService>() ?? new BiliServiceImpl();
-        }
-        else
-        {
-            _biliService = new BiliServiceImpl();
-        }
+        // if (!Design.IsDesignMode && serviceProvider != null)
+        // {
+        //     _biliService = serviceProvider.GetService<IBiliService>() ?? new BiliServiceImpl();
+        // }
+        // else
+        // {
+        //     _biliService = new BiliServiceImpl();
+        // }
+
+        _biliService = serviceProvider.GetService<IBiliService>();
+       
         
         //订阅AltsList变化 -> 更新HasAlts
         AltsList.CollectionChanged += (_, _) => 
@@ -87,7 +88,7 @@ public partial class AutoServiceViewModel : ViewModelBase
                 {
                     try
                     {
-                        var alt = await Alt.CreateAltAsync(altSettings, RemoveAlt);
+                        var alt = await Alt.CreateAltAsync(altSettings,_biliService, RemoveAlt);
                         return new { Result = (Alt?)alt , AltSettings = altSettings , ExceptionMsg = (string?)null };
                     }
                     catch (Exception ex)
@@ -219,13 +220,15 @@ public partial class AutoServiceViewModel : ViewModelBase
                 CookieString = cookie,
                 UserName = userName,
                 IsSendGift = altVm.IsSendGift,
-                // DanmakuList = altVm.DanmakuList,
-                ProxyAddress = altVm.ProxyAddress,
-                ProxyUsername = altVm.ProxyUsername,
-                ProxyPassword = altVm.ProxyPassword
+                ProxyInfo = altVm.ProxyAddress == null ? null : new ProxyInfo
+                {
+                    ProxyAddress = altVm.ProxyAddress,
+                    Username = altVm.ProxyUsername,
+                    Password = altVm.ProxyPassword
+                }
             };
             
-            AltsList.Add(await Alt.CreateAltAsync(altSettings, RemoveAlt));
+            AltsList.Add(await Alt.CreateAltAsync(altSettings,_biliService,RemoveAlt));
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"登录成功，当前账号 {altSettings.UserName}",Geometry.Parse(MdIcons.Check)));
         }
     }
@@ -255,13 +258,10 @@ public partial class Alt : ObservableObject , IDisposable
     private readonly AltService _altService;
     private readonly AltSettings _altSettings;
     
-    private Alt(AltSettings altSettings, Action<Alt> removeCallback)
+    private Alt(AltSettings altSettings,IBiliService biliService,Action<Alt> removeCallback)
     {
         //赋值传入数据
-        _altService = new AltService(altSettings.CookieString,
-            altSettings.ProxyAddress,
-            altSettings.ProxyUsername,
-            altSettings.ProxyPassword);
+        _altService = new AltService(biliService,altSettings.CookieString, altSettings.ProxyInfo);
         
         _altSettings = altSettings;
         _removeCallback = removeCallback;
@@ -270,9 +270,9 @@ public partial class Alt : ObservableObject , IDisposable
     }
     
     //工厂方法构造函数
-    public static async Task<Alt> CreateAltAsync(AltSettings altSettings, Action<Alt> removeCallback)
+    public static async Task<Alt> CreateAltAsync(AltSettings altSettings, IBiliService biliService ,Action<Alt> removeCallback)
     {
-        var alt = new Alt(altSettings, removeCallback);
+        var alt = new Alt(altSettings, biliService ,removeCallback);
         await alt.InitializeAsync();
         return alt;
     }
@@ -298,7 +298,7 @@ public partial class Alt : ObservableObject , IDisposable
         using var altVm = new AltsManagerViewModel(true);
         altVm.CookieValue = _altSettings.CookieString;
         altVm.AllowDoneClose = true;
-
+        
         await ShowWindowHelper.ShowWindowAsync(new AltsManager(){DataContext = altVm});
         if (altVm.AllowDoneClose)
         {
@@ -308,9 +308,13 @@ public partial class Alt : ObservableObject , IDisposable
             await InitializeAsync();
                 
             _altSettings.IsSendGift = altVm.IsSendGift;
-            _altSettings.ProxyAddress = altVm.ProxyAddress;
-            _altSettings.ProxyUsername = altVm.ProxyUsername;
-            _altSettings.ProxyPassword = altVm.ProxyPassword;
+
+            _altSettings.ProxyInfo = altVm.ProxyAddress == null ? null : new ProxyInfo
+            {
+                ProxyAddress = altVm.ProxyAddress,
+                Username = altVm.ProxyUsername,
+                Password = altVm.ProxyPassword
+            };
             
             await SaveAltSettingsAsync();
         }

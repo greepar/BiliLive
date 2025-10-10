@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services.BiliService;
 
@@ -23,12 +24,14 @@ public class AltService : IDisposable
     private readonly CookieContainer _cookieContainer= new ();
     private bool _disposed;
     
-    private readonly string _roomId;
+    private IBiliService? _biliService;
     
-    public AltService(string biliCookie = "",string? proxyAddress = null,string? username = null,string? password = null)
+    public AltService(IBiliService? biliService = null,string biliCookie = "",ProxyInfo? proxyInfo = null)
     {
-        _roomId = "10431980"; 
-        
+        if (biliService is not null)
+        {
+            _biliService = biliService;
+        }
         
         var cookiePairs = biliCookie.Split(';');
         foreach (var pair in cookiePairs)
@@ -51,12 +54,12 @@ public class AltService : IDisposable
             CookieContainer = _cookieContainer,
         };
         
-        if (!string.IsNullOrWhiteSpace(proxyAddress))
+        if (proxyInfo != null)
         {
-            var proxy = new WebProxy(proxyAddress);
-            if (!string.IsNullOrWhiteSpace(username))
+            var proxy = new WebProxy(proxyInfo.ProxyAddress);
+            if (!string.IsNullOrWhiteSpace(proxyInfo.Username) && !string.IsNullOrWhiteSpace(proxyInfo.Password))
             {
-                proxy.Credentials = new NetworkCredential(username, password);
+                proxy.Credentials = new NetworkCredential(proxyInfo.Username, proxyInfo.Password);
             }
             handler.UseProxy = true;
             handler.Proxy = proxy;
@@ -100,7 +103,7 @@ public class AltService : IDisposable
             { "data_extend", "{\"trackid\":\"-99998\"}"  },
             { "fontsize", "25"  },
             { "rnd", ((int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds())).ToString()  },
-            { "roomid", _roomId  },
+            { "roomid", _biliService.RoomId.ToString()  },
             { "csrf", GetCsrfFromCookie() ?? ""  },
             { "csrf_token", GetCsrfFromCookie() ?? ""  }
         };
@@ -118,14 +121,14 @@ public class AltService : IDisposable
         {
             { "uid", (await GetSelfUidAsyncAsync()).ToString()  }, //自己的uid
             { "gift_id", "31039" }, //礼物Id , 31039为牛蛙牛蛙
-            { "ruid", (await GetTargetUidAsync(_roomId)).ToString()  }, //主播的uid
+            { "ruid", (await GetTargetUidAsync(_biliService.RoomId.ToString())).ToString()  }, //主播的uid
             { "send_ruid", "0"  },
             { "gift_num", "1"  },
             { "coin_type", "gold"  },
             { "bag_id", "0"  },
             { "platform", "pc"  },
             { "biz_code", "Live"  },
-            { "biz_id", _roomId }, //RoomId
+            { "biz_id", _biliService.RoomId.ToString() }, //RoomId
             { "storm_beat_id", "0"  },
             { "metadata", ""  },
             { "price", "100"  },
