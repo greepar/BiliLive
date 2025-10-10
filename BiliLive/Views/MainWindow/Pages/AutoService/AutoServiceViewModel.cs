@@ -31,8 +31,14 @@ public partial class AutoServiceViewModel : ViewModelBase
     public bool HasAlts => AltsList.Count > 0;
     
     
-    [ObservableProperty] private string? _ffmpegPath;
-    [ObservableProperty] private string? _videoPath;
+    [ObservableProperty] 
+    private string? _ffmpegPath;
+    [ObservableProperty] 
+    [NotifyPropertyChangedFor(nameof(IsCoreSet))]
+    [NotifyPropertyChangedFor(nameof(CoreStatus))]
+    private string? _videoPath;
+    public bool IsCoreSet => !string.IsNullOrWhiteSpace(FfmpegPath) && !string.IsNullOrWhiteSpace(VideoPath);
+    public string CoreStatus => IsCoreSet ? "已配置" : "未配置";
     
     [ObservableProperty] private bool _isEnabled;
     [ObservableProperty] private bool _isAutoStart;

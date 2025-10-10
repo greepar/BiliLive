@@ -122,12 +122,12 @@
                                     Background="#FDDEE9">
                                 <StackPanel Margin="8 0 10 0" Orientation="Horizontal">
                                     <SvgBox Height="15" Margin="0 2 2 0"
-                                            PathData="{resources:Geometry {x:Static resources:MdIcons.Check}}" />
+                                            PathData="{Binding IsCoreSet ,Converter={converters:BoolToGeometryConverter}}" />
                                     <TextBlock
                                         FontSize="11"
                                         VerticalAlignment="Center"
                                         LineHeight="20"
-                                        Text="已设置" />
+                                        Text="{Binding CoreStatus}" />
                                 </StackPanel>
                             </Border>
 
