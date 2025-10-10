@@ -16,6 +16,9 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     private const string RoomInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/preLive/PreLive?platform=web&mobi_app=web&build=1";
     private const string RoomIdUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/highlight/getRoomHighlightState";
     private const string AreasInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/preLive/GetAreaListForLive";
+    private const string UpdateInfoUrl = "https://api.live.bilibili.com/room/v1/Room/update";
+    private const string UpdatePreLiveInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/preLive/UpdatePreLiveInfo";
+    
     
 
     public async Task<LiveRoomInfo> GetRoomInfoAsync()
@@ -97,7 +100,37 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     
     public async Task ChangeRoomInfoAsync(string type, object value)
     {
-        await Task.Delay(1);
+        var roomId = await GetRoomIdAsync();
+        var formData = new Dictionary<string, string>()
+        {
+            { "csrf", GetCsrfFromCookie() ?? "" },
+            { "csrf_token", GetCsrfFromCookie() ?? "" },
+            { "room_id", roomId.ToString() },
+            { "platform", "web" },
+            { "build", "1" },
+            { "mobi_app", "web" }
+        };
+        switch (type)
+        {
+            case "title":
+                if (value is string title && !string.IsNullOrWhiteSpace(title))
+                {
+                    try
+                    {
+                        formData.Add("title", title);
+                        using var response = await httpClient.PostAsync(UpdateInfoUrl,new FormUrlEncodedContent(formData));
+                        await using var stream = await response.Content.ReadAsStreamAsync();
+                        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+                        var element = jsonDoc.RootElement;
+                        if (element.GetProperty("code").GetInt32() != 0) throw new Exception(element.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("修改标题失败:" + ex.Message);
+                    }
+                }
+                break;
+        }
     }
     
     public async Task<JsonElement> GetLiveDataAsync(string liveKey)

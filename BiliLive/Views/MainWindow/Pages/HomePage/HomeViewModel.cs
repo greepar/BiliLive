@@ -2,15 +2,18 @@
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services.BiliService;
+using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow.Pages.HomePage;
@@ -90,7 +93,17 @@ public partial class HomeViewModel : ViewModelBase
     private async Task ChangeRoomTitleAsync()
     {
         if (string.IsNullOrEmpty(InputRoomTitle)) return;
-        // await _biliService.ChangeRoomTitleAsync();
+        try
+        {
+            await _biliService.ChangeRoomTitleAsync(InputRoomTitle);
+        }
+        catch (Exception ex)
+        {
+            await ShowWindowHelper.ShowErrorAsync("修改直播间标题失败:" + ex.Message);
+        }
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间标题成功,由于审核可能存在延迟。",Geometry.Parse(MdIcons.Check)));
+        _roomTitle = InputRoomTitle;
+        OnPropertyChanged(nameof(IsRoomTitleChanged));
     }
     
         // [RelayCommand]
