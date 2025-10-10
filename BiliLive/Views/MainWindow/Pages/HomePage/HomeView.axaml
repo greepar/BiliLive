@@ -175,8 +175,7 @@
                             </StackPanel>
                         </Grid>
                         
-                        <StackPanel Grid.Row="1"
-                                    Margin="0 10 0 4" Spacing="5">
+                        <StackPanel Margin="0 10 0 4" Spacing="5">
                             <Grid >
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
                                         Background="{DynamicResource Surface}">

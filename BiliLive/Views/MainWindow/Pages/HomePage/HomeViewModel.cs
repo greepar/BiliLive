@@ -7,7 +7,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Utils;
@@ -21,8 +20,8 @@ namespace BiliLive.Views.MainWindow.Pages.HomePage;
 public partial class HomeViewModel : ViewModelBase
 {
     [ObservableProperty] private string? _userName = "未登录";
-    [ObservableProperty] private long? _userId = null;
-    [ObservableProperty] private long? _roomId = null;
+    [ObservableProperty] private long? _userId;
+    [ObservableProperty] private long? _roomId;
     [ObservableProperty] private Bitmap? _userFace ;
 
 
@@ -101,9 +100,23 @@ public partial class HomeViewModel : ViewModelBase
         {
             await ShowWindowHelper.ShowErrorAsync("修改直播间标题失败:" + ex.Message);
         }
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间标题成功,由于审核可能存在延迟。",Geometry.Parse(MdIcons.Check)));
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间标题成功",Geometry.Parse(MdIcons.Check)));
         _roomTitle = InputRoomTitle;
         OnPropertyChanged(nameof(IsRoomTitleChanged));
+    }
+
+    [RelayCommand]
+    private async Task ChangeRoomAreaAsync()
+    {
+        try
+        {
+            await _biliService.ChangeRoomAreaAsync(231);
+        }
+        catch (Exception ex)
+        {
+            await ShowWindowHelper.ShowErrorAsync("修改直播间标题失败:" + ex.Message);
+        }
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间分区成功",Geometry.Parse(MdIcons.Check)));
     }
     
         // [RelayCommand]

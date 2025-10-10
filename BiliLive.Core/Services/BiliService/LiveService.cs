@@ -37,26 +37,12 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         };
     }
 
-    public async Task GetAreasListAsync()
+    public async Task<JsonElement> GetAreasListAsync()
     {
         using var response = await httpClient.GetAsync(AreasInfoUrl);
         await using var stream = await response.Content.ReadAsStreamAsync();
         using var jsonDoc = await JsonDocument.ParseAsync(stream);
-        var v1Area = jsonDoc.RootElement.GetProperty("data").GetProperty("area_v1_info");
-        foreach (var area in v1Area.EnumerateArray())
-        {
-            var areaId = area.GetProperty("id").GetInt32();
-            var areaName = area.GetProperty("name").GetString() ?? "未知分区";
-            Console.WriteLine($"一级分区: {areaId} - {areaName}");
-            var v2Areas = area.GetProperty("area_v2_info");
-            foreach (var subArea in v2Areas.EnumerateArray())
-            {
-                var subAreaId = subArea.GetProperty("id").GetInt32();
-                var subAreaName = subArea.GetProperty("name").GetString() ?? "未知子分区";
-                Console.WriteLine($"\t二级分区: {subAreaId} - {subAreaName}");
-            }
-        }
-        
+        return jsonDoc.RootElement.Clone();
     }
     
     public async Task<JsonElement> StartLiveAsync()
@@ -97,9 +83,12 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         await Task.Delay(1);
         return "test";
     }
+
     
-    public async Task ChangeRoomInfoAsync(string type, object value)
+    public enum ChangeType { Title, Area, Cover }
+    public async Task ChangeRoomInfoAsync(ChangeType type , object value)
     {
+        var targetUrl = type == ChangeType.Cover ? UpdateInfoUrl : UpdatePreLiveInfoUrl;
         var roomId = await GetRoomIdAsync();
         var formData = new Dictionary<string, string>()
         {
@@ -110,26 +99,53 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
             { "build", "1" },
             { "mobi_app", "web" }
         };
+        
         switch (type)
         {
-            case "title":
+            case ChangeType.Title:
                 if (value is string title && !string.IsNullOrWhiteSpace(title))
                 {
-                    try
-                    {
-                        formData.Add("title", title);
-                        using var response = await httpClient.PostAsync(UpdateInfoUrl,new FormUrlEncodedContent(formData));
-                        await using var stream = await response.Content.ReadAsStreamAsync();
-                        using var jsonDoc = await JsonDocument.ParseAsync(stream);
-                        var element = jsonDoc.RootElement;
-                        if (element.GetProperty("code").GetInt32() != 0) throw new Exception(element.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("修改标题失败:" + ex.Message);
-                    }
+                    formData.Add("title", title);
                 }
                 break;
+            case ChangeType.Area:
+                if (value is int areaId and > 0)
+                {
+                    formData.Add("area_id", areaId.ToString());
+                }
+                else
+                {
+                    throw new ArgumentException("分区ID无效", nameof(value));
+                }
+                break;
+            case ChangeType.Cover:
+                if (value is string coverUrl && !string.IsNullOrWhiteSpace(coverUrl))
+                {
+                    throw new NotImplementedException();
+                    // var imageUrl = await GetImageUrlAsync(cover);
+                    formData.Add("cover", coverUrl);
+                }
+                throw new ArgumentException("链接无效", nameof(value));
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+        try
+        {
+            using var response = await httpClient.PostAsync( targetUrl ,new FormUrlEncodedContent(formData));
+            await using var stream = await response.Content.ReadAsStreamAsync();
+            using var jsonDoc = await JsonDocument.ParseAsync(stream);
+            var root = jsonDoc.RootElement;
+            if (root.GetProperty("code").GetInt32() != 0)
+            {
+                var msg = root.TryGetProperty("message", out var messageProp)
+                    ? messageProp.GetString()
+                    : "未知错误";
+                throw new Exception($"服务器返回错误: {msg}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"修改失败: {ex.Message}", ex);
         }
     }
     
