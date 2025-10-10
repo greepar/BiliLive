@@ -9,7 +9,6 @@ using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services.BiliService;
 using BiliLive.Services;
 using BiliLive.Utils;
-using BiliLive.Views.MainWindow.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,11 +21,18 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty] private long? _userId = null;
     [ObservableProperty] private long? _roomId = null;
     [ObservableProperty] private Bitmap? _userFace ;
+
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))]
+    private string? _inputRoomTitle;
+    private string? _roomTitle;
+    public bool IsRoomTitleChanged => _roomTitle != InputRoomTitle;
     
-    [ObservableProperty] private string? _roomTitle;
+    
     [ObservableProperty] private string? _roomArea = "开播后获取..";
     
-    [ObservableProperty] private bool? _isFinishing = null;
+    [ObservableProperty] private bool? _isFinishing;
     
     
     // private string? _apiKey = null;
@@ -69,7 +75,8 @@ public partial class HomeViewModel : ViewModelBase
             RoomCover?.Dispose();
             using var rcMs = new MemoryStream(roomInfo.RoomCover);
             RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 132*2, 74*2) ?? new Bitmap(rcMs);
-            RoomTitle = roomInfo.Title;
+            _roomTitle = roomInfo.Title;
+            InputRoomTitle = roomInfo.Title;
         }
     }
     
@@ -77,6 +84,13 @@ public partial class HomeViewModel : ViewModelBase
     private async Task SelectAreaAsync()
     {
         await ShowWindowHelper.ShowErrorAsync("hello");
+    }
+
+    [RelayCommand]
+    private async Task ChangeRoomTitleAsync()
+    {
+        if (string.IsNullOrEmpty(InputRoomTitle)) return;
+        // await _biliService.ChangeRoomTitleAsync();
     }
     
         // [RelayCommand]

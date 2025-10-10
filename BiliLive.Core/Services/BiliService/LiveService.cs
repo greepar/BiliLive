@@ -81,7 +81,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
             await using var stream = await response.Content.ReadAsStreamAsync();
             using var jsonDoc = await JsonDocument.ParseAsync(stream);
             var element = jsonDoc.RootElement;
-            return element;
+            return element.Clone();
         }
         catch (Exception ex)
         {
@@ -93,6 +93,26 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     {
         await Task.Delay(1);
         return "test";
+    }
+    
+    public async Task ChangeRoomInfoAsync(string type, object value)
+    {
+        await Task.Delay(1);
+    }
+    
+    public async Task<JsonElement> GetLiveDataAsync(string liveKey)
+    {
+        await using var stream = await httpClient.GetStreamAsync($"https://api.live.bilibili.com/xlive/app-blink/v1/live/StopLiveData?live_key={liveKey}");
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+        var element = jsonDoc.RootElement;
+        return element.Clone();
+        // {"code":0,"message":"0","ttl":1,"data":{"LiveTime":543,"AddFans":0,"HamsterRmb":0,"NewFansClub":0,"DanmuNum":0,"MaxOnline":2,"WatchedCount":1}}
+    }
+    
+    private async Task<string> GetImageUrlAsync(byte[] imageBytes)
+    {
+        await Task.Delay(1);
+        return "https://i0.hdslb.com/bfs/live/cover/1234567890.jpg";
     }
     
     private async Task<long> GetRoomIdAsync()

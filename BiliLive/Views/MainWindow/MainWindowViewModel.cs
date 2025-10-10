@@ -248,10 +248,14 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartMainService()
     {
-        // var a = await _biliService.StartLiveAsync();
-        // Console.WriteLine(a);
+        var a = await _biliService.StartLiveAsync();
         // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
-        // var apiKey = jsonDoc.RootElement.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
+        var apiKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
+        var liveKey = a.GetProperty("data").GetProperty("live_key").GetString();
+        Console.WriteLine(liveKey);
+        Console.WriteLine(apiKey);
+
+        await _biliService.GetLiveDataAsync(liveKey);
     }
     
 }

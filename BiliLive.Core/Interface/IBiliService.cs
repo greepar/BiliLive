@@ -14,8 +14,14 @@ public interface IBiliService
     Task<QrLoginInfo?> GetLoginUrlAsync();
     Task<int?> GeQrStatusCodeAsync(string qrCodeKey);
     
-
     // 直播相关
     Task<LiveRoomInfo> GetRoomInfoAsync();
+    
+    Task<JsonElement> GetLiveDataAsync(string liveKey);
+
+    Task ChangeRoomTitleAsync(string title);
+    // Task ChangeRoomAreaAsync(int areaId);
+    // Task ChangeRoomCoverAsync(byte[] cover);
+    
     Task<JsonElement> StartLiveAsync();
 }

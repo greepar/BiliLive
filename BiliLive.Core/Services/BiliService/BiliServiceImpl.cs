@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -48,5 +49,12 @@ public class BiliServiceImpl : IBiliService
     public async Task<LiveRoomInfo> GetRoomInfoAsync() => await _liveService.GetRoomInfoAsync();
     public async Task<JsonElement> StartLiveAsync() => await _liveService.StartLiveAsync();
     
+    public async Task<JsonElement> GetLiveDataAsync(string apiKey) => await _liveService.GetLiveDataAsync(apiKey);
+
+    public Task ChangeRoomTitleAsync(string title)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public async Task<string?> StopLiveAsync() => await _liveService.StopLiveAsync();
 }
