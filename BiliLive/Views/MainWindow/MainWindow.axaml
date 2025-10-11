@@ -4,6 +4,7 @@
         xmlns:res="clr-namespace:BiliLive.Resources"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
+        Title="BiliLive"
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
