@@ -113,21 +113,20 @@ public partial class HomeViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    private async Task CopyRoomUrlAsync()
+    private static async Task CopyTextAsync(string text)
     {
-        if (RoomId == null) return;
+        if (string.IsNullOrEmpty(text) || text.Contains("Will be generated after start...")) return;
         try
         {
             var clipboard = ClipboardHelper.Get();
-            await clipboard.SetTextAsync($"{LiveUrlFormat}/{RoomId}");
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已复制直播间链接到剪贴板", Geometry.Parse(MdIcons.Check)));
+            await clipboard.SetTextAsync(text);
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已复制到剪贴板", Geometry.Parse(MdIcons.Check)));
         }
         catch (Exception ex)
         {
-            await ShowWindowHelper.ShowErrorAsync("复制直播间链接失败:" + ex.Message);
+            await ShowWindowHelper.ShowErrorAsync("复制失败:" + ex.Message);
         }
     }
-    
 
     [RelayCommand]
     private async Task ChangeRoomTitleAsync()

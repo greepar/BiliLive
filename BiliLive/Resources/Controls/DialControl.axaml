@@ -9,17 +9,17 @@
             >
     <!-- <Border Background="AliceBlue" Padding="20"> -->
     <!--     <Grid> -->
-    <!--    -->
+    <!-- -->
     <!--         <Canvas Name="dragCanvas" Width="300" Height="300" Background="SkyBlue"> -->
-    <!--              -->
+    <!-- -->
     <!--             ~1~ 背景色@1@ -->
     <!--             <Border Background="#E6E0E9" CornerRadius="150" Width="300" Height="300" /> -->
-    <!--              -->
+    <!-- -->
     <!--             ~1~ 背景圆形 @1@ -->
     <!--             <Ellipse Width="300" Height="300" Fill="Transparent" Stroke="#6C757D" StrokeThickness="2"/> -->
-    <!--              -->
+    <!-- -->
     <!--             ~1~ 指针 @1@ -->
-    <!--             <Canvas Name="Can1" Background="Transparent"  Width="300" Height="300"   -->
+    <!--             <Canvas Name="Can1" Background="Transparent"  Width="300" Height="300" -->
     <!--                     PointerPressed="OnPointerPressed" -->
     <!--                     PointerMoved="OnPointerMoved" -->
     <!--                     PointerReleased="OnPointerReleased"> -->
@@ -43,36 +43,36 @@
     <!--                     <Ellipse Name="Ell1" Width="38" Height="38" Fill="LightPink" -->
     <!--                              VerticalAlignment="Top" HorizontalAlignment="Center"> -->
     <!--                     </Ellipse> -->
-    <!--                              -->
+    <!-- -->
     <!--                 </StackPanel> -->
     <!--             </Canvas> -->
-    <!--              -->
+    <!-- -->
     <!--             ~1~ 中心点 @1@ -->
-    <!--             <Ellipse ZIndex="500" Name="centerPoint" Width="12" Height="12" Fill="#0D6EFD"  -->
+    <!--             <Ellipse ZIndex="500" Name="centerPoint" Width="12" Height="12" Fill="#0D6EFD" -->
     <!--                      Canvas.Left="144" Canvas.Top="144"/> -->
-    <!--              -->
+    <!-- -->
     <!--             ~1~ <TextBlock Text="1"  @1@ -->
     <!--             ~1~          Canvas.Left="150" Canvas.Top="150"/> @1@ -->
-    <!--              -->
+    <!-- -->
     <!--             ~1~ 刻度线 @1@ -->
     <!--             <Canvas Name="ticksCanvas" Width="300" Height="300"/> -->
-    <!--              -->
+    <!-- -->
     <!--             ~1~ 数字1-12将在这里动态添加 @1@ -->
     <!--             <Canvas IsHitTestVisible="False" ZIndex="200" Name="BlackNumCanvas" Background="Transparent"  Width="300" Height="300"> -->
-    <!--                  -->
+    <!-- -->
     <!--                 <Canvas.Clip> -->
     <!--                     <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/> -->
     <!--                 </Canvas.Clip> -->
-    <!--                  -->
+    <!-- -->
     <!--             </Canvas> -->
     <!--                 <Canvas Name="WhiteNumanvas" Width="300" Height="300"/> -->
-    <!--              -->
-    <!--              -->
-    <!--        -->
-    <!--              -->
-    <!--              -->
-    <!--            -->
-    <!--              -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
     <!--             ~1~ <Border  Name="draggableBorder" @1@ -->
     <!--             ~1~          Width="100" Height="100" @1@ -->
     <!--             ~1~          Background="Wheat" @1@ -->
@@ -83,6 +83,6 @@
     <!--             ~1~ </Border> @1@ -->
     <!--         </Canvas> -->
     <!--     </Grid> -->
-    <!--     -->
+    <!-- -->
     <!-- </Border> -->
 </UserControl>

@@ -7,7 +7,6 @@
              xmlns:converters="clr-namespace:BiliLive.Converters"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="BiliLive.Views.MainWindow.Pages.HomePage.HomeView"
-             FontFamily="{StaticResource NotoRegular}"
              x:DataType="vm:HomeViewModel">
     
     <Design.DataContext>
@@ -76,7 +75,8 @@
                                 <Button Theme="{StaticResource MdButton}"
                                         CornerRadius="8"
                                         Margin="5,0,0,0"
-                                        Command="{Binding CopyRoomUrlCommand}">
+                                        Command="{Binding CopyTextCommand}"
+                                        CommandParameter="{Binding RoomId,StringFormat=https://live.bilibili.com/{0}}">
                                     <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Copy}}"
                                             Fill="{DynamicResource OnSurface}"
                                             Width="15" Height="15"/>
@@ -179,7 +179,9 @@
                         <StackPanel Margin="0 10 0 4" Spacing="5">
                             <Grid >
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
-                                        Background="{DynamicResource Surface}">
+                                        Background="{DynamicResource Surface}"
+                                        Command="{Binding CopyTextCommand}"
+                                        CommandParameter="{Binding ApiUrl}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
                                                Margin="60 0 0 0" Text="{Binding ApiUrl}"/>
                                 </Button>
@@ -191,7 +193,9 @@
                     
                             <Grid>
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
-                                        Background="{DynamicResource Surface}">
+                                        Background="{DynamicResource Surface}"
+                                        Command="{Binding CopyTextCommand}"
+                                        CommandParameter="{Binding ApiKey}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
                                                Margin="60 0 0 0" Text="{Binding MaskedApiKey}"></TextBlock>
                                 </Button>
