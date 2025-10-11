@@ -84,8 +84,9 @@ public class AltService : IDisposable
     public async Task<int?> GeQrStatusCodeAsync(string qrCodeKey) => await _loginService.GeQrStatusCodeAsync(qrCodeKey);
     
     
-    public async Task<bool> SendDanmakuAsync(String message)
+    public async Task SendDanmakuAsync(String message)
     { 
+        if (_biliService == null) throw new Exception("BiliService未初始化");
         var formData = new Dictionary<string, string>
         {
             { "bubble", "0"  },
@@ -112,11 +113,16 @@ public class AltService : IDisposable
         await using var responseStream = await response.Content.ReadAsStreamAsync();
         using var jsonDoc = await JsonDocument.ParseAsync(responseStream);
         var code = jsonDoc.RootElement.GetProperty("code").GetInt32();
-        return code == 0;
+        if (code != 0)
+        {
+            var errMsg = jsonDoc.RootElement.GetProperty("message").GetString();
+            throw new Exception(errMsg);
+        }
     }
     
-    public async Task<bool> SendGiftAsync()
+    public async Task SendGiftAsync()
     { 
+        if (_biliService == null) throw new Exception("BiliService未初始化");
         var formData = new Dictionary<string, string>
         {
             { "uid", (await GetSelfUidAsyncAsync()).ToString()  }, //自己的uid
@@ -143,23 +149,22 @@ public class AltService : IDisposable
         
         //wbi签名
         var (imgKey, subKey) = await GetWbiKeys();
-        Dictionary<string, string> signedParams = EncWbi(
+        var signedParams = EncWbi(
             parameters: formData,
             imgKey: imgKey,
             subKey: subKey
         );
-        string query = await new FormUrlEncodedContent(signedParams).ReadAsStringAsync();
+        var query = await new FormUrlEncodedContent(signedParams).ReadAsStringAsync();
         var response = await _httpClient.PostAsync(new Uri(" https://api.live.bilibili.com/xlive/revenue/v1/gift/sendGold"),new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded"));
        
         await using var responseStream = await response.Content.ReadAsStreamAsync();
         using var jsonDoc = await JsonDocument.ParseAsync(responseStream);
         var code = jsonDoc.RootElement.GetProperty("code").GetInt32();
-        if (code == 0)
+        if (code != 0)
         {
-            return true;
+            var errMsg = jsonDoc.RootElement.GetProperty("message").GetString();
+            throw new Exception(errMsg);
         }
-        var errMsg = jsonDoc.RootElement.GetProperty("message").GetString();
-        throw new Exception(errMsg);
     }
     
     

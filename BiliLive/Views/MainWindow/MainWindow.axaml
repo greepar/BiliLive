@@ -11,7 +11,6 @@
         TransparencyLevelHint="Transparent"
         WindowStartupLocation="CenterScreen"
         Topmost="False"
-
         Background="Transparent">
 
     <Design.DataContext>
@@ -20,7 +19,8 @@
 
     <Border Background="Transparent"
             Name="TotalBorder"
-            PointerPressed="MainWindowPointerPressed">        <!-- 使用Margin留出间隙 -->
+            PointerPressed="MainWindowPointerPressed">
+        <!-- 使用Margin留出间隙 -->
         <Border Name="MainBorder" 
                 MinWidth="800" MinHeight="470"
                 Width="800" Height="470"
@@ -130,13 +130,13 @@
                                             <Border Margin="8 0 8 0" ClipToBounds="True" VerticalAlignment="Center">
                                                 <Grid RowDefinitions="*,*,*">
                                                     <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
-                                                        <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Start}}"
+                                                        <SvgBox Grid.Column="0" PathData="{Binding StreamButtonIcon}"
                                                                 Height="20" Margin="0 0 5 0"
                                                                 VerticalAlignment="Center"
                                                                 Fill="{DynamicResource OnSurface}" />
                                                         <TextBlock Grid.Column="1"
                                                                    FontSize="12"
-                                                                   VerticalAlignment="Center" Text="Start Service" />
+                                                                   VerticalAlignment="Center" Text="{Binding StreamButtonText}" />
                                                     </Grid>
                                                 </Grid>
                                             </Border>

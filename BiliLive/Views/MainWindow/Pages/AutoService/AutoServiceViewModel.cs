@@ -355,6 +355,7 @@ public partial class Alt : ObservableObject , IDisposable
         {
             //待办 发送礼物
             IsGiftSent = true;
+            await _altService.SendGiftAsync();
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送礼物",Geometry.Parse(MdIcons.Check)));
         }
     }

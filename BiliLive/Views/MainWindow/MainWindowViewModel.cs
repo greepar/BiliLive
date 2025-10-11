@@ -13,8 +13,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
+using BiliLive.Resources;
+using BiliLive.Services;
 using BiliLive.Views.MainWindow.Controls;
 using BiliLive.Views.MainWindow.Pages.About;
 using BiliLive.Views.MainWindow.Pages.AutoService;
@@ -89,6 +90,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(StreamButtonText))]
     private bool _isStreaming;
     public string StreamButtonText => IsStreaming ? "Stop stream" : "Start stream";
+    public Geometry StreamButtonIcon => IsStreaming ? Geometry.Parse(MdIcons.Restart) : Geometry.Parse(MdIcons.Start);
     
     
     public MainWindowViewModel(IServiceProvider? serviceProvider = null)
@@ -248,14 +250,34 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartMainService()
     {
-        var a = await _biliService.StartLiveAsync();
-        // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
-        var apiKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
-        var liveKey = a.GetProperty("data").GetProperty("live_key").GetString();
-        Console.WriteLine(liveKey);
-        Console.WriteLine(apiKey);
-
-        await _biliService.GetLiveDataAsync(liveKey);
+        if (!IsStreaming)
+        {
+            try
+            {
+                var a = await _biliService.StartLiveAsync();
+                // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
+                var apiKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
+                var apiUrl = a.GetProperty("data").GetProperty("rtmp").GetProperty("addr").GetString();
+                var liveKey = a.GetProperty("data").GetProperty("live_key").GetString();
+                
+                if (string.IsNullOrWhiteSpace(apiKey) || string.IsNullOrWhiteSpace(apiUrl) || string.IsNullOrWhiteSpace(liveKey))
+                {
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Error-获取推流地址失败", Geometry.Parse(MdIcons.Error)));
+                    return;
+                }
+                
+                _ = Task.Run(async () => await _homeVm.UpdateApiKeyAsync( apiUrl, apiKey, liveKey));
+            }
+            catch (Exception ex)
+            {
+                await ShowWindowHelper.ShowErrorAsync("启动推流失败:" + ex.Message);
+            }
+        }
+        else
+        {
+           await _homeVm.LiveDataCts.CancelAsync();
+        }
+        IsStreaming = !IsStreaming;
     }
     
 }

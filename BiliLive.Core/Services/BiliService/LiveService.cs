@@ -155,7 +155,6 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         using var jsonDoc = await JsonDocument.ParseAsync(stream);
         var element = jsonDoc.RootElement;
         return element.Clone();
-        // {"code":0,"message":"0","ttl":1,"data":{"LiveTime":543,"AddFans":0,"HamsterRmb":0,"NewFansClub":0,"DanmuNum":0,"MaxOnline":2,"WatchedCount":1}}
     }
     
     private async Task<string> GetImageUrlAsync(byte[] imageBytes)

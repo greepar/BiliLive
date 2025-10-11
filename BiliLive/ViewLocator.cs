@@ -17,12 +17,7 @@ public partial class ViewLocator : IDataTemplate
         }
         var type = data.GetType();
         
-        if (s_views.TryGetValue(type, out var func))
-        {
-            return func.Invoke();
-        }
-
-        throw new Exception($"Unable to create view for type: {type}");
+        return s_views.TryGetValue(type, out var func) ? func.Invoke() : throw new Exception($"Unable to create view for type: {type}");
     }
 
     public bool Match(object? data)

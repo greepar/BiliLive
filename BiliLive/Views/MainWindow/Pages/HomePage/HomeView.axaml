@@ -39,15 +39,16 @@
                         <!-- 信息 -->
                         <StackPanel Margin="10,0,0,0"
                                     VerticalAlignment="Center">
-                            <TextBlock Text="{Binding UserId,StringFormat=直播间ID:{0}}"
+                            <TextBlock Text="{Binding RoomId,StringFormat=直播间ID:{0}}"
                                        FontSize="12"/> 
-                            <TextBlock Text="{Binding RoomId,StringFormat=用户ID:{0}}"
+                            <TextBlock Text="{Binding UserId,StringFormat=用户ID:{0}}"
                                        FontSize="12"/>
                             
                             <TextBlock Margin="0 4 0 0" Text="直播链接:" FontSize="12"/>
                             
                             <StackPanel Orientation="Horizontal">
-                                <Button Padding="0" Background="Transparent">
+                                <Button Padding="0" Background="Transparent"
+                                        Command="{Binding OpenRoomUrlCommand}">
                                     <Button.Styles>
                                         <Style Selector="Button:pointerover /template/ ContentPresenter">
                                             <Setter Property="Background" Value="Transparent"/>
@@ -68,15 +69,14 @@
                                             <Setter Property="Background" Value="Transparent"/>
                                         </Style>
                                     </Button.Styles>
-                                    
-                                    <TextBlock Text="{Binding RoomId,StringFormat=live.bilibili.com/{0}}" FontSize="12"
-                                               VerticalAlignment="Center"/>
-                                    
+                                        <TextBlock Text="{Binding RoomId,StringFormat=live.bilibili.com/{0}}" FontSize="12"
+                                                   VerticalAlignment="Center"/>
                                 </Button>
                              
                                 <Button Theme="{StaticResource MdButton}"
                                         CornerRadius="8"
-                                        Margin="5,0,0,0">
+                                        Margin="5,0,0,0"
+                                        Command="{Binding CopyRoomUrlCommand}">
                                     <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Copy}}"
                                             Fill="{DynamicResource OnSurface}"
                                             Width="15" Height="15"/>
@@ -96,7 +96,8 @@
                             </StackPanel>
                           
                             <TextBlock Margin="8 3 0 0" Text="今日直播时长: 0小时15分钟 "/>
-                            <TextBlock Margin="8 3 0 0" Text="观看人数: 3 "/>
+                            <!-- <TextBlock Margin="8 3 0 0" Text="观看人数: 3 "/> -->
+                            <TextBlock Margin="8 3 0 0" Text="{Binding Views ,StringFormat=观看人数: {0}} "/>
                         </StackPanel>
                 </Border>
             </Grid>
@@ -180,7 +181,7 @@
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
                                         Background="{DynamicResource Surface}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
-                                               Margin="60 0 0 0">srt://greepar.uk/upLive</TextBlock>
+                                               Margin="60 0 0 0" Text="{Binding ApiUrl}"/>
                                 </Button>
                                 <Border Margin="2 0 0 0" CornerRadius="12" Height="26"
                                         Background="{DynamicResource SurfaceContainerHighest}" HorizontalAlignment="Left">
@@ -192,7 +193,7 @@
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
                                         Background="{DynamicResource Surface}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
-                                               Margin="60 0 0 0" Text="?streamkey:127Ghfofb^89dbfjf********bbjbdvofobogboo"></TextBlock>
+                                               Margin="60 0 0 0" Text="{Binding MaskedApiKey}"></TextBlock>
                                 </Button>
                                 <Border Margin="2 0 0 0" CornerRadius="12" Height="26"
                                         Background="{DynamicResource SurfaceContainerHighest}" HorizontalAlignment="Left">
@@ -233,7 +234,7 @@
                             <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Viewers}}"/>
                             <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="观看人数"/>
                             <!-- 占位 grid 2 -->
-                            <TextBlock Grid.Column="3" Text="x2" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="{Binding Views}" HorizontalAlignment="Center"/>
                         </Grid>
                     </Border>
                     
@@ -245,7 +246,7 @@
                             <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Comments}}"/>
                             <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="收到弹幕"/>
                             <!-- 占位 grid 2 -->
-                            <TextBlock Grid.Column="3" Text="x2" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="{Binding Danmakus}" HorizontalAlignment="Center"/>
                         </Grid>
                     </Border>
                     
@@ -257,7 +258,7 @@
                             <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Gift}}"/>
                             <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="收到礼物"/>
                             <!-- 占位 grid 2 -->
-                            <TextBlock Grid.Column="3" Text="x2" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="{Binding Gifts}" HorizontalAlignment="Center"/>
                         </Grid>
                     </Border>
                     
