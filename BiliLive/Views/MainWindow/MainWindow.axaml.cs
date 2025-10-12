@@ -68,8 +68,8 @@ public partial class MainWindow : Window
         }else if (_startPoint.X < 0 || _startPoint.X > currentBorderSize.Width || _startPoint.Y > currentBorderSize.Height)
         {
             if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
-            _originalWidth = double.Max(MainBorder.Width, 800);
-            _originalHeight = double.Max(MainBorder.Height,470);
+            _originalWidth = MainBorder.Width;
+            _originalHeight = MainBorder.Height;
             TotalBorder.PointerMoved += ResizeWindowMove; 
             TotalBorder.PointerReleased += ResizeWindowRelease;
             Console.WriteLine("reach out border");
@@ -83,9 +83,9 @@ public partial class MainWindow : Window
         Console.WriteLine(  $"Move Positon: {position}, StartPositon: {_startPoint}");
         var deltaX = position.X - _startPoint.X;
         var deltaY = position.Y - _startPoint.Y;
-        MainBorder.Width = _originalWidth + deltaX;
+        MainBorder.Width = double.Max(_originalWidth + deltaX,800);
         Width = MainBorder.Width + 20;
-        MainBorder.Height = _originalHeight + deltaY;
+        MainBorder.Height = double.Max(_originalHeight + deltaY,470);
         Height = MainBorder.Height + 20;
     }
     

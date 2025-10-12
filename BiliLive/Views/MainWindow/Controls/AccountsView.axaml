@@ -5,7 +5,6 @@
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Controls"
              xmlns:resources="clr-namespace:BiliLive.Resources"
              xmlns:converters="clr-namespace:BiliLive.Converters"
-             FontFamily="{StaticResource NotoRegular}"
              mc:Ignorable="d"
              x:Class="BiliLive.Views.MainWindow.Controls.AccountsView"
              x:DataType="vm:AccountsViewModel">

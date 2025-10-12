@@ -2,7 +2,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.HomePage.Components"
+             mc:Ignorable="d" d:DesignWidth="329" d:DesignHeight="193"
              x:Class="BiliLive.Views.MainWindow.Pages.HomePage.Components.AreaSelectorView">
-    Welcome to Avalonia!
+    
+    <UserControl.DataContext>
+        <components:AreaSelectorViewModel/>
+    </UserControl.DataContext>
+    
+    <!-- <Grid> -->
+    <!--     <Grid.RowDefinitions> -->
+    <!--         <RowDefinition Height="Auto"/> -->
+    <!--         <RowDefinition Height="*"/> -->
+    <!--     </Grid.RowDefinitions> -->
+    <!-- -->
+    <!--     <TextBlock Text="选择分区" FontSize="16" FontWeight="Bold" Margin="10,10,0,5"/> -->
+    <!-- -->
+    <!--     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,0,10,10"> -->
+    <!--         <ItemsControl Items="{Binding AreaGroups}"> -->
+    <!--             <ItemsControl.ItemTemplate> -->
+    <!--                 <DataTemplate> -->
+    <!--                     <StackPanel Margin="0,0,0,15"> -->
+    <!--                         <TextBlock Text="{Binding GroupName}" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,5"/> -->
+    <!--                         <ItemsControl Items="{Binding Areas}"> -->
+    <!--                             <ItemsControl.ItemsPanel> -->
+    <!--                                 <ItemsPanelTemplate> -->
+    <!--                                     <WrapPanel ItemWidth="100" ItemHeight="30" Orientation="Horizontal"/> -->
+    <!--                                 </ItemsPanelTemplate> -->
+    <!--                             </ItemsControl.ItemsPanel> -->
+    <!--                             <ItemsControl.ItemTemplate> -->
+    <!--                                 <DataTemplate> -->
+    <!--                                     <Button Content="{Binding AreaName}" Width="90" Height="30" Margin="5" -->
+    <!--                                             Command="{Binding DataContext.SelectAreaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" -->
+    <!--                                             CommandParameter="{Binding}"/> -->
+    <!--                                 </DataTemplate> -->
+    <!--                             </ItemsControl.ItemTemplate> -->
+    <!--                         </ItemsControl> -->
+    <!--                     </StackPanel> -->
+    <!--                 </DataTemplate> -->
+    <!--             </ItemsControl.ItemTemplate> -->
+    <!--         </ItemsControl> -->
+    <!--     </ScrollViewer> -->
+    <!-- </Grid> -->
+    
 </UserControl>

@@ -17,5 +17,12 @@ static class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            // .With(new Win32PlatformOptions
+            // {
+            //     RenderingMode =
+            //     [
+            //         Win32RenderingMode.Software
+            //     ]
+            // })
             .LogToTrace();
 }

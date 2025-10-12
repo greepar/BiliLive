@@ -18,12 +18,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow.Pages.HomePage;
 
+public enum CopyTarget
+{
+    RoomUrl,
+    StreamKey,
+    StreamUrl
+}
+
 public partial class HomeViewModel : ViewModelBase
 { 
-    private const string LiveUrlFormat = "https://live.bilibili.com";
+    public const string LiveUrlFormat = "https://live.bilibili.com";
+    private const string EmptyText = "未获取";
     
     [ObservableProperty] private string? _userName = "未登录";
-    [ObservableProperty] private long? _userId;
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))] private long? _userId;
     [ObservableProperty] private long? _roomId;
     [ObservableProperty] private Bitmap? _userFace;
 
@@ -32,19 +40,19 @@ public partial class HomeViewModel : ViewModelBase
     private string? _inputRoomTitle;
 
     private string? _roomTitle;
-    public bool IsRoomTitleChanged => _roomTitle != InputRoomTitle;
+    public bool IsRoomTitleChanged => UserId != null && !string.IsNullOrWhiteSpace(InputRoomTitle)  && _roomTitle != InputRoomTitle;
 
-    [ObservableProperty] private string? _roomArea = "开播后获取..";
+    [ObservableProperty] private string? _roomArea = EmptyText;
     [ObservableProperty] private bool? _isFinishing;
     
-    [ObservableProperty] private string _apiUrl = "Will be generated after start...";
+    [ObservableProperty] private string _apiUrl = EmptyText;
 
     //直播Key相关
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(MaskedApiKey))]  private string? _apiKey; 
-    public string MaskedApiKey =>
-        string.IsNullOrEmpty(ApiKey)
-            ? "Will be generated after start..."
-            : $"{ApiKey[..Math.Min(17, ApiKey.Length)]}**********{ApiKey[Math.Max(0, ApiKey.Length - 8)..]}";
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(MaskedStreamKey))]  private string? _streamKey; 
+    public string MaskedStreamKey =>
+        string.IsNullOrEmpty(StreamKey)
+            ? EmptyText
+            : $"{StreamKey[..Math.Min(17, StreamKey.Length)]}**********{StreamKey[Math.Max(0, StreamKey.Length - 8)..]}";
     [ObservableProperty] private Bitmap? _roomCover;
     
     [ObservableProperty] private string _statusText = "未直播";
@@ -93,7 +101,7 @@ public partial class HomeViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task SelectAreaAsync()
+    private static async Task SelectAreaAsync()
     {
         await ShowWindowHelper.ShowErrorAsync("hello");
     }
@@ -113,14 +121,28 @@ public partial class HomeViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    private static async Task CopyTextAsync(string text)
+    private async Task CopyTextAsync(CopyTarget target)
     {
-        if (string.IsNullOrEmpty(text) || text.Contains("Will be generated after start...")) return;
         try
         {
+            var typeName = target switch
+            {
+                CopyTarget.RoomUrl => "直播间链接",
+                CopyTarget.StreamKey => "直播密钥",
+                CopyTarget.StreamUrl => "推流地址",
+                _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+            } ;
+            var text = target switch
+            {
+                CopyTarget.RoomUrl => RoomId == null ? string.Empty : $"{LiveUrlFormat}/{RoomId}",
+                CopyTarget.StreamKey => StreamKey,
+                CopyTarget.StreamUrl => ApiUrl,
+                _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+            };
+            if (string.IsNullOrEmpty(text) || text.Equals(EmptyText)) return;
             var clipboard = ClipboardHelper.Get();
             await clipboard.SetTextAsync(text);
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已复制到剪贴板", Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已复制{typeName}到剪贴板", Geometry.Parse(MdIcons.Check)));
         }
         catch (Exception ex)
         {
@@ -139,8 +161,8 @@ public partial class HomeViewModel : ViewModelBase
         catch (Exception ex)
         {
             await ShowWindowHelper.ShowErrorAsync("修改直播间标题失败:" + ex.Message);
+            return;
         }
-
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间标题成功", Geometry.Parse(MdIcons.Check)));
         _roomTitle = InputRoomTitle;
         OnPropertyChanged(nameof(IsRoomTitleChanged));
@@ -161,11 +183,33 @@ public partial class HomeViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间分区成功", Geometry.Parse(MdIcons.Check)));
     }
     
-    public readonly CancellationTokenSource LiveDataCts = new();
-    public async Task UpdateApiKeyAsync(string apiUrl, string apiKey, string liveKey)
+    [RelayCommand]
+    private async Task ShowAreasPopupAsync()
     {
-        ApiKey = apiKey;
-        ApiUrl = apiUrl;
+        var areas = (await _biliService.GetAreasListAsync()).GetProperty("data").GetProperty("area_v1_info");
+      
+        
+        
+        foreach (var area in areas.EnumerateArray())
+        {
+            var areaName = area.GetProperty("name").GetString();
+            Console.WriteLine(areaName);
+            var subAreas = area.GetProperty("list");
+            foreach (var subArea in subAreas.EnumerateArray())
+            {
+                var subAreaName = subArea.GetProperty("name").GetString();
+                var subAreaId = subArea.GetProperty("id").GetString();
+                Console.WriteLine("  - " + subAreaName + " (ID: " + subAreaId + ")");
+            }
+        }
+    }
+    
+    
+    public readonly CancellationTokenSource LiveDataCts = new();
+    public async Task UpdateApiKeyAsync(string streamUrl, string streamKey, string liveKey)
+    {
+        StreamKey = streamKey;
+        ApiUrl = streamUrl;
 
         var token = LiveDataCts.Token;
         while (!token.IsCancellationRequested)

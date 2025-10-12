@@ -45,7 +45,8 @@
                             
                             <TextBlock Margin="0 4 0 0" Text="直播链接:" FontSize="12"/>
                             
-                            <StackPanel Orientation="Horizontal">
+                            
+                            <StackPanel IsVisible="True" Orientation="Horizontal">
                                 <Button Padding="0" Background="Transparent"
                                         Command="{Binding OpenRoomUrlCommand}">
                                     <Button.Styles>
@@ -68,15 +69,21 @@
                                             <Setter Property="Background" Value="Transparent"/>
                                         </Style>
                                     </Button.Styles>
-                                        <TextBlock Text="{Binding RoomId,StringFormat=live.bilibili.com/{0}}" FontSize="12"
-                                                   VerticalAlignment="Center"/>
+                                        <TextBlock FontSize="12" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}/{1}">
+                                                    <Binding Source="{x:Static vm:HomeViewModel.LiveUrlFormat}" />
+                                                    <Binding Path="RoomId" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                 </Button>
                              
                                 <Button Theme="{StaticResource MdButton}"
                                         CornerRadius="8"
                                         Margin="5,0,0,0"
                                         Command="{Binding CopyTextCommand}"
-                                        CommandParameter="{Binding RoomId,StringFormat=https://live.bilibili.com/{0}}">
+                                        CommandParameter="{x:Static vm:CopyTarget.RoomUrl}">
                                     <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Copy}}"
                                             Fill="{DynamicResource OnSurface}"
                                             Width="15" Height="15"/>
@@ -181,7 +188,7 @@
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
                                         Background="{DynamicResource Surface}"
                                         Command="{Binding CopyTextCommand}"
-                                        CommandParameter="{Binding ApiUrl}">
+                                        CommandParameter="{x:Static vm:CopyTarget.StreamUrl}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
                                                Margin="60 0 0 0" Text="{Binding ApiUrl}"/>
                                 </Button>
@@ -195,9 +202,9 @@
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
                                         Background="{DynamicResource Surface}"
                                         Command="{Binding CopyTextCommand}"
-                                        CommandParameter="{Binding ApiKey}">
+                                        CommandParameter="{x:Static vm:CopyTarget.StreamKey}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
-                                               Margin="60 0 0 0" Text="{Binding MaskedApiKey}"></TextBlock>
+                                               Margin="60 0 0 0" Text="{Binding MaskedStreamKey}"></TextBlock>
                                 </Button>
                                 <Border Margin="2 0 0 0" CornerRadius="12" Height="26"
                                         Background="{DynamicResource SurfaceContainerHighest}" HorizontalAlignment="Left">

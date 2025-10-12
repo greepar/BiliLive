@@ -26,8 +26,7 @@ public partial class AutoServiceViewModel : ViewModelBase
 {
     public AppConfig? Config;
 
-    [ObservableProperty]
-    private ObservableCollection<Alt> _altsList = [];
+    [ObservableProperty] private ObservableCollection<Alt> _altsList = [];
     public bool HasAlts => AltsList.Count > 0;
     
     

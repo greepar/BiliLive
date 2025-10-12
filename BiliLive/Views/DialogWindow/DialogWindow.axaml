@@ -6,7 +6,6 @@
         TransparencyLevelHint="Transparent"
         x:Class="BiliLive.Views.DialogWindow.DialogWindow"
         x:DataType="vm:DialogWindowViewModel"
-        FontFamily="{StaticResource NotoRegular}"
         SystemDecorations="None"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"

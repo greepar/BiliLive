@@ -8,7 +8,6 @@
         SizeToContent="WidthAndHeight"
         Icon="/Assets/avalonia-logo.ico"
         SystemDecorations="None"
-        FontFamily="{StaticResource NotoRegular}"
         TransparencyLevelHint="Transparent"
         WindowStartupLocation="CenterScreen"
         Topmost="False"

@@ -5,7 +5,6 @@
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService"
              xmlns:resources="clr-namespace:BiliLive.Resources"
              xmlns:converters="clr-namespace:BiliLive.Converters"
-             FontFamily="{StaticResource NotoRegular}"
              x:DataType="vm:AutoServiceViewModel"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="570"
              x:Class="BiliLive.Views.MainWindow.Pages.AutoService.AutoServiceView">
@@ -485,6 +484,7 @@
                                 <TextBlock>奖励页面地址</TextBlock>
                                 <TextBox />
                                 <TextBlock>状态:未领取</TextBlock>
+                                <!-- <Button Command="{Binding TestActionCommand}">TEST</Button> -->
                             </StackPanel>
                         </StackPanel>
 
