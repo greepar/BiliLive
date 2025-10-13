@@ -11,7 +11,7 @@
 
     <Application.Styles>
         <FluentTheme />
-        <Style Selector="Window">
+        <Style Selector="Window,UserControl">
             <Setter Property="FontFamily" Value="{DynamicResource NotoRegular}"></Setter>
         </Style>
     </Application.Styles>

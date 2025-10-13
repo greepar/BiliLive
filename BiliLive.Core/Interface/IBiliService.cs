@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ public interface IBiliService
     Task<JsonElement> StartLiveAsync();
     Task StopLiveAsync();
     Task<JsonElement> GetAreasListAsync();
+    Task<JsonElement> GetMyLastChooseAreaAsync();
     Task<LiveRoomInfo> GetRoomInfoAsync();
     Task<JsonElement> GetLiveDataAsync(string liveKey);
 
@@ -58,6 +60,8 @@ public class BiliServiceImpl : IBiliService
     public async Task<JsonElement> GetAreasListAsync() => await _liveService.GetAreasListAsync();
 
     public async Task<LiveRoomInfo> GetRoomInfoAsync() => await _liveService.GetRoomInfoAsync();
+    
+    public async Task<JsonElement> GetMyLastChooseAreaAsync() => await _liveService.GetMyLastChooseAreaAsync();
     
     public async Task<JsonElement> GetLiveDataAsync(string apiKey) => await _liveService.GetLiveDataAsync(apiKey);
 

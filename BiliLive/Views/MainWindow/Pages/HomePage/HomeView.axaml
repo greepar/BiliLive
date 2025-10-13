@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.HomePage"
              xmlns:resources="clr-namespace:BiliLive.Resources"
              xmlns:converters="clr-namespace:BiliLive.Converters"
+             xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.HomePage.Components"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="BiliLive.Views.MainWindow.Pages.HomePage.HomeView"
              x:DataType="vm:HomeViewModel">
@@ -171,7 +172,53 @@
                                             Theme="{StaticResource MdButton}"
                                             Margin="5,0,-5,0" CornerRadius="11"
                                             VerticalAlignment="Bottom"
-                                            Background="{DynamicResource SecondaryContainer}">
+                                            Command="{Binding SelectAreaCommand}"
+                                          Background="{DynamicResource SecondaryContainer}">
+                                        <Button.Flyout>
+                                            <Flyout Placement="Top">
+                                                <Flyout.FlyoutPresenterTheme>
+                                                    <ControlTheme TargetType="FlyoutPresenter">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                        <Setter Property="Padding" Value="0"/>
+                                                    </ControlTheme>
+                                                </Flyout.FlyoutPresenterTheme>
+                                                
+                                                <Border Margin="8"
+                                                        CornerRadius="10"
+                                                        BoxShadow="0 1 7 1 #26000000">
+                                                      <Border.Styles>
+                                                        <Style Selector="Border">
+                                                            <Style.Animations>
+                                                                <Animation Duration="0.3"
+                                                                           Easing="ExponentialEaseOut"
+                                                                           FillMode="Forward">
+                                                                    <KeyFrame Cue="0%">
+                                                                        <Setter
+                                                                            Property="TranslateTransform.Y"
+                                                                            Value="50" />
+                                                                        <Setter Property="Opacity"
+                                                                                Value="0" />
+                                                                    </KeyFrame>
+                                                                    <KeyFrame Cue="100%">
+                                                                        <Setter
+                                                                            Property="TranslateTransform.Y"
+                                                                            Value="0" />
+                                                                        <Setter Property="Opacity"
+                                                                                Value="1" />
+                                                                    </KeyFrame>
+                                                                </Animation>
+                                                            </Style.Animations>
+                                                        </Style>
+                                                    </Border.Styles>
+                                                    <Border ClipToBounds="True" CornerRadius="10"
+                                                            Height="193" Width="329" Opacity="0">
+                                                        <components:AreaSelectorView DataContext="{Binding  AreaSelectorVm}"/>
+                                                </Border>
+                                                </Border>
+                                            </Flyout>
+                                        </Button.Flyout>
+                                        
                                         <StackPanel Spacing="3" Margin="3" Orientation="Horizontal">
                                             <StackPanel Margin="5" Orientation="Horizontal">
                                                 <SvgBox Margin="2 2 1 2" PathData="{resources:Geometry {x:Static resources:MdIcons.Areas}}"/>

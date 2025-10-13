@@ -11,6 +11,7 @@ using BiliLive.Core.Models.BiliService;
 using BiliLive.Resources;
 using BiliLive.Services;
 using BiliLive.Utils;
+using BiliLive.Views.MainWindow.Pages.HomePage.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -62,7 +63,7 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty] private int _gifts;
 
     private readonly IBiliService _biliService;
-
+    [ObservableProperty]private AreaSelectorViewModel _areaSelectorVm = new();
     public HomeViewModel(IServiceProvider? serviceProvider = null)
     {
         using var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
@@ -101,9 +102,12 @@ public partial class HomeViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private static async Task SelectAreaAsync()
+    private void SelectArea()
     {
-        await ShowWindowHelper.ShowErrorAsync("hello");
+        AreaSelectorVm.RefreshAreasCommand.Execute(null);
+        if (AreaSelectorVm.BiliService != null) return;
+        AreaSelectorVm.BiliService = _biliService;
+        AreaSelectorVm.LoadAreasCommand.Execute(null);
     }
     
     [RelayCommand]
@@ -182,28 +186,6 @@ public partial class HomeViewModel : ViewModelBase
 
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间分区成功", Geometry.Parse(MdIcons.Check)));
     }
-    
-    [RelayCommand]
-    private async Task ShowAreasPopupAsync()
-    {
-        var areas = (await _biliService.GetAreasListAsync()).GetProperty("data").GetProperty("area_v1_info");
-      
-        
-        
-        foreach (var area in areas.EnumerateArray())
-        {
-            var areaName = area.GetProperty("name").GetString();
-            Console.WriteLine(areaName);
-            var subAreas = area.GetProperty("list");
-            foreach (var subArea in subAreas.EnumerateArray())
-            {
-                var subAreaName = subArea.GetProperty("name").GetString();
-                var subAreaId = subArea.GetProperty("id").GetString();
-                Console.WriteLine("  - " + subAreaName + " (ID: " + subAreaId + ")");
-            }
-        }
-    }
-    
     
     public readonly CancellationTokenSource LiveDataCts = new();
     public async Task UpdateApiKeyAsync(string streamUrl, string streamKey, string liveKey)

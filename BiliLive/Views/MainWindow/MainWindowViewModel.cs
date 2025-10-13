@@ -250,10 +250,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartMainService()
     {
-        if (!IsStreaming)
+        try
         {
-            try
+            if (!IsStreaming)
             {
+            
                 var a = await _biliService.StartLiveAsync();
                 // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
                 var apiKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
@@ -265,17 +266,19 @@ public partial class MainWindowViewModel : ViewModelBase
                     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Error-获取推流地址失败", Geometry.Parse(MdIcons.Error)));
                     return;
                 }
-                
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("开启推流成功", Geometry.Parse(MdIcons.Check)));
                 _ = Task.Run(async () => await _homeVm.UpdateApiKeyAsync( apiUrl, apiKey, liveKey));
             }
-            catch (Exception ex)
+            else
             {
-                await ShowWindowHelper.ShowErrorAsync("启动推流失败:" + ex.Message);
+                await _homeVm.LiveDataCts.CancelAsync();
+                await _biliService.StopLiveAsync();
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已停止推流", Geometry.Parse(MdIcons.Check)));
             }
         }
-        else
+        catch (Exception ex)
         {
-           await _homeVm.LiveDataCts.CancelAsync();
+            await ShowWindowHelper.ShowErrorAsync("启动推流失败:" + ex.Message);
         }
         IsStreaming = !IsStreaming;
     }
