@@ -23,6 +23,15 @@ public class CircularPanel : Panel
         get => GetValue(AngleOffsetProperty);
         set => SetValue(AngleOffsetProperty, value);
     }
+    
+    public static readonly StyledProperty<int> IndexPositionOffsetProperty =
+        AvaloniaProperty.Register<CircularPanel, int>(nameof(IndexPositionOffset), 0);
+
+    public int IndexPositionOffset
+    {
+        get => GetValue(IndexPositionOffsetProperty);
+        set => SetValue(IndexPositionOffsetProperty, value);
+    }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
@@ -36,10 +45,14 @@ public class CircularPanel : Panel
         for (int i = 0; i < Children.Count; i++)
         {
             var child = Children[i];
-            double angle = (i * angleStep + AngleOffset) * (Math.PI / 180.0);
+            
+            double logicalPosition = (i + IndexPositionOffset) % Children.Count;
+            if (logicalPosition < 0) logicalPosition += Children.Count;
+            
+            var angle = (logicalPosition * angleStep + AngleOffset) * (Math.PI / 180.0);
 
-            double x = center.X + Math.Cos(angle) * radius - child.DesiredSize.Width / 2;
-            double y = center.Y + Math.Sin(angle) * radius - child.DesiredSize.Height / 2;
+            var x = center.X + Math.Cos(angle) * radius - child.DesiredSize.Width / 2;
+            var y = center.Y + Math.Sin(angle) * radius - child.DesiredSize.Height / 2;
 
             child.Arrange(new Rect(new Point(x, y), child.DesiredSize));
         }

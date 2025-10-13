@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService"
              xmlns:resources="clr-namespace:BiliLive.Resources"
              xmlns:converters="clr-namespace:BiliLive.Converters"
+             xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
              x:DataType="vm:AutoServiceViewModel"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="570"
              x:Class="BiliLive.Views.MainWindow.Pages.AutoService.AutoServiceView">
@@ -238,12 +239,8 @@
                                               CommandParameter="{x:Static vm:ToggleOption.AutoStreamService}"/>
                             </Grid>
                         </Border>
-
-                        <!-- 内容区域 -->
                         <StackPanel Grid.Row="1" Orientation="Vertical"
                                     Margin="14 0 14 8">
-
-                            <!-- 设置开始直播时间 -->
                             <StackPanel Orientation="Horizontal"
                                         Spacing="10">
                                 <TextBlock VerticalAlignment="Center">开始直播时间 (从每日24:00开始) :</TextBlock>
@@ -253,11 +250,29 @@
                                         Content="{Binding FormattedStartTime}"
                                         Theme="{StaticResource MdButton}"
                                         VerticalAlignment="Center">
-                                    <!-- <Button.Flyout> -->
-                                    <!--     <Flyout Placement="Bottom"> -->
-                                    <!--         <components:TimePickerView /> -->
-                                    <!--     </Flyout> -->
-                                    <!-- </Button.Flyout> -->
+                                    <Button.Flyout>
+                                        <Flyout Placement="Bottom">
+                                            <Border CornerRadius="35"
+                                                    Background="#F9EEFA" 
+                                                    ClipToBounds="True">
+                                                
+                                                <components:TimePickerView>
+                                                    <components:TimePickerView.DataContext>
+                                                        <components:TimePickerViewModel/>
+                                                    </components:TimePickerView.DataContext>
+                                                </components:TimePickerView>
+
+                                            </Border>
+                                            
+                                            <Flyout.FlyoutPresenterTheme>
+                                                <ControlTheme TargetType="FlyoutPresenter">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                    <Setter Property="Padding" Value="0"/>
+                                                </ControlTheme>
+                                            </Flyout.FlyoutPresenterTheme>
+                                        </Flyout>
+                                    </Button.Flyout>
                                 </Button>
                             </StackPanel>
 
