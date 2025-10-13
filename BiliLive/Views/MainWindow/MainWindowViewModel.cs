@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -99,7 +100,10 @@ public partial class MainWindowViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
         {
             var item = new NotificationItem(m.Value,m.Geometry);
-            Notifications.Add(item);
+            if (Notifications.All(x => x.Message != m.Value))
+            {
+                Notifications.Add(item);
+            }
             
             _ =  DelayRemoveNotification(item);
         });
@@ -139,7 +143,7 @@ public partial class MainWindowViewModel : ViewModelBase
         //初始化AutoService配置
         _asVm.VideoPath = appConfig.VideoPath;
         _asVm.FfmpegPath = appConfig.FfmpegPath;
-        _asVm.IsEnabled = appConfig.EnableAutoService;
+        _asVm.IsAutoStreamEnabled = appConfig.EnableAutoService;
         _asVm.IsAutoStart = appConfig.AutoStart;
         _asVm.IsCheck60MinTask = appConfig.Check60MinTask;
         _asVm.Config = appConfig;

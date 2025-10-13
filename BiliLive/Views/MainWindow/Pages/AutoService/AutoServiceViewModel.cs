@@ -2,10 +2,12 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
@@ -22,6 +24,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService;
 
+public enum ToggleOption
+{
+    //总服务
+    AutoStreamService,
+      //AutoStream自服务
+      AutoStart,
+      RandomSecond,
+      Check60MinTask,
+      
+    AutoGiftService,
+    AutoClaimRewardService,
+   
+}
 public partial class AutoServiceViewModel : ViewModelBase
 {
     public AppConfig? Config;
@@ -39,13 +54,15 @@ public partial class AutoServiceViewModel : ViewModelBase
     public bool IsCoreSet => !string.IsNullOrWhiteSpace(FfmpegPath) && !string.IsNullOrWhiteSpace(VideoPath);
     public string CoreStatus => IsCoreSet ? "已配置" : "未配置";
     
-    [ObservableProperty] private bool _isEnabled;
+    [ObservableProperty] private bool _isAutoStreamEnabled;
     [ObservableProperty] private bool _isAutoStart;
     [ObservableProperty] private bool _isRandomSecond;
     [ObservableProperty] private bool _isCheck60MinTask;
+    [ObservableProperty] private bool _isAutoClaimRewardEnabled;
+    
     
     //小号相关
-    [ObservableProperty] private bool _isAltServiceEnabled;
+    [ObservableProperty] private bool _isAltGiftServiceEnabled;
     
     //时间
     [ObservableProperty] private string? _startHour;
@@ -62,23 +79,16 @@ public partial class AutoServiceViewModel : ViewModelBase
     private readonly IBiliService _biliService;
     public AutoServiceViewModel(IServiceProvider? serviceProvider = null)
     {
-        // if (!Design.IsDesignMode && serviceProvider != null)
-        // {
-        //     _biliService = serviceProvider.GetService<IBiliService>() ?? new BiliServiceImpl();
-        // }
-        // else
-        // {
-        //     _biliService = new BiliServiceImpl();
-        // }
-
-        _biliService = serviceProvider.GetService<IBiliService>();
-       
-        
-        //订阅AltsList变化 -> 更新HasAlts
-        AltsList.CollectionChanged += (_, _) => 
+        if (!Design.IsDesignMode && serviceProvider != null)
         {
-            OnPropertyChanged(nameof(HasAlts));
-        };
+            _biliService = serviceProvider.GetService<IBiliService>() ?? new BiliServiceImpl();
+        }
+        else
+        {
+            _biliService = new BiliServiceImpl();
+        }
+        //订阅AltsList变化 -> 更新HasAlts
+        AltsList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasAlts)); 
     }
     
     //初始化数据
@@ -119,10 +129,86 @@ public partial class AutoServiceViewModel : ViewModelBase
         }
     }
     
-    
     [RelayCommand]
-    private async Task ToggleOptions()
+    public async Task ToggleOptions(ToggleOption option)
     {
+        switch (option)
+        {
+            case ToggleOption.AutoStart:
+                await ConfigManager.SaveConfigAsync(ConfigType.AutoStart,IsAutoStart);
+                break;
+            case ToggleOption.AutoStreamService:
+                if (!IsCoreSet)
+                {
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先配置直播核心",Geometry.Parse(MdIcons.Error)));
+                    IsAutoStreamEnabled = false;
+                    return;
+                }
+                if (!IsAutoStreamEnabled)
+                {
+                    IsAltGiftServiceEnabled = false;
+                    IsAutoClaimRewardEnabled = false;
+                    await _autoStreamCts.CancelAsync();
+                    return;
+                }
+                _ = Task.Run(async () => await SetAutoStreamAsync());
+                break;
+            case ToggleOption.Check60MinTask:
+                await ConfigManager.SaveConfigAsync(ConfigType.Check60MinTask,IsCheck60MinTask);
+                break;
+            case ToggleOption.RandomSecond:
+                // await ConfigManager.SaveConfigAsync(ConfigType.,IsRandomSecond);
+                break;
+            case ToggleOption.AutoGiftService:
+                if (!IsAutoStreamEnabled)
+                {
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
+                    IsAltGiftServiceEnabled = false;
+                }
+                break;
+            case ToggleOption.AutoClaimRewardService:
+                if (!IsAutoStreamEnabled)
+                {
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
+                    IsAutoClaimRewardEnabled = false;
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(option), option, null);
+        }
+    }
+
+    //设置定时Cts
+    private CancellationTokenSource? _autoStreamCts;
+    private async Task SetAutoStreamAsync()
+    {
+        if (_autoStreamCts?.IsCancellationRequested == true) { _autoStreamCts.Dispose(); _autoStreamCts = null; }
+        _autoStreamCts ??= new CancellationTokenSource(); 
+        var token = _autoStreamCts.Token;
+        try
+        {
+            //等待开始时间
+            await Task.Delay(2000,token);
+            //发送小号礼物和弹幕
+            if (IsAltGiftServiceEnabled && HasAlts)
+            {
+                foreach (var alt in AltsList)
+                {
+                    if (alt is { IsGiftSent: true, IsDanmakuSent: true }) continue;
+                    // await alt.SendGiftAsync(false);
+                    await alt.SendDanmakuAsync(false);
+                    await Task.Delay(2000, token);
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            //通知UI线程
+            Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"自动开播任务已取消",Geometry.Parse(MdIcons.Check))); });
+        }
+        
+     
+        
         var random = new Random();
         // var hour   = int.TryParse(StartHour,   out var h) ? h : 0;
         // var minute = int.TryParse(StartMinute, out var m) ? m : 0;
@@ -131,23 +217,20 @@ public partial class AutoServiceViewModel : ViewModelBase
         // var seconds = hour * 3600 +
         //               minute * 60 +
         //               (IsRandomSecond ? random.Next(-240, -120) : second);
-        
-        
+                
         //设置第二天基准
-    
-        var baseSeconds = StartTime.TotalSeconds;
-        var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
-        var streamTime = DateTime.Today.AddDays(1).AddSeconds(finalSeconds);
+        // var baseSeconds = StartTime.TotalSeconds;
+        // var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
+        // var streamTime = DateTime.Today.AddDays(1).AddSeconds(finalSeconds);
+        // await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
+        //         
+        // var popupMsg = IsAutoStreamEnabled ? $"自动开播将在 {streamTime} 开始" : "已关闭自动开播服务";
+        // var icon = IsAutoStreamEnabled ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error);
+        // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(popupMsg,icon));
         
-        // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"设置时间{streamTime}",Geometry.Parse(MdIcons.Check)));
         
-        
-        var popupMsg = IsEnabled ? $"自动开播将在 {streamTime} 开始" : "已关闭自动开播服务";
-        var icon = IsEnabled ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error);
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(popupMsg,icon));
-        await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsEnabled);
     }
-
+    
     [RelayCommand]
     private async Task PickFfmpegPathAsync()
     {
@@ -188,19 +271,6 @@ public partial class AutoServiceViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("视频文件有效",Geometry.Parse(MdIcons.Check)));
         await ConfigManager.SaveConfigAsync(ConfigType.VideoPath,VideoPath);
     }
-    
-    [RelayCommand]
-    private async Task ToggleAutoStartOptionAsync()
-    {
-        await ConfigManager.SaveConfigAsync(ConfigType.AutoStart,IsAutoStart);
-    }
-    
-    [RelayCommand]
-    private async Task ToggleCheck60MinTaskAsync()
-    {
-        await ConfigManager.SaveConfigAsync(ConfigType.Check60MinTask,IsCheck60MinTask);
-    }
-    
 
     [RelayCommand]
     private async Task AddAltsAsync()
@@ -245,6 +315,8 @@ public partial class AutoServiceViewModel : ViewModelBase
     }
 }
 
+
+//小号类
 public partial class Alt : ObservableObject , IDisposable
 {
     //先赋值
@@ -326,37 +398,43 @@ public partial class Alt : ObservableObject , IDisposable
     }
     
     [RelayCommand]
-    private async Task SendDanmakuAsync()
+    public async Task SendDanmakuAsync(bool isManual)
     {
-        var dialogVm = new DialogWindowViewModel
+        if (isManual)
         {
-            Message = $"确认发送弹幕吗？",
-        };
-        await ShowWindowHelper.ShowWindowAsync(new DialogWindow.DialogWindow(){DataContext =dialogVm});
-        if (dialogVm.IsConfirmed)
-        {
-            //待办 发送弹幕
-            await _altService.SendDanmakuAsync("您好，这是一条测试弹幕");
-            IsDanmakuSent = true;
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送弹幕",Geometry.Parse(MdIcons.Check)));
+            var dialogVm = new DialogWindowViewModel
+            {
+                Message = $"确认重新发送弹幕吗？",
+            };
+            await ShowWindowHelper.ShowWindowAsync(new DialogWindow.DialogWindow(){DataContext =dialogVm});
+            if (!dialogVm.IsConfirmed)
+            {
+                return;
+            }
         }
+        await _altService.SendDanmakuAsync("您好，这是一条测试弹幕");
+        IsDanmakuSent = true;
+        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送弹幕",Geometry.Parse(MdIcons.Check))); });
     }
 
     [RelayCommand]
-    private async Task SendGiftAsync()
+    public async Task SendGiftAsync(bool isManual)
     {
-        var dialogVm = new DialogWindowViewModel
+        if (isManual)
         {
-            Message = $"确认发送礼物吗？",
-        };
-        await ShowWindowHelper.ShowWindowAsync(new DialogWindow.DialogWindow(){DataContext =dialogVm});
-        if (dialogVm.IsConfirmed)
-        {
-            //待办 发送礼物
-            IsGiftSent = true;
-            await _altService.SendGiftAsync();
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送礼物",Geometry.Parse(MdIcons.Check)));
+            var dialogVm = new DialogWindowViewModel
+            {
+                Message = $"确认重新发送礼物吗？",
+            };
+            await ShowWindowHelper.ShowWindowAsync(new DialogWindow.DialogWindow(){DataContext =dialogVm});
+            if (!dialogVm.IsConfirmed)
+            {
+                return;
+            }
         }
+        await _altService.SendGiftAsync();
+        IsGiftSent = true;
+        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送礼物",Geometry.Parse(MdIcons.Check))); });
     }
     
     [RelayCommand]
@@ -375,7 +453,7 @@ public partial class Alt : ObservableObject , IDisposable
                 
                 //删除账号时才释放服务
                 Dispose();
-                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(MdIcons.Check)));
+                Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(MdIcons.Check))); });
             }
        
     }
