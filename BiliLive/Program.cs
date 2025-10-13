@@ -17,12 +17,27 @@ static class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
-            // .With(new Win32PlatformOptions
-            // {
-            //     RenderingMode =
-            //     [
-            //         Win32RenderingMode.Software
-            //     ]
-            // })
+            .UseSkia()
+            .With(new Win32PlatformOptions
+            {
+                RenderingMode =
+                [
+                    Win32RenderingMode.AngleEgl
+                ]
+            })
+            .With(new X11PlatformOptions()
+            {
+                RenderingMode = 
+                    [
+                    X11RenderingMode.Egl
+                    ]
+            })
+            .With(new AvaloniaNativePlatformOptions()
+            {
+                RenderingMode = 
+                    [
+                    AvaloniaNativeRenderingMode.Metal
+                    ]
+            })
             .LogToTrace();
 }
