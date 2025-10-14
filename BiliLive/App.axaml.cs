@@ -37,6 +37,10 @@ public class App : Application
             .Build();
         
         AvaloniaXamlLoader.Load(this);
+        
+#if DEBUG
+        this.AttachDeveloperTools();
+#endif
     }
     
     public override void OnFrameworkInitializationCompleted()
