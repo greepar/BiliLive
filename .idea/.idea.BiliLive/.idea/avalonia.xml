@@ -47,6 +47,7 @@
         <entry key="BiliLive/Views/MainWindow/Pages/AccountPageView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoService/AutoServicePage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoService/AutoServiceView.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/Pages/AutoService/Components/AltManager.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoService/Components/AltsManager.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoService/Components/TimePickerView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/AutoServicePage.axaml" value="BiliLive/BiliLive.csproj" />

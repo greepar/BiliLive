@@ -1,4 +1,5 @@
-﻿using BiliLive.Core.Models.BiliService;
+﻿using System.Collections.Generic;
+using BiliLive.Core.Models.BiliService;
 
 namespace BiliLive.Models;
 
@@ -13,4 +14,5 @@ public class AltSettings
     
     public ProxyInfo? ProxyInfo { get; set; }
     
+    public List<string>? DanmakuTextList {get; set;}
 }

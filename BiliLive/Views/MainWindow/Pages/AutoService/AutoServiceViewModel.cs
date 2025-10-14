@@ -40,10 +40,8 @@ public enum ToggleOption
 public partial class AutoServiceViewModel : ViewModelBase
 {
     public AppConfig? Config;
-
     [ObservableProperty] private ObservableCollection<Alt> _altsList = [];
     public bool HasAlts => AltsList.Count > 0;
-    
     
     [ObservableProperty] 
     private string? _ffmpegPath;
@@ -68,7 +66,6 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private string? _startHour;
     [ObservableProperty] private string? _startMinute;
     [ObservableProperty] private string? _startSecond;
-    
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FormattedStartTime))]
@@ -97,6 +94,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     {
         if ( Config is { Alts.Count: > 0 })
         {
+            //并行创建Alt实例
             var tasks = Config.Alts
                 .Where(_ => true)
                 .Select(async altSettings =>
@@ -132,6 +130,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     [RelayCommand]
     public async Task ToggleOptions(ToggleOption option)
     {
+        //根据不同选项开关执行不同操作
         switch (option)
         {
             case ToggleOption.AutoStart:
@@ -148,7 +147,7 @@ public partial class AutoServiceViewModel : ViewModelBase
                 {
                     IsAltGiftServiceEnabled = false;
                     IsAutoClaimRewardEnabled = false;
-                    await _autoStreamCts.CancelAsync();
+                    if (_autoStreamCts != null) await _autoStreamCts.CancelAsync();
                     return;
                 }
                 _ = Task.Run(async () => await SetAutoStreamAsync());
@@ -209,7 +208,7 @@ public partial class AutoServiceViewModel : ViewModelBase
         
      
         
-        var random = new Random();
+        // var random = new Random();
         // var hour   = int.TryParse(StartHour,   out var h) ? h : 0;
         // var minute = int.TryParse(StartMinute, out var m) ? m : 0;
         // var second = int.TryParse(StartSecond, out var s) ? s : 0;
@@ -276,8 +275,8 @@ public partial class AutoServiceViewModel : ViewModelBase
     private async Task AddAltsAsync()
     {
         //弹出添加账号窗口
-        using var altVm = new AltsManagerViewModel(false);
-        await ShowWindowHelper.ShowWindowAsync(new AltsManager(){DataContext = altVm});
+        using var altVm = new AltManagerViewModel(false);
+        await ShowWindowHelper.ShowWindowAsync(new AltManager(){DataContext = altVm});
         if (altVm is { AllowDoneClose: true, CookieValue: {Length: > 0} cookie ,UserName: { Length: > 0 } userName})
         {
             //防止重复添加
@@ -339,7 +338,6 @@ public partial class Alt : ObservableObject , IDisposable
     {
         //赋值传入数据
         _altService = new AltService(biliService,altSettings.CookieString, altSettings.ProxyInfo);
-        
         _altSettings = altSettings;
         _removeCallback = removeCallback;
         UserName = altSettings.UserName;
@@ -358,42 +356,75 @@ public partial class Alt : ObservableObject , IDisposable
     private async Task InitializeAsync()
     {
         var loginResult= await _altService.LoginAsync(_altSettings.CookieString);
-        if (loginResult is LoginSuccess result)
+        switch (loginResult)
         {
-            UserId = result.UserId;
-            UserName = result.UserName;
-            using var ms = new MemoryStream(result.UserFaceBytes);
-            UserFace = await Task.Run(() => Bitmap.DecodeToWidth(ms, 80));
-            //保存账号到本地
-            await SaveAltSettingsAsync();
+            case LoginSuccess result:
+            {
+                UserId = result.UserId;
+                UserName = result.UserName;
+                using var ms = new MemoryStream(result.UserFaceBytes);
+                UserFace = PicHelper.ResizeStreamToBitmap(ms, 80, 80);
+                //保存账号到本地
+                await ConfigManager.SaveAltSettingsAsync(_altSettings);
+                break;
+            }
+            case LoginFailed failed:
+            {
+                UserId = 0;
+                await ShowWindowHelper.ShowErrorAsync($"小号 [ {_altSettings.UserName} ] 登录错误:{failed.ErrorMsg}");
+                break;
+            }
         }
     }
     
     [RelayCommand]
     private async Task AltSettingsAsync()
     {
-        using var altVm = new AltsManagerViewModel(true);
+        using var altVm = new AltManagerViewModel(true);
+        //将配置文件的值载入altVM
+        altVm.ProxyAddress = _altSettings.ProxyInfo?.ProxyAddress;
+        altVm.ProxyUsername = _altSettings.ProxyInfo?.Username;
+        altVm.ProxyPassword = _altSettings.ProxyInfo?.Password;
         altVm.CookieValue = _altSettings.CookieString;
+        altVm.IsSendGift = _altSettings.IsSendGift;
         altVm.AllowDoneClose = true;
-        
-        await ShowWindowHelper.ShowWindowAsync(new AltsManager(){DataContext = altVm});
+        if (_altSettings.DanmakuList != null)
+        {
+            foreach (var danmaku in _altSettings.DanmakuList)
+            {
+                altVm.AddDanmaku(danmaku);
+            }
+        }
+        //弹出窗口
+        await ShowWindowHelper.ShowWindowAsync(new AltManager {DataContext = altVm});
+        //确认后将VM的值写入配置文件
         if (altVm.AllowDoneClose)
         {
-            //更新设置
             _altSettings.CookieString = altVm.CookieValue;
-                
-            await InitializeAsync();
-                
             _altSettings.IsSendGift = altVm.IsSendGift;
-
-            _altSettings.ProxyInfo = altVm.ProxyAddress == null ? null : new ProxyInfo
+            _altSettings.DanmakuList = altVm.DanmakuList
+                .Where(x => !string.IsNullOrWhiteSpace(x.Text))
+                .Select(x => x.Text)
+                .ToArray();
+            var vmProxyInfo = altVm.ProxyAddress == null ? null : new ProxyInfo
             {
                 ProxyAddress = altVm.ProxyAddress,
                 Username = altVm.ProxyUsername,
                 Password = altVm.ProxyPassword
             };
-            
-            await SaveAltSettingsAsync();
+            try
+            {
+                if (vmProxyInfo != null) await _altService.TryAddNewProxy(vmProxyInfo);
+            }
+            catch (Exception ex)
+            {
+                await ShowWindowHelper.ShowErrorAsync("代理无法使用，请检查代理地址和端口。\n错误信息：" + ex.Message);
+                return;
+            }
+            _altSettings.ProxyInfo = vmProxyInfo;
+            await InitializeAsync();
+            await ConfigManager.SaveAltSettingsAsync(_altSettings);
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已更新账号 {UserName} 的配置",Geometry.Parse(MdIcons.Check)));
         }
     }
     
@@ -412,7 +443,28 @@ public partial class Alt : ObservableObject , IDisposable
                 return;
             }
         }
-        await _altService.SendDanmakuAsync("您好，这是一条测试弹幕");
+
+        if (_altSettings.DanmakuList == null)
+        {
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"账号 {UserName} 未设置弹幕内容，请先设置",Geometry.Parse(MdIcons.Error)));
+            return;
+        }
+    
+        try
+        {
+            foreach (var danmaku in _altSettings.DanmakuList)
+            {
+                await _altService.SendDanmakuAsync(danmaku);
+                var delay = new Random().Next(1000, 12000);
+                await Task.Delay(delay);
+            }
+        }
+        catch (Exception ex)
+        {
+            await ShowWindowHelper.ShowErrorAsync("发送弹幕失败，请检查网络或者代理设置。\n错误信息：" + ex.Message);
+            return;
+        }
+        
         IsDanmakuSent = true;
         Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送弹幕",Geometry.Parse(MdIcons.Check))); });
     }
@@ -432,7 +484,17 @@ public partial class Alt : ObservableObject , IDisposable
                 return;
             }
         }
-        await _altService.SendGiftAsync();
+        
+        try
+        {
+            await _altService.SendGiftAsync();
+        }
+        catch (Exception ex)
+        {
+            await ShowWindowHelper.ShowErrorAsync("发送弹幕失败，请检查网络或者代理设置。\n错误信息：" + ex.Message);
+            return;
+        }
+        
         IsGiftSent = true;
         Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送礼物",Geometry.Parse(MdIcons.Check))); });
     }
@@ -456,12 +518,6 @@ public partial class Alt : ObservableObject , IDisposable
                 Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(MdIcons.Check))); });
             }
        
-    }
-    
-    //保存账号
-    private async Task SaveAltSettingsAsync()
-    {
-        await ConfigManager.SaveAltSettingsAsync(_altSettings);
     }
     
     //释放资源

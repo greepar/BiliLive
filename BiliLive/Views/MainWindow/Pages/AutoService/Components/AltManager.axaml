@@ -5,8 +5,8 @@
         xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
         xmlns:res="clr-namespace:BiliLive.Resources"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.AltsManager"
-        x:DataType="vm:AltsManagerViewModel"
+        x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.AltManager"
+        x:DataType="vm:AltManagerViewModel"
         Title="AltsManager"
         ShowInTaskbar="False"
         SystemDecorations="None"
@@ -18,7 +18,7 @@
         >
     
         <Design.DataContext>
-                <vm:AltsManagerViewModel/>
+                <vm:AltManagerViewModel/>
         </Design.DataContext>
         
         <Border BoxShadow="0 1 8 1 #26000000" Background="Transparent">
@@ -83,10 +83,30 @@
                         <Grid Grid.Column="1" RowDefinitions="*,Auto">
                                 <StackPanel Grid.Column="0" Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal">
-                                                <TextBlock>发送的消息:</TextBlock>
-                                                <TextBox Watermark="消息"></TextBox>
-                                                <TextBlock>:</TextBlock>
-                                                <Button>+</Button>
+                                                <!-- <TextBlock>发送的消息:</TextBlock> -->
+                                                <!-- <TextBox Watermark="消息"></TextBox> -->
+                                                <!-- <TextBlock>:</TextBlock> -->
+                                                <Button Command="{Binding AddDanmaku}"
+                                                        CommandParameter="">+</Button>
+                                                
+                                                <ItemsControl ItemsSource="{Binding DanmakuList}">
+                                                        <!-- <ItemsControl.ItemsPanel> -->
+                                                        <!--         <ItemsPanelTemplate> -->
+                                                        <!--                 <StackPanel Orientation="Vertical"/> -->
+                                                        <!--         </ItemsPanelTemplate> -->
+                                                        <!-- </ItemsControl.ItemsPanel> -->
+                                                
+                                                        <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                        <StackPanel Orientation="Horizontal" Margin="0 0 4 0">
+                                                                                <TextBox Margin="8 0 8 0" VerticalAlignment="Center"
+                                                                                         Text="{Binding Text}"/>
+                                                                                <Button Command="{Binding RemoveCommand}">remove</Button>
+                                                                        </StackPanel>
+                                                                </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                
+                                                </ItemsControl>
                                                 
                                                 <ToggleSwitch Margin="25 0 0 0" OnContent="发送牛蛙 x2" OffContent="发送牛蛙 x2"
                                                               IsChecked="{Binding IsSendGift}"/>

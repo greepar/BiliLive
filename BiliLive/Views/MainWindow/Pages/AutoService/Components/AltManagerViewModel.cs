@@ -1,6 +1,8 @@
 ﻿
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -16,14 +18,20 @@ using QRCoder;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService.Components;
 
-public partial class AltsManagerViewModel : ViewModelBase , IDisposable
+//单个弹幕项
+public partial class DanmakuItem(string text,Action<DanmakuItem> removeAction) : ObservableObject
+{ 
+    [ObservableProperty] private string _text = text; 
+    [RelayCommand]private void Remove() => removeAction(this); 
+}
+public partial class AltManagerViewModel : ViewModelBase , IDisposable
 {
-    //AltService和二维码 将会自动Dispose 在View的CodeBehind Close事件种中
     private readonly AltService? _altService;
+    [ObservableProperty] private ObservableCollection<DanmakuItem> _danmakuList = [];
     [ObservableProperty] private Bitmap? _qrCodePic;
     
     
-    [ObservableProperty]private bool _allowDoneClose;
+    [ObservableProperty] private bool _allowDoneClose;
     [ObservableProperty] private string? _userName;
     [ObservableProperty] private string? _cookieValue;
     
@@ -34,24 +42,15 @@ public partial class AltsManagerViewModel : ViewModelBase , IDisposable
     [ObservableProperty] private string? _proxyUsername;
     [ObservableProperty] private string? _proxyPassword;
 
-    public AltsManagerViewModel()
+    public AltManagerViewModel()
     {
         _altService = new AltService();
-        
-        //防止正常运行时调用
-        if (Design.IsDesignMode)
-        {
-            
-        }
-        
-        //设计时或者未传入service时 使用默认值
         using var nullQrMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/nullQrCode.png"));
         QrCodePic = new Bitmap(nullQrMs);
-
     }
     
     //实际调用函数
-    public AltsManagerViewModel(bool isSettings = false) : this()
+    public AltManagerViewModel(bool isSettings = false) : this()
     {
         if (!isSettings)
         {
@@ -59,6 +58,18 @@ public partial class AltsManagerViewModel : ViewModelBase , IDisposable
         }
     }
 
+    [RelayCommand]
+    public void AddDanmaku(string text)
+    {
+        //重复检查
+        if (DanmakuList.Any(item => item.Text == text)) { return; }
+        DanmakuList.Add(new DanmakuItem(text,RemoveDanmaku));
+    }
+    private void RemoveDanmaku(DanmakuItem danmaku)
+    {
+        DanmakuList.Remove(danmaku);
+    }
+    
     [RelayCommand]
     private void EditCookie()
     {
@@ -161,15 +172,6 @@ public partial class AltsManagerViewModel : ViewModelBase , IDisposable
                 // 释放旧的 Bitmap 资源
                 QrCodePic?.Dispose();
             }
-        }
-    }
-    
-    [RelayCommand]
-    private void SaveExit()
-    {
-        if (CookieValue is not null)
-        {
-            AllowDoneClose = true;
         }
     }
     

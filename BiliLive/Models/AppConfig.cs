@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using BiliLive.Core.Models.BiliService;
 
 namespace BiliLive.Models;
 
 [JsonSourceGenerationOptions(DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,WriteIndented = true)]
 [JsonSerializable(typeof(AppConfig))]
+[JsonSerializable(typeof(ProxyInfo))]
 [JsonSerializable(typeof(AltSettings))]
 public partial class SourceGenerateContext : JsonSerializerContext;
 

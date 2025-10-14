@@ -18,13 +18,13 @@ public class AltService : IDisposable
 {
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0";
 
-    private readonly LoginService _loginService;
+    private LoginService _loginService;
     
-    private readonly HttpClient _httpClient;
+    private HttpClient _httpClient;
     private readonly CookieContainer _cookieContainer= new ();
     private bool _disposed;
     
-    private IBiliService? _biliService;
+    private readonly IBiliService? _biliService;
     
     public AltService(IBiliService? biliService = null,string biliCookie = "",ProxyInfo? proxyInfo = null)
     {
@@ -78,6 +78,38 @@ public class AltService : IDisposable
     //     var rResponseContent = await aAResponseSting.Content.ReadAsStringAsync();
     //     Console.WriteLine(rResponseContent);
     // }
+    
+    //修改并测试Proxy
+    public async Task TryAddNewProxy(ProxyInfo proxyInfo)
+    {
+        
+         var proxy = new WebProxy(proxyInfo.ProxyAddress);
+         if (!string.IsNullOrWhiteSpace(proxyInfo.Username) && !string.IsNullOrWhiteSpace(proxyInfo.Password))
+         {
+             proxy.Credentials = new NetworkCredential(proxyInfo.Username, proxyInfo.Password);
+         }
+         var handler = new HttpClientHandler
+         {
+             UseCookies = true,
+             CookieContainer = _cookieContainer,
+             UseProxy = true,
+             Proxy = proxy
+         };
+         _httpClient.Dispose();
+         var newHttpClient = new HttpClient(handler, disposeHandler: true);
+         newHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+         _httpClient = null!;
+         _httpClient = newHttpClient;
+         _loginService = new LoginService(_httpClient, _cookieContainer);
+         
+        // 测试代理是否可用
+         // await GetCurrentIp();
+         var responseSting = await _httpClient.GetAsync(new Uri("https://api.bilibili.com/x/web-interface/nav"));
+         if (!responseSting.IsSuccessStatusCode)
+         {
+             throw new Exception("代理不可用");
+         }
+    }
     
     public async Task<LoginResult> LoginAsync(string? biliCookie = null) => await _loginService.LoginAsync(biliCookie);
     public async Task<QrLoginInfo?> GetLoginUrlAsync() => await _loginService.GetLoginUrlAsync();

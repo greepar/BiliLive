@@ -40,7 +40,7 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
 
         try
         {
-            var checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
+            const string checkLoginApi = "https://api.bilibili.com/x/web-interface/nav";
             using var response = await httpClient.GetAsync(checkLoginApi);
             await using var stream = await response.Content.ReadAsStreamAsync();
             using var jsonDoc = await JsonDocument.ParseAsync(stream);
@@ -62,23 +62,21 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
                         UserFaceBytes = userFaceBytes
                     };
                 }
+                return new LoginFailed
+                {
+                    ErrorMsg = "Cookie 已失效，请重新登录"
+                };
             }
+            throw new Exception("检查登录状态时请求失败，状态码: " + response.StatusCode);
         }
         catch (Exception ex)
         {
             return new LoginFailed
             {
-                ErrorMsg = "检查登录状态时发生错误: " + ex.Message
+                ErrorMsg = $"Alt未知错误" + ex.Message
             };
         }
-
-
-        return new LoginFailed
-        {
-            ErrorMsg = "登录信息失效了，请重新扫码登录..."
-        };
-        
-    }
+    } 
 
 
     public async Task<QrLoginInfo?> GetLoginUrlAsync()

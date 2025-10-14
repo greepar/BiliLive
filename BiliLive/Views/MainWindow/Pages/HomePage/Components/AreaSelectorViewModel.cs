@@ -61,6 +61,7 @@ public partial class AreaSelectorViewModel : ViewModelBase
         try
         {
             if (BiliService == null) return; 
+            if (!BiliService.IsLogged) { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先登录账号", Geometry.Parse(MdIcons.Error))); }
             var areas = (await BiliService.GetAreasListAsync()).GetProperty("data").GetProperty("area_v1_info");
             _areasElement = areas;
             foreach (var areaName in areas.EnumerateArray().Select(area => area.GetProperty("name").GetString()).OfType<string>())

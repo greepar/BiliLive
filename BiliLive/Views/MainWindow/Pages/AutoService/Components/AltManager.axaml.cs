@@ -4,25 +4,22 @@ using Avalonia.Interactivity;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService.Components;
 
-public partial class AltsManager : Window
+public partial class AltManager : Window
 {
-    public AltsManager()
+    public AltManager()
     {
         InitializeComponent();
     }
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
-        
         if (sender is Button && DoneBtn.IsFocused)
+        { }
+        else
         {
-            if (DataContext is AltsManagerViewModel vm)
+            if (DataContext is AltManagerViewModel vm)
             {
-                vm.SaveExitCommand.Execute(null);
-                if (!vm.AllowDoneClose)
-                {
-                    return;
-                }
+                vm.AllowDoneClose = false;
             }
         }
         Close();
