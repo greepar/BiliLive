@@ -16,7 +16,7 @@ static class Program
     private static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithInterFont()
+            // .WithInterFont()
             .UseSkia()
             .With(new Win32PlatformOptions
             {
