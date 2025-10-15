@@ -120,7 +120,6 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
         {
             if (!_isDragging) return;
             _isDragging = false;
-            
             if (IsHourMode)
             {
                 SetMode("Minute");

@@ -18,8 +18,7 @@
     </Design.DataContext>
 
     <Border Background="Transparent"
-            Name="TotalBorder"
-            PointerPressed="MainWindowPointerPressed">
+            Name="TotalBorder">
         <!-- 使用Margin留出间隙 -->
         <Border Name="MainBorder" 
                 MinWidth="800" MinHeight="470"
@@ -40,7 +39,7 @@
                             Height="45"
                             VerticalAlignment="Top"
                             Background="Transparent"
-                            >
+                            PointerPressed="MainWindowStartDragMove">
                         <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
                             
                             <StackPanel.Styles>
@@ -85,7 +84,8 @@
                         <!-- 左侧导航栏 -->
                         <Border Name="SideNavBar"
                                 ClipToBounds="True"
-                                Grid.Column="0">
+                                Grid.Column="0"
+                                MinWidth="170">
 
                             <Border.Transitions>
                                 <Transitions>
@@ -349,8 +349,37 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-
-
+                            
+                            <Border CornerRadius="0,0,28,0"
+                                    Margin="5"
+                                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                    Background= "Transparent"
+                                    BorderBrush="{DynamicResource SurfaceContainerHighest}"
+                                    BorderThickness="1.5"
+                                    Width="300"
+                                    Height="300"
+                                    Cursor= "BottomRightCorner"
+                                    PointerPressed= "MainWindowStartDragResize"
+                                   >
+                                <Border.Clip>
+                                    <RectangleGeometry Rect="275,275,150,150"/>
+                                </Border.Clip>
+                                <Border CornerRadius="0,0,28,0"
+                                        Margin= "0.9"
+                                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                        Background= "Transparent"
+                                        BorderBrush="{DynamicResource SurfaceContainerHighest}"
+                                        BorderThickness="1.5"
+                                        Width="300"
+                                        Height="300">
+                                    <Border.Clip>
+                                        <RectangleGeometry Rect="275,275,22,22"/>
+                                    </Border.Clip>
+                                </Border>
+                            </Border>
+                            
+                       
+                            
                         </Grid>
 
                     </Grid>

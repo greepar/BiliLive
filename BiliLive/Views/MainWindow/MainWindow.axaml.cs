@@ -19,9 +19,7 @@ public partial class MainWindow : Window
     // 账号窗口
     private CancellationTokenSource? _animationCts;
     private double _initialNavBarWidth;
-
-    private bool _isResizing;
-    private Point _startPoint;
+    
     private double _originalWidth;
     private double _originalHeight;
     
@@ -48,52 +46,41 @@ public partial class MainWindow : Window
 #endif
     }
 
-
-    // 拖动窗口
-    private void MainWindowPointerPressed(object? sender, PointerPressedEventArgs e)
+    // 移动窗口
+    private void MainWindowStartDragMove(object? sender, PointerPressedEventArgs e)
     {
-        if (!e.GetCurrentPoint(MainBorder).Properties.IsLeftButtonPressed) return;
-        _isResizing = true;
-        _startPoint = e.GetPosition(MainBorder);
-        
-        var currentBorderSize = MainBorder.Bounds;
-        
-        Console.WriteLine("Pressed Positon: " + _startPoint);
-        
-        if (_startPoint.Y < 45)
-        {
-            Console.WriteLine($"Current Positon Y: {_startPoint.Y}, sub press drag event");
-            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) BeginMoveDrag(e);
-            
-        }else if (_startPoint.X < 0 || _startPoint.X > currentBorderSize.Width || _startPoint.Y > currentBorderSize.Height)
-        {
-            if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
-            _originalWidth = MainBorder.Width;
-            _originalHeight = MainBorder.Height;
-            TotalBorder.PointerMoved += ResizeWindowMove; 
-            TotalBorder.PointerReleased += ResizeWindowRelease;
-            Console.WriteLine("reach out border");
-        }
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) BeginMoveDrag(e);
     }
-
+    
+    //开始移动窗口
+    private void MainWindowStartDragResize(object? sender, PointerPressedEventArgs e)
+    {
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
+        _originalWidth = MainBorder.Width;
+        _originalHeight = MainBorder.Height;
+        TotalBorder.PointerMoved += ResizeWindowMove; 
+        TotalBorder.PointerReleased += ResizeWindowRelease;
+    }
+    private void ResizeWindowRelease(object? sender, PointerReleasedEventArgs e)
+    {
+        TotalBorder.PointerMoved -= ResizeWindowMove;
+        TotalBorder.PointerReleased -= ResizeWindowRelease;
+    }
     //窗口调整Move
     private void ResizeWindowMove(object? sender, PointerEventArgs e)
     {
         var position = e.GetPosition(MainBorder);
-        Console.WriteLine(  $"Move Positon: {position}, StartPositon: {_startPoint}");
-        var deltaX = position.X - _startPoint.X;
-        var deltaY = position.Y - _startPoint.Y;
+        var fixedStartPoint = new Point(783,455);
+        Console.WriteLine(  $"Move Positon: {position}, StartPositon: {fixedStartPoint}");
+        var deltaX = position.X - fixedStartPoint.X;
+        var deltaY = position.Y - fixedStartPoint.Y;
         MainBorder.Width = double.Max(_originalWidth + deltaX,800);
         Width = MainBorder.Width + 20;
         MainBorder.Height = double.Max(_originalHeight + deltaY,470);
         Height = MainBorder.Height + 20;
     }
     
-    private void ResizeWindowRelease(object? sender, PointerReleasedEventArgs e)
-    {
-        TotalBorder.PointerMoved -= ResizeWindowMove;
-        TotalBorder.PointerReleased -= ResizeWindowRelease;
-    }
+
     
     // 关闭窗口
     private void CloseButton_OnClick(object? sender, RoutedEventArgs e)
@@ -117,7 +104,6 @@ public partial class MainWindow : Window
             _animationCts?.Cancel();
             // 为本次动画创建一个新取消令牌
             _animationCts = new CancellationTokenSource();
-       
 
             // 在动画进行时禁用交互
             LoginBorder.IsHitTestVisible = false;
@@ -126,27 +112,6 @@ public partial class MainWindow : Window
             {
                 LoginBorder.IsVisible = true;
                 _isTargetVisible = false;
-                // var animation = new Animation
-                // {
-                //     Duration = TimeSpan.FromMilliseconds(300),
-                //     // Easing = new ExponentialEaseOut(),
-                //     Easing = new BackEaseOut(),
-                //     
-                //     FillMode = FillMode.Forward,
-                //     Children =
-                //     {
-                //         new KeyFrame
-                //         {
-                //             Cue = new Cue(1d),
-                //             Setters =
-                //             {
-                //                 new Setter(OpacityProperty, 1.0),
-                //                 new Setter(TranslateTransform.XProperty, 0.0)
-                //             }
-                //         }
-                //     }
-                // };
-                // await animation.RunAsync(LoginBorder, _animationCts.Token);
                 
                 var opacityAnim = new Animation
                 {
@@ -189,7 +154,6 @@ public partial class MainWindow : Window
                     opacityAnim.RunAsync(LoginBorder, _animationCts.Token),
                     translateAnim.RunAsync(LoginBorder, _animationCts.Token)
                 );
-
                 
             }
             else
@@ -239,9 +203,15 @@ public partial class MainWindow : Window
     private void MenuOpenBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         if (SideNavBar.Width < 100)
+        {  
             SideNavBar.Width = _initialNavBarWidth;
+        }
         else
+        {
+            SideNavBar.MinWidth = 60;
             SideNavBar.Width = 60;
+        }
+           
     }
 
     private async void SwitchPageAnime(object? sender, RoutedEventArgs e)

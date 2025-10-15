@@ -14,74 +14,8 @@
     <Grid VerticalAlignment="Center"
           HorizontalAlignment="Center">
         <Border>
-            <StackPanel>
                 <TextBlock>这里是关于页面</TextBlock>
-                <RippleButton Content="粉色涟漪"
-                              CornerRadius="12"
-                                    RippleColor="LightPink"
-                                    Background="{DynamicResource PrimaryContainer}"
-                                    RippleDuration="0.8"
-                                    BorderThickness="0"
-                                    Padding="16,8"
-                                    Width="200"
-                                    Height="40"/>
-                
-                <Button CornerRadius="12" Background="{DynamicResource PrimaryContainer}" Padding="0">
-                    <Button.Styles>
-                        <Style Selector="Button:pressed /template/ ContentPresenter">
-                            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
-                        </Style>
-        
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
-                            <Setter Property="Background" Value="{DynamicResource PrimaryContainer}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
-                        </Style>
-                        
-                        <Style Selector="Button:pressed">
-                            <Setter Property="RenderTransform" Value="{x:Null}"></Setter>
-                        </Style>
-                    </Button.Styles>
-                    <Grid>
-                        <RippleBorder RippleColor="LightPink"
-                                      CornerRadius="12"
-                                      Background="Transparent"
-                                      RippleDuration="0.8"
-                                      ClipToBounds="True"
-                                      Width="200"
-                                      Height="40">
-                        </RippleBorder>
-                        <TextBlock IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Center">红色涟漪</TextBlock>
-                    </Grid>
-                </Button>
-               
-                <RippleBorder RippleColor="LightPink"
-                              CornerRadius="12"
-                              Background="Transparent"
-                              RippleDuration="0.8"
-                              ClipToBounds="True"
-                              Width="200"
-                              Height="40">
-                </RippleBorder>
-                
-                <StackPanel Orientation="Horizontal">
-                    <Border Width="60" Height="60"
-                            CornerRadius="60" ClipToBounds="True">
-                        <!-- <Image Source="{Binding DeveloperAvatar }" -->
-                        <!--        RenderOptions.BitmapInterpolationMode="HighQuality" -->
-                        <!--        Stretch="UniformToFill"/> -->
-                    </Border>
-                    <!-- <TextBlock  VerticalAlignment="Center">[Dev:格瑞普]</TextBlock> -->
-                </StackPanel>
-                
-                <!-- <ContentControl Content="{Binding CurrentView}"></ContentControl> -->
-                
-            </StackPanel>
-            
         </Border>
-        
-       
     </Grid>
   
 </UserControl>

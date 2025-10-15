@@ -33,22 +33,24 @@ public partial class AreaSelectorViewModel : ViewModelBase
     [ObservableProperty]private string _selectedSubArea = "子分区";
     [ObservableProperty]private string? _selectedMainArea;
 
+    [ObservableProperty]private bool _isLogged;
+    
     private JsonElement _areasElement;
     public IBiliService? BiliService;
     
     public AreaSelectorViewModel()
     {
         if (!Design.IsDesignMode) return;
-        AreasGroup.Add(new MainAreas("游戏12345", SelectMainArea));
-        AreasGroup.Add(new MainAreas("娱乐1234", SelectMainArea));
-        AreasGroup.Add(new MainAreas("生活1223", SelectMainArea));
-        SubAreaGroup.Add(new SubAreas("单机游戏12312", SelectSubArea));
-        SubAreaGroup.Add(new SubAreas("手游123213", SelectSubArea));
-        SubAreaGroup.Add(new SubAreas("桌游棋牌123213", SelectSubArea));
+        // AreasGroup.Add(new MainAreas("游戏12345", SelectMainArea));
+        // AreasGroup.Add(new MainAreas("娱乐1234", SelectMainArea));
+        // AreasGroup.Add(new MainAreas("生活1223", SelectMainArea));
+        // SubAreaGroup.Add(new SubAreas("单机游戏12312", SelectSubArea));
+        // SubAreaGroup.Add(new SubAreas("手游123213", SelectSubArea));
+        // SubAreaGroup.Add(new SubAreas("桌游棋牌123213", SelectSubArea));
     }
-    
+
     [RelayCommand]
-    public async Task RefreshAreasAsync()
+    private async Task RefreshAreasAsync()
     {
         if (BiliService == null) return;
         SelectMainArea(string.IsNullOrWhiteSpace(SelectedMainArea) ? AreasGroup[0].AreaName : SelectedMainArea);
@@ -60,8 +62,7 @@ public partial class AreaSelectorViewModel : ViewModelBase
     {
         try
         {
-            if (BiliService == null) return; 
-            if (!BiliService.IsLogged) { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先登录账号", Geometry.Parse(MdIcons.Error))); }
+            if (BiliService == null) return;
             var areas = (await BiliService.GetAreasListAsync()).GetProperty("data").GetProperty("area_v1_info");
             _areasElement = areas;
             foreach (var areaName in areas.EnumerateArray().Select(area => area.GetProperty("name").GetString()).OfType<string>())

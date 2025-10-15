@@ -22,7 +22,9 @@
         <Grid Grid.Row="1">
             <ProgressBar IsIndeterminate="True"
                          IsVisible="{Binding LoadAreasCommand.IsRunning }"/>
-
+       
+            <TextBlock IsVisible="{Binding !IsLogged}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">请先登录账号</TextBlock>
+          
             <Grid RowDefinitions="Auto,*" IsVisible="{Binding !LoadAreasCommand.IsRunning}">
                 <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding AreasGroup}">

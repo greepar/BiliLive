@@ -173,7 +173,7 @@
                                             Margin="5,0,-5,0" CornerRadius="11"
                                             VerticalAlignment="Bottom"
                                             Command="{Binding SelectAreaCommand}"
-                                          Background="{DynamicResource SecondaryContainer}">
+                                            Background="{DynamicResource SecondaryContainer}">
                                         <Button.Flyout>
                                             <Flyout Placement="Top">
                                                 <Flyout.FlyoutPresenterTheme>
