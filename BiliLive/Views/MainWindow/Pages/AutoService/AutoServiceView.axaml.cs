@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System.Linq;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService;
@@ -25,6 +26,15 @@ public partial class AutoServiceView : UserControl
         }
     }
 
+    private void TextBox_CheckNum(object? sender, TextChangedEventArgs e)
+    {
+        if (sender is not TextBox textBox || string.IsNullOrEmpty(textBox.Text)) return;
+        // 移除所有非数字字符
+        var newText = new string(textBox.Text.Where(char.IsDigit).ToArray());
+        if (newText == textBox.Text) return;
+        textBox.Text = newText;
+        textBox.CaretIndex = newText.Length;
+    }
     // private void TimePickerButton_OnClick(object? sender, RoutedEventArgs e)
     // {
     //     if (sender is not Button timePickerButton || DataContext is not AutoServiceViewModel mainVm) return;

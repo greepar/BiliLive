@@ -87,6 +87,11 @@ public partial class AutoServiceViewModel : ViewModelBase
         //订阅AltsList变化 -> 更新HasAlts
         AltsList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasAlts)); 
     }
+
+    private void ChangeTimeSpan()
+    {
+        
+    }
     
     //初始化数据
     [RelayCommand]
@@ -145,8 +150,8 @@ public partial class AutoServiceViewModel : ViewModelBase
                 }
                 if (!IsAutoStreamEnabled)
                 {
-                    IsAltGiftServiceEnabled = false;
-                    IsAutoClaimRewardEnabled = false;
+                    // IsAltGiftServiceEnabled = false;
+                    // IsAutoClaimRewardEnabled = false;
                     if (_autoStreamCts != null) await _autoStreamCts.CancelAsync();
                     return;
                 }
@@ -161,15 +166,15 @@ public partial class AutoServiceViewModel : ViewModelBase
             case ToggleOption.AutoGiftService:
                 if (!IsAutoStreamEnabled)
                 {
-                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
-                    IsAltGiftServiceEnabled = false;
+                    // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
+                    // IsAltGiftServiceEnabled = false;
                 }
                 break;
             case ToggleOption.AutoClaimRewardService:
                 if (!IsAutoStreamEnabled)
                 {
-                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
-                    IsAutoClaimRewardEnabled = false;
+                    // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
+                    // IsAutoClaimRewardEnabled = false;
                 }
                 break;
             default:
@@ -187,7 +192,8 @@ public partial class AutoServiceViewModel : ViewModelBase
         try
         {
             //等待开始时间
-            await Task.Delay(2000,token);
+            // await Task.Delay(DateTime.Today.TimeOfDay- StartTime, token);
+            await Task.Delay(2000, token);
             //发送小号礼物和弹幕
             if (IsAltGiftServiceEnabled && HasAlts)
             {
@@ -306,6 +312,12 @@ public partial class AutoServiceViewModel : ViewModelBase
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"登录成功，当前账号 {altSettings.UserName}",Geometry.Parse(MdIcons.Check)));
         }
     }
+
+
+    private async Task ClaimAwardAsync(string awardUrl)
+    {
+        // await _biliService.ClaimAwardAsync();
+    }
     
     private void RemoveAlt(Alt alt)
     {
@@ -412,17 +424,20 @@ public partial class Alt : ObservableObject , IDisposable
                 Username = altVm.ProxyUsername,
                 Password = altVm.ProxyPassword
             };
-            try
+            if (vmProxyInfo.ProxyAddress != _altSettings.ProxyInfo.ProxyAddress)
             {
-                if (vmProxyInfo != null) await _altService.TryAddNewProxy(vmProxyInfo);
-            }
-            catch (Exception ex)
-            {
-                await ShowWindowHelper.ShowErrorAsync("代理无法使用，请检查代理地址和端口。\n错误信息：" + ex.Message);
-                return;
+                try
+                {
+                    if (vmProxyInfo != null) await _altService.TryAddNewProxy(vmProxyInfo);
+                    await InitializeAsync();
+                }
+                catch (Exception ex)
+                {
+                    await ShowWindowHelper.ShowErrorAsync("代理无法使用，请检查代理地址和端口。\n错误信息：" + ex.Message);
+                    return;
+                }
             }
             _altSettings.ProxyInfo = vmProxyInfo;
-            await InitializeAsync();
             await ConfigManager.SaveAltSettingsAsync(_altSettings);
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已更新账号 {UserName} 的配置",Geometry.Parse(MdIcons.Check)));
         }
@@ -443,13 +458,13 @@ public partial class Alt : ObservableObject , IDisposable
                 return;
             }
         }
-
-        if (_altSettings.DanmakuList == null)
+        
+        if (_altSettings.DanmakuList == null || _altSettings.DanmakuList.Length == 0)
         {
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"账号 {UserName} 未设置弹幕内容，请先设置",Geometry.Parse(MdIcons.Error)));
             return;
         }
-    
+        
         try
         {
             foreach (var danmaku in _altSettings.DanmakuList)
@@ -466,7 +481,7 @@ public partial class Alt : ObservableObject , IDisposable
         }
         
         IsDanmakuSent = true;
-        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送弹幕",Geometry.Parse(MdIcons.Check))); });
+        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已用账号 {UserName} 发送弹幕",Geometry.Parse(MdIcons.Check))); });
     }
 
     [RelayCommand]
