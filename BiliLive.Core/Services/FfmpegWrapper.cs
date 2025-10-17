@@ -70,6 +70,7 @@ public static class FfmpegWrapper
         }
     }
     
+    private static Process? _ffmpegProcess;
     public static async Task<bool> StartStreamingAsync(string ffmpegPath, string videoPath, string rtmpUrl,string apiKey)
     {
         try
@@ -90,7 +91,7 @@ public static class FfmpegWrapper
             process.Start();
 
             // string output = await process.StandardOutput.ReadToEndAsync();
-            string errorOutput = await process.StandardError.ReadToEndAsync();
+            var errorOutput = await process.StandardError.ReadToEndAsync();
 
             await process.WaitForExitAsync();
             if (process.ExitCode == 0)
@@ -104,6 +105,22 @@ public static class FfmpegWrapper
         {
             Debug.WriteLine($"Error starting streaming: {ex.Message}");
             return false;
+        }
+    }
+    
+    public static async Task InterruptStreamingAsync(Process ffmpegProcess)
+    {
+        try
+        {
+            if (ffmpegProcess != null && !ffmpegProcess.HasExited)
+            {
+                ffmpegProcess.Kill();
+                await ffmpegProcess.WaitForExitAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error interrupting streaming: {ex.Message}");
         }
     }
 }

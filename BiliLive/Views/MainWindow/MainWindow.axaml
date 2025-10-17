@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
         xmlns:res="clr-namespace:BiliLive.Resources"
+        xmlns:biliLive="clr-namespace:BiliLive"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         Title="BiliLive"
@@ -58,6 +59,28 @@
                                 </Style>
                             </StackPanel.Styles>
                             
+                            <!-- debug mode -->
+                            <Grid IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" Margin="0 0 5 0"  VerticalAlignment="Center" HorizontalAlignment="Right">
+                                <Border Background="{DynamicResource OnSurface}" CornerRadius="8"
+                                        Height="20" Width="80"
+                                        VerticalAlignment="Stretch"
+                                        Opacity="0.3"
+                                        >
+                                </Border>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                           FontSize="10" FontWeight="Regular"
+                                           Foreground="{DynamicResource OnSurface}"
+                                           Text="Debug Mode" />
+                            </Grid>
+                            
+                            <Button Click="OpenRuntimeFolderBtn_OnClick" IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" Margin="0 0 8 0" Width="145" Padding="5">
+                                <StackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <SvgBox Margin="3 0 0 0" PathData="{res:Geometry {x:Static res:MdIcons.Windowed}}"/>
+                                    <TextBlock VerticalAlignment="Center" FontSize="11">Open Runtime Folder</TextBlock>
+                                </StackPanel>
+                            </Button>
+                            <!-- debug mode -->
+                            
                             <!-- 最小化按钮 -->
                             <Button Click="MinimizeButton_OnClick">
                                 <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"/>
@@ -101,10 +124,10 @@
 
                                 <Grid RowDefinitions="Auto,*,Auto">
                                     <!-- 顶部时间 -->
-                                    <TextBlock Grid.Row="0" Margin="15 15 0 0"
-                                               FontSize="12" FontWeight="Regular"
-                                               Foreground="{DynamicResource OnSurface}"
-                                               Text="{Binding CurrentTime}" />
+                                        <TextBlock Grid.Row="0" Margin="15 15 0 0"
+                                                   FontSize="12" FontWeight="Regular"
+                                                   Foreground="{DynamicResource OnSurface}"
+                                                   Text="{Binding CurrentTime}" />
 
                                     <!-- 中间导航部分 -->
                                     <StackPanel Grid.Row="1" Margin="10 30 10 30" Spacing="7"

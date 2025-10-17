@@ -258,4 +258,15 @@ public partial class MainWindow : Window
             // ignored
         }
     }
+    
+
+    private void OpenRuntimeFolderBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var currentPath = AppDomain.CurrentDomain.BaseDirectory;
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = currentPath,
+            UseShellExecute = true
+        });
+    }
 }

@@ -240,46 +240,46 @@
                             </Grid>
                         </Border>
                         <StackPanel Grid.Row="1" Orientation="Vertical"
-                                    Margin="14 0 14 8">
+                                    Spacing="4"
+                                    Margin="14 8 14 8">
                             <StackPanel Orientation="Horizontal"
-                                        Spacing="5">
-                                <TextBlock VerticalAlignment="Center">开始直播时间 (从每日24:00开始) :</TextBlock>
+                                        Spacing="3">
+                                <TextBlock VerticalAlignment="Center" Margin="0 0 5 0">开始直播时间 (从每日24:00开始) :</TextBlock>
                                 
-                                <TextBox Width="40" MinWidth="0"
-                                         CornerRadius="12"
-                                         MaxLength="2"
-                                         HorizontalContentAlignment="Left"
-                                         Watermark="H"
-                                         TextChanged="TextBox_CheckNum"
+                                <StackPanel.Styles>
+                                    <Style Selector="TextBox.time">
+                                        <Setter Property="Height" Value="30" />
+                                        <Setter Property="MinHeight" Value="30" />
+                                        <Setter Property="Width" Value="40" />
+                                        <Setter Property="MinWidth" Value="40" />
+                                        <Setter Property="CornerRadius" Value="12" />
+                                        <Setter Property="MaxLength" Value="2" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                        <Setter Property="Padding" Value="11 3 0 0" />
+                                    </Style>
+                                </StackPanel.Styles>
+                                
+                                <!-- 小时 -->
+                                <TextBox Classes="time" 
                                          Text="{Binding StartHour}"
-                                >
-                                </TextBox>
+                                         Watermark="H"/>
                                 <TextBlock Text=" : " VerticalAlignment="Center" />
-
                                 <!-- 分钟 -->
-                                <TextBox Width="40" MinWidth="0"
-                                         CornerRadius="12"
-                                         MaxLength="2"
-                                         HorizontalContentAlignment="Left" 
+                                <TextBox Classes="time" 
+                                         Watermark="M" 
                                          Text="{Binding StartMinute}"
-                                         TextChanged="TextBox_CheckNum"
-                                         Watermark="M" />
+                                         TextChanged="TextBox_CheckNum"/>
                                 <TextBlock Text=" : " VerticalAlignment="Center" />
-
                                 <!-- 秒 -->
-                                <TextBox Width="40" MinWidth="0"
-                                         CornerRadius="12"
-                                         MaxLength="2"
-                                         HorizontalContentAlignment="Left"
+                                <TextBox Classes="time"
+                                         Watermark="S"
                                          Text="{Binding StartSecond}"
-                                         TextChanged="TextBox_CheckNum"
-                                         Watermark="S" />
-                             
+                                         TextChanged="TextBox_CheckNum"/>
                                 
-                              
-                                
+                                <!-- 时间选择器按钮 -->
                                 <Button Name="TimePickerButton"
-                                        Height="30"
+                                        Height="25" Width="25" Background="#66DCCCFB"
+                                        Margin="3 0 0 0"
                                         CornerRadius="8"
                                         Theme="{StaticResource MdButton}"
                                         VerticalAlignment="Center">

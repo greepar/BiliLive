@@ -66,12 +66,6 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private string? _startHour;
     [ObservableProperty] private string? _startMinute;
     [ObservableProperty] private string? _startSecond;
-    
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FormattedStartTime))]
-    private TimeSpan _startTime = new(0, 5, 0);
-    public string FormattedStartTime => StartTime.ToString(@"hh\:mm\:ss");
-
 
     private readonly IBiliService _biliService;
     public AutoServiceViewModel(IServiceProvider? serviceProvider = null)
@@ -87,11 +81,7 @@ public partial class AutoServiceViewModel : ViewModelBase
         //订阅AltsList变化 -> 更新HasAlts
         AltsList.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasAlts)); 
     }
-
-    private void ChangeTimeSpan()
-    {
-        
-    }
+    
     
     //初始化数据
     [RelayCommand]
@@ -153,6 +143,7 @@ public partial class AutoServiceViewModel : ViewModelBase
                     // IsAltGiftServiceEnabled = false;
                     // IsAutoClaimRewardEnabled = false;
                     if (_autoStreamCts != null) await _autoStreamCts.CancelAsync();
+                    await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
                     return;
                 }
                 _ = Task.Run(async () => await SetAutoStreamAsync());
@@ -192,15 +183,57 @@ public partial class AutoServiceViewModel : ViewModelBase
         try
         {
             //等待开始时间
-            // await Task.Delay(DateTime.Today.TimeOfDay- StartTime, token);
-            await Task.Delay(2000, token);
+            var random = new Random();
+            var hour   = int.TryParse(StartHour,   out var h) ? h : 0;
+            var minute = int.TryParse(StartMinute, out var m) ? m : 0;
+            var second = int.TryParse(StartSecond, out var s) ? s : 0;
+            
+            var seconds = hour * 3600 +
+                          minute * 60 +
+                          (IsRandomSecond ? random.Next(-240, -120) : second);
+            var startTime = TimeSpan.FromSeconds(seconds);
+            //设置第二天基准
+            
+            var baseSeconds = startTime.TotalSeconds;
+            var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
+            var streamTime = DateTime.Today.AddDays(1).AddSeconds(finalSeconds);
+            await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
+            
+            Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage( $"自动开播将在 {streamTime} 开始",Geometry.Parse(MdIcons.Check))); });
+
+            if (IsCheck60MinTask)
+            {
+                //检查60分钟任务
+                // var hasTask = await _biliService.Check60MinTaskAsync();
+                // if (!hasTask)
+                // {
+                //     Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage( $"未检测到60分钟任务，自动开播任务取消",Geometry.Parse(MdIcons.Error))); });
+                //     IsAutoStreamEnabled = false;
+                //     await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
+                //     return;
+                // }
+            }
+            
+            //等待直到开始时间
+            await Task.Delay(DateTime.Today.TimeOfDay- startTime, token);
+            
+            //开始直播
+            var startLiveResponse = await _biliService.StartLiveAsync();
+            var streamKey = startLiveResponse.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
+            var streamUrl = startLiveResponse.GetProperty("data").GetProperty("rtmp").GetProperty("addr").GetString();
+            
+            await FfmpegWrapper.StartStreamingAsync(FfmpegPath,VideoPath,streamUrl,streamKey);
+            //TODO:待优化实现方式
             //发送小号礼物和弹幕
             if (IsAltGiftServiceEnabled && HasAlts)
             {
                 foreach (var alt in AltsList)
                 {
                     if (alt is { IsGiftSent: true, IsDanmakuSent: true }) continue;
-                    // await alt.SendGiftAsync(false);
+                    if (alt.AltSettings.IsSendGift)
+                    {
+                        await alt.SendGiftAsync(false);
+                    }
                     await alt.SendDanmakuAsync(false);
                     await Task.Delay(2000, token);
                 }
@@ -211,29 +244,10 @@ public partial class AutoServiceViewModel : ViewModelBase
             //通知UI线程
             Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"自动开播任务已取消",Geometry.Parse(MdIcons.Check))); });
         }
-        
-     
-        
-        // var random = new Random();
-        // var hour   = int.TryParse(StartHour,   out var h) ? h : 0;
-        // var minute = int.TryParse(StartMinute, out var m) ? m : 0;
-        // var second = int.TryParse(StartSecond, out var s) ? s : 0;
-        //
-        // var seconds = hour * 3600 +
-        //               minute * 60 +
-        //               (IsRandomSecond ? random.Next(-240, -120) : second);
-                
-        //设置第二天基准
-        // var baseSeconds = StartTime.TotalSeconds;
-        // var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
-        // var streamTime = DateTime.Today.AddDays(1).AddSeconds(finalSeconds);
-        // await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
-        //         
-        // var popupMsg = IsAutoStreamEnabled ? $"自动开播将在 {streamTime} 开始" : "已关闭自动开播服务";
-        // var icon = IsAutoStreamEnabled ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error);
-        // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(popupMsg,icon));
-        
-        
+        catch (Exception ex)
+        {
+            await ShowWindowHelper.ShowErrorAsync("自动开播任务出现错误。\n错误信息：" + ex.Message);
+        }
     }
     
     [RelayCommand]
@@ -344,13 +358,13 @@ public partial class Alt : ObservableObject , IDisposable
     
     //公共服务
     private readonly AltService _altService;
-    private readonly AltSettings _altSettings;
+    public readonly AltSettings AltSettings;
     
     private Alt(AltSettings altSettings,IBiliService biliService,Action<Alt> removeCallback)
     {
         //赋值传入数据
         _altService = new AltService(biliService,altSettings.CookieString, altSettings.ProxyInfo);
-        _altSettings = altSettings;
+        AltSettings = altSettings;
         _removeCallback = removeCallback;
         UserName = altSettings.UserName;
         IsGiftSent = altSettings.IsSendGift;
@@ -367,7 +381,7 @@ public partial class Alt : ObservableObject , IDisposable
     //初始化账号信息
     private async Task InitializeAsync()
     {
-        var loginResult= await _altService.LoginAsync(_altSettings.CookieString);
+        var loginResult= await _altService.LoginAsync(AltSettings.CookieString);
         switch (loginResult)
         {
             case LoginSuccess result:
@@ -377,13 +391,13 @@ public partial class Alt : ObservableObject , IDisposable
                 using var ms = new MemoryStream(result.UserFaceBytes);
                 UserFace = PicHelper.ResizeStreamToBitmap(ms, 80, 80);
                 //保存账号到本地
-                await ConfigManager.SaveAltSettingsAsync(_altSettings);
+                await ConfigManager.SaveAltSettingsAsync(AltSettings);
                 break;
             }
             case LoginFailed failed:
             {
                 UserId = 0;
-                await ShowWindowHelper.ShowErrorAsync($"小号 [ {_altSettings.UserName} ] 登录错误:{failed.ErrorMsg}");
+                await ShowWindowHelper.ShowErrorAsync($"小号 [ {AltSettings.UserName} ] 登录错误:{failed.ErrorMsg}");
                 break;
             }
         }
@@ -394,15 +408,15 @@ public partial class Alt : ObservableObject , IDisposable
     {
         using var altVm = new AltManagerViewModel(true);
         //将配置文件的值载入altVM
-        altVm.ProxyAddress = _altSettings.ProxyInfo?.ProxyAddress;
-        altVm.ProxyUsername = _altSettings.ProxyInfo?.Username;
-        altVm.ProxyPassword = _altSettings.ProxyInfo?.Password;
-        altVm.CookieValue = _altSettings.CookieString;
-        altVm.IsSendGift = _altSettings.IsSendGift;
+        altVm.ProxyAddress = AltSettings.ProxyInfo?.ProxyAddress;
+        altVm.ProxyUsername = AltSettings.ProxyInfo?.Username;
+        altVm.ProxyPassword = AltSettings.ProxyInfo?.Password;
+        altVm.CookieValue = AltSettings.CookieString;
+        altVm.IsSendGift = AltSettings.IsSendGift;
         altVm.AllowDoneClose = true;
-        if (_altSettings.DanmakuList != null)
+        if (AltSettings.DanmakuList != null)
         {
-            foreach (var danmaku in _altSettings.DanmakuList)
+            foreach (var danmaku in AltSettings.DanmakuList)
             {
                 altVm.AddDanmaku(danmaku);
             }
@@ -412,9 +426,9 @@ public partial class Alt : ObservableObject , IDisposable
         //确认后将VM的值写入配置文件
         if (altVm.AllowDoneClose)
         {
-            _altSettings.CookieString = altVm.CookieValue;
-            _altSettings.IsSendGift = altVm.IsSendGift;
-            _altSettings.DanmakuList = altVm.DanmakuList
+            AltSettings.CookieString = altVm.CookieValue;
+            AltSettings.IsSendGift = altVm.IsSendGift;
+            AltSettings.DanmakuList = altVm.DanmakuList
                 .Where(x => !string.IsNullOrWhiteSpace(x.Text))
                 .Select(x => x.Text)
                 .ToArray();
@@ -424,7 +438,7 @@ public partial class Alt : ObservableObject , IDisposable
                 Username = altVm.ProxyUsername,
                 Password = altVm.ProxyPassword
             };
-            if (vmProxyInfo.ProxyAddress != _altSettings.ProxyInfo.ProxyAddress)
+            if (vmProxyInfo?.ProxyAddress != AltSettings.ProxyInfo?.ProxyAddress)
             {
                 try
                 {
@@ -437,8 +451,8 @@ public partial class Alt : ObservableObject , IDisposable
                     return;
                 }
             }
-            _altSettings.ProxyInfo = vmProxyInfo;
-            await ConfigManager.SaveAltSettingsAsync(_altSettings);
+            AltSettings.ProxyInfo = vmProxyInfo;
+            await ConfigManager.SaveAltSettingsAsync(AltSettings);
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已更新账号 {UserName} 的配置",Geometry.Parse(MdIcons.Check)));
         }
     }
@@ -459,7 +473,7 @@ public partial class Alt : ObservableObject , IDisposable
             }
         }
         
-        if (_altSettings.DanmakuList == null || _altSettings.DanmakuList.Length == 0)
+        if (AltSettings.DanmakuList == null || AltSettings.DanmakuList.Length == 0)
         {
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"账号 {UserName} 未设置弹幕内容，请先设置",Geometry.Parse(MdIcons.Error)));
             return;
@@ -467,7 +481,7 @@ public partial class Alt : ObservableObject , IDisposable
         
         try
         {
-            foreach (var danmaku in _altSettings.DanmakuList)
+            foreach (var danmaku in AltSettings.DanmakuList)
             {
                 await _altService.SendDanmakuAsync(danmaku);
                 var delay = new Random().Next(1000, 12000);
@@ -526,7 +540,7 @@ public partial class Alt : ObservableObject , IDisposable
             if (dialogVm.IsConfirmed)
             {
                 _removeCallback(this);
-                await ConfigManager.RemoveAltSettingsAsync(_altSettings);
+                await ConfigManager.RemoveAltSettingsAsync(AltSettings);
                 
                 //删除账号时才释放服务
                 Dispose();
