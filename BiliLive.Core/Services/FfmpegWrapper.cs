@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BiliLive.Core.Services;
@@ -55,13 +57,9 @@ public static class FfmpegWrapper
             process.StartInfo = processStartInfo;
             process.Start();
             
-            string output = await process.StandardError.ReadToEndAsync();
+            var output = await process.StandardError.ReadToEndAsync();
             await process.WaitForExitAsync();
-            if (string.IsNullOrWhiteSpace(output))
-            {
-                return true;
-            }
-            return false;
+            return !string.IsNullOrWhiteSpace(output);
         }
         catch (Exception ex)
         {
@@ -70,57 +68,73 @@ public static class FfmpegWrapper
         }
     }
     
-    private static Process? _ffmpegProcess;
-    public static async Task<bool> StartStreamingAsync(string ffmpegPath, string videoPath, string rtmpUrl,string apiKey)
+    private static Process? _streamFfmpegProcess;
+    private static CancellationTokenSource? _streamCts;
+    public static async Task StartStreamingAsync(string ffmpegPath, string videoPath, string streamUrl,string apiKey,int seconds = 5)
     {
+        if (_streamCts == null)
+        { 
+            _streamCts = new CancellationTokenSource();
+        }else{ throw new Exception("已有推流任务在进行中，请先中断当前推流任务"); }
+        
+        var token = _streamCts?.Token ?? CancellationToken.None;
         try
         {
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = ffmpegPath,
                 //直播参数
-                Arguments = "",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                Arguments = $"-stream_loop -1 -re -i \"{videoPath}\" -c:v libx264 -preset veryfast -tune zerolatency -profile:v baseline -b:v 300k -maxrate 300k -bufsize 600k -vf \"scale=-2:720,fps=30\" -c:a aac -b:a 128k -ar 44100 -ac 2 -t {seconds} -f flv \"{streamUrl}/{apiKey}\"",
                 UseShellExecute = false,
-                CreateNoWindow = true
+                RedirectStandardError = true
             };
 
-            using var process = new Process();
-            process.StartInfo = processStartInfo;
-            process.Start();
-
-            // string output = await process.StandardOutput.ReadToEndAsync();
-            var errorOutput = await process.StandardError.ReadToEndAsync();
-
-            await process.WaitForExitAsync();
-            if (process.ExitCode == 0)
+            var errorOutputBuilder = new StringBuilder();
+       
+            _streamFfmpegProcess = new Process();
+            _streamFfmpegProcess.StartInfo = processStartInfo;
+            _streamFfmpegProcess.Start();
+            // 读取错误输出
+            _streamFfmpegProcess.ErrorDataReceived += (sender, e) =>
             {
-                return true;
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    errorOutputBuilder.AppendLine(e.Data);
+                }
+            };
+            _streamFfmpegProcess.BeginErrorReadLine();
+
+            await _streamFfmpegProcess.WaitForExitAsync(token);
+            if (_streamFfmpegProcess.ExitCode != 0)
+            {
+                throw new Exception($"Ffmpeg exited with code {_streamFfmpegProcess.ExitCode}. Error Output:{errorOutputBuilder}");
             }
-            Debug.WriteLine($"Ffmpeg error output: {errorOutput}");
-            return false;
         }
-        catch (Exception ex)
+        catch(OperationCanceledException)
         {
-            Debug.WriteLine($"Error starting streaming: {ex.Message}");
-            return false;
+            // 取消操作时关闭FFmpeg进程
+            if (_streamFfmpegProcess is { HasExited: false })
+            {
+                _streamFfmpegProcess.Kill();
+            }
+        }
+        catch(Exception ex)
+        {
+            throw new Exception($"Ffmpeg streaming error{ex.Message}");
         }
     }
     
-    public static async Task InterruptStreamingAsync(Process ffmpegProcess)
+    public static async Task InterruptStreamingAsync()
     {
-        try
+        if (_streamCts != null)
         {
-            if (ffmpegProcess != null && !ffmpegProcess.HasExited)
-            {
-                ffmpegProcess.Kill();
-                await ffmpegProcess.WaitForExitAsync();
-            }
+            await _streamCts.CancelAsync();
+            _streamCts.Dispose();
+            _streamCts = null;
         }
-        catch (Exception ex)
+        else
         {
-            Debug.WriteLine($"Error interrupting streaming: {ex.Message}");
+            throw new Exception("请先开始推流再中断");
         }
     }
 }

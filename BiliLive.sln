@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiliLive", "BiliLive\BiliLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiliLive.Core", "BiliLive.Core\BiliLive.Core.csproj", "{555DD366-E01F-4524-9259-0739C508F3F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiliLive.Test", "BiliLive.Test\BiliLive.Test.csproj", "{6B1CC334-8408-435B-9E34-A517214B8ADE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{555DD366-E01F-4524-9259-0739C508F3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{555DD366-E01F-4524-9259-0739C508F3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{555DD366-E01F-4524-9259-0739C508F3F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B1CC334-8408-435B-9E34-A517214B8ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B1CC334-8408-435B-9E34-A517214B8ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B1CC334-8408-435B-9E34-A517214B8ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B1CC334-8408-435B-9E34-A517214B8ADE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
