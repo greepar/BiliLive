@@ -108,7 +108,7 @@
                         <Border Name="SideNavBar"
                                 ClipToBounds="True"
                                 Grid.Column="0"
-                                MinWidth="170">
+                                Width="170">
 
                             <Border.Transitions>
                                 <Transitions>
@@ -249,7 +249,7 @@
                                             </Button>
                                             <Grid ColumnDefinitions="Auto,*" IsVisible="True" IsHitTestVisible="False">
                                                 <!-- 头像 -->
-                                                <Border Grid.Column="0" Margin="4 0 4 0"
+                                                <Border Grid.Column="0" Margin="4 0 0 0"
                                                         VerticalAlignment="Center"
                                                         CornerRadius="60" ClipToBounds="True">
                                                     <Image Source="{Binding UserFace}"
@@ -258,8 +258,9 @@
                                                 </Border>
 
                                                 <!-- 用户名 -->
-                                                <TextBlock Grid.Column="1" Margin="10 0 15 0"
+                                                <TextBlock Grid.Column="1"
                                                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                           MaxWidth="100"
                                                            FontSize="13"
                                                            Text="{Binding UserName}" />
                                             </Grid>
@@ -284,7 +285,6 @@
                                                     Content="{Binding CurrentVm}" />
                                 </Border>
                             </Grid>
-                            
                            
 
                             <!-- 左下方弹出登录窗口 -->
@@ -400,8 +400,6 @@
                                     </Border.Clip>
                                 </Border>
                             </Border>
-                            
-                       
                             
                         </Grid>
 

@@ -77,11 +77,12 @@ public static class FfmpegWrapper
             _streamCts = new CancellationTokenSource();
         }else{ throw new Exception("已有推流任务在进行中，请先中断当前推流任务"); }
         
-        var token = _streamCts?.Token ?? CancellationToken.None;
+        var token = _streamCts.Token;
         try
         {
             var processStartInfo = new ProcessStartInfo
             {
+                //TODO:待隐藏窗口参数
                 FileName = ffmpegPath,
                 //直播参数
                 Arguments = $"-stream_loop -1 -re -i \"{videoPath}\" -c:v libx264 -preset veryfast -tune zerolatency -profile:v baseline -b:v 300k -maxrate 300k -bufsize 600k -vf \"scale=-2:720,fps=30\" -c:a aac -b:a 128k -ar 44100 -ac 2 -t {seconds} -f flv \"{streamUrl}/{apiKey}\"",
@@ -95,7 +96,7 @@ public static class FfmpegWrapper
             _streamFfmpegProcess.StartInfo = processStartInfo;
             _streamFfmpegProcess.Start();
             // 读取错误输出
-            _streamFfmpegProcess.ErrorDataReceived += (sender, e) =>
+            _streamFfmpegProcess.ErrorDataReceived += (_, e) =>
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
@@ -107,12 +108,19 @@ public static class FfmpegWrapper
             await _streamFfmpegProcess.WaitForExitAsync(token);
             if (_streamFfmpegProcess.ExitCode != 0)
             {
-                throw new Exception($"Ffmpeg exited with code {_streamFfmpegProcess.ExitCode}. Error Output:{errorOutputBuilder}");
+                // 处理非零退出代码
+                if (_streamFfmpegProcess.ExitCode is -1 or 1 or -1073741510)
+                {
+                    // 用户主动关闭
+                    throw new Exception($"Ffmpeg被手动关闭. \n Exit code: {_streamFfmpegProcess.ExitCode}");
+                }
+                throw new Exception($"Ffmpeg其他异常退出：{_streamFfmpegProcess.ExitCode}. \n Ffmpeg输出:{errorOutputBuilder}");
             }
+
         }
         catch(OperationCanceledException)
         {
-            // 取消操作时关闭FFmpeg进程
+            // 取消操作时关闭Ffmpeg进程
             if (_streamFfmpegProcess is { HasExited: false })
             {
                 _streamFfmpegProcess.Kill();
@@ -120,7 +128,9 @@ public static class FfmpegWrapper
         }
         catch(Exception ex)
         {
-            throw new Exception($"Ffmpeg streaming error{ex.Message}");
+            _streamCts.Dispose();
+            _streamCts = null;
+            throw new Exception($"Ffmpeg streaming error : \n {ex.Message}");
         }
     }
     
@@ -131,10 +141,6 @@ public static class FfmpegWrapper
             await _streamCts.CancelAsync();
             _streamCts.Dispose();
             _streamCts = null;
-        }
-        else
-        {
-            throw new Exception("请先开始推流再中断");
         }
     }
 }

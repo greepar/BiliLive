@@ -11,8 +11,6 @@ namespace BiliLive.Views.DialogWindow;
 
 public partial class DialogWindow : Window
 {
-   
-    
     
     public DialogWindow()
     {
@@ -21,7 +19,6 @@ public partial class DialogWindow : Window
         Opened += async (_, _) =>
         {
             await CreateAnimation(true).RunAsync(DialogMainBorder);
-         
         };
         
     }

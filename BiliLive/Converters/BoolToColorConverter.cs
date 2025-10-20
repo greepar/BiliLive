@@ -11,7 +11,7 @@ public class BoolToColorConverter : MarkupExtension, IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is bool b)
-            return b ? Brush.Parse("#26AE36") : Brushes.Red; // true → 不透明, false → 透明
+            return b ? Brush.Parse("#26AE36") : Brushes.Red; 
         return Brush.Parse("#D3DA00");
     }
 

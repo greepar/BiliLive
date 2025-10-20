@@ -100,10 +100,11 @@ public partial class MainWindowViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
         {
             var item = new NotificationItem(m.Value,m.Geometry);
-            if (Notifications.All(x => x.Message != m.Value))
-            {
-                Notifications.Add(item);
-            }
+            Notifications.Add(item);
+            // if (Notifications.All(x => x.Message != m.Value))
+            // {
+            //     Notifications.Add(item);
+            // }
             
             _ =  DelayRemoveNotification(item);
         });
@@ -143,7 +144,6 @@ public partial class MainWindowViewModel : ViewModelBase
         //初始化AutoService配置
         _asVm.VideoPath = appConfig.VideoPath;
         _asVm.FfmpegPath = appConfig.FfmpegPath;
-        _asVm.IsAutoStreamEnabled = appConfig.EnableAutoService;
         _asVm.IsAutoStart = appConfig.AutoStart;
         _asVm.IsCheck60MinTask = appConfig.Check60MinTask;
         _asVm.Config = appConfig;

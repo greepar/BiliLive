@@ -18,7 +18,6 @@ public partial class MainWindow : Window
 {
     // 账号窗口
     private CancellationTokenSource? _animationCts;
-    private double _initialNavBarWidth;
     
     private double _originalWidth;
     private double _originalHeight;
@@ -29,18 +28,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
-        SideNavBar.AttachedToVisualTree += async (_, _) =>
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                var w = SideNavBar.DesiredSize.Width;
-                w = w >= 170 ? w : 170;
-                SideNavBar.Width = w;
-                _initialNavBarWidth = 170;
-            }, DispatcherPriority.Render);
-        };
-
-
 #if DEBUG
         // Topmost = true;
 #endif
@@ -202,16 +189,7 @@ public partial class MainWindow : Window
     // 菜单栏伸缩
     private void MenuOpenBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (SideNavBar.Width < 100)
-        {  
-            SideNavBar.Width = _initialNavBarWidth;
-        }
-        else
-        {
-            SideNavBar.MinWidth = 60;
-            SideNavBar.Width = 60;
-        }
-           
+        SideNavBar.Width = SideNavBar.Bounds.Width < 100 ? 170 : 60;
     }
 
     private async void SwitchPageAnime(object? sender, RoutedEventArgs e)

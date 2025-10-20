@@ -52,6 +52,9 @@ public partial class AutoServiceViewModel : ViewModelBase
     public bool IsCoreSet => !string.IsNullOrWhiteSpace(FfmpegPath) && !string.IsNullOrWhiteSpace(VideoPath);
     public string CoreStatus => IsCoreSet ? "已配置" : "未配置";
     
+    [ObservableProperty] private bool? _isInAutoStreaming = false;
+    [ObservableProperty] private string _autoStreamingStatusText = "未启动";
+    
     [ObservableProperty] private bool _isAutoStreamEnabled;
     [ObservableProperty] private bool _isAutoStart;
     [ObservableProperty] private bool _isRandomSecond;
@@ -87,6 +90,17 @@ public partial class AutoServiceViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
+        if (IsAutoStart)
+        {
+            if (!IsCoreSet)
+            {
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先配置直播核心",Geometry.Parse(MdIcons.Error)));
+                IsAutoStreamEnabled = false;
+                return;
+            }
+            IsAutoStreamEnabled = true;
+            _ = Task.Run(async () => await SetAutoStreamAsync());
+        }
         if ( Config is { Alts.Count: > 0 })
         {
             //并行创建Alt实例
@@ -143,7 +157,6 @@ public partial class AutoServiceViewModel : ViewModelBase
                     // IsAltGiftServiceEnabled = false;
                     // IsAutoClaimRewardEnabled = false;
                     if (_autoStreamCts != null) await _autoStreamCts.CancelAsync();
-                    await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
                     return;
                 }
                 _ = Task.Run(async () => await SetAutoStreamAsync());
@@ -192,17 +205,28 @@ public partial class AutoServiceViewModel : ViewModelBase
                           minute * 60 +
                           (IsRandomSecond ? random.Next(-240, -120) : second);
             var startTime = TimeSpan.FromSeconds(seconds);
-            //设置第二天基准
             
+            //设置第二天基准
             var baseSeconds = startTime.TotalSeconds;
             var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
             var streamTime = DateTime.Today.AddDays(1).AddSeconds(finalSeconds);
-            await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
-            
-            Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage( $"自动开播将在 {streamTime} 开始",Geometry.Parse(MdIcons.Check))); });
 
+            //等待直到开始时间
+            if (streamTime < DateTime.Now)
+            {
+                //如果时间已过则推迟一天
+                var originalTime = streamTime;
+                Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage( $"今天直播时间点已无法到达{originalTime - DateTime.Now}时间后开始",Geometry.Parse(MdIcons.Check))); });
+                streamTime = streamTime.AddDays(1);
+            }
+            Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage( $"自动开播将在 {streamTime} 开始",Geometry.Parse(MdIcons.Check))); });
+            IsInAutoStreaming = null;
+            AutoStreamingStatusText = $"等待自动开播，开始时间：{streamTime}";
+            await Task.Delay(streamTime - DateTime.Now, token); 
+            
             if (IsCheck60MinTask)
             {
+                //TODO:
                 //检查60分钟任务
                 // var hasTask = await _biliService.Check60MinTaskAsync();
                 // if (!hasTask)
@@ -214,39 +238,74 @@ public partial class AutoServiceViewModel : ViewModelBase
                 // }
             }
             
-            //等待直到开始时间
-            await Task.Delay(DateTime.Today.TimeOfDay- startTime, token);
-            
-            //开始直播
+            //开启直播接口
             var startLiveResponse = await _biliService.StartLiveAsync();
             var streamKey = startLiveResponse.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
             var streamUrl = startLiveResponse.GetProperty("data").GetProperty("rtmp").GetProperty("addr").GetString();
-            
-            await FfmpegWrapper.StartStreamingAsync(FfmpegPath,VideoPath,streamUrl,streamKey);
-            //TODO:待优化实现方式
-            //发送小号礼物和弹幕
-            if (IsAltGiftServiceEnabled && HasAlts)
-            {
-                foreach (var alt in AltsList)
+
+            //启动发送小号礼物和弹幕线程
+            _ = Task.Run(async () =>
                 {
-                    if (alt is { IsGiftSent: true, IsDanmakuSent: true }) continue;
-                    if (alt.AltSettings.IsSendGift)
+                    try
                     {
-                        await alt.SendGiftAsync(false);
+                        //随机等待20-40分钟
+                        await Task.Delay(random.Next(1200 * 1000, 2400 * 1000), token);
+                        if (IsAltGiftServiceEnabled && HasAlts)
+                        {
+                            foreach (var alt in AltsList)
+                            {
+                                if (alt is { IsGiftSent: true, IsDanmakuSent: true }) continue;
+                                if (alt.AltSettings.IsSendGift)
+                                {
+                                    await alt.SendGiftAsync(false);
+                                }
+                                await alt.SendDanmakuAsync(false);
+                                await Task.Delay(2000, token);
+                            }
+                        }
                     }
-                    await alt.SendDanmakuAsync(false);
-                    await Task.Delay(2000, token);
-                }
-            }
+                    catch (OperationCanceledException)
+                    {
+                        // Console.WriteLine("小号礼物和弹幕发送任务取消");
+                        //任务取消
+                    }
+                }, token);
+            
+            //启用Ffmpeg线程直播大约一小时
+            var liveDurationSec = IsRandomSecond ? random.Next(3600, 3800) : 3600;
+            if (FfmpegPath != null && VideoPath != null && streamUrl != null && streamKey != null)
+                _ = Task.Run(async () =>{    
+                    //TODO:失败后重试机制
+                    //随机直播大于1个小时防止被检测
+                    await FfmpegWrapper.StartStreamingAsync(FfmpegPath, VideoPath, streamUrl, streamKey, liveDurationSec);
+                }, token);
+            else throw new Exception("获取推流地址失败");
+            await Task.Delay(liveDurationSec * 1000 , token);
         }
         catch (OperationCanceledException)
         {
             //通知UI线程
             Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"自动开播任务已取消",Geometry.Parse(MdIcons.Check))); });
+            IsInAutoStreaming = false;
+            AutoStreamingStatusText = "自动开播任务未开启";
+            await FfmpegWrapper.InterruptStreamingAsync();
         }
         catch (Exception ex)
         {
-            await ShowWindowHelper.ShowErrorAsync("自动开播任务出现错误。\n错误信息：" + ex.Message);
+            Dispatcher.UIThread.Post( async void () =>
+            {
+                try
+                {
+                    IsAutoStreamEnabled = false;
+                    IsInAutoStreaming = false;
+                    AutoStreamingStatusText = "自动开播异常中止";
+                    await ShowWindowHelper.ShowErrorAsync("自动开播任务出现错误。\n错误信息：" + ex.Message);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            });
         }
     }
     

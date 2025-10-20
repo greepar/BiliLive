@@ -227,9 +227,16 @@
                                 VerticalAlignment="Top"
                                 Background="#F8EAF3">
                             <Grid ColumnDefinitions="Auto,*,Auto">
-                                <TextBlock Grid.Column="0" Text="定时直播任务"
-                                           Margin="14 0 0 0"
-                                           VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="0" 
+                                            Orientation="Horizontal"
+                                            VerticalAlignment="Center" >
+                                    <TextBlock Text="定时直播任务"
+                                                Margin="14 0 0 0"/>
+                                    <TextBlock Margin="5 0 0 0" Foreground="{Binding IsInAutoStreaming,Converter={converters:BoolToColorConverter}}" VerticalAlignment="Center" FontSize="10" RenderTransform="scale(1.8)" Text="・"/>
+                                    <TextBlock Foreground="{Binding IsInAutoStreaming,Converter={converters:BoolToColorConverter}}" VerticalAlignment="Center" FontSize="10" Text="{Binding AutoStreamingStatusText}"/>
+
+                                </StackPanel>
+                                
                                 <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
                                               VerticalAlignment="Center"
                                               RenderTransform="scale(0.8)"
@@ -253,7 +260,7 @@
                                         <Setter Property="Width" Value="40" />
                                         <Setter Property="MinWidth" Value="40" />
                                         <Setter Property="CornerRadius" Value="12" />
-                                        <Setter Property="MaxLength" Value="2" />
+                                        <Setter Property="MaxLength" Value="3" />
                                         <Setter Property="HorizontalContentAlignment" Value="Left" />
                                         <Setter Property="Padding" Value="11 3 0 0" />
                                     </Style>
