@@ -35,7 +35,7 @@
 <!--    Debug时添加包-->
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <!-- 旧版本Avalonia.Diagnostics包-->
-                <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
+                <PackageReference Include="Avalonia.Diagnostics" Version="11.3.5">
                     <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
                     <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
                 </PackageReference>
@@ -44,9 +44,9 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.6" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.6" />
+        <PackageReference Include="Avalonia" Version="11.3.5" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.5" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.5" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0-preview.6.25358.103" />
         <PackageReference Include="ViewLocator.Generator" Version="2025.8.4.737-manual">

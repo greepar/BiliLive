@@ -26,7 +26,8 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components.Utility
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            //无此方法
+            return null;
         }
     }
 }

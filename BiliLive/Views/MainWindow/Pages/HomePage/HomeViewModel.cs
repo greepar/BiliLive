@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Resources;
@@ -189,20 +190,47 @@ public partial class HomeViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间分区成功", Geometry.Parse(MdIcons.Check)));
     }
     
+    //更新直播间信息任务任务
     public readonly CancellationTokenSource LiveDataCts = new();
-    public async Task UpdateApiKeyAsync(string streamUrl, string streamKey, string liveKey)
+    private bool _isUpdatingLiveInfo;
+    public async Task UpdateLiveInfoAsync(string streamUrl, string streamKey, string liveKey)
     {
+        if (_isUpdatingLiveInfo) { throw new InvalidOperationException("直播数据更新任务已经在运行中，不能重复启动"); }
+        _isUpdatingLiveInfo = true;
+        
         StreamKey = streamKey;
         ApiUrl = streamUrl;
 
         var token = LiveDataCts.Token;
-        while (!token.IsCancellationRequested)
+        var errorRetryTime = 0;
+
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await Task.Delay(5000, token);
+                await UpdateLiveInfoTask();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            //最后一次获取直播数据
+            await UpdateLiveInfoTask();
+        }
+        finally
+        {
+            _isUpdatingLiveInfo = false;
+        }
+       
+        
+        return;
+        
+        async Task UpdateLiveInfoTask()
         {
             try
             {
-                await Task.Delay(5000, token);
                 var liveData = await _biliService.GetLiveDataAsync(liveKey);
-                // {"code":0,"message":"0","ttl":1,"data":{"LiveTime":543,"AddFans":0,"HamsterRmb":0,"NewFansClub":0,"DanmuNum":0,"MaxOnline":2,"WatchedCount":1}}
+                // 结构 {"code":0,"message":"0","ttl":1,"data":{"LiveTime":543,"AddFans":0,"HamsterRmb":0,"NewFansClub":0,"DanmuNum":0,"MaxOnline":2,"WatchedCount":1}}
                 if (liveData.GetProperty("code").GetInt32() != 0)
                 {
                     var msg = liveData.TryGetProperty("message", out var messageProp)
@@ -211,15 +239,21 @@ public partial class HomeViewModel : ViewModelBase
                     throw new Exception($"服务器返回错误: {msg}");
                 }
 
-                var data = liveData.GetProperty("data");
+                var data = liveData.GetProperty("data");    
                 Views = data.GetProperty("WatchedCount").GetInt32();
                 Danmakus = data.GetProperty("DanmuNum").GetInt32();
                 Gifts = data.GetProperty("NewFansClub").GetInt32();
+                errorRetryTime = 0;
             }
-            catch (OperationCanceledException){break;}
-            catch (Exception e)
+            catch (Exception ex)
             {
-                await ShowWindowHelper.ShowErrorAsync("获取直播间信息失败:" + e.Message);
+                errorRetryTime += 1;
+                if (errorRetryTime > 10)
+                {
+                    await Dispatcher.UIThread.InvokeAsync( async () => { await ShowWindowHelper.ShowErrorAsync($"获取直播间数据失败超过10次，出错数据:{ex.Message}"); });
+                    _isUpdatingLiveInfo = false;
+                    await LiveDataCts.CancelAsync();
+                }
             }
         }
     }

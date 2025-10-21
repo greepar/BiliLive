@@ -59,6 +59,10 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private bool _isAutoStart;
     [ObservableProperty] private bool _isRandomSecond;
     [ObservableProperty] private bool _isCheck60MinTask;
+
+    [ObservableProperty] 
+    private bool _isChecked;
+    
     [ObservableProperty] private bool _isAutoClaimRewardEnabled;
     
     
@@ -226,8 +230,8 @@ public partial class AutoServiceViewModel : ViewModelBase
             
             if (IsCheck60MinTask)
             {
-                //TODO:
-                //检查60分钟任务
+                //TODO:检查60分钟任务
+                
                 // var hasTask = await _biliService.Check60MinTaskAsync();
                 // if (!hasTask)
                 // {

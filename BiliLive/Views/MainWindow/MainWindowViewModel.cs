@@ -258,7 +258,6 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (!IsStreaming)
             {
-            
                 var a = await _biliService.StartLiveAsync();
                 // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
                 var apiKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
@@ -271,7 +270,7 @@ public partial class MainWindowViewModel : ViewModelBase
                     return;
                 }
                 WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("开启推流成功", Geometry.Parse(MdIcons.Check)));
-                _ = Task.Run(async () => await _homeVm.UpdateApiKeyAsync( apiUrl, apiKey, liveKey));
+                _ = Task.Run(async () => await _homeVm.UpdateLiveInfoAsync( apiUrl, apiKey, liveKey));
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
@@ -20,7 +21,7 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components.Utility
             {
                 var formattedExpression = expression.Replace("x", ((IConvertible)value).ToString(culture));
                 
-                var result = Computer.Compute(formattedExpression, string.Empty);
+                var result = Computer?.Compute(formattedExpression, string.Empty);
                 return result;
             }
             catch (Exception)
@@ -31,7 +32,8 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components.Utility
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            //无此方法
+            return null;
         }
     }
 }
