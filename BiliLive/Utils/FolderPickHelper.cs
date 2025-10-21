@@ -6,7 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 
-namespace BiliLive.Services;
+namespace BiliLive.Utils;
 
 public static class FolderPickHelper
 {

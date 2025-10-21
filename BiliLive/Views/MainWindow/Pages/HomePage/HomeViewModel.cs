@@ -10,7 +10,6 @@ using Avalonia.Threading;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Resources;
-using BiliLive.Services;
 using BiliLive.Utils;
 using BiliLive.Views.MainWindow.Pages.HomePage.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -27,6 +26,16 @@ public enum CopyTarget
     StreamUrl
 }
 
+//WeakReferenced传递刷新直播数据命令
+public class StartRefreshLiveInfoMessage(string streamUrl, string streamKey , string liveKey)
+{
+    public string StreamUrl { get; } = streamUrl;
+    public string StreamKey { get; } = streamKey;
+    public string LiveKey { get; } = liveKey;
+}
+public class StopRefreshLiveInfoMessage();
+
+
 public partial class HomeViewModel : ViewModelBase
 { 
     public const string LiveUrlFormat = "https://live.bilibili.com";
@@ -36,8 +45,7 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))] private long? _userId;
     [ObservableProperty] private long? _roomId;
     [ObservableProperty] private Bitmap? _userFace;
-
-
+    
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))]
     private string? _inputRoomTitle;
 
@@ -65,8 +73,19 @@ public partial class HomeViewModel : ViewModelBase
 
     private readonly IBiliService _biliService;
     [ObservableProperty]private AreaSelectorViewModel _areaSelectorVm = new();
+    
     public HomeViewModel(IServiceProvider? serviceProvider = null)
     {
+        
+        WeakReferenceMessenger.Default.Register<StartRefreshLiveInfoMessage>(this,  (o, m) =>
+        {
+            _ = Task.Run(async () => await UpdateLiveInfoAsync(m.StreamUrl, m.StreamKey, m.LiveKey));
+        });
+        WeakReferenceMessenger.Default.Register<StopRefreshLiveInfoMessage>(this,  (o, m) =>
+        {
+            _liveDataCts.CancelAsync();
+        });
+        
         using var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
         UserFace = PicHelper.ResizeStreamToBitmap(faceMs, 71 * 2, 71 * 2) ?? new Bitmap(faceMs);
 
@@ -191,17 +210,19 @@ public partial class HomeViewModel : ViewModelBase
     }
     
     //更新直播间信息任务任务
-    public readonly CancellationTokenSource LiveDataCts = new();
+    private readonly CancellationTokenSource _liveDataCts = new();
     private bool _isUpdatingLiveInfo;
-    public async Task UpdateLiveInfoAsync(string streamUrl, string streamKey, string liveKey)
+    private async Task UpdateLiveInfoAsync(string streamUrl, string streamKey, string liveKey)
     {
         if (_isUpdatingLiveInfo) { throw new InvalidOperationException("直播数据更新任务已经在运行中，不能重复启动"); }
         _isUpdatingLiveInfo = true;
         
+        
+        
         StreamKey = streamKey;
         ApiUrl = streamUrl;
 
-        var token = LiveDataCts.Token;
+        var token = _liveDataCts.Token;
         var errorRetryTime = 0;
 
         try
@@ -230,6 +251,7 @@ public partial class HomeViewModel : ViewModelBase
             try
             {
                 var liveData = await _biliService.GetLiveDataAsync(liveKey);
+                Console.WriteLine(liveData);
                 // 结构 {"code":0,"message":"0","ttl":1,"data":{"LiveTime":543,"AddFans":0,"HamsterRmb":0,"NewFansClub":0,"DanmuNum":0,"MaxOnline":2,"WatchedCount":1}}
                 if (liveData.GetProperty("code").GetInt32() != 0)
                 {
@@ -252,7 +274,7 @@ public partial class HomeViewModel : ViewModelBase
                 {
                     await Dispatcher.UIThread.InvokeAsync( async () => { await ShowWindowHelper.ShowErrorAsync($"获取直播间数据失败超过10次，出错数据:{ex.Message}"); });
                     _isUpdatingLiveInfo = false;
-                    await LiveDataCts.CancelAsync();
+                    await _liveDataCts.CancelAsync();
                 }
             }
         }

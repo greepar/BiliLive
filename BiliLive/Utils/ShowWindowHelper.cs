@@ -9,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using BiliLive.Views.DialogWindow;
 
-namespace BiliLive.Services;
+namespace BiliLive.Utils;
 
 public static class ShowWindowHelper
 {

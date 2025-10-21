@@ -12,6 +12,8 @@ public interface IBiliService
 {
     //状态相关
     bool IsLogged { get; }
+    bool IsStreaming { get; set; }
+
     long RoomId { get; }
     
     // 登录相关
@@ -38,6 +40,8 @@ public interface IBiliService
 public class BiliServiceImpl : IBiliService
 {
     public bool IsLogged  { get; private set; }
+    
+    public bool IsStreaming { get; set; }
     public long RoomId  { get; private set; }
     
     //登录相关

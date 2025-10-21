@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -16,7 +15,6 @@ using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Models;
 using BiliLive.Resources;
-using BiliLive.Services;
 using BiliLive.Views.MainWindow.Controls;
 using BiliLive.Views.MainWindow.Pages.About;
 using BiliLive.Views.MainWindow.Pages.AutoService;
@@ -28,9 +26,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BiliLive.Views.MainWindow;
 
 //通知消息传递
-public class ShowNotificationMessage(string value, Geometry geometry) 
-    : ValueChangedMessage<string>(value)
+public class ShowNotificationMessage(string text, Geometry geometry) 
 {
+    public string Message { get; } = text;
     public Geometry Geometry { get; } = geometry;
 }
 
@@ -99,13 +97,13 @@ public partial class MainWindowViewModel : ViewModelBase
         //传入服务
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>
         {
-            var item = new NotificationItem(m.Value,m.Geometry);
+            var item = new NotificationItem(m.Message,m.Geometry);
             Notifications.Add(item);
+            // 移除重复内容
             // if (Notifications.All(x => x.Message != m.Value))
             // {
             //     Notifications.Add(item);
             // }
-            
             _ =  DelayRemoveNotification(item);
         });
         WeakReferenceMessenger.Default.Register<LoginMessage>(this,  (o, m)  => 
@@ -258,25 +256,36 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (!IsStreaming)
             {
-                var a = await _biliService.StartLiveAsync();
-                // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
-                var apiKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
-                var apiUrl = a.GetProperty("data").GetProperty("rtmp").GetProperty("addr").GetString();
-                var liveKey = a.GetProperty("data").GetProperty("live_key").GetString();
-                
-                if (string.IsNullOrWhiteSpace(apiKey) || string.IsNullOrWhiteSpace(apiUrl) || string.IsNullOrWhiteSpace(liveKey))
+                if (_biliService.IsStreaming)
                 {
-                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Error-获取推流地址失败", Geometry.Parse(MdIcons.Error)));
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("当前直播被自动直播占用，请先暂停自动直播。"
+                        ,Geometry.Parse(MdIcons.Error)));
                     return;
                 }
-                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("开启推流成功", Geometry.Parse(MdIcons.Check)));
-                _ = Task.Run(async () => await _homeVm.UpdateLiveInfoAsync( apiUrl, apiKey, liveKey));
+                var a = await _biliService.StartLiveAsync();
+                // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
+                var streamUrl = a.GetProperty("data").GetProperty("rtmp").GetProperty("addr").GetString();
+                var streamKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
+                var liveKey = a.GetProperty("data").GetProperty("live_key").GetString();
+
+                if (string.IsNullOrWhiteSpace(streamKey) || string.IsNullOrWhiteSpace(streamUrl) ||
+                    string.IsNullOrWhiteSpace(liveKey))
+                {
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Error-获取推流地址失败",
+                        Geometry.Parse(MdIcons.Error)));
+                    return;
+                }
+
+                WeakReferenceMessenger.Default.Send(
+                    new ShowNotificationMessage("开启推流成功", Geometry.Parse(MdIcons.Check)));
+                WeakReferenceMessenger.Default.Send(new StartRefreshLiveInfoMessage(streamUrl, streamKey, liveKey));
             }
             else
             {
-                await _homeVm.LiveDataCts.CancelAsync();
+                WeakReferenceMessenger.Default.Send(new StopRefreshLiveInfoMessage());
                 await _biliService.StopLiveAsync();
-                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已停止推流", Geometry.Parse(MdIcons.Check)));
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已停止推流",
+                    Geometry.Parse(MdIcons.Check)));
             }
         }
         catch (Exception ex)
@@ -284,6 +293,8 @@ public partial class MainWindowViewModel : ViewModelBase
             await ShowWindowHelper.ShowErrorAsync("启动推流失败:" + ex.Message);
         }
         IsStreaming = !IsStreaming;
+        _biliService.IsStreaming = IsStreaming;
+        
     }
     
 }

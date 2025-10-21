@@ -4,7 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using Avalonia.VisualTree;
 
-namespace BiliLive.Services;
+namespace BiliLive.Utils;
 
 public static class ClipboardHelper
 {
