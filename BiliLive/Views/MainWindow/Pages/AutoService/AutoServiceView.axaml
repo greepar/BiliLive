@@ -550,9 +550,12 @@
                                     Margin="14 0 14 0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock>奖励页面地址</TextBlock>
-                                <TextBox />
+                                <TextBox x:Name="InputBox"/>
                                 <TextBlock>状态:未领取</TextBlock>
-                                <!-- <Button Command="{Binding TestActionCommand}">TEST</Button> -->
+                                <Button Command="{Binding ClaimAwardCommand}"
+                                        CommandParameter="{Binding #InputBox.Text}"
+                                        Content="领取奖励"
+                                        />
                             </StackPanel>
                         </StackPanel>
 

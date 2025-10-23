@@ -271,9 +271,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (string.IsNullOrWhiteSpace(streamKey) || string.IsNullOrWhiteSpace(streamUrl) ||
                     string.IsNullOrWhiteSpace(liveKey))
                 {
-                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Error-获取推流地址失败",
-                        Geometry.Parse(MdIcons.Error)));
-                    return;
+                    var code = a.GetProperty("code").GetInt32();
+                    var errMsg = a.GetProperty("message").GetString();
+                    await ShowWindowHelper.ShowErrorAsync($"开始推流失败\n,错误码:{code},错误信息:{errMsg}");
+                    throw new Exception($"开始推流失败\n,错误码:{code},错误信息:{errMsg}");
                 }
 
                 WeakReferenceMessenger.Default.Send(

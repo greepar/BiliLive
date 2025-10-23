@@ -11,6 +11,7 @@ using Avalonia.Threading;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
+using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Utils;
@@ -236,7 +237,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             });
             IsInAutoStreaming = null;
             AutoStreamingStatusText = $"等待自动开播，开始时间：{streamTime}";
-            await Task.Delay(streamTime - DateTime.Now, token); 
+            // await Task.Delay(streamTime - DateTime.Now, token); 
             AutoStreamingStatusText = $"正在自动直播中...";
 
             //先检查直播是否被占用
@@ -463,11 +464,16 @@ public partial class AutoServiceViewModel : ViewModelBase
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"登录成功，当前账号 {altSettings.UserName}",Geometry.Parse(MdIcons.Check)));
         }
     }
-
-
-    private async Task ClaimAwardAsync(string awardUrl)
+    
+    [RelayCommand]
+    private async Task ClaimAwardAsync(string taskId)
     {
-        // await _biliService.ClaimAwardAsync();
+        if (string.IsNullOrWhiteSpace(taskId))
+        {
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"请输入任务ID",Geometry.Parse(MdIcons.Check)));
+            return;
+        }
+        await _biliService.ClaimAwardAsync(taskId);
     }
     
     private void RemoveAlt(Alt alt)

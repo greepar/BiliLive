@@ -1,37 +1,66 @@
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BiliLive.Core.Services.BiliService;
 
-public class AwardService(HttpClient httpClient)
+public class AwardService(HttpClient httpClient,CookieContainer cookieContainer)
 {
-    private async Task CliamAwardAsync(string rewardUrl)
+    private const string RewardInfoUrl = "https://api.bilibili.com/x/activity_components/mission/info";
+    private const string ReceiveAwardUrl = "https://api.bilibili.com/x/activity_components/mission/receive";
+
+    public async Task<string?> ClaimAwardAsync(string taskId)
     {
-        const string rewardInfoApi = "https://api.bilibili.com/x/activity_components/mission/info";
-            // ?task_id=6ERAzwloghvmcd00&web_location=888.126558&w_rid=fb5fad000e3e5cbdf6cee12a41e56213&wts=1760497483
-        
-        await using var infoResponse = await httpClient.GetStreamAsync(rewardInfoApi + rewardUrl);
+        var infoParameters = new Dictionary<string, string>
+        {
+            { "task_id", taskId },
+            { "web_location", "888.126558" },
+        };
+        var query = await SignService.GetWebSignAsync(infoParameters);
+        await using var infoResponse = await httpClient.GetStreamAsync($"{RewardInfoUrl}?{query}");
         using var infoJsonDoc = await JsonDocument.ParseAsync(infoResponse);
         var actId = infoJsonDoc.RootElement.GetProperty("data").GetProperty("act_id").GetString();
         var actName = infoJsonDoc.RootElement.GetProperty("data").GetProperty("act_name").GetString();
-        var taskId = infoJsonDoc.RootElement.GetProperty("data").GetProperty("task_id").GetString();
         var taskName = infoJsonDoc.RootElement.GetProperty("data").GetProperty("task_name").GetString();
-        var awardName = infoJsonDoc.RootElement.GetProperty("data").GetProperty("award_name").GetString();
-        
-        var formData = new Dictionary<string,string>
+        var awardName = infoJsonDoc.RootElement.GetProperty("data").GetProperty("reward_info").GetProperty("award_name")
+            .GetString();
+
+        var csrfValue = cookieContainer.GetCookies(new Uri("https://www.bilibili.com/"))["bili_jct"]?.Value ??
+                        string.Empty;
+        var formData = new Dictionary<string, string>
         {
-            {"task_id", taskId ?? string.Empty},
-            {"activity_id", actId ?? string.Empty},
-            {"activity_name", actName ?? string.Empty},
-            {"task_name", taskName ?? string.Empty},
-            {"reward_name", awardName ?? string.Empty},
-            {"gaia_vtoken",string.Empty},
-            {"receive_from", "missionPage"},
-            {"csrf", string.Empty},
+            { "task_id", taskId },
+            { "activity_id", actId ?? string.Empty },
+            { "activity_name", actName ?? string.Empty },
+            { "task_name", taskName ?? string.Empty },
+            { "reward_name", awardName ?? string.Empty },
+            { "gaia_vtoken", string.Empty },
+            { "receive_from", "missionPage" },
+            { "csrf", csrfValue },
         };
-        var content = new FormUrlEncodedContent(formData);
-        var response = await httpClient.PostAsync("https://api.bilibili.com/x/activity_components/mission/receive?w_rid=9d5f3a193d29d7c09b8aa156f3a44edc&wts=1760497483\n", content);
+        var receiveQuery = await SignService.GetWebSignAsync();
+        using var response =
+            await httpClient.PostAsync($"{ReceiveAwardUrl}?{receiveQuery}", new FormUrlEncodedContent(formData));
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+        var code = jsonDoc.RootElement.GetProperty("code").GetInt32();
+        var message = jsonDoc.RootElement.GetProperty("message").GetInt32();
+        if (code == 0)
+        {
+            try
+            {
+                var cdKey = jsonDoc.RootElement.GetProperty("data").GetProperty("extra_info")
+                    .GetProperty("cdkey_content").GetString();
+                return cdKey;
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+        throw new ApplicationException($"获取出错，B站返回错误代码：{code}, 信息：{message}");
     }
 }

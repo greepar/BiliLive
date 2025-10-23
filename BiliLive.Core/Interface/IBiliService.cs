@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -31,10 +30,10 @@ public interface IBiliService
 
     Task ChangeRoomTitleAsync(string title);
     Task ChangeRoomAreaAsync(int areaId);
-    
     Task ChangeRoomCoverAsync(byte[] coverImage);
     
-
+    // 奖励相关
+    Task ClaimAwardAsync(string taskId);
 }
 
 public class BiliServiceImpl : IBiliService
@@ -73,11 +72,15 @@ public class BiliServiceImpl : IBiliService
     public async Task ChangeRoomAreaAsync(int area) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Area, area);
     public async Task ChangeRoomCoverAsync(byte[] imageBytes) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Cover, imageBytes);
 
+    //奖励相关
+    public async Task ClaimAwardAsync(string taskId) => await _awardService.ClaimAwardAsync(taskId);
+    
     //构造初始值
     private const string UserAgent =
         "LiveHime/7.23.0.9579 os/Windows pc_app/livehime build/9579 osVer/10.0_x86_64";
     private readonly LoginService _loginService;
     private readonly LiveService _liveService;
+    private readonly AwardService _awardService;
     
     public BiliServiceImpl()
     {
@@ -94,6 +97,7 @@ public class BiliServiceImpl : IBiliService
         //构造子服务
         _liveService = new LiveService(httpClient, cookieContainer);
         _loginService = new LoginService(httpClient, cookieContainer);
+        _awardService = new AwardService(httpClient, cookieContainer);
     }
 
 }

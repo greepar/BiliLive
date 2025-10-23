@@ -259,6 +259,7 @@
 
                                                 <!-- 用户名 -->
                                                 <TextBlock Grid.Column="1"
+                                                           Margin="5 0 0 0"
                                                            VerticalAlignment="Center" HorizontalAlignment="Center"
                                                            MaxWidth="100"
                                                            FontSize="13"
