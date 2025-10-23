@@ -237,11 +237,26 @@ public partial class AutoServiceViewModel : ViewModelBase
             });
             IsInAutoStreaming = null;
             AutoStreamingStatusText = $"等待自动开播，开始时间：{streamTime}";
-            // await Task.Delay(streamTime - DateTime.Now, token); 
-            AutoStreamingStatusText = $"正在自动直播中...";
+            //等待至直播时间
+            await Task.Delay(streamTime - DateTime.Now, token);
 
-            //先检查直播是否被占用
-            if (_biliService.IsStreaming)
+            var skipToday = false;
+            //先检查今天直播超过1个小时没
+            if (IsCheck60MinTask)
+            {
+                Console.WriteLine("60fen" + IsCheck60MinTask);
+                var liveTime = await _biliService.GetTodayLiveTimeAsync();
+                if (liveTime > 3600)
+                {
+                    const string errText = "今日直播时长超过1个小时,跳过执行今天自动任务。";
+                    IsInAutoStreaming = true;
+                    AutoStreamingStatusText = errText;
+                    skipToday = true;
+                }
+            }
+
+            //再检查直播是否被占用
+            if (_biliService.IsStreaming && !skipToday)
             {
                 const string errText = "当前正在直播,跳过执行今天自动任务。";
                 Dispatcher.UIThread.Post(() =>
@@ -251,24 +266,13 @@ public partial class AutoServiceViewModel : ViewModelBase
                 });
                 IsInAutoStreaming = false;
                 AutoStreamingStatusText = errText;
-                //推迟一天直播
-                //TODO:推迟一天直播的相关提示
-                await Task.Delay(DateTime.Now.AddDays(1) - DateTime.Now, token);
+                skipToday = true;
             }
 
-            if (IsCheck60MinTask)
-            {
-                //TODO:检查60分钟任务
+            //推迟一天直播
+            if (skipToday) await Task.Delay(DateTime.Now.AddDays(1) - DateTime.Now, token);
 
-                // var hasTask = await _biliService.Check60MinTaskAsync();
-                // if (!hasTask)
-                // {
-                //     Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage( $"未检测到60分钟任务，自动开播任务取消",Geometry.Parse(MdIcons.Error))); });
-                //     IsAutoStreamEnabled = false;
-                //     await ConfigManager.SaveConfigAsync(ConfigType.EnableAutoService,IsAutoStreamEnabled);
-                //     return;
-                // }
-            }
+            AutoStreamingStatusText = $"正在自动直播中...";
 
             //开启直播接口
             var startLiveResponse = await _biliService.StartLiveAsync();

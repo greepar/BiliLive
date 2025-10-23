@@ -33,7 +33,7 @@ public class StartRefreshLiveInfoMessage(string streamUrl, string streamKey , st
     public string StreamKey { get; } = streamKey;
     public string LiveKey { get; } = liveKey;
 }
-public class StopRefreshLiveInfoMessage();
+public class StopRefreshLiveInfoMessage;
 
 
 public partial class HomeViewModel : ViewModelBase
@@ -81,9 +81,9 @@ public partial class HomeViewModel : ViewModelBase
         {
             _ = Task.Run(async () => await UpdateLiveInfoAsync(m.StreamUrl, m.StreamKey, m.LiveKey));
         });
-        WeakReferenceMessenger.Default.Register<StopRefreshLiveInfoMessage>(this,  (o, m) =>
+        WeakReferenceMessenger.Default.Register<StopRefreshLiveInfoMessage>(this,  (_, _) =>
         {
-            _liveDataCts.CancelAsync();
+            _liveDataCts.Cancel();
         });
         
         using var faceMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
@@ -210,14 +210,12 @@ public partial class HomeViewModel : ViewModelBase
     }
     
     //更新直播间信息任务任务
-    private readonly CancellationTokenSource _liveDataCts = new();
+    private CancellationTokenSource _liveDataCts = new();
     private bool _isUpdatingLiveInfo;
     private async Task UpdateLiveInfoAsync(string streamUrl, string streamKey, string liveKey)
     {
         if (_isUpdatingLiveInfo) { throw new InvalidOperationException("直播数据更新任务已经在运行中，不能重复启动"); }
         _isUpdatingLiveInfo = true;
-        
-        
         
         StreamKey = streamKey;
         ApiUrl = streamUrl;
@@ -240,9 +238,10 @@ public partial class HomeViewModel : ViewModelBase
         }
         finally
         {
+            _liveDataCts.Dispose();
+            _liveDataCts = new CancellationTokenSource();
             _isUpdatingLiveInfo = false;
         }
-       
         
         return;
         

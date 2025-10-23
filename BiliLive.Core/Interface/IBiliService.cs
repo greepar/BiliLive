@@ -27,7 +27,7 @@ public interface IBiliService
     Task<JsonElement> GetMyLastChooseAreaAsync();
     Task<LiveRoomInfo> GetRoomInfoAsync();
     Task<JsonElement> GetLiveDataAsync(string liveKey);
-
+    Task<int> GetTodayLiveTimeAsync();
     Task ChangeRoomTitleAsync(string title);
     Task ChangeRoomAreaAsync(int areaId);
     Task ChangeRoomCoverAsync(byte[] coverImage);
@@ -67,6 +67,7 @@ public class BiliServiceImpl : IBiliService
     public async Task<JsonElement> GetMyLastChooseAreaAsync() => await _liveService.GetMyLastChooseAreaAsync();
     
     public async Task<JsonElement> GetLiveDataAsync(string apiKey) => await _liveService.GetLiveDataAsync(apiKey);
+    public async Task<int> GetTodayLiveTimeAsync() => await _liveService.GetTodayLiveTimeAsync();
 
     public async Task ChangeRoomTitleAsync(string title) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Title, title);
     public async Task ChangeRoomAreaAsync(int area) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Area, area);

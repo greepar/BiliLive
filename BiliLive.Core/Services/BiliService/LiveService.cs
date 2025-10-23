@@ -32,6 +32,7 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
     private const string UpdateInfoUrl = "https://api.live.bilibili.com/room/v1/Room/update";
 
     private const string UpdatePreLiveInfoUrl = "https://api.live.bilibili.com/xlive/app-blink/v1/preLive/UpdatePreLiveInfo";
+    private const string TodayRoomInfoUrl = "https://api.live.bilibili.com/xlive/anchor-task-interface/api/v1/CoreData?platform=web&mobi_app=web&build=1&range_type=1";
 
 
     public async Task<LiveRoomInfo> GetRoomInfoAsync()
@@ -185,7 +186,23 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         var element = jsonDoc.RootElement;
         return element.Clone();
     }
+    public async Task<int> GetTodayLiveTimeAsync()
+    {
+        await using var stream = await httpClient.GetStreamAsync(TodayRoomInfoUrl);
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+        var element = jsonDoc.RootElement;
+        //返回的为秒数
+        var seconds = element
+            .GetProperty("data")
+            .GetProperty("list")
+            .EnumerateArray()
+            .Where(item => item.GetProperty("name").GetString() == "broadcast")
+            .Select(item => item.GetProperty("value").GetInt32())
+            .FirstOrDefault();
+        return seconds;
+    }
 
+//私有依赖
     private async Task<string> GetImageUrlAsync(byte[] imageBytes)
     {
         //TODO: 实现封面上传
