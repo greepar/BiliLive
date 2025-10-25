@@ -33,7 +33,7 @@ public interface IBiliService
     Task ChangeRoomCoverAsync(byte[] coverImage);
     
     // 奖励相关
-    Task ClaimAwardAsync(string taskId);
+    Task<string?> ClaimAwardAsync(string taskId);
 }
 
 public class BiliServiceImpl : IBiliService
@@ -74,7 +74,7 @@ public class BiliServiceImpl : IBiliService
     public async Task ChangeRoomCoverAsync(byte[] imageBytes) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Cover, imageBytes);
 
     //奖励相关
-    public async Task ClaimAwardAsync(string taskId) => await _awardService.ClaimAwardAsync(taskId);
+    public async Task<string?> ClaimAwardAsync(string taskId) => await _awardService.ClaimAwardAsync(taskId);
     
     //构造初始值
     private const string UserAgent =

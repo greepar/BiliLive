@@ -39,6 +39,7 @@
             <!-- 标题 -->
             <Border Grid.Row="0" Margin="10 12 10 0" >
                 <Grid Background="Transparent">
+                    
                     <TextBlock FontWeight="Medium"
                                VerticalAlignment="Center"
                                FontSize="16" Text="Error" />

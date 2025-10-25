@@ -474,10 +474,24 @@ public partial class AutoServiceViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(taskId))
         {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"请输入任务ID",Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"请输入任务ID", Geometry.Parse(MdIcons.Check)));
             return;
         }
-        await _biliService.ClaimAwardAsync(taskId);
+
+        try
+        {
+            var cdKey = await _biliService.ClaimAwardAsync(taskId);
+            if (!string.IsNullOrEmpty(cdKey))
+            {
+                //弹出兑换码
+                Console.WriteLine(cdKey);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
     
     private void RemoveAlt(Alt alt)

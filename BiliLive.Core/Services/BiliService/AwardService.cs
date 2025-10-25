@@ -14,6 +14,7 @@ public class AwardService(HttpClient httpClient,CookieContainer cookieContainer)
 
     public async Task<string?> ClaimAwardAsync(string taskId)
     {
+        //根据TaskId获取奖励详细数据
         var infoParameters = new Dictionary<string, string>
         {
             { "task_id", taskId },
@@ -28,6 +29,7 @@ public class AwardService(HttpClient httpClient,CookieContainer cookieContainer)
         var awardName = infoJsonDoc.RootElement.GetProperty("data").GetProperty("reward_info").GetProperty("award_name")
             .GetString();
 
+        //请求获取奖励
         var csrfValue = cookieContainer.GetCookies(new Uri("https://www.bilibili.com/"))["bili_jct"]?.Value ??
                         string.Empty;
         var formData = new Dictionary<string, string>
@@ -41,13 +43,13 @@ public class AwardService(HttpClient httpClient,CookieContainer cookieContainer)
             { "receive_from", "missionPage" },
             { "csrf", csrfValue },
         };
-        var receiveQuery = await SignService.GetWebSignAsync();
+        var receiveAwardQuery = await SignService.GetWebSignAsync();
         using var response =
-            await httpClient.PostAsync($"{ReceiveAwardUrl}?{receiveQuery}", new FormUrlEncodedContent(formData));
+            await httpClient.PostAsync($"{ReceiveAwardUrl}?{receiveAwardQuery}", new FormUrlEncodedContent(formData));
         await using var stream = await response.Content.ReadAsStreamAsync();
         using var jsonDoc = await JsonDocument.ParseAsync(stream);
         var code = jsonDoc.RootElement.GetProperty("code").GetInt32();
-        var message = jsonDoc.RootElement.GetProperty("message").GetInt32();
+        var message = jsonDoc.RootElement.GetProperty("message").GetString();
         if (code == 0)
         {
             try
@@ -61,6 +63,7 @@ public class AwardService(HttpClient httpClient,CookieContainer cookieContainer)
                 return null;
             }
         }
+        //未来也许会上验证码检测，届时再处理...
         throw new ApplicationException($"获取出错，B站返回错误代码：{code}, 信息：{message}");
     }
 }

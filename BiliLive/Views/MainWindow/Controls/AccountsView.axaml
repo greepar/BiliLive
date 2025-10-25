@@ -15,7 +15,7 @@
 
 
     <Border Focusable="True"
-            MinHeight="221" MinWidth="206"
+            MinHeight="221" Width="206"
             Background="Transparent"
             BorderThickness="10" BorderBrush="Transparent">
         <Border CornerRadius="28" Background="{DynamicResource Surface}"
@@ -94,7 +94,6 @@
                                                Source="/Assets/Pics/userPic.jpg" />
                                     </Border>
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-
                                                FontSize="16"
                                                Text="格瑞普" />
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -153,12 +152,20 @@
                             <!-- 账号相关 -->
                             <Border Grid.Row="2" HorizontalAlignment="Stretch" Margin="0 0 0 7">
                                 <Grid ColumnDefinitions="*,*">
-                                    <Button Grid.Column="0" Background="{DynamicResource SurfaceContainer}"
-                                            CornerRadius="10"
-                                            Width="90"
-                                            Margin="7 0 0 0"
-                                            HorizontalAlignment="Stretch"
-                                            Theme="{StaticResource MdButton}">
+                                    <Grid.Styles>
+                                        <Style Selector="Button.add">
+                                            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"></Setter>
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                            <Setter Property="Width" Value="80"/>
+                                            <Setter Property="Height" Value="23"/>
+                                            <Setter Property="Padding" Value="5"/>
+                                            <Setter Property="Theme" Value="{StaticResource MdButton}"/>
+                                        </Style>
+                                    </Grid.Styles>
+                                    
+                                    <Button Grid.Column="0" Classes="add"
+                                            Margin="7 0 2 0"
+                                            HorizontalAlignment="Right">
                                         <StackPanel Orientation="Horizontal">
                                             <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Logout}}"
                                                     Height="17" Margin="0 0 11 0"
@@ -171,14 +178,12 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <Button Grid.Column="1" Background="{DynamicResource SurfaceContainer}"
-                                            CornerRadius="10"
-                                            Width="90"
-                                            Margin="0 0 5 0"
-                                            HorizontalAlignment="Stretch"
-                                            Command="{Binding LoginStatusConverterCommand}"
+                                    <Button Grid.Column="1" Classes="add"
+                                            Margin="2 0 7 0"
+                                            HorizontalAlignment="Left"
                                             Click="AccountBtn_OnClick"
-                                            Theme="{StaticResource MdButton}">
+                                            Command="{Binding LoginStatusConverterCommand}"
+                                            >
                                         <StackPanel Orientation="Horizontal">
                                             <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Add}}"
                                                     Height="17" Margin="0 0 3 0"

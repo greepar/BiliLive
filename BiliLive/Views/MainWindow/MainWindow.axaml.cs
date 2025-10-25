@@ -40,6 +40,7 @@ public partial class MainWindow : Window
     }
     
     //开始移动窗口
+    private Point _startPoint = new(783,455);
     private void MainWindowStartDragResize(object? sender, PointerPressedEventArgs e)
     {
         if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
@@ -50,6 +51,8 @@ public partial class MainWindow : Window
     }
     private void ResizeWindowRelease(object? sender, PointerReleasedEventArgs e)
     {
+        var releasePoint = e.GetPosition(this);
+        _startPoint = new Point(releasePoint.X>783 ? releasePoint.X : 783, releasePoint.Y>455 ? releasePoint.Y : 455 );
         TotalBorder.PointerMoved -= ResizeWindowMove;
         TotalBorder.PointerReleased -= ResizeWindowRelease;
     }
@@ -57,10 +60,9 @@ public partial class MainWindow : Window
     private void ResizeWindowMove(object? sender, PointerEventArgs e)
     {
         var position = e.GetPosition(MainBorder);
-        var fixedStartPoint = new Point(783,455);
-        Console.WriteLine(  $"Move Positon: {position}, StartPositon: {fixedStartPoint}");
-        var deltaX = position.X - fixedStartPoint.X;
-        var deltaY = position.Y - fixedStartPoint.Y;
+        Console.WriteLine(  $"Move Positon: {position}, StartPositon: {_startPoint}");
+        var deltaX = position.X - _startPoint.X;
+        var deltaY = position.Y - _startPoint.Y;
         MainBorder.Width = double.Max(_originalWidth + deltaX,800);
         Width = MainBorder.Width + 20;
         MainBorder.Height = double.Max(_originalHeight + deltaY,470);
