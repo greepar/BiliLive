@@ -106,7 +106,7 @@ public static class ConfigManager
     // 异步后台任务，统一写文件
     private static async Task ProcessQueue()
     {
-        var delay = TimeSpan.FromSeconds(1); // 写入防抖：合并 500ms 内多次修改
+        var delay = TimeSpan.FromSeconds(1); // 写入防抖：合并1s内多次修改
     
         await foreach (var newConfig in SaveChannel.Reader.ReadAllAsync())
         {
