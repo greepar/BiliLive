@@ -41,7 +41,7 @@ public partial class HomeViewModel : ViewModelBase
     public const string LiveUrlFormat = "https://live.bilibili.com";
     private const string EmptyText = "未获取";
     
-    [ObservableProperty] private string? _userName = "未登录";
+    
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))] private long? _userId;
     [ObservableProperty] private long? _roomId;
     [ObservableProperty] private Bitmap? _userFace;
@@ -105,7 +105,7 @@ public partial class HomeViewModel : ViewModelBase
         if (loginResult is LoginSuccess result)
         {
             //获取用户信息
-            UserName = result.UserName;
+            General.State.UserName = result.UserName;
             UserId = result.UserId;
             using var ms = new MemoryStream(result.UserFaceBytes);
             UserFace = PicHelper.ResizeStreamToBitmap(ms, 71 * 2, 71 * 2) ?? new Bitmap(ms);

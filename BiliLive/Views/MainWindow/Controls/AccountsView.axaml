@@ -7,7 +7,8 @@
              xmlns:converters="clr-namespace:BiliLive.Converters"
              mc:Ignorable="d"
              x:Class="BiliLive.Views.MainWindow.Controls.AccountsView"
-             x:DataType="vm:AccountsViewModel">
+             x:DataType="vm:AccountsViewModel"
+             FontFamily="{StaticResource NotoMedium}">
 
     <Design.DataContext>
         <vm:AccountsViewModel />
@@ -15,14 +16,12 @@
 
 
     <Border Focusable="True"
-            MinHeight="221" Width="206"
             Background="Transparent"
             BorderThickness="10" BorderBrush="Transparent">
         <Border CornerRadius="28" Background="{DynamicResource Surface}"
                 BoxShadow="0 1 8 2 #26000000">
             <Border Background="Transparent" CornerRadius="28" ClipToBounds="True">
-                <Grid>
-                    
+                <Grid  MinWidth="219" Height="135">
                      <!-- 登录页面 放上面 -->
                     <Border Name="QrLoginBorder"
                             ZIndex="1"
@@ -69,8 +68,7 @@
                     </Border>
                     
                     <!-- 第一页 -->
-                    <Border Name="AccountBorder"
-                            Opacity="{Binding IsInLoginProcess,Converter={converters:BoolToOpacityConverter}}">
+                    <Border Name="AccountBorder" Opacity="{Binding IsInLoginProcess,Converter={converters:BoolToOpacityConverter}}">
 
                         <Border.Transitions>
                             <Transitions>
@@ -82,119 +80,74 @@
                             <TranslateTransform Y="0" />
                         </Border.RenderTransform>
 
-                        <Grid RowDefinitions="Auto,Auto,Auto">
+                        <Grid Margin="3" RowDefinitions="*,Auto">
                             <!-- 当前账号 -->
-                            <Border Grid.Row="0" Background="{DynamicResource SurfaceContainer}"
-                                    Margin="7 7 7 0"
-                                    CornerRadius="24 24 10 10">
-                                <StackPanel Orientation="Vertical" Spacing="10">
-                                    <Border Width="49" CornerRadius="60" ClipToBounds="True" Margin="0 15 0 0">
-                                        <Image Width="49" Height="49"
+                            <Border Grid.Row="0">
+                                <Grid Background="Transparent" ColumnDefinitions="Auto,*">
+                                    <Border Grid.Column="0" Height="58" Width="58" 
+                                            CornerRadius="60"
+                                            ClipToBounds="True" Margin="15 0 0 0">
+                                        <Image Width="58" Height="58"
                                                RenderOptions.BitmapInterpolationMode="HighQuality"
                                                Source="/Assets/Pics/userPic.jpg" />
                                     </Border>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                                               FontSize="16"
-                                               Text="格瑞普" />
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                                               FontWeight="Medium"
-                                               Margin="0 -10 0 15"
-                                               Text="UID 196341435" />
-                                </StackPanel>
-                            </Border>
-
-                            <!-- 账号列表 -->
-                            <Border Grid.Row="1" Background="{DynamicResource SurfaceContainer}"
-                                    Margin="7 5 7 7"
-                                    CornerRadius="10 10 10 10">
-
-                                <Grid>
-
-                                    <!-- <Button Background="Red" Content="123"></Button> -->
-
-                                    <Grid ZIndex="1" ColumnDefinitions="*,*,*">
-                                        <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto">
-                                            <Border Grid.Column="0" Width="26" Height="26" CornerRadius="60"
-                                                    ClipToBounds="True" Margin="5 5 5 5">
-                                                <Image Width="26" Height="26"
-                                                       RenderOptions.BitmapInterpolationMode="HighQuality"
-                                                       Source="/Assets/Pics/PVPGOODFace.jpg" />
-                                            </Border>
-
-                                            <Border Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                           FontSize="12"
-                                                           Text="这是PVP_GOOD" />
-                                            </Border>
-
-
-                                            <Button Grid.Column="2"
-                                                    Background="{DynamicResource SurfaceContainerHighest}"
-                                                    CornerRadius="8"
-                                                    Width="26" Height="26"
-                                                    Margin="5 5 5 5"
-                                                    HorizontalAlignment="Stretch"
-                                                    Theme="{StaticResource MdButton}">
-                                                <SvgBox
-                                                    PathData="{resources:Geometry {x:Static resources:MdIcons.Error}}"
-                                                    Height="17" Margin="0"
-                                                    VerticalAlignment="Center"
-                                                    Fill="{DynamicResource OnSurface}" />
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-
-
+                                    <Border Grid.Column="1">
+                                        <StackPanel Orientation="Vertical"
+                                                    Margin="8 16 0 0"
+                                                    Spacing="2"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                       FontSize="15" LineHeight="16"
+                                                       FontWeight="Bold"
+                                                       Text="格瑞普"/>
+                                            <TextBlock HorizontalAlignment="Left"
+                                                       FontWeight="Medium"
+                                                       FontSize="10" LineHeight="16"
+                                                       Margin="1 0 0 0"
+                                                       Text="UID 196341435" />
+                                        </StackPanel>
+                                    </Border>
+                             
                                 </Grid>
-
                             </Border>
-
+                            
                             <!-- 账号相关 -->
-                            <Border Grid.Row="2" HorizontalAlignment="Stretch" Margin="0 0 0 7">
-                                <Grid ColumnDefinitions="*,*">
+                            <Border Grid.Row="1" HorizontalAlignment="Stretch" Margin="0 0 0 7">
+                                <Grid ColumnDefinitions="3*,*">
                                     <Grid.Styles>
                                         <Style Selector="Button.add">
                                             <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"></Setter>
-                                            <Setter Property="CornerRadius" Value="8"/>
-                                            <Setter Property="Width" Value="80"/>
-                                            <Setter Property="Height" Value="23"/>
-                                            <Setter Property="Padding" Value="5"/>
+                                            <Setter Property="CornerRadius" Value="10 10 15 15"/>
+                                            <Setter Property="Height" Value="33"/>
                                             <Setter Property="Theme" Value="{StaticResource MdButton}"/>
                                         </Style>
                                     </Grid.Styles>
                                     
                                     <Button Grid.Column="0" Classes="add"
                                             Margin="7 0 2 0"
-                                            HorizontalAlignment="Right">
-                                        <StackPanel Orientation="Horizontal">
-                                            <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Logout}}"
-                                                    Height="17" Margin="0 0 11 0"
+                                            HorizontalAlignment="Stretch"
+                                            Click="AccountBtn_OnClick"
+                                            Command="{Binding LoginStatusConverterCommand}">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Add}}"
+                                                    Height="17"
                                                     VerticalAlignment="Center"
                                                     Fill="{DynamicResource OnSurface}" />
                                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
                                                        FontWeight="Medium"
-                                                       FontSize="9"
-                                                       Text="Log out" />
+                                                       FontSize="12"
+                                                       Text="更换账号" />
                                         </StackPanel>
                                     </Button>
 
                                     <Button Grid.Column="1" Classes="add"
                                             Margin="2 0 7 0"
-                                            HorizontalAlignment="Left"
-                                            Click="AccountBtn_OnClick"
-                                            Command="{Binding LoginStatusConverterCommand}"
+                                            HorizontalAlignment="Stretch"
                                             >
-                                        <StackPanel Orientation="Horizontal">
-                                            <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Add}}"
-                                                    Height="17" Margin="0 0 3 0"
-                                                    VerticalAlignment="Center"
-                                                    Fill="{DynamicResource OnSurface}" />
-
-                                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                       FontWeight="Medium"
-                                                       FontSize="9"
-                                                       Text="Add account" />
-                                        </StackPanel>
+                                            <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Delete}}"
+                                                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                    Fill="{DynamicResource OnSurface}" 
+                                                    Height="17"/>
                                     </Button>
                                 </Grid>
                             </Border>

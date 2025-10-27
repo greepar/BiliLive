@@ -65,16 +65,16 @@
         
         
         <Style Selector= "^:pressed /template/ Border#OutBorder">
-            <Setter Property="BoxShadow" Value="0 1 2 0 #32000000" />
+            <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
         </Style>
         
         
         <Style Selector="^:pointerover /template/ Border#OutBorder">
-            <Setter Property="BoxShadow" Value="0 1 2 0 #32000000" />
+            <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
         </Style>  
         
         <Style Selector="^:disabled /template/ Border#OutBorder">
-            <Setter Property="BoxShadow" Value="0 1 2 0 #32000000" />
+            <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
         </Style>
         
     </ControlTheme>
