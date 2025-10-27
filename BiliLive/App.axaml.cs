@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -5,12 +6,14 @@ using Avalonia.Markup.Xaml;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Services;
 using BiliLive.Core.Services.BiliService;
+using BiliLive.Utils;
 using BiliLive.Views.MainWindow;
 using BiliLive.Views.MainWindow.Controls;
 using BiliLive.Views.MainWindow.Pages.AutoService;
 using BiliLive.Views.MainWindow.Pages.HomePage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace BiliLive;
 
@@ -45,9 +48,13 @@ public class App : Application
     
     public override void OnFrameworkInitializationCompleted()
     {
-      
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            desktop.Exit += async (_, _) =>
+            {
+                await ConfigManager.ShutdownAsync();
+            };
+            
             //通过DI获取MainWindow
             var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
             var mainWindowViewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
@@ -56,5 +63,5 @@ public class App : Application
         }
         base.OnFrameworkInitializationCompleted();
     }
-
+    
 }

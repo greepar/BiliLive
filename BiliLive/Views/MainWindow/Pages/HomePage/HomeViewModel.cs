@@ -250,7 +250,7 @@ public partial class HomeViewModel : ViewModelBase
             try
             {
                 var liveData = await _biliService.GetLiveDataAsync(liveKey);
-                Console.WriteLine(liveData);
+                // Console.WriteLine(liveData);
                 // 结构 {"code":0,"message":"0","ttl":1,"data":{"LiveTime":543,"AddFans":0,"HamsterRmb":0,"NewFansClub":0,"DanmuNum":0,"MaxOnline":2,"WatchedCount":1}}
                 if (liveData.GetProperty("code").GetInt32() != 0)
                 {
