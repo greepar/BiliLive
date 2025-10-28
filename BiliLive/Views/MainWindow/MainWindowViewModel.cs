@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BiliLive.Views.MainWindow;
 
-//通知消息传递
+//传递登录信息
 public class ShowNotificationMessage(string text, Geometry geometry) 
 {
     public string Message { get; } = text;
@@ -33,7 +33,7 @@ public class ShowNotificationMessage(string text, Geometry geometry)
 }
 
 public class LoginMessage(LoginResult loginResult) 
-    : ValueChangedMessage<LoginResult>(loginResult){}
+    : ValueChangedMessage<LoginResult>(loginResult){}    
 
 
 //单个通知项
@@ -60,6 +60,7 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IBiliService _biliService;
     private DispatcherTimer? _minuteTimer;
+    public static GeneralState GeneralState => General.State;
     
     [ObservableProperty] private ObservableCollection<NotificationItem> _notifications =
     [
@@ -74,16 +75,13 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly AutoServiceViewModel _asVm;
     private readonly HomeViewModel _homeVm;
     
-    
     //设置默认页面
     [ObservableProperty]private NavigationPage _currentBtn = NavigationPage.Home;
     [ObservableProperty] private object _currentVm;
     
     //主窗口内容
     [ObservableProperty] private string? _currentTime = "01:19" ;
-    [ObservableProperty] private string? _userName = "未登录";
     [ObservableProperty] private Bitmap? _userFace ;
-    
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StreamButtonText))]
@@ -151,6 +149,7 @@ public partial class MainWindowViewModel : ViewModelBase
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
         var loginResult = await _biliService.LoginAsync(appConfig.BiliCookie);
+        //启动时间更新服务
         StartUpdateTimeService();
         
         await LoadLoginResult(loginResult);
@@ -208,7 +207,11 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (saveCookie) await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie,result.BiliCookie); 
            
-            UserName = result.UserName;
+            GeneralState.UserName = result.UserName;
+            GeneralState.UserId = result.UserId;
+            
+
+            
             var faceBytes = result.UserFaceBytes;
             using var stream = new MemoryStream(faceBytes);
             UserFace?.Dispose();
@@ -220,7 +223,7 @@ public partial class MainWindowViewModel : ViewModelBase
         else
         {
             //登录失败
-            UserName = "Login Failed";
+            GeneralState.UserName = "Login Failed";
             var stream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/UserPic.jpg"));
             UserFace?.Dispose();
             UserFace = PicHelper.ResizeStreamToBitmap(stream, 66, 66);

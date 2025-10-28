@@ -6,7 +6,6 @@
              xmlns:resources="clr-namespace:BiliLive.Resources"
              xmlns:converters="clr-namespace:BiliLive.Converters"
              xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.HomePage.Components"
-             xmlns:views="clr-namespace:BiliLive.Views"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="BiliLive.Views.MainWindow.Pages.HomePage.HomeView"
              x:DataType="vm:HomeViewModel">
@@ -26,7 +25,7 @@
             <Grid ColumnDefinitions="Auto,*" Margin="18 0 0 0">
                 <StackPanel Grid.Column="0"
                             VerticalAlignment="Center">
-                    <TextBlock FontSize="16" Text="{Binding Source={x:Static views:General.State}, Path=UserName, StringFormat=晚上好\,{0}!}"/>
+                    <TextBlock FontSize="16" Text="{Binding GeneralState.UserName , StringFormat=晚上好\,{0}!}"/>
                     <StackPanel Margin="0 8 0 0" Orientation="Horizontal">
                         <!-- 头像 -->
                         <Border Margin="5 0 5 5"

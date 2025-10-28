@@ -40,7 +40,8 @@ public partial class HomeViewModel : ViewModelBase
 { 
     public const string LiveUrlFormat = "https://live.bilibili.com";
     private const string EmptyText = "未获取";
-    
+
+    public static GeneralState GeneralState => General.State;
     
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))] private long? _userId;
     [ObservableProperty] private long? _roomId;
@@ -105,14 +106,15 @@ public partial class HomeViewModel : ViewModelBase
         if (loginResult is LoginSuccess result)
         {
             //获取用户信息
-            General.State.UserName = result.UserName;
-            UserId = result.UserId;
+            GeneralState.UserFaceByte = result.UserFaceBytes;
             using var ms = new MemoryStream(result.UserFaceBytes);
             UserFace = PicHelper.ResizeStreamToBitmap(ms, 71 * 2, 71 * 2) ?? new Bitmap(ms);
 
             //获取直播间信息
             var roomInfo = await _biliService.GetRoomInfoAsync();
             RoomId = roomInfo.RoomId;
+            GeneralState.RoomId = roomInfo.RoomId;
+            UserId = result.UserId;
             RoomCover?.Dispose();
             using var rcMs = new MemoryStream(roomInfo.RoomCover);
             RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 132 * 2, 74 * 2) ?? new Bitmap(rcMs);

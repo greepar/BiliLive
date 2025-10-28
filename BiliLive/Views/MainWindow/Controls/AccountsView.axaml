@@ -89,7 +89,7 @@
                                             ClipToBounds="True" Margin="15 0 0 0">
                                         <Image Width="58" Height="58"
                                                RenderOptions.BitmapInterpolationMode="HighQuality"
-                                               Source="/Assets/Pics/userPic.jpg" />
+                                               Source="{Binding UserFace}" />
                                     </Border>
                                     <Border Grid.Column="1">
                                         <StackPanel Orientation="Vertical"
@@ -99,12 +99,12 @@
                                             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
                                                        FontSize="15" LineHeight="16"
                                                        FontWeight="Bold"
-                                                       Text="格瑞普"/>
+                                                       Text="{Binding GeneralState.UserName}"/>
                                             <TextBlock HorizontalAlignment="Left"
                                                        FontWeight="Medium"
                                                        FontSize="10" LineHeight="16"
                                                        Margin="1 0 0 0"
-                                                       Text="UID 196341435" />
+                                                       Text="{Binding GeneralState.UserId,StringFormat=UID {0}}" />
                                         </StackPanel>
                                     </Border>
                              

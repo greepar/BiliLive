@@ -549,11 +549,15 @@
                         <StackPanel Grid.Row="1" Orientation="Vertical"
                                     Margin="14 0 14 0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock>奖励页面地址</TextBlock>
-                                <TextBox x:Name="InputBox"/>
+                                <TextBlock>奖励的TaskId:</TextBlock>
+                                <TextBox CornerRadius="12" x:Name="InputBox"/>
                                 <TextBlock>状态:未领取</TextBlock>
                                 <Button Command="{Binding ClaimAwardCommand}"
                                         CommandParameter="{Binding #InputBox.Text}"
+                                        Theme="{StaticResource MdButton}"
+                                        Background="{DynamicResource SurfaceContainerHighest}"
+                                        CornerRadius="12"
+                                        Padding="5"
                                         Content="领取奖励"
                                         />
                             </StackPanel>
