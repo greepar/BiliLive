@@ -19,9 +19,15 @@
     <Application.Resources>
     
         <ResourceDictionary>
-            <FontFamily x:Key="NotoRegular">avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular</FontFamily>
-            <FontFamily x:Key="NotoMedium">avares://BiliLive/Assets/Fonts/NotoSansSC-Medium.ttf#Noto Sans SC Medium</FontFamily>
-            <!-- <FontFamily x:Key="PingFangRegular">avares://BiliLive/Assets/Fonts/PingFang-Regular.ttf#PingFang SC Regular</FontFamily> -->
+            <FontFamily x:Key="NotoRegular">
+                avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular,
+                avares://BiliLive/Assets/Fonts/NotoSans-Regular.ttf#Noto Sans
+            </FontFamily>
+            
+            <FontFamily x:Key="NotoMedium">
+                avares://BiliLive/Assets/Fonts/NotoSansSC-Medium.ttf#Noto Sans SC Medium,
+                avares://BiliLive/Assets/Fonts/NotoSans-Medium.ttf#Noto Sans Medium
+            </FontFamily>
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Resources/MDColors.axaml" />

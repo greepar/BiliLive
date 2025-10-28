@@ -263,6 +263,7 @@
                                                            VerticalAlignment="Center" HorizontalAlignment="Center"
                                                            MaxWidth="100"
                                                            FontSize="13"
+                                                           FontFamily="{DynamicResource NotoMedium}"
                                                            Text="{Binding UserName}" />
                                             </Grid>
                                         </Grid>
