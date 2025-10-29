@@ -3,8 +3,12 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Avalonia.Threading;
 using BiliLive.Core.Interface;
+using BiliLive.Resources;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -29,6 +33,9 @@ public partial class AccountsViewModel : ViewModelBase
     {
         if (Design.IsDesignMode)
         {
+            using var picStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/nullQrCode.png"));
+            QrCodePic = new Bitmap(picStream);
+            
             _biliService = new BiliServiceImpl();
         }
 
@@ -127,6 +134,27 @@ public partial class AccountsViewModel : ViewModelBase
         }
     }
 
+    private bool _isConfirmed = false;
+    [RelayCommand]
+    private void DelAccount(bool confirm)
+    {
+        switch (confirm)
+        {
+            case true when _isConfirmed:
+                // TODO:执行删除账号操作.
+                
+                _isConfirmed = false;
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已删除当前账号",Geometry.Parse(MdIcons.Check)));
+                break;
+            case true when !_isConfirmed:
+                _isConfirmed = true;
+                break;
+            case false:
+                _isConfirmed = false;
+                break;
+        }
+    }
+    
     [RelayCommand]
     private void CancelLogin()
     {

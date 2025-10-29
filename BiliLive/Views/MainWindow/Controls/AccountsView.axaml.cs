@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Animation;
@@ -27,7 +28,7 @@ public partial class AccountsView : UserControl
                 Cue = new Cue(1d),
                 Setters =
                 {
-                    new Setter(TranslateTransform.YProperty, 180.0)
+                    new Setter(TranslateTransform.XProperty, 180.0)
                 }
             }
         }
@@ -45,7 +46,7 @@ public partial class AccountsView : UserControl
                 Cue = new Cue(1d),
                 Setters =
                 {
-                    new Setter(TranslateTransform.YProperty, 0.0)
+                    new Setter(TranslateTransform.XProperty, 0.0)
                 }
             }
         }
@@ -99,4 +100,33 @@ public partial class AccountsView : UserControl
         }
     
     }
+
+    private bool _isDelConfirmed = false;
+    private void DelBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        switch (sender)
+        {
+            case Button { Name: "DiscardBtn" }:
+                DiscardBtn.Width = 0;
+                DelAltBtn.ClearValue(BackgroundProperty);  
+                _isDelConfirmed = false;
+                break;
+            case Button { Name: "DelAltBtn" }:
+                if (_isDelConfirmed)
+                {
+                    DiscardBtn.Width = 0;
+                    DelAltBtn.ClearValue(BackgroundProperty);   
+                    _isDelConfirmed = false;
+                    // 执行删除操作
+                }
+                else
+                {
+                    _isDelConfirmed = true;
+                    DiscardBtn.Width = 40;
+                    DelAltBtn.Background = new SolidColorBrush(Color.Parse("#C94F4F"));
+                }
+                break;
+        }
+    }
+
 }

@@ -18,16 +18,18 @@
     <Border Focusable="True"
             Background="Transparent"
             BorderThickness="10" BorderBrush="Transparent">
-        <Border CornerRadius="28" Background="{DynamicResource Surface}"
+        <Border CornerRadius="24" Background="{DynamicResource Surface}"
                 BoxShadow="0 1 8 2 #26000000">
             <Border Background="Transparent" CornerRadius="28" ClipToBounds="True">
-                <Grid  MinWidth="219" Height="135">
-                     <!-- 登录页面 放上面 -->
+                <Grid MinWidth="219" MinHeight="135">
+                     <!-- 登录页面 从左边向右-->
                     <Border Name="QrLoginBorder"
                             ZIndex="1"
                             Opacity="{Binding !IsInLoginProcess,Converter={converters:BoolToOpacityConverter}}"
                             IsHitTestVisible="{Binding IsInLoginProcess}"
-                            Background="{DynamicResource Surface}">
+                            Background="{DynamicResource Surface}"
+                           
+                            >
 
                         <Border.Transitions>
                             <Transitions>
@@ -38,33 +40,53 @@
                         <Border.RenderTransform>
                             <TranslateTransform Y="0" />
                         </Border.RenderTransform>
-
-                        <StackPanel Orientation="Vertical">
-                            <Border Width="180" Height="180"
-                                    HorizontalAlignment="Center" VerticalAlignment="Top"
-                                    Margin="0 8 0 0"
-                                    CornerRadius="30" ClipToBounds="True">
-                                <Image Source="{Binding QrCodePic}" />
+                        
+                        <Grid ColumnDefinitions="Auto,Auto"
+                              Margin="11">
+                            <Grid Grid.Column="0" Margin="0 0 10 0"
+                                  RowDefinitions="Auto,Auto,*,Auto">
+                                <SvgBox Grid.Row="0" Width="21" Height="21"
+                                        Margin="3 9 0 4"
+                                        HorizontalAlignment="Left"
+                                        PathData="{resources:Geometry {x:Static resources:MdIcons.Qr}}">
+                                </SvgBox>
+                                <TextBlock Grid.Row="1" 
+                                           FontFamily="{StaticResource NotoRegular}"
+                                           Margin="3 0 0 0"
+                                           FontSize="12" LineHeight="16">
+                                    <Run Text="扫描二维码"/>
+                                    <LineBreak/>
+                                    <Run Text="以登录"/>
+                                </TextBlock>
+                                <Button Grid.Row="3"
+                                        Background="{DynamicResource SurfaceContainer}"
+                                        Width="65" Height="31"
+                                        CornerRadius="10 10 15 15"
+                                        Margin="2 0 0 0"
+                                        Command="{Binding CancelLoginCommand}"
+                                        Click="AccountBtn_OnClick"
+                                        Theme="{StaticResource MdButton}"
+                                        >
+                                    <StackPanel Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
+                                        <SvgBox Width="21" Height="21"
+                                                Margin="-8 0 0 0"
+                                                PathData="{resources:Geometry {x:Static resources:MdIcons.Back}}"></SvgBox>
+                                        <TextBlock FontFamily="{StaticResource NotoRegular}"
+                                                   FontSize="12" LineHeight="16" VerticalAlignment="Center">
+                                            返回
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            
+                            <Border Grid.Column="1"
+                                    CornerRadius="12" ClipToBounds="True"
+                                    Width="130" Height="130">
+                                <Image Source="{Binding QrCodePic}"/>
                             </Border>
-
-                            <Button Theme="{StaticResource MdButton}"
-                                    Width="80" Height="35"
-                                    CornerRadius="10"
-                                    HorizontalAlignment="Right"
-                                    Margin="0 0 10 0"
-                                    Command="{Binding CancelLoginCommand}"
-                                    Background="{DynamicResource SurfaceContainer}"
-                                    
-                                    Click="AccountBtn_OnClick">
-                                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                    <SvgBox Opacity="0.6"
-                                            Height="20"
-                                            Fill="Red"
-                                            PathData="{resources:Geometry {x:Static resources:MdIcons.Error}}" />
-                                    <TextBlock VerticalAlignment="Center">Close</TextBlock>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                        </Grid>
                     </Border>
                     
                     <!-- 第一页 -->
@@ -77,11 +99,16 @@
                         </Border.Transitions>
 
                         <Border.RenderTransform>
-                            <TranslateTransform Y="0" />
+                            <TranslateTransform X="0" />
                         </Border.RenderTransform>
-
-                        <Grid Margin="3" RowDefinitions="*,Auto">
-                            <!-- 当前账号 -->
+                        
+                        <Grid Margin="3" RowDefinitions="*,Auto"
+                              
+                              
+                              IsVisible="True"
+                              
+                              >
+                            <!-- 当前账号信息 -->
                             <Border Grid.Row="0">
                                 <Grid Background="Transparent" ColumnDefinitions="Auto,*">
                                     <Border Grid.Column="0" Height="58" Width="58" 
@@ -111,9 +138,9 @@
                                 </Grid>
                             </Border>
                             
-                            <!-- 账号相关 -->
-                            <Border Grid.Row="1" HorizontalAlignment="Stretch" Margin="0 0 0 7">
-                                <Grid ColumnDefinitions="3*,*">
+                            <!-- 功能相关 -->
+                            <Border Grid.Row="1" HorizontalAlignment="Stretch" Margin="0 0 7 7">
+                                <Grid ColumnDefinitions="3*,*,Auto">
                                     <Grid.Styles>
                                         <Style Selector="Button.add">
                                             <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"></Setter>
@@ -135,25 +162,51 @@
                                                     Fill="{DynamicResource OnSurface}" />
                                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
                                                        FontWeight="Medium"
-                                                       FontSize="12"
+                                                       FontSize="12" LineHeight="16"
                                                        Text="更换账号" />
                                         </StackPanel>
                                     </Button>
-
-                                    <Button Grid.Column="1" Classes="add"
-                                            Margin="2 0 7 0"
+                                    
+                                    <Button Grid.Column="1"
+                                            Name="DelAltBtn" Classes="add"
+                                            Margin="2 0 0 0"
                                             HorizontalAlignment="Stretch"
-                                            >
+                                            Command="{Binding DelAccountCommand}"
+                                            CommandParameter="{x:True}"
+                                            Click="DelBtn_OnClick"
+                                           >
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 8 0">
                                             <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Delete}}"
+                                                    Margin="0 0 2 0"
                                                     VerticalAlignment="Center" HorizontalAlignment="Center"
                                                     Fill="{DynamicResource OnSurface}" 
                                                     Height="17"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button Grid.Column="2"
+                                            Name="DiscardBtn" Classes="add"
+                                            Margin="4 0 0 0"
+                                            Width="0"
+                                            HorizontalAlignment="Stretch"
+                                            Command="{Binding DelAccountCommand}"
+                                            CommandParameter="{x:False}"
+                                            Click="DelBtn_OnClick">
+                                        <Button.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Width" Duration="0.3" Easing="CubicEaseOut" />
+                                            </Transitions>
+                                        </Button.Transitions>
+                                        <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Error}}"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                Fill="{DynamicResource OnSurface}" 
+                                                Height="17"/>
                                     </Button>
                                 </Grid>
                             </Border>
                         </Grid>
                     </Border>
-                    
                 </Grid>
             </Border>
 

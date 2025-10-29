@@ -3,6 +3,7 @@
         xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
         xmlns:res="clr-namespace:BiliLive.Resources"
         xmlns:biliLive="clr-namespace:BiliLive"
+        xmlns:converter="clr-namespace:BiliLive.Views.MainWindow.Converter"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         Title="BiliLive"
@@ -193,7 +194,7 @@
                                         
                                         <!-- 主页按钮 -->
                                         <ToggleButton Click="SwitchPageAnime"
-                                                      IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
+                                                      IsChecked="{Binding CurrentBtn,Converter={converter:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
                                                       Command="{Binding SwitchPageCommand}"
                                                       CommandParameter="{x:Static mainWindow:NavigationPage.Home}">
                                                 <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
@@ -204,7 +205,7 @@
 
                                         <!-- 自动直播按钮 -->
                                         <ToggleButton Click="SwitchPageAnime"
-                                                      IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
+                                                      IsChecked="{Binding CurrentBtn,Converter={converter:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
                                                       Command="{Binding SwitchPageCommand}"
                                                       CommandParameter="{x:Static mainWindow:NavigationPage.AutoService}">
                                                 <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
@@ -215,7 +216,7 @@
 
                                         <!-- 关于按钮 -->
                                         <ToggleButton Click="SwitchPageAnime"
-                                                      IsChecked="{Binding CurrentBtn,Converter={mainWindow:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
+                                                      IsChecked="{Binding CurrentBtn,Converter={converter:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
                                                       Command="{Binding SwitchPageCommand}"
                                                       CommandParameter="{x:Static mainWindow:NavigationPage.About}"
                                                       >
