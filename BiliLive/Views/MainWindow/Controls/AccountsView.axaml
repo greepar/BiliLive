@@ -28,11 +28,13 @@
                             Opacity="{Binding !IsInLoginProcess,Converter={converters:BoolToOpacityConverter}}"
                             IsHitTestVisible="{Binding IsInLoginProcess}"
                             Background="{DynamicResource Surface}"
-                           
+                            Width="219" Height="135"
                             >
 
                         <Border.Transitions>
                             <Transitions>
+                                <DoubleTransition Property="Width" Duration="0:0:0.3" Easing="ExponentialEaseOut" />
+                                <DoubleTransition Property="Height" Duration="0:0:0.3" Easing="ExponentialEaseOut" />
                                 <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="ExponentialEaseOut" />
                             </Transitions>
                         </Border.Transitions>
@@ -42,7 +44,7 @@
                         </Border.RenderTransform>
                         
                         <Grid ColumnDefinitions="Auto,Auto"
-                              Margin="11">
+                              Margin="10 8 10 8">
                             <Grid Grid.Column="0" Margin="0 0 10 0"
                                   RowDefinitions="Auto,Auto,*,Auto">
                                 <SvgBox Grid.Row="0" Width="21" Height="21"
@@ -82,9 +84,13 @@
                             </Grid>
                             
                             <Border Grid.Column="1"
-                                    CornerRadius="12" ClipToBounds="True"
+                                    CornerRadius="12" ClipToBounds="False" Background="SkyBlue"
+                                    BorderThickness="5"
+                                    BorderBrush="{DynamicResource SurfaceContainer}"
                                     Width="130" Height="130">
-                                <Image Source="{Binding QrCodePic}"/>
+                                <Border Width="125" Height="125" BorderThickness="0"  CornerRadius="12" ClipToBounds="True">
+                                    <Image Source="{Binding QrCodePic}"/>
+                                </Border>
                             </Border>
                         </Grid>
                     </Border>

@@ -73,6 +73,8 @@ public partial class AccountsView : UserControl
                 _isTargetVisible = false;
                 
                 // 并行播放
+                QrLoginBorder.Width = 225;
+                QrLoginBorder.Height = 145;
                 await Task.WhenAll(
                     _translateAnim.RunAsync(AccountBorder, _animationCts.Token),
                     _backAnimation.RunAsync(QrLoginBorder, _animationCts.Token)
@@ -83,6 +85,8 @@ public partial class AccountsView : UserControl
             {
                 _isTargetVisible = true;
                 
+                QrLoginBorder.Width = 219;
+                QrLoginBorder.Height = 135;
                 await Task.WhenAll(
                     _translateAnim.RunAsync(QrLoginBorder, _animationCts.Token),
                     _backAnimation.RunAsync(AccountBorder, _animationCts.Token)
