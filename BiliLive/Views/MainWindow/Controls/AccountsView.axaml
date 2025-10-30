@@ -38,7 +38,7 @@
                                 <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="ExponentialEaseOut" />
                             </Transitions>
                         </Border.Transitions>
-
+                        
                         <Border.RenderTransform>
                             <TranslateTransform Y="0" />
                         </Border.RenderTransform>
@@ -84,7 +84,7 @@
                             </Grid>
                             
                             <Border Grid.Column="1"
-                                    CornerRadius="12" ClipToBounds="False" Background="SkyBlue"
+                                    CornerRadius="12" ClipToBounds="False" Background="Transparent"
                                     BorderThickness="5"
                                     BorderBrush="{DynamicResource SurfaceContainer}"
                                     Width="130" Height="130">

@@ -6,8 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.Threading;
 using BiliLive.Core.Interface;
+using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -31,6 +31,9 @@ public partial class AccountsViewModel : ViewModelBase
 
     public AccountsViewModel()
     {
+        using var ufStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        UserFace = PicHelper.ResizeStreamToBitmap(ufStream,116,116);
+        
         if (Design.IsDesignMode)
         {
             using var picStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/nullQrCode.png"));
@@ -55,11 +58,11 @@ public partial class AccountsViewModel : ViewModelBase
 
     private void RefreshUserFaceAsync(byte[]? userFaceByte)
     {
-        //TODO: 异步处理
         try
         {
             if (userFaceByte == null || userFaceByte.Length == 0) { return; }
             using var ms = new MemoryStream(userFaceByte);
+            UserFace?.Dispose();
             UserFace = PicHelper.ResizeStreamToBitmap(ms,116,116);
         }
         catch (Exception)
@@ -141,8 +144,8 @@ public partial class AccountsViewModel : ViewModelBase
         switch (confirm)
         {
             case true when _isConfirmed:
-                // TODO:执行删除账号操作.
-                
+                General.ClearState();
+                _ = ConfigManager.SaveConfigAsync(ConfigType.BiliCookie, null);
                 _isConfirmed = false;
                 WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已删除当前账号",Geometry.Parse(MdIcons.Check)));
                 break;
@@ -161,6 +164,7 @@ public partial class AccountsViewModel : ViewModelBase
         IsInLoginProcess = !IsInLoginProcess;
         _pollingCts.Cancel();
         QrCodePic?.Dispose();
+        QrCodePic = null;
     }
     
 }

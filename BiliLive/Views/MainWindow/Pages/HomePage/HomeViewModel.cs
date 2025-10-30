@@ -43,15 +43,13 @@ public partial class HomeViewModel : ViewModelBase
 
     public static GeneralState GeneralState => General.State;
     
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))] private long? _userId;
-    [ObservableProperty] private long? _roomId;
     [ObservableProperty] private Bitmap? _userFace;
     
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsRoomTitleChanged))]
     private string? _inputRoomTitle;
 
     private string? _roomTitle;
-    public bool IsRoomTitleChanged => UserId != null && !string.IsNullOrWhiteSpace(InputRoomTitle)  && _roomTitle != InputRoomTitle;
+    public bool IsRoomTitleChanged => GeneralState.UserId != null && !string.IsNullOrWhiteSpace(InputRoomTitle)  && _roomTitle != InputRoomTitle;
 
     [ObservableProperty] private string? _roomArea = EmptyText;
     [ObservableProperty] private bool? _isFinishing;
@@ -98,8 +96,43 @@ public partial class HomeViewModel : ViewModelBase
         {
             _biliService = serviceProvider.GetRequiredService<IBiliService>();
         }
+        
+        General.State.PropertyChanged += (_, e) =>
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(General.State.UserFaceByte):
+                    RefreshUserFaceAsync(General.State.UserFaceByte);
+                    break;
+                case nameof(General.State.UserId):
+                    OnPropertyChanged(nameof(IsRoomTitleChanged));
+                    if (GeneralState.UserId == null)
+                    {
+                        InputRoomTitle = null;
+                        using var coverStream = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/defaultCover.jpg"));
+                        _roomCover?.Dispose();
+                        _roomCover = PicHelper.ResizeStreamToBitmap(coverStream, 132 * 2, 74 * 2);
+                    }
+                    break;
+            }
+        };
     }
 
+    private void RefreshUserFaceAsync(byte[]? userFaceByte)
+    {
+        try
+        {
+            //刷新用户头像
+            if (userFaceByte == null || userFaceByte.Length == 0) { return; }
+            using var ms = new MemoryStream(userFaceByte);
+            UserFace?.Dispose();
+            UserFace = PicHelper.ResizeStreamToBitmap(ms,116,116);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+    }
 
     public async Task LoadHomeVmAsync(LoginResult loginResult)
     {
@@ -112,9 +145,8 @@ public partial class HomeViewModel : ViewModelBase
 
             //获取直播间信息
             var roomInfo = await _biliService.GetRoomInfoAsync();
-            RoomId = roomInfo.RoomId;
             GeneralState.RoomId = roomInfo.RoomId;
-            UserId = result.UserId;
+            GeneralState.UserId = result.UserId;
             RoomCover?.Dispose();
             using var rcMs = new MemoryStream(roomInfo.RoomCover);
             RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 132 * 2, 74 * 2) ?? new Bitmap(rcMs);
@@ -137,10 +169,10 @@ public partial class HomeViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenRoomUrlAsync()
     {
-        if (RoomId == null) return;
+        if (GeneralState.RoomId == null) return;
         try
         { 
-            BrowserUtil.OpenInBrowser($"{LiveUrlFormat}/{RoomId}");
+            BrowserUtil.OpenInBrowser($"{LiveUrlFormat}/{GeneralState.RoomId}");
         }
         catch (Exception ex)
         {
@@ -162,7 +194,7 @@ public partial class HomeViewModel : ViewModelBase
             } ;
             var text = target switch
             {
-                CopyTarget.RoomUrl => RoomId == null ? string.Empty : $"{LiveUrlFormat}/{RoomId}",
+                CopyTarget.RoomUrl => GeneralState.RoomId == null ? string.Empty : $"{LiveUrlFormat}/{GeneralState.RoomId}",
                 CopyTarget.StreamKey => StreamKey,
                 CopyTarget.StreamUrl => ApiUrl,
                 _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)

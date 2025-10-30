@@ -1,4 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.IO;
+using Avalonia.Platform;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BiliLive.Views;
 
@@ -21,4 +24,18 @@ public static class General
 {
     private static GeneralState? _instance;
     public static GeneralState State => _instance ??= new GeneralState();
+    
+    public static void ClearState()
+    {
+        State.IsLogin = false;
+        State.UserName = "未登录";
+        using var defaultFace = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
+        using var ms = new MemoryStream();
+        defaultFace.CopyTo(ms);
+        State.UserFaceByte = ms.ToArray();
+        State.UserId = null;
+        State.RoomId = null;
+        State.IsStreaming = false;
+        State.StreamTime = null;
+    }
 }

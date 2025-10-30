@@ -129,6 +129,29 @@ public partial class MainWindowViewModel : ViewModelBase
             LoadAccountCommand.Execute(null);
         }
         CurrentVm = _homeVm;
+        
+        General.State.PropertyChanged +=  (_, e) =>
+        {
+            if (e.PropertyName == nameof(General.State.UserFaceByte))
+            {
+                RefreshUserFaceAsync(General.State.UserFaceByte);
+            }
+        };
+    }
+    
+    private void RefreshUserFaceAsync(byte[]? userFaceByte)
+    {
+        try
+        {
+            if (userFaceByte == null || userFaceByte.Length == 0) { return; }
+            using var ms = new MemoryStream(userFaceByte);
+            UserFace?.Dispose();
+            UserFace = PicHelper.ResizeStreamToBitmap(ms,116,116);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
     }
     
     //初始化内容

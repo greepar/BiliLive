@@ -39,9 +39,9 @@
                         <!-- 信息 -->
                         <StackPanel Margin="10,0,0,0"
                                     VerticalAlignment="Center">
-                            <TextBlock Text="{Binding RoomId,StringFormat=直播间ID:{0}}"
+                            <TextBlock Text="{Binding GeneralState.RoomId,StringFormat=直播间ID:{0}}"
                                        FontSize="12"/> 
-                            <TextBlock Text="{Binding UserId,StringFormat=用户ID:{0}}"
+                            <TextBlock Text="{Binding GeneralState.UserId,StringFormat=用户ID:{0}}"
                                        FontSize="12"/>
                             
                             <TextBlock Margin="0 4 0 0" Text="直播链接:" FontSize="12"/>
@@ -74,7 +74,7 @@
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0}/{1}">
                                                     <Binding Source="{x:Static vm:HomeViewModel.LiveUrlFormat}" />
-                                                    <Binding Path="RoomId" />
+                                                    <Binding Path="GeneralState.RoomId" />
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
