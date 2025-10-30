@@ -40,7 +40,6 @@ public enum ToggleOption
 }
 public partial class AutoServiceViewModel : ViewModelBase
 {
-    public AppConfig? Config;
     [ObservableProperty] private ObservableCollection<Alt> _altsList = [];
     public bool HasAlts => AltsList.Count > 0;
     
@@ -60,16 +59,19 @@ public partial class AutoServiceViewModel : ViewModelBase
     [ObservableProperty] private bool _isAutoStart;
     [ObservableProperty] private bool _isRandomSecond;
     [ObservableProperty] private bool _isCheck60MinTask;
-
-    [ObservableProperty] 
-    private bool _isChecked;
     
-    [ObservableProperty] private bool _isAutoClaimRewardEnabled;
-    
-    
+   
     //小号相关
     [ObservableProperty] private bool _isAltGiftServiceEnabled;
+    //奖励相关
+    [ObservableProperty] private bool _isAutoClaimRewardEnabled;
+    [ObservableProperty][NotifyPropertyChangedFor(nameof(IsAwardInfoAvailable))] private string? _awardInfo;
+    public bool IsAwardInfoAvailable => !string.IsNullOrWhiteSpace(AwardInfo);
     
+    [ObservableProperty][NotifyPropertyChangedFor(nameof(IsTaskIdInputChanged))] private string? _inputTaskId;
+    private string? _taskId;
+    public bool IsTaskIdInputChanged =>  !string.IsNullOrWhiteSpace(InputTaskId)  && _taskId != InputTaskId;
+
     //时间
     [ObservableProperty] private string? _startHour;
     [ObservableProperty] private string? _startMinute;
@@ -95,6 +97,37 @@ public partial class AutoServiceViewModel : ViewModelBase
     [RelayCommand]
     private async Task InitializeAsync()
     {
+        //加载配置
+        var config = await ConfigManager.LoadConfigAsync();
+        VideoPath = config.VideoPath;
+        FfmpegPath = config.FfmpegPath;
+        IsAutoStart = config.AutoStart;
+        IsCheck60MinTask = config.Check60MinTask;
+        IsRandomSecond = config.RandomDelay;
+        IsAltGiftServiceEnabled = config.AutoSendGift;
+        IsAutoClaimRewardEnabled = config.AutoClaimReward;
+        _taskId = config.TaskId;
+        if (!string.IsNullOrWhiteSpace(_taskId))
+        {
+            try
+            {
+                var awardInfo = await _biliService.GetAwardInfoAsync(_taskId);
+                AwardInfo = $"{awardInfo.TaskName}:{awardInfo.AwardName}";
+            }
+            catch (Exception ex)
+            {
+                await ShowWindowHelper.ShowErrorAsync(ex.Message);
+            }
+        }
+        InputTaskId = _taskId;
+        if (config.StreamTime.HasValue)
+        {
+            var streamTime = config.StreamTime.Value;
+            StartHour = streamTime.Hours.ToString("D2");
+            StartMinute = streamTime.Minutes.ToString("D2");
+            StartSecond = streamTime.Seconds.ToString("D2");
+        }
+        
         if (IsAutoStart)
         {
             if (!IsCoreSet)
@@ -106,10 +139,10 @@ public partial class AutoServiceViewModel : ViewModelBase
             IsAutoStreamEnabled = true;
             _ = Task.Run(async () => await SetAutoStreamAsync());
         }
-        if ( Config is { Alts.Count: > 0 })
+        if ( config is { Alts.Count: > 0 })
         {
             //并行创建Alt实例
-            var tasks = Config.Alts
+            var tasks = config.Alts
                 .Where(_ => true)
                 .Select(async altSettings =>
                 {
@@ -159,8 +192,6 @@ public partial class AutoServiceViewModel : ViewModelBase
                 }
                 if (!IsAutoStreamEnabled)
                 {
-                    // IsAltGiftServiceEnabled = false;
-                    // IsAutoClaimRewardEnabled = false;
                     if (_autoStreamCts != null) await _autoStreamCts.CancelAsync();
                     return;
                 }
@@ -170,21 +201,13 @@ public partial class AutoServiceViewModel : ViewModelBase
                 await ConfigManager.SaveConfigAsync(ConfigType.Check60MinTask,IsCheck60MinTask);
                 break;
             case ToggleOption.RandomSecond:
-                // await ConfigManager.SaveConfigAsync(ConfigType.,IsRandomSecond);
+                await ConfigManager.SaveConfigAsync(ConfigType.RandomDelay,IsRandomSecond);
                 break;
             case ToggleOption.AutoGiftService:
-                if (!IsAutoStreamEnabled)
-                {
-                    // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
-                    // IsAltGiftServiceEnabled = false;
-                }
+                await ConfigManager.SaveConfigAsync(ConfigType.AutoSendGift,IsAltGiftServiceEnabled);
                 break;
             case ToggleOption.AutoClaimRewardService:
-                if (!IsAutoStreamEnabled)
-                {
-                    // WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先开启自动直播任务",Geometry.Parse(MdIcons.Error)));
-                    // IsAutoClaimRewardEnabled = false;
-                }
+                await ConfigManager.SaveConfigAsync(ConfigType.AutoClaimReward,IsAutoClaimRewardEnabled);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(option), option, null);
@@ -207,11 +230,14 @@ public partial class AutoServiceViewModel : ViewModelBase
             var minute = int.TryParse(StartMinute, out var m) ? m : 0;
             var second = int.TryParse(StartSecond, out var s) ? s : 0;
 
-            var seconds = hour * 3600 +
-                          minute * 60 +
-                          (IsRandomSecond ? random.Next(-240, -120) : second);
+            var seconds = hour * 3600 + minute * 60 + second;
             var startTime = TimeSpan.FromSeconds(seconds);
-
+            await ConfigManager.SaveConfigAsync(ConfigType.StreamTime, startTime);
+            if (IsRandomSecond)
+            { 
+                startTime = startTime.Add(TimeSpan.FromSeconds(random.Next(-240, -120)));
+            }
+            
             //设置第二天基准
             var baseSeconds = startTime.TotalSeconds;
             var finalSeconds = IsRandomSecond ? baseSeconds + random.Next(-240, -120) : baseSeconds;
@@ -350,8 +376,30 @@ public partial class AutoServiceViewModel : ViewModelBase
             isStreamStartedByThis = true;
             
             await Task.Delay(liveDurationSec * 1000, token);
-            IsInAutoStreaming = true;
-            AutoStreamingStatusText = "今日直播已完成";
+            IsInAutoStreaming = false;
+            //检查直播完是否需要自动领取奖励
+            if ( IsAutoClaimRewardEnabled && _taskId != null)
+            {
+                try
+                {
+                    await ClaimAwardAsync(_taskId);
+                    AutoStreamingStatusText = "自动开播并领取奖励完成";
+                }
+                catch (Exception ex)
+                {
+                    AutoStreamingStatusText = "自动开播完成，但领取奖励失败";
+                    Dispatcher.UIThread.Post(async void () => { try { await ShowWindowHelper.ShowErrorAsync("领取奖励出错。\n错误信息：" + ex.Message); }
+                        catch (Exception)
+                        {
+                            // ignored 
+                        }
+                    });
+                }
+            }
+            else
+            {
+                AutoStreamingStatusText = "今日直播已完成";
+            }
         }
         catch (OperationCanceledException)
         {
@@ -470,6 +518,24 @@ public partial class AutoServiceViewModel : ViewModelBase
     }
     
     [RelayCommand]
+    private async Task SaveTaskIdAsync()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(InputTaskId)) return;
+            var awardInfo = await _biliService.GetAwardInfoAsync(InputTaskId);
+            _taskId = InputTaskId;
+            OnPropertyChanged(nameof(IsTaskIdInputChanged));
+            AwardInfo = $"{awardInfo.TaskName}:{awardInfo.AwardName}";
+            await ConfigManager.SaveConfigAsync(ConfigType.TaskId,_taskId);
+        }
+        catch (Exception ex)
+        {
+            await ShowWindowHelper.ShowErrorAsync(ex.Message);
+        }
+    }
+    
+    [RelayCommand]
     private async Task ClaimAwardAsync(string taskId)
     {
         if (string.IsNullOrWhiteSpace(taskId))
@@ -484,13 +550,12 @@ public partial class AutoServiceViewModel : ViewModelBase
             if (!string.IsNullOrEmpty(cdKey))
             {
                 //弹出兑换码
-                Console.WriteLine(cdKey);
+                await ShowWindowHelper.ShowErrorAsync(cdKey);
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e);
-            throw;
+            await ShowWindowHelper.ShowErrorAsync(ex.Message);
         }
     }
     
@@ -707,7 +772,6 @@ public partial class Alt : ObservableObject , IDisposable
                 Dispose();
                 Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(MdIcons.Check))); });
             }
-       
     }
     
     //释放资源

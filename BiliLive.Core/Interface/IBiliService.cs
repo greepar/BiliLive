@@ -34,6 +34,7 @@ public interface IBiliService
     
     // 奖励相关
     Task<string?> ClaimAwardAsync(string taskId);
+    Task<AwardInfo> GetAwardInfoAsync(string taskId);
 }
 
 public class BiliServiceImpl : IBiliService
@@ -74,6 +75,7 @@ public class BiliServiceImpl : IBiliService
     public async Task ChangeRoomCoverAsync(byte[] imageBytes) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Cover, imageBytes);
 
     //奖励相关
+    public async Task<AwardInfo> GetAwardInfoAsync(string taskId) => await _awardService.GetAwardInfoAsync(taskId);
     public async Task<string?> ClaimAwardAsync(string taskId) => await _awardService.ClaimAwardAsync(taskId);
     
     //构造初始值

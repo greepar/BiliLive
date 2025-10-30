@@ -102,7 +102,6 @@
                 </Border.Transitions>
 
                 <Grid RowDefinitions="Auto,*">
-
                     <Grid ZIndex="1" Grid.Row="0" Height="32" VerticalAlignment="Top">
                         <Border Background="#F8EAF3" />
                         <Grid ColumnDefinitions="Auto,*,Auto">
@@ -330,6 +329,8 @@
                                 <CheckBox Margin="0 0 0 0"
                                           Content="秒数随机"
                                           IsChecked="{Binding IsRandomSecond}"
+                                          Command="{Binding ToggleOptionsCommand}"
+                                          CommandParameter="{x:Static vm:ToggleOption.RandomSecond}"
                                           Theme="{StaticResource MdCheckBox}" />
 
 
@@ -360,7 +361,7 @@
                                 VerticalAlignment="Top"
                                 Background="#F8EAF3">
                             <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                                <TextBlock Grid.Column="0" Text="小号自动投喂(在完成后)"
+                                <TextBlock Grid.Column="0" Text="小号自动投喂(在定时直播中途)"
                                            Margin="14 0 0 0"
                                            VerticalAlignment="Center" />
 
@@ -531,11 +532,17 @@
                         <Border Grid.Row="0" Height="32"
                                 VerticalAlignment="Top"
                                 Background="#F8EAF3">
-                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                <TextBlock Grid.Column="0" Text="自动领取激励"
+                            <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                <TextBlock Grid.Column="0" Text="自动领取激励(定时直播后)"
                                            Margin="14 0 0 0"
                                            VerticalAlignment="Center" />
-                                <ToggleSwitch Grid.Column="2" Margin="0 0 -4 0"
+                                <Border Grid.Column="1"
+                                        VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        CornerRadius="12"
+                                        Background="SkyBlue">
+                                    <TextBlock Text="{Binding AwardInfo}"/>
+                                </Border>
+                                <ToggleSwitch Grid.Column="3" Margin="0 0 -4 0"
                                               IsChecked="{Binding IsAutoClaimRewardEnabled}"
                                               Command="{Binding ToggleOptions}"
                                               CommandParameter="{x:Static vm:ToggleOption.AutoClaimRewardService}"
@@ -550,7 +557,26 @@
                                     Margin="14 0 14 0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock>奖励的TaskId:</TextBlock>
-                                <TextBox CornerRadius="12" x:Name="InputBox"/>
+                                <Grid>
+                                    <TextBox Grid.Column="0" x:Name="InputBox"
+                                             Width="100"
+                                             CornerRadius="12"
+                                             Text="{Binding InputTaskId}"/>
+                                    <Button Height="22" Width="22"  HorizontalAlignment="Right"
+                                            Margin="0 0 8 0" CornerRadius="8"
+                                            Background="{DynamicResource SurfaceContainer}"
+                                            Command="{Binding SaveTaskIdCommand}"
+                                            Opacity="{Binding !IsTaskIdInputChanged,Converter={converters:BoolToOpacityConverter}}"
+                                            IsHitTestVisible="{Binding IsTaskIdInputChanged}"
+                                            Theme="{StaticResource MdButton}">
+                                        <Button.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
+                                            </Transitions>
+                                        </Button.Transitions>
+                                        <SvgBox Height="16" Width="16" PathData="{resources:Geometry {x:Static resources:MdIcons.Check}}"/>
+                                    </Button>
+                                </Grid>
                                 <TextBlock>状态:未领取</TextBlock>
                                 <Button Command="{Binding ClaimAwardCommand}"
                                         CommandParameter="{Binding #InputBox.Text}"

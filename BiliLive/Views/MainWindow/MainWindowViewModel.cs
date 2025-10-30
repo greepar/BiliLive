@@ -161,13 +161,8 @@ public partial class MainWindowViewModel : ViewModelBase
         var appConfig = await ConfigManager.LoadConfigAsync();
         
         //初始化AutoService配置
-        _asVm.VideoPath = appConfig.VideoPath;
-        _asVm.FfmpegPath = appConfig.FfmpegPath;
-        _asVm.IsAutoStart = appConfig.AutoStart;
-        _asVm.IsCheck60MinTask = appConfig.Check60MinTask;
-        _asVm.Config = appConfig;
-
-        _asVm.InitializeCommand.Execute(null);
+        // _asVm.InitializeCommand.Execute(null);
+        await _asVm.InitializeCommand.ExecuteAsync(null);
         
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
