@@ -11,34 +11,21 @@ namespace BiliLive.Core.Services.BiliService;
 
 public static class SignService
 {
-    private const string SignApi = "https://api.greepar.uk/getSign";
+    private const string SignApi = "https://api.greepar.uk/getBiliSign/app";
     private const string SignUserAgent = "LiveHime/7.23.0.9579 os/Windows pc_app/livehime build/9579 osVer/10.0_x86_64";
     public static async Task AddAppSignAsync(Dictionary<string, string> parameters)
     {
         // 添加Sign所需参数
         parameters.Add("ts", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
         parameters.Add("appkey", "aae92bc66f3edfab");
-        //按照 key 的字母顺序排序
-        var sortedKeys = parameters.Keys.OrderBy(k => k, StringComparer.Ordinal);
-        //  拼接成一个长字符串
-        var stringToSignBuilder = new StringBuilder();
-        foreach (var key in sortedKeys)
-        {
-            stringToSignBuilder.Append(key);
-            stringToSignBuilder.Append("=");
-            stringToSignBuilder.Append(parameters[key]); // 注意：value不需要URL编码
-            stringToSignBuilder.Append("&");
-        }
-
-        // 移除最后一个多余的 '&'
-        if (stringToSignBuilder.Length > 0)
-            stringToSignBuilder.Length--;
-        var stringToSign = stringToSignBuilder.ToString();
+    
+        var query = string.Join("&", parameters.Select(kv => 
+            $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
         
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("User-Agent", SignUserAgent);
         using var response =
-            await httpClient.PostAsync(SignApi, new StringContent(stringToSign));
+            await httpClient.PostAsync(SignApi, new StringContent(query));
         var sign = await response.Content.ReadAsStringAsync();
         parameters.Add("sign", sign);
     }
@@ -87,11 +74,5 @@ public static class SignService
         // 重新序列化参数
         var signedQuery = await new FormUrlEncodedContent(parameters).ReadAsStringAsync();
         return signedQuery;
-        
-        //未来Sign服务器实现
-        // var response = await httpClient.PostAsync("https://api.greepar.uk/getWbiSign", new StringContent(query));
-        // using var jsonDoc = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-        // var signedQuery = await response.Content.ReadAsStringAsync();
-        // return signedQuery;
     }
 }
