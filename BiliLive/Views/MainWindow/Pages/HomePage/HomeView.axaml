@@ -139,13 +139,45 @@
                         <Grid ColumnDefinitions="Auto,*,Auto"
                               VerticalAlignment="Center">
                             <!-- 封面 -->
-                            <Border Grid.Column="0"  Margin="0 0 5 5" Width="132" Height="74"
-                                    Background="Wheat"
-                                    CornerRadius="12" ClipToBounds="True">
-                                <Image Source="{Binding RoomCover}"
-                                       Width="132" Height="74">
-                                </Image>
-                            </Border>
+                            <Grid Grid.Column="0" >
+                                <!-- <Button ZIndex="100" Background="Red" Theme="{StaticResource MdButton}">123</Button> -->
+                                
+                                <Grid.Styles>
+                                    <Style Selector="Border:pointerover">
+                                        <!-- <Setter Property="Opacity" Value="0.2"/> -->
+                                        <!-- <Setter Property="BorderBrush" Value="#41E2F1"></Setter> -->
+                                        <!-- <Setter Property="BorderThickness" Value="2"></Setter> -->
+                                        <Setter Property="BoxShadow" Value="  0 0 10 2 #26000000" />
+                                    </Style>
+                                </Grid.Styles>
+                                <Button HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        CornerRadius="12" 
+                                        Background="Transparent"
+                                        Padding="0"
+                                        Command="{Binding ChangeRoomCoverCommand}">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                            <Setter Property="CornerRadius" Value="12"></Setter>
+                                            <Setter Property="BoxShadow" Value="0 0 4 1 #12000000" />
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Foreground"
+                                                    Value="{DynamicResource OnSurface}" />
+                                        </Style>
+                                    </Button.Styles>
+                                </Button>
+                                <Border Width="132" Height="74"
+                                        Opacity="1"
+                                        IsHitTestVisible="False"
+                                        Background="Transparent"
+                                        CornerRadius="12" ClipToBounds="True">
+                                    <Image Source="{Binding RoomCover}"
+                                           Width="132" Height="74">
+                                    </Image>
+                                </Border>
+                              
+                            </Grid>
+                         
                         
                             <StackPanel Grid.Column="1" Spacing="3" Margin="10">
                                 <TextBlock FontSize="13" Text="标题"/>

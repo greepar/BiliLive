@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -139,20 +141,29 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
                     formData.Add("area_id", areaId.ToString());
                     formData.Add("visit_id", "");
                 }
-                    
                 else
                     throw new ArgumentException("分区ID无效", nameof(value));
                 break;
             case ChangeType.Cover:
-                if (value is string coverUrl && !string.IsNullOrWhiteSpace(coverUrl))
+                if (value is byte[] { Length: > 0 } coverBytes)
                 {
-                    throw new NotImplementedException();
-                    // var imageUrl = await GetImageUrlAsync(cover);
-                    //TODO: 实现封面上传
-                    formData.Add("cover", coverUrl);
+                    try
+                    {
+                        var coverUrl = await GetImageUrlAsync(coverBytes);
+                        if (coverUrl.EndsWith(".bin"))
+                        {
+                            throw new Exception("封面上传失败，可能是图片格式不正确，请使用jpg或png格式的图片");
+                        } 
+                        formData.Add("cover", coverUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("封面上传失败: " + ex.Message, ex);
+                    }
                 }
-
-                throw new ArgumentException("链接无效", nameof(value));
+                else
+                    throw new ArgumentException("封面图片数据无效", nameof(value));
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
@@ -205,9 +216,44 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
 //私有依赖
     private async Task<string> GetImageUrlAsync(byte[] imageBytes)
     {
-        //TODO: 实现封面上传
-        await Task.Delay(1);
-        return "https://i0.hdslb.com/bfs/live/cover/1234567890.jpg";
+        if (imageBytes == null || imageBytes.Length == 0)
+            throw new ArgumentException("Image data is empty.");
+
+        using var content = new MultipartFormDataContent();
+
+        // 文件内容
+        var fileContent = new ByteArrayContent(imageBytes);
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+
+        // multipart 表单参数
+        var csrf = GetCsrfFromCookie() ?? throw new InvalidOperationException("无法从Cookie中获取CSRF令牌");
+        content.Add(new StringContent("openplatform"), "bucket");
+        content.Add(new StringContent(csrf), "csrf");
+        content.Add(fileContent, "file", "cover.jpg");
+        
+        // 请求头
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://api.bilibili.com/x/upload/web/image");
+        request.Content = content;
+
+        using var response = await httpClient.SendAsync(request);
+        var body = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"上传失败: {response.StatusCode} - {body}");
+
+        using var doc = JsonDocument.Parse(body);
+        if (doc.RootElement.TryGetProperty("data", out var data) &&
+            data.TryGetProperty("location", out var locationElement))
+        {
+            var url = locationElement.GetString();
+            if (url != null)
+                return url.Replace("http://", "https://");
+        }
+
+        var message = doc.RootElement.TryGetProperty("message", out var msgEl)
+            ? msgEl.GetString()
+            : "未知错误";
+        throw new Exception($"上传失败: {message}");
     }
 
     private async Task<long> GetRoomIdAsync()

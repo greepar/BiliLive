@@ -243,6 +243,27 @@ public partial class HomeViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间分区成功", Geometry.Parse(MdIcons.Check)));
     }
     
+    [RelayCommand]
+    private async Task ChangeRoomCoverAsync()
+    {
+        var filePath = await FolderPickHelper.PickFileAsync("选择要上传的直播间封面",[".jpg",".jpeg",".png"]);
+        if (filePath == null) return;
+        try
+        {
+            var fileBytes = await File.ReadAllBytesAsync(filePath);
+            await _biliService.ChangeRoomCoverAsync(fileBytes);
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("更换封面成功",Geometry.Parse(MdIcons.Check)));
+            var roomInfo = await _biliService.GetRoomInfoAsync();
+            using var rcMs = new MemoryStream(roomInfo.RoomCover);
+            RoomCover?.Dispose();
+            RoomCover = PicHelper.ResizeStreamToBitmap(rcMs, 132 * 2, 74 * 2) ?? new Bitmap(rcMs);
+        }
+        catch (Exception ex)
+        {
+            await ShowWindowHelper.ShowErrorAsync("更换封面失败。\n错误信息：" + ex.Message);
+        }
+    }
+    
     //更新直播间信息任务任务
     private CancellationTokenSource _liveDataCts = new();
     private bool _isUpdatingLiveInfo;
