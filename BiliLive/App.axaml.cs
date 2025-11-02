@@ -1,11 +1,7 @@
-using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using BiliLive.Core.Interface;
-using BiliLive.Core.Services;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Utils;
 using BiliLive.Views.MainWindow;
 using BiliLive.Views.MainWindow.Controls;
@@ -13,7 +9,7 @@ using BiliLive.Views.MainWindow.Pages.AutoService;
 using BiliLive.Views.MainWindow.Pages.HomePage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.Internal;
+
 
 namespace BiliLive;
 
@@ -27,14 +23,10 @@ public class App : Application
             .ConfigureServices(services =>
             {
                 services.AddSingleton<IBiliService,BiliServiceImpl>();
-                services.AddSingleton<MainWindow>();
                 services.AddTransient<MainWindowViewModel>();
-                services.AddTransient<AutoServiceView>();
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<AccountsViewModel>();
                 services.AddTransient<HomeViewModel>();
-               
-                
                 // 更多服务...
             })
             .Build();
@@ -56,10 +48,11 @@ public class App : Application
             };
             
             //通过DI获取MainWindow
-            var mainWindow = AppHost.Services.GetRequiredService<MainWindow>();
             var mainWindowViewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
-            mainWindow.DataContext = mainWindowViewModel;
-            desktop.MainWindow = mainWindow;
+            desktop.MainWindow = new MainWindow
+            {
+                DataContext = mainWindowViewModel
+            };
         }
         base.OnFrameworkInitializationCompleted();
     }

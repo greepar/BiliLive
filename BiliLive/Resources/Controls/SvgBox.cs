@@ -25,19 +25,17 @@ public class SvgBox : Viewbox
         set => SetValue(FillProperty, value);
     }
 
-    private readonly Path _innerPath;
-
     public SvgBox()
     {
-        _innerPath = new Path
+        var innerPath = new Path
         {
             Opacity = 1,
             RenderTransform = new TranslateTransform(0, 960)
         };
 
-        _innerPath.Bind(Shape.FillProperty, this.GetObservable(FillProperty));
-        _innerPath.Bind(Path.DataProperty, this.GetObservable(PathDataProperty));
+        innerPath.Bind(Shape.FillProperty, this.GetObservable(FillProperty));
+        innerPath.Bind(Path.DataProperty, this.GetObservable(PathDataProperty));
 
-        Child = _innerPath;
+        Child = innerPath;
     }
 }
