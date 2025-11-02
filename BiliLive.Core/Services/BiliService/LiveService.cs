@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BiliLive.Core.Models.BiliService;
@@ -269,31 +267,5 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         var cookies = cookieContainer.GetCookies(new Uri("https://space.bilibili.com"));
         var cookie = cookies["bili_jct"];
         return cookie?.Value;
-    }
-
-    private async Task GetSignAsync(Dictionary<string, string> parameters)
-    {
-        parameters.Add("ts", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
-        //按照 key 的字母顺序排序
-        var sortedKeys = parameters.Keys.OrderBy(k => k, StringComparer.Ordinal);
-        //  拼接成一个长字符串
-        var stringToSignBuilder = new StringBuilder();
-        foreach (var key in sortedKeys)
-        {
-            stringToSignBuilder.Append(key);
-            stringToSignBuilder.Append("=");
-            stringToSignBuilder.Append(parameters[key]); // 注意：value不需要URL编码
-            stringToSignBuilder.Append("&");
-        }
-
-        // 移除最后一个多余的 '&'
-        if (stringToSignBuilder.Length > 0)
-            stringToSignBuilder.Length--;
-
-        var stringToSign = stringToSignBuilder.ToString();
-        using var response =
-            await httpClient.PostAsync("https://api.greepar.uk/getSign", new StringContent(stringToSign));
-        var sign = await response.Content.ReadAsStringAsync();
-        parameters.Add("sign", sign);
     }
 }
