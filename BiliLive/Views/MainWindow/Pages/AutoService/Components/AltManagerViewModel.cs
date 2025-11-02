@@ -1,16 +1,13 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Core.Services;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -27,7 +24,7 @@ public partial class DanmakuItem(string text,Action<DanmakuItem> removeAction) :
 }
 public partial class AltManagerViewModel : ViewModelBase , IDisposable
 {
-    private readonly AltService? _altService;
+    private readonly IAltService? _altService;
     [ObservableProperty] private ObservableCollection<DanmakuItem> _danmakuList = [];
     [ObservableProperty] private Bitmap? _qrCodePic;
     
@@ -45,7 +42,7 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
 
     public AltManagerViewModel()
     {
-        _altService = new AltService();
+        _altService = new AltServiceImpl();
         using var nullQrMs = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/nullQrCode.png"));
         QrCodePic = new Bitmap(nullQrMs);
     }
@@ -81,7 +78,7 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
     private async Task CheckCookieAsync()
     {
         if (CookieValue is null) return;
-        using var tempAltService = new AltService();
+        using var tempAltService = new AltServiceImpl();
         try
         {
             var loginResult = await tempAltService.LoginAsync(CookieValue);
@@ -142,7 +139,7 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
                     case 0:
                         //登录成功
                         AllowDoneClose = true;
-                        var loginResult = await _altService.LoginAsync();
+                        var loginResult = await _altService.LoginAsync(null);
 
                         if (loginResult is LoginSuccess result)
                         {

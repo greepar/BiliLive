@@ -11,7 +11,6 @@ using Avalonia.Threading;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
-using BiliLive.Core.Services.BiliService;
 using BiliLive.Models;
 using BiliLive.Resources;
 using BiliLive.Utils;
@@ -148,7 +147,7 @@ public partial class AutoServiceViewModel : ViewModelBase
                 {
                     try
                     {
-                        var alt = await Alt.CreateAltAsync(altSettings,_biliService, RemoveAlt);
+                        var alt = await Alt.CreateAltAsync(altSettings, RemoveAlt);
                         return new { Result = (Alt?)alt , AltSettings = altSettings , ExceptionMsg = (string?)null };
                     }
                     catch (Exception ex)
@@ -512,7 +511,7 @@ public partial class AutoServiceViewModel : ViewModelBase
                 }
             };
             
-            AltsList.Add(await Alt.CreateAltAsync(altSettings,_biliService,RemoveAlt));
+            AltsList.Add(await Alt.CreateAltAsync(altSettings,RemoveAlt));
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"登录成功，当前账号 {altSettings.UserName}",Geometry.Parse(MdIcons.Check)));
         }
     }
@@ -583,13 +582,13 @@ public partial class Alt : ObservableObject , IDisposable
     private readonly Action<Alt> _removeCallback;
     
     //公共服务
-    private readonly AltService _altService;
+    private readonly IAltService _altService;
     public readonly AltSettings AltSettings;
     
-    private Alt(AltSettings altSettings,IBiliService biliService,Action<Alt> removeCallback)
+    private Alt(AltSettings altSettings,Action<Alt> removeCallback)
     {
         //赋值传入数据
-        _altService = new AltService(biliService,altSettings.CookieString, altSettings.ProxyInfo);
+        _altService = new AltServiceImpl(altSettings.CookieString, altSettings.ProxyInfo);
         AltSettings = altSettings;
         _removeCallback = removeCallback;
         UserName = altSettings.UserName;
@@ -597,9 +596,9 @@ public partial class Alt : ObservableObject , IDisposable
     }
     
     //工厂方法构造函数
-    public static async Task<Alt> CreateAltAsync(AltSettings altSettings, IBiliService biliService ,Action<Alt> removeCallback)
+    public static async Task<Alt> CreateAltAsync(AltSettings altSettings,Action<Alt> removeCallback)
     {
-        var alt = new Alt(altSettings, biliService ,removeCallback);
+        var alt = new Alt(altSettings ,removeCallback);
         await alt.InitializeAsync();
         return alt;
     }
@@ -607,7 +606,7 @@ public partial class Alt : ObservableObject , IDisposable
     //初始化账号信息
     private async Task InitializeAsync()
     {
-        var loginResult= await _altService.LoginAsync(AltSettings.CookieString);
+        var loginResult = await _altService.LoginAsync(AltSettings.CookieString);
         switch (loginResult)
         {
             case LoginSuccess result:
@@ -709,14 +708,15 @@ public partial class Alt : ObservableObject , IDisposable
         {
             foreach (var danmaku in AltSettings.DanmakuList)
             {
-                await _altService.SendDanmakuAsync(danmaku);
+                var roomId = General.State.RoomId ?? throw new Exception("主账号未登录，无法发送弹幕");
+                await _altService.SendDanmakuAsync(danmaku, roomId.ToString());
                 var delay = new Random().Next(1000, 12000);
                 await Task.Delay(delay);
             }
         }
         catch (Exception ex)
         {
-            await ShowWindowHelper.ShowErrorAsync("发送弹幕失败，请检查网络或者代理设置。\n错误信息：" + ex.Message);
+            await ShowWindowHelper.ShowErrorAsync("发送弹幕失败。\n错误信息：" + ex.Message);
             return;
         }
         
@@ -742,7 +742,8 @@ public partial class Alt : ObservableObject , IDisposable
         
         try
         {
-            await _altService.SendGiftAsync();
+            var roomId = General.State.RoomId ?? throw new Exception("主账号未登录，无法发送弹幕");
+            await _altService.SendGiftAsync(roomId.ToString());
         }
         catch (Exception ex)
         {
