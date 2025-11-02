@@ -9,12 +9,6 @@ namespace BiliLive.Core.Interface;
 
 public interface IBiliService
 {
-    //状态相关
-    bool IsLogged { get; }
-    bool IsStreaming { get; set; }
-
-    long RoomId { get; }
-    
     // 登录相关
     Task<LoginResult> LoginAsync(string? biliCookie = null);
     Task<QrLoginInfo?> GetLoginUrlAsync();
@@ -39,22 +33,8 @@ public interface IBiliService
 
 public class BiliServiceImpl : IBiliService
 {
-    public bool IsLogged  { get; private set; }
-    
-    public bool IsStreaming { get; set; }
-    public long RoomId  { get; private set; }
-    
     //登录相关
-    public async Task<LoginResult> LoginAsync(string? biliCookie = null)
-    {
-        var loginResult = await _loginService.LoginAsync(biliCookie);
-        if (loginResult is LoginSuccess) { IsLogged = true; }
-
-        var roomInfo = await _liveService.GetRoomInfoAsync();
-        RoomId = roomInfo.RoomId;
-        return loginResult;
-    }
-    
+    public async Task<LoginResult> LoginAsync(string? biliCookie = null) => await _loginService.LoginAsync(biliCookie);
     public async Task<QrLoginInfo?> GetLoginUrlAsync() => await _loginService.GetLoginUrlAsync();
     public async Task<int?> GeQrStatusCodeAsync(string qrCodeKey) => await _loginService.GeQrStatusCodeAsync(qrCodeKey);
     
@@ -62,14 +42,10 @@ public class BiliServiceImpl : IBiliService
     public async Task<JsonElement> StartLiveAsync() => await _liveService.StartLiveAsync();
     public async Task StopLiveAsync() => await _liveService.StopLiveAsync();
     public async Task<JsonElement> GetAreasListAsync() => await _liveService.GetAreasListAsync();
-
     public async Task<LiveRoomInfo> GetRoomInfoAsync() => await _liveService.GetRoomInfoAsync();
-    
     public async Task<JsonElement> GetMyLastChooseAreaAsync() => await _liveService.GetMyLastChooseAreaAsync();
-    
     public async Task<JsonElement> GetLiveDataAsync(string apiKey) => await _liveService.GetLiveDataAsync(apiKey);
     public async Task<int> GetTodayLiveTimeAsync() => await _liveService.GetTodayLiveTimeAsync();
-
     public async Task ChangeRoomTitleAsync(string title) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Title, title);
     public async Task ChangeRoomAreaAsync(int area) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Area, area);
     public async Task ChangeRoomCoverAsync(byte[] imageBytes) => await _liveService.ChangeRoomInfoAsync(LiveService.ChangeType.Cover, imageBytes);

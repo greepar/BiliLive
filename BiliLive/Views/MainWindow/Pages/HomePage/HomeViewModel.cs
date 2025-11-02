@@ -158,7 +158,7 @@ public partial class HomeViewModel : ViewModelBase
     [RelayCommand]
     private void SelectArea()
     {
-        if (!_biliService.IsLogged) { return; }
+        if (!General.State.IsLogin) { return; }
         AreaSelectorVm.IsLogged = true;
         AreaSelectorVm.RefreshAreasCommand.Execute(null);
         if (AreaSelectorVm.BiliService != null) return;

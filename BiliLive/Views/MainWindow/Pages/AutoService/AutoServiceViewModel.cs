@@ -281,7 +281,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             }
 
             //再检查直播是否被占用
-            if (_biliService.IsStreaming && !skipToday)
+            if (General.State.IsStreaming && !skipToday)
             {
                 const string errText = "当前正在直播,跳过执行今天自动任务。";
                 Dispatcher.UIThread.Post(() =>
@@ -371,7 +371,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             }, token);
 
             //设置biliService直播状态
-            _biliService.IsStreaming = true;
+            General.State.IsStreaming = true;
             isStreamStartedByThis = true;
             
             await Task.Delay(liveDurationSec * 1000, token);
@@ -433,7 +433,7 @@ public partial class AutoServiceViewModel : ViewModelBase
         {
             if (isStreamStartedByThis)
             {
-                _biliService.IsStreaming = false;
+                General.State.IsStreaming = false;
                 WeakReferenceMessenger.Default.Send(new StopRefreshLiveInfoMessage());
             }
         }

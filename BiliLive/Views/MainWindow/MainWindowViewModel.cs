@@ -161,7 +161,6 @@ public partial class MainWindowViewModel : ViewModelBase
         var appConfig = await ConfigManager.LoadConfigAsync();
         
         //初始化AutoService配置
-        // _asVm.InitializeCommand.Execute(null);
         await _asVm.InitializeCommand.ExecuteAsync(null);
         
         //监测Cookie是否存在
@@ -277,7 +276,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (!IsStreaming)
             {
-                if (_biliService.IsStreaming)
+                if (General.State.IsStreaming)
                 {
                     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("当前直播被自动直播占用，请先暂停自动直播。"
                         ,Geometry.Parse(MdIcons.Error)));
@@ -315,7 +314,7 @@ public partial class MainWindowViewModel : ViewModelBase
             await ShowWindowHelper.ShowErrorAsync("启动推流失败:" + ex.Message);
         }
         IsStreaming = !IsStreaming;
-        _biliService.IsStreaming = IsStreaming;
+        General.State.IsStreaming = IsStreaming;
         
     }
     
