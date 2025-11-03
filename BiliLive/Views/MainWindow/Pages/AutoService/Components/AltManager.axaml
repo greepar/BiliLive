@@ -86,8 +86,7 @@
                                                 <!-- <TextBlock>发送的消息:</TextBlock> -->
                                                 <!-- <TextBox Watermark="消息"></TextBox> -->
                                                 <!-- <TextBlock>:</TextBlock> -->
-                                                <Button Command="{Binding AddDanmaku}"
-                                                        CommandParameter="">+</Button>
+                                                <Button Command="{Binding AddDanmaku}">+</Button>
                                                 
                                                 <ItemsControl ItemsSource="{Binding DanmakuList}">
                                                         <!-- <ItemsControl.ItemsPanel> -->

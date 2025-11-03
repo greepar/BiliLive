@@ -11,7 +11,7 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
 {
     public partial class TimePickerViewModel : ObservableObject
     {
-        private bool _isDragging = false;
+        private bool _isDragging;
         private const double ClockCenter = 130;
 
         public event Action<DateTime?>? RequestClose;

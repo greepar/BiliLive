@@ -57,7 +57,7 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
     }
 
     [RelayCommand]
-    public void AddDanmaku(string text)
+    public void AddDanmaku(string text = "")
     {
         //重复检查
         if (DanmakuList.Any(item => item.Text == text)) { return; }

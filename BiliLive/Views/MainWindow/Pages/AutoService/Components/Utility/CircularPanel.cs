@@ -25,7 +25,7 @@ public class CircularPanel : Panel
     }
     
     public static readonly StyledProperty<int> IndexPositionOffsetProperty =
-        AvaloniaProperty.Register<CircularPanel, int>(nameof(IndexPositionOffset), 0);
+        AvaloniaProperty.Register<CircularPanel, int>(nameof(IndexPositionOffset));
 
     public int IndexPositionOffset
     {

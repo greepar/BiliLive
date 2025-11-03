@@ -10,7 +10,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.Threading;
 
 namespace BiliLive.Views.MainWindow;
 
