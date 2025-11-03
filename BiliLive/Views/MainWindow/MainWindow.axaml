@@ -279,9 +279,16 @@
                             <!-- <TextBlock Text="{Binding UserName}"></TextBlock> -->
                             
                             <Grid>
-                                <ProgressBar IsIndeterminate="True"
-                                             Width="120" MinWidth="10"
-                                             IsVisible="{Binding LoadAccountCommand.IsRunning}"/>
+                                <!-- <ProgressBar IsIndeterminate="True" -->
+                                <!--              Width="120" MinWidth="10" -->
+                                <!--              /> -->
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding LoadAccountCommand.IsRunning}" Orientation="Horizontal">
+                                    <ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                                                  Stroke="{DynamicResource Primary}"
+                                                  StrokeThickness="6"
+                                                  IsRotating="True"/>
+                                    <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">Loading ....</TextBlock>
+                                </StackPanel>
                                 
                                 <Border Name="ContentBorder" IsVisible="{Binding !LoadAccountCommand.IsRunning}">
                                     <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch"

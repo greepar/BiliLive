@@ -663,12 +663,17 @@ public partial class Alt : ObservableObject , IDisposable
                 Username = altVm.ProxyUsername,
                 Password = altVm.ProxyPassword
             };
-            if (vmProxyInfo?.ProxyAddress != AltSettings.ProxyInfo?.ProxyAddress)
+            if (vmProxyInfo != null && vmProxyInfo.ProxyAddress != AltSettings.ProxyInfo?.ProxyAddress)
             {
                 try
                 {
-                    if (vmProxyInfo != null) await _altService.TryAddNewProxy(vmProxyInfo);
-                    await InitializeAsync();
+                    if (!string.IsNullOrEmpty(vmProxyInfo.ProxyAddress))
+                    {
+                        await _altService.TryAddNewProxy(vmProxyInfo);
+                        await InitializeAsync();
+                    }
+                    //清除代理
+                    vmProxyInfo = null;
                 }
                 catch (Exception ex)
                 {

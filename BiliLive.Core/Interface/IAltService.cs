@@ -43,19 +43,29 @@ public class AltServiceImpl : IAltService
             UseProxy = true,
             Proxy = proxy
         };
-        _httpClient.Dispose();
         var newHttpClient = new HttpClient(handler, disposeHandler: true);
         newHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-        _httpClient = null!;
+        // 测试代理是否可用
+        try
+        {
+            var response = await newHttpClient.GetAsync(new Uri("https://api.bilibili.com/x/web-interface/nav"));
+            if (!response.IsSuccessStatusCode)
+            {
+              
+                throw new Exception("代理不可用");
+            }
+        }
+        catch (Exception e)
+        {
+            newHttpClient.Dispose();
+            throw new Exception("代理不可用", e);
+        }
+        
+        
+        //可用，替换掉原有的HttpClient
+        _httpClient.Dispose();
         _httpClient = newHttpClient;
         _altService = new AltService(_httpClient,_cookieContainer);
-         
-        // 测试代理是否可用
-        var responseSting = await _httpClient.GetAsync(new Uri("https://api.bilibili.com/x/web-interface/nav"));
-        if (!responseSting.IsSuccessStatusCode)
-        {
-            throw new Exception("代理不可用");
-        }
     }
     
     //释放

@@ -36,7 +36,7 @@ static class Program
             {
                 RenderingMode = 
                     [
-                    AvaloniaNativeRenderingMode.OpenGl
+                    AvaloniaNativeRenderingMode.Metal
                     ]
             })
             .LogToTrace();
