@@ -59,7 +59,7 @@ public static class FfmpegWrapper
             
             var output = await process.StandardError.ReadToEndAsync();
             await process.WaitForExitAsync();
-            return !string.IsNullOrWhiteSpace(output);
+            return string.IsNullOrWhiteSpace(output);
         }
         catch (Exception ex)
         {
