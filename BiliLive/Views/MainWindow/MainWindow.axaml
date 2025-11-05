@@ -82,6 +82,11 @@
                             </Button>
                             <!-- debug mode -->
                             
+                            <ToggleButton Command="{Binding SwitchThemeCommand}"
+                                          Margin="0 0 8 0">
+                                Switch Theme
+                            </ToggleButton>
+                            
                             <!-- 最小化按钮 -->
                             <Button Click="MinimizeButton_OnClick">
                                 <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"/>

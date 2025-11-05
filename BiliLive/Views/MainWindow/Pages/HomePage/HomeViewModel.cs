@@ -172,7 +172,8 @@ public partial class HomeViewModel : ViewModelBase
         if (GeneralState.RoomId == null) return;
         try
         { 
-            BrowserUtil.OpenInBrowser($"{LiveUrlFormat}/{GeneralState.RoomId}");
+            // BrowserUtil.OpenInBrowser($"{LiveUrlFormat}/{GeneralState.RoomId}");
+            await AvaloniaUtils.OpenUrl($"{LiveUrlFormat}/{GeneralState.RoomId}");
         }
         catch (Exception ex)
         {
@@ -200,7 +201,8 @@ public partial class HomeViewModel : ViewModelBase
                 _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
             };
             if (string.IsNullOrEmpty(text) || text.Equals(EmptyText)) return;
-            var clipboard = ClipboardHelper.Get();
+            // var clipboard = ClipboardHelper.Get();
+            var clipboard = AvaloniaUtils.GetClipboard();
             await clipboard.SetTextAsync(text);
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已复制{typeName}到剪贴板", Geometry.Parse(MdIcons.Check)));
         }
@@ -246,7 +248,7 @@ public partial class HomeViewModel : ViewModelBase
     [RelayCommand]
     private async Task ChangeRoomCoverAsync()
     {
-        var filePath = await FolderPickHelper.PickFileAsync("选择要上传的直播间封面",[".jpg",".jpeg",".png"]);
+        var filePath = await AvaloniaUtils.PickFileAsync("选择要上传的直播间封面",[".jpg",".jpeg",".png"]);
         if (filePath == null) return;
         try
         {

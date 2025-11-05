@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -171,8 +172,9 @@ public partial class MainWindowViewModel : ViewModelBase
         
         await LoadLoginResult(loginResult);
     }
-    
 
+#if DEBUG
+    // 打开当前程序文件夹，仅调试模式下存在
     [RelayCommand]
     private void OpenCurrentFolder()
     {
@@ -183,6 +185,18 @@ public partial class MainWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
     }
+#endif
+    
+    private bool _isDarkTheme = true;
+    [RelayCommand]
+    private void SwitchTheme()
+    {
+        _isDarkTheme = !_isDarkTheme;
+        var themeVariant = _isDarkTheme ? ThemeVariant.Light : ThemeVariant.Dark;
+        AvaloniaUtils.SwitchTheme(themeVariant);
+    }
+    
+    [RelayCommand]
     private void StartUpdateTimeService() 
     {
         CurrentTime = DateTime.Now.ToString("HH:mm");

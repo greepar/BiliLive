@@ -443,7 +443,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     private async Task PickFfmpegPathAsync()
     {
         string[] defaultFileExtension = OperatingSystem.IsWindows() ? [".exe"] : [""];
-        var pickFile = await FolderPickHelper.PickFileAsync("Choose Ffmpeg Path",defaultFileExtension);
+        var pickFile = await AvaloniaUtils.PickFileAsync("Choose Ffmpeg Path",defaultFileExtension);
         if (string.IsNullOrWhiteSpace(pickFile))
             return;
         if (await FfmpegWrapper.CheckFfmpegAvailableAsync(pickFile))
@@ -466,7 +466,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先设置Ffmpeg路径",Geometry.Parse(MdIcons.Notice)));
             return;
         }
-        var pickFile = await FolderPickHelper.PickFileAsync("Choose Video Path",[".mp4",".flv",".mkv",".mov",".avi"]);
+        var pickFile = await AvaloniaUtils.PickFileAsync("Choose Video Path",[".mp4",".flv",".mkv",".mov",".avi"]);
         if (string.IsNullOrWhiteSpace(pickFile))
             return;
         if (!await FfmpegWrapper.CheckVideoAvailableAsync(FfmpegPath,pickFile))
