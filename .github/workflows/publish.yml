@@ -3,7 +3,7 @@ name: .NET Multi-Platform Native Publish
 on:
   push:
     branches:
-      - "main"
+      - "master"
     tags:
       - "v*"
   workflow_dispatch:
@@ -47,7 +47,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.100-rc.2.25502.107"
+          dotnet-version: "9.0.305"
 
       - name: Restore dependencies
         run: dotnet restore
