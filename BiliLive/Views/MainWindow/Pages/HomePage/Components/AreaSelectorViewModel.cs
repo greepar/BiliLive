@@ -41,12 +41,13 @@ public partial class AreaSelectorViewModel : ViewModelBase
     public AreaSelectorViewModel()
     {
         if (!Design.IsDesignMode) return;
-        // AreasGroup.Add(new MainAreas("游戏12345", SelectMainArea));
-        // AreasGroup.Add(new MainAreas("娱乐1234", SelectMainArea));
-        // AreasGroup.Add(new MainAreas("生活1223", SelectMainArea));
-        // SubAreaGroup.Add(new SubAreas("单机游戏12312", SelectSubArea));
-        // SubAreaGroup.Add(new SubAreas("手游123213", SelectSubArea));
-        // SubAreaGroup.Add(new SubAreas("桌游棋牌123213", SelectSubArea));
+        IsLogged = true;
+        AreasGroup.Add(new MainAreas("游戏12345", SelectMainArea));
+        AreasGroup.Add(new MainAreas("娱乐1234", SelectMainArea));
+        AreasGroup.Add(new MainAreas("生活1223", SelectMainArea));
+        SubAreaGroup.Add(new SubAreas("原神", SelectSubArea));
+        SubAreaGroup.Add(new SubAreas("崩坏", SelectSubArea));
+        SubAreaGroup.Add(new SubAreas("绝区零", SelectSubArea));
     }
 
     [RelayCommand]

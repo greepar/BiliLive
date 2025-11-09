@@ -11,7 +11,7 @@
             <SolidColorBrush x:Key="SurfaceContainer" Color="#F3EDF7" />
             <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#ECE6EE" />
             <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#E7E0E8" />
-            <SolidColorBrush x:Key="SecondaryContainer" Color="#E9DEF8" />
+            <SolidColorBrush x:Key="SecondaryContainer" Color="#E8DEF8" />
             <SolidColorBrush x:Key="Primary" Color="#66558E" />
             <SolidColorBrush x:Key="InversePrimary" Color="#D1BCFD" />
             <SolidColorBrush x:Key="PrimaryContainer" Color="#EADDFF" />

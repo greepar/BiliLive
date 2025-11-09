@@ -1,14 +1,15 @@
-﻿using Avalonia.Animation.Easings;
-using Avalonia.Input;
-
-namespace BiliLive.Resources.Controls;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
 using System;
+using Avalonia.Animation.Easings;
+using Avalonia.Input;
+
+namespace BiliLive.Resources.Controls;
+
+
 
 public class RippleBorder : Border
 {
@@ -43,7 +44,6 @@ public class RippleBorder : Border
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        
         var position = e.GetPosition(this);
         StartRippleAnimation(position);
     }
@@ -65,7 +65,6 @@ public class RippleBorder : Border
             
             // 取对角线距离
             // var maxDistance = Math.Sqrt(maxHorizontal * maxHorizontal + maxVertical * maxVertical);
-
             
             // 涟漪元素
             var ripple = new Border

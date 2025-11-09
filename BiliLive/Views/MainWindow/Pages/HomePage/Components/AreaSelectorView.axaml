@@ -52,52 +52,27 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Margin="5" Command="{Binding SelectSubAreaCommand}">
-                                    <TextBlock Text="{Binding SubAreaName }" />
+                                <Button Margin="2 0 2 0" Command="{Binding SelectSubAreaCommand}"
+                                        CornerRadius="12" Height="30"
+                                        Background="{DynamicResource SurfaceContainerHighest}"
+                                        Theme="{StaticResource MdButton}">
+                                    <TextBlock
+                                        Margin="16,0"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding SubAreaName }" />
                                 </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
                 
+              
+
+                
             </Grid>
 
         </Grid>
        
     </Grid>
-    <!-- <Grid> -->
-    <!--     <Grid.RowDefinitions> -->
-    <!--         <RowDefinition Height="Auto"/> -->
-    <!--         <RowDefinition Height="*"/> -->
-    <!--     </Grid.RowDefinitions> -->
-    <!-- -->
-    <!--     <TextBlock Text="选择分区" FontSize="16" FontWeight="Bold" Margin="10,10,0,5"/> -->
-    <!-- -->
-    <!--     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,0,10,10"> -->
-    <!--         <ItemsControl Items="{Binding AreaGroups}"> -->
-    <!--             <ItemsControl.ItemTemplate> -->
-    <!--                 <DataTemplate> -->
-    <!--                     <StackPanel Margin="0,0,0,15"> -->
-    <!--                         <TextBlock Text="{Binding GroupName}" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,5"/> -->
-    <!--                         <ItemsControl Items="{Binding Areas}"> -->
-    <!--                             <ItemsControl.ItemsPanel> -->
-    <!--                                 <ItemsPanelTemplate> -->
-    <!--                                     <WrapPanel ItemWidth="100" ItemHeight="30" Orientation="Horizontal"/> -->
-    <!--                                 </ItemsPanelTemplate> -->
-    <!--                             </ItemsControl.ItemsPanel> -->
-    <!--                             <ItemsControl.ItemTemplate> -->
-    <!--                                 <DataTemplate> -->
-    <!--                                     <Button Content="{Binding AreaName}" Width="90" Height="30" Margin="5" -->
-    <!--                                             Command="{Binding DataContext.SelectAreaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" -->
-    <!--                                             CommandParameter="{Binding}"/> -->
-    <!--                                 </DataTemplate> -->
-    <!--                             </ItemsControl.ItemTemplate> -->
-    <!--                         </ItemsControl> -->
-    <!--                     </StackPanel> -->
-    <!--                 </DataTemplate> -->
-    <!--             </ItemsControl.ItemTemplate> -->
-    <!--         </ItemsControl> -->
-    <!--     </ScrollViewer> -->
-    <!-- </Grid> -->
 
 </UserControl>

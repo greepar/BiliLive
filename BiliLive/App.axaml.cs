@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -56,5 +57,13 @@ public class App : Application
         }
         base.OnFrameworkInitializationCompleted();
     }
-    
+
+    private void TrayIcon_OnClicked(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            // desktop.MainWindow?.Hide();
+            desktop.MainWindow?.Show();
+        }
+    }
 }

@@ -22,7 +22,7 @@
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="True"/>
-                   <ProgressRing Width="40" Height="40" Speed="180" SweepAngle="120"
+                   <ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="False"/>

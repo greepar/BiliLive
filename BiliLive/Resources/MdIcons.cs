@@ -7,10 +7,9 @@ namespace BiliLive.Resources;
 public class GeometryExtension(string data) : MarkupExtension
 {
     private string Data { get; } = data;
-
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        return Geometry.Parse(Data);
+        return StreamGeometry.Parse(Data);
     }
 }
 

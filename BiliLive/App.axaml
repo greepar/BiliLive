@@ -9,6 +9,27 @@
         <local:ViewLocator />
     </Application.DataTemplates>
 
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/avalonia-logo.ico" 
+                      Clicked="TrayIcon_OnClicked"
+                      ToolTipText="Avalonia Tray Icon ToolTip">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Settings">
+                            <NativeMenu>
+                                <NativeMenuItem Header="Open"   />
+                                <NativeMenuItem Header="Start with system"   />
+                                <NativeMenuItemSeparator />
+                                <NativeMenuItem Header="Exit"  />
+                            </NativeMenu>
+                        </NativeMenuItem>
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+    
     <Application.Styles>
         <FluentTheme />
         <Style Selector="Window,UserControl">
@@ -22,6 +43,13 @@
             </Setter>
         </Style>
         <Style Selector="StackPanel">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Grid">
             <Setter Property="Transitions">
                 <Transitions>
                     <BrushTransition Property="Background" Duration="0.3"/>

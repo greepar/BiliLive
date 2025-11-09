@@ -163,12 +163,12 @@ public partial class MainWindowViewModel : ViewModelBase
         
         //初始化AutoService配置
         await _asVm.InitializeCommand.ExecuteAsync(null);
+        //启动时间更新服务
+        StartUpdateTimeService();
         
         //监测Cookie是否存在
         if (string.IsNullOrWhiteSpace(appConfig.BiliCookie)) { return; }
         var loginResult = await _biliService.LoginAsync(appConfig.BiliCookie);
-        //启动时间更新服务
-        StartUpdateTimeService();
         
         await LoadLoginResult(loginResult);
     }
@@ -240,8 +240,7 @@ public partial class MainWindowViewModel : ViewModelBase
            
             GeneralState.UserName = result.UserName;
             GeneralState.UserId = result.UserId;
-            
-
+            GeneralState.IsLogin = true;
             
             var faceBytes = result.UserFaceBytes;
             using var stream = new MemoryStream(faceBytes);
