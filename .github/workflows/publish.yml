@@ -2,11 +2,12 @@ name: .NET Multi-Platform Native Publish
 
 on:
   push:
-    branches:
-      - "master"
     tags:
       - "v*"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-and-publish:
