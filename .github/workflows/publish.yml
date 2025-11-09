@@ -3,7 +3,7 @@ name: .NET Multi-Platform Native Publish
 on:
   push:
     branches:
-      - "master"
+      - "main"
     tags:
       - "v*"
   workflow_dispatch:
