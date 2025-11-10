@@ -56,10 +56,25 @@
                 </Transitions>
             </Setter>
         </Style>
-        <Style Selector="Grid">
+        <Style Selector="TextBox">
             <Setter Property="Transitions">
                 <Transitions>
-                    <BrushTransition Property="Background" Duration="0.3"/>
+                    <BrushTransition Property="Foreground" Duration="0.3"/>
+                    <BrushTransition Property="BorderBrush" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="TextBlock">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="SvgBox">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Fill" Duration="0.3"/>
                 </Transitions>
             </Setter>
         </Style>

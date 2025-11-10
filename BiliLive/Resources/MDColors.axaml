@@ -24,6 +24,7 @@
             <SolidColorBrush x:Key="Surface" Color="#1E1B24" />
             <SolidColorBrush x:Key="SurfaceVariant" Color="#49454F" />
             <SolidColorBrush x:Key="OnSurface" Color="#E7E0E8" />
+            <SolidColorBrush x:Key="InverseOnSurface" Color="#322F35" />
             <SolidColorBrush x:Key="SurfaceContainer" Color="#2B272F" />
             <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#35313A" />
             <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#3F3B45" />

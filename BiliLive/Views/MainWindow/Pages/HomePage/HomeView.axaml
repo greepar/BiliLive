@@ -120,6 +120,14 @@
                       RowDefinitions="Auto * ">
                     
                     <Grid.Styles>
+                        <Style Selector="Button.copy">
+                            <Setter Property="Transitions">
+                                <Transitions>
+                                    <BrushTransition Property="Background" Duration="0.3"/>
+                                </Transitions>
+                            </Setter>
+                        </Style>
+                        
                         <Style Selector="Button.copy:pressed">
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="RenderTransform" Value="{x:Null}"/>
@@ -184,6 +192,7 @@
                                 <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*,Auto">
                                     <Grid Grid.Column="0">
                                         <TextBox Grid.Column="0" Height="36" CornerRadius="11"
+                                                 SelectionBrush="Transparent"
                                                  Text="{Binding InputRoomTitle}"/>
                                         <Button Height="22" Width="22"  HorizontalAlignment="Right"
                                                 Margin="0 0 8 0" CornerRadius="8"
