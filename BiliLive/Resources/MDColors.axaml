@@ -17,6 +17,9 @@
             <SolidColorBrush x:Key="PrimaryContainer" Color="#EADDFF" />
             <SolidColorBrush x:Key="OnPrimary" Color="#FFFFFF" />
             <SolidColorBrush x:Key="OnPrimaryFixedVariant" Color="#4E3D75" />
+            <SolidColorBrush x:Key="Error" Color="#B3261E" />
+            <SolidColorBrush x:Key="Success" Color="#2E7D32" />
+            <SolidColorBrush x:Key="Warning" Color="#EF6C00" />
             
         </ResourceDictionary>
 
@@ -34,6 +37,9 @@
             <SolidColorBrush x:Key="PrimaryContainer" Color="#6B5CA0" />
             <SolidColorBrush x:Key="OnPrimary" Color="#FFFFFF" />
             <SolidColorBrush x:Key="OnPrimaryFixedVariant" Color="#4E3D75" />
+            <SolidColorBrush x:Key="Error" Color="#F2B8B5" />
+            <SolidColorBrush x:Key="Success" Color="#81C784" />
+            <SolidColorBrush x:Key="Warning" Color="#FFB74D" />
         </ResourceDictionary>
 
         

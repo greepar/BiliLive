@@ -101,6 +101,13 @@
                     </Transitions>
                 </Border.Transitions>
 
+                <Border.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                </Border.Styles>
+                
                 <Grid RowDefinitions="Auto,*">
                     <Grid ZIndex="1" Grid.Row="0" Height="32" VerticalAlignment="Top">
                         <Border Background="#F8EAF3" />
@@ -109,13 +116,11 @@
                                        FontWeight="Medium"
                                        Margin="14 0 0 0"
                                        Foreground="{DynamicResource OnSurface}"
-                                       VerticalAlignment="Center"
                                        HorizontalAlignment="Left" />
 
                             <Border Grid.Column="1"
                                     Margin="5 0 0 0"
                                     HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
                                     BoxShadow="0 0.56 0 0 #26000000"
                                     Height="23" CornerRadius="12"
                                     Background="#FDDEE9">
@@ -148,8 +153,6 @@
                         <Grid Grid.Row="0"
                               ColumnDefinitions="Auto,*">
                             <TextBlock Grid.Column="0"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"
                                        Margin="6 0 7 2"
                                        FontSize="13"
                                        FontWeight="Bold">
@@ -161,9 +164,11 @@
                                     Height="28"
                                     FontSize="12"
                                     Command="{Binding PickFfmpegPathCommand}"
-                                    Content="{Binding FfmpegPath,StringFormat=' {0}'}"
                                     Background="{DynamicResource Surface}"
                                     Theme="{StaticResource MdButton}">
+                                <TextBlock Text="{Binding FfmpegPath}"
+                                           Margin="10 0 0 0"
+                                           HorizontalAlignment="Left"> </TextBlock>
                                 <Button.Styles>
                                     <Style Selector="Button:pointerover /template/ ContentPresenter">
                                         <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
@@ -191,10 +196,12 @@
                                         CornerRadius="12"
                                         Height="28"
                                         FontSize="12"
-                                        Content="{Binding VideoPath,StringFormat=' {0}'}"
                                         Command="{Binding PickVideoPathCommand}"
                                         Background="{DynamicResource Surface}"
                                         Theme="{StaticResource MdButton}">
+                                    <TextBlock Text="{Binding VideoPath}"
+                                               Margin="10 0 0 0"
+                                               HorizontalAlignment="Left"> </TextBlock>
                                     <Button.Styles>
                                         <Style Selector="Button:pointerover /template/ ContentPresenter">
                                             <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />

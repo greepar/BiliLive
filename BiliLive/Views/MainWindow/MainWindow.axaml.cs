@@ -59,7 +59,7 @@ public partial class MainWindow : Window
     private void ResizeWindowMove(object? sender, PointerEventArgs e)
     {
         var position = e.GetPosition(MainBorder);
-        Console.WriteLine(  $"Move Positon: {position}, StartPositon: {_startPoint}");
+        // Console.WriteLine(  $"Move Positon: {position}, StartPositon: {_startPoint}");
         var deltaX = position.X - _startPoint.X;
         var deltaY = position.Y - _startPoint.Y;
         MainBorder.Width = double.Max(_originalWidth + deltaX,800);

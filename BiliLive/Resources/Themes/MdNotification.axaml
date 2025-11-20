@@ -1,0 +1,109 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Add Resources Here -->
+    
+
+
+<Design.PreviewWith>
+    <Border Padding="0" Background="White">
+      <NotificationCard Theme="{DynamicResource MdNotification}" NotificationType="Success">
+        <!-- <Notification Title="Welcome" Message="Hello, Semi.Avalonia!" /> -->
+      </NotificationCard>
+    </Border>
+  </Design.PreviewWith>
+    
+  <ControlTheme x:Key="MdNotification" TargetType="NotificationCard">
+    <Setter Property="UseLayoutRounding" Value="True"/>
+    <Setter Property="Width" Value="360"/>
+    <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+    <Setter Property="RenderTransformOrigin" Value="50%,75%"/>
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="{DynamicResource SurfaceContainer}" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <LayoutTransformControl Name="PART_LayoutTransformControl" UseRenderTransform="True">
+          <Border CornerRadius="{TemplateBinding CornerRadius}" BoxShadow="0 4 8 2 #20000000" Margin="8">
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    ClipToBounds="True">
+              <DockPanel>
+                <Panel x:Name="PART_HeaderBar" Height="3" Background="{DynamicResource Primary}" DockPanel.Dock="Bottom" />
+                <Grid ColumnDefinitions="*,Auto">
+                  <ContentPresenter Name="PART_ContentPresenter" Grid.Column="0" MinHeight="48" Margin="16,12,8,12" Content="{TemplateBinding Content}" />
+                  <Button Grid.Column="1" Width="32" Height="32" Margin="0,8,8,0" Padding="8"
+                          VerticalAlignment="Top" Background="Transparent"
+                          Theme="{DynamicResource MdButton}"
+                          Command="{Binding $parent[NotificationCard].Close}">
+                    <PathIcon Width="10" Height="10" Foreground="{DynamicResource OnSurface}"
+                              Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+                  </Button>
+                </Grid>
+              </DockPanel>
+            </Border>
+          </Border>
+        </LayoutTransformControl>
+      </ControlTemplate>
+    </Setter>
+
+    <ControlTheme.Animations>
+      <Animation Duration="0:0:0.45" Easing="QuadraticEaseIn" FillMode="Forward">
+        <KeyFrame Cue="0%">
+          <Setter Property="Opacity" Value="0"/>
+          <Setter Property="TranslateTransform.X" Value="300"/>
+          <Setter Property="ScaleTransform.ScaleX" Value="1"/>
+          <Setter Property="ScaleTransform.ScaleY" Value="1"/>
+        </KeyFrame>
+        <KeyFrame Cue="100%">
+          <Setter Property="Opacity" Value="1"/>
+          <Setter Property="TranslateTransform.X" Value="0"/>
+          <Setter Property="ScaleTransform.ScaleX" Value="1"/>
+          <Setter Property="ScaleTransform.ScaleY" Value="1"/>
+        </KeyFrame>
+      </Animation>
+    </ControlTheme.Animations>
+
+    <Style Selector="^[IsClosing=true] /template/ LayoutTransformControl#PART_LayoutTransformControl">
+      <Setter Property="RenderTransformOrigin" Value="50%,0%"/>
+      <Style.Animations>
+        <Animation Duration="0:0:0.75" Easing="QuadraticEaseOut" FillMode="Forward">
+          <KeyFrame Cue="0%">
+            <Setter Property="TranslateTransform.X" Value="0"/>
+            <Setter Property="ScaleTransform.ScaleY" Value="1"/>
+            <Setter Property="Opacity" Value="1"/>
+          </KeyFrame>
+          <KeyFrame Cue="100%">
+            <Setter Property="TranslateTransform.X" Value="300"/>
+            <Setter Property="ScaleTransform.ScaleY" Value="1"/>
+            <Setter Property="Opacity" Value="0"/>
+          </KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+
+    <Style Selector="^[IsClosing=true]">
+      <Style.Animations>
+        <Animation Duration="0:0:1.25" Easing="QuadraticEaseOut" FillMode="Forward">
+          <KeyFrame Cue="100%">
+            <Setter Property="IsClosed" Value="True"/>
+          </KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+
+    <Style Selector="^:information /template/ Panel#PART_HeaderBar">
+      <Setter Property="Background" Value="{DynamicResource Primary}"/>
+    </Style>
+    <Style Selector="^:success /template/ Panel#PART_HeaderBar">
+      <Setter Property="Background" Value="{DynamicResource Success}"/>
+    </Style>
+    <Style Selector="^:warning /template/ Panel#PART_HeaderBar">
+      <Setter Property="Background" Value="{DynamicResource Warning}"/>
+    </Style>
+    <Style Selector="^:error /template/ Panel#PART_HeaderBar">
+      <Setter Property="Background" Value="{DynamicResource Error}"/>
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

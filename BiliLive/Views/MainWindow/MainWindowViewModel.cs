@@ -87,7 +87,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(StreamButtonText))]
     private bool _isStreaming;
-    public string StreamButtonText => IsStreaming ? "Stop stream" : "Start stream";
+    public string StreamButtonText => IsStreaming ? "停止直播" : "开始直播";
     public Geometry StreamButtonIcon => IsStreaming ? Geometry.Parse(MdIcons.Restart) : Geometry.Parse(MdIcons.Start);
     
     

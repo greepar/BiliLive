@@ -204,7 +204,7 @@
                                                       CommandParameter="{x:Static mainWindow:NavigationPage.Home}">
                                                 <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
                                                     <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Home}}"/>
-                                                    <TextBlock Grid.Column="1" Text="Home Page" />
+                                                    <TextBlock Grid.Column="1" Text="主页" />
                                                 </Grid>
                                         </ToggleButton>
 
@@ -215,7 +215,7 @@
                                                       CommandParameter="{x:Static mainWindow:NavigationPage.AutoService}">
                                                 <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
                                                     <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}"/>
-                                                    <TextBlock Grid.Column="1" Text="Auto Service" />
+                                                    <TextBlock Grid.Column="1" Text="自动服务" />
                                                 </Grid>
                                         </ToggleButton>
 
@@ -228,7 +228,7 @@
                                                 <Grid Margin="7 0 5 0">
                                                     <Grid IsHitTestVisible="False" ColumnDefinitions="Auto,*">
                                                         <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
-                                                        <TextBlock Grid.Column="1" Text="About" />
+                                                        <TextBlock Grid.Column="1" Text="关于" />
                                                     </Grid>
                                                 </Grid>
                                         </ToggleButton>

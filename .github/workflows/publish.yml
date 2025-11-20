@@ -19,19 +19,25 @@ jobs:
         include:
           # --- Windows ---
           - os: windows
+            arch: x86
+            runner: windows-latest
+          - os: windows
             arch: x64
             runner: windows-latest
           - os: windows
             arch: arm64
-            runner: windows-11-arm
+            runner: windows-latest
 
           # --- Linux ---
           - os: linux
             arch: x64
             runner: ubuntu-latest
           - os: linux
+            arch: arm
+            runner: ubuntu-latest
+          - os: linux
             arch: arm64
-            runner: ubuntu-22.04-arm
+            runner: ubuntu-latest
 
           # --- macOS ---
           - os: macos
@@ -50,11 +56,34 @@ jobs:
         with:
           dotnet-version: "10.0.100"
 
+      - name: Install ARM64 cross-compilation tools (Linux ARM64)
+        if: runner.os == 'Linux' && matrix.arch == 'arm64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang llvm lld gcc-aarch64-linux-gnu
+
+      - name: Install ARM cross-compilation tools (Linux ARM)
+        if: runner.os == 'Linux' && matrix.arch == 'arm'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang llvm lld gcc-arm-linux-gnueabihf
+
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Publish
-        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish
+      - name: Publish (Windows)
+        if: runner.os == 'Windows'
+        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish -r win-${{ matrix.arch }}
+
+      - name: Publish (Linux)
+        if: runner.os == 'Linux'
+        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish -r linux-${{ matrix.arch }} -p:LinkerFlavor=lld
+        env:
+          COMPlus_CrossCompiling: ${{ matrix.arch == 'arm64' && '1' || '0' }}
+
+      - name: Publish (macOS)
+        if: runner.os == 'macOS'
+        run: dotnet publish BiliLive/BiliLive.csproj -c Release -o publish -r osx-${{ matrix.arch }}
 
       - name: Clean up debug symbols (Windows)
         if: runner.os == 'Windows'
