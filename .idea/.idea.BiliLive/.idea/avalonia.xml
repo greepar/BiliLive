@@ -58,6 +58,12 @@
         <entry key="BiliLive/Views/MainWindow/Pages/QrLoginPage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/QrLoginPageView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/Settings/SettingsView.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Controls/Controls.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Controls/ThemeControl/Button.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Controls/ThemeControl/MdButton.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Controls/ThemeControl/ProgressRing.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Material3.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Themes/Material3Theme.axaml" value="BiliLive/BiliLive.csproj" />
       </map>
     </option>
   </component>

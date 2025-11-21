@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.About"
+             xmlns:md3="https://github.com/greepar/md3"
              mc:Ignorable="d" d:DesignWidth="870" d:DesignHeight="535"
              x:Class="BiliLive.Views.MainWindow.Pages.About.AboutView"
              x:DataType="vm:AboutViewModel">
@@ -17,12 +18,14 @@
             <StackPanel>
                 <!-- <TextBlock>这里是关于页面</TextBlock> -->
 
+                <Button CornerRadius="12"> hello</Button>
+                
                <StackPanel Orientation="Horizontal">
-                   <ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="True"/>
-                   <ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
+                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="False"/>

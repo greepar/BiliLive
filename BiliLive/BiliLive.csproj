@@ -86,5 +86,6 @@
     
     <ItemGroup>
       <ProjectReference Include="..\BiliLive.Core\BiliLive.Core.csproj" />
+      <ProjectReference Include="..\Material3.UI\Material3.UI.csproj" />
     </ItemGroup>
 </Project>

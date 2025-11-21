@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 
-namespace BiliLive.Resources.Controls;
+namespace Material3.UI.Controls;
 
 public class ProgressRing : Control
 {
@@ -210,4 +210,3 @@ public class ProgressRing : Control
         _timer.Stop();
     }
 }
-

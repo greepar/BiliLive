@@ -4,6 +4,7 @@
         xmlns:res="clr-namespace:BiliLive.Resources"
         xmlns:biliLive="clr-namespace:BiliLive"
         xmlns:converter="clr-namespace:BiliLive.Views.MainWindow.Converter"
+        xmlns:md3="https://github.com/greepar/md3"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         Title="BiliLive"
@@ -288,7 +289,7 @@
                                 <!--              Width="120" MinWidth="10" -->
                                 <!--              /> -->
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding LoadAccountCommand.IsRunning}" Orientation="Horizontal">
-                                    <ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                                    <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
                                                   Stroke="{DynamicResource Primary}"
                                                   StrokeThickness="6"
                                                   IsRotating="True"/>

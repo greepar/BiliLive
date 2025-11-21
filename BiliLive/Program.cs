@@ -29,7 +29,7 @@ static class Program
             {
                 RenderingMode = 
                     [
-                    X11RenderingMode.Egl
+                    X11RenderingMode.Glx
                     ]
             })
             .With(new AvaloniaNativePlatformOptions()

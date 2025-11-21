@@ -5,11 +5,14 @@
 
 
 <Design.PreviewWith>
-    <Border Padding="0" Background="White">
-      <NotificationCard Theme="{DynamicResource MdNotification}" NotificationType="Success">
-        <!-- <Notification Title="Welcome" Message="Hello, Semi.Avalonia!" /> -->
-      </NotificationCard>
-    </Border>
+  <StackPanel>
+    <NotificationCard Theme="{DynamicResource MdNotification}" NotificationType="Success">
+      <!-- <Notification Title="Welcome" Message="Hello, Semi.Avalonia!" /> -->
+    </NotificationCard>
+    <NotificationCard Theme="{DynamicResource MdNotification}">
+          
+    </NotificationCard>
+  </StackPanel>
   </Design.PreviewWith>
     
   <ControlTheme x:Key="MdNotification" TargetType="NotificationCard">
