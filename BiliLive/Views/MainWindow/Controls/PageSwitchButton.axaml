@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:md3="https://github.com/greepar/md3">
     <!-- Add Resources Here -->
     <Design.PreviewWith>
         <Border Background="{DynamicResource Surface}" Padding="20">
@@ -29,7 +30,6 @@
         
         <Setter Property="RenderTransform" Value="{x:Null}"></Setter>
         
-        
         <!-- 添加ControlTemplate -->
         <Setter Property="Template">
             <ControlTemplate>
@@ -46,7 +46,7 @@
                            Background="{TemplateBinding Background}"
                            CornerRadius="{TemplateBinding CornerRadius}">
                        <Grid>
-                           <RippleBorder RippleColor="#73FFB6C1"
+                           <md3:RippleEffect RippleColor="#73FFB6C1"
                                          CornerRadius="{TemplateBinding CornerRadius}"
                                          Background="Transparent"
                                          RippleDuration="1.2"/>

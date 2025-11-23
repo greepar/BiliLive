@@ -1,73 +1,269 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:md3="https://github.com/greepar/md3"
                     x:ClassModifier="internal">
     <!-- Add Resources Here -->
     <Design.PreviewWith>
         <Border Background="{DynamicResource Surface}" Padding="20">
-            <StackPanel Spacing="0">
+            <StackPanel Spacing="5">
                 <ComboBox></ComboBox>
-                <Button
-                    Theme="{DynamicResource MdButton}"
-                    CornerRadius="12"
-                    Padding="10"
-                    Margin="0"
-                    Height="30"
-                    Width="200"
-                    Background="{DynamicResource SurfaceContainer}">Test Button</Button>
-                <Button
-                    Theme="{DynamicResource MdButton}"
-                    Padding="10"
-                    Height="40"
-                    Width="50"
-                    Background="{DynamicResource SurfaceContainer}">Test Button</Button>
+                <Button Classes="Elevated">Elevated Button</Button>
+                <Button Classes="Elevated" IsEnabled="False">Elevated Disabled</Button>
+                
+                <Button Classes="Filled">Filled Button</Button>
+                <Button Classes="Filled" IsEnabled="False">Filled Disabled</Button>
+                
+                <Button Classes="Tonal">Tonal Button</Button>
+                <Button Classes="Tonal" IsEnabled="False">Tonal Disabled</Button>
+                
+                <Button Classes="Outline">Outline Button</Button>
+                <Button Classes="Outline" IsEnabled="False">Outline Disabled</Button>
+                
+                <Button Classes="Text">Text Button</Button>
+                <Button Classes="Text" IsEnabled="False">Text Disabled</Button>
             </StackPanel>
         </Border>
     </Design.PreviewWith>
     
     <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
-        
-        <Setter Property="RenderTransform" Value="{x:Null}"></Setter>
-        <Setter Property="ClipToBounds" Value="False"></Setter>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="CornerRadius" Value="1000"/>
+        <Setter Property="Background" Value="#E8DEF8"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="16 10 16 10"/>
+        <Setter Property="RenderTransform" Value="{x:Null}"/>
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
         
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="OutBorder"
-                        Height="{TemplateBinding Height}"
-                        Width="{TemplateBinding Width}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Background="{TemplateBinding Background}"
-                        >
-                    <Border Name="InnerBorder"
-                            BorderBrush="Transparent"
-                            ClipToBounds="True"
-                            Background="Transparent"
-                            CornerRadius="{TemplateBinding CornerRadius}">
-                        <Grid>
-                            <ContentPresenter Name="PartContentPresenter"
-                                              IsHitTestVisible="False"
-                                              Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              Margin="{TemplateBinding Padding}"/>
-                        </Grid> 
-                    </Border>
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Border.Transitions>
+                        <Transitions>
+                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.4" Easing="ExponentialEaseOut"/>
+                        </Transitions>
+                    </Border.Transitions>
+                    <Grid>
+                        <Border Name="InnerBorder"
+                                Height="{TemplateBinding Height}"
+                                Width="{TemplateBinding Width}"
+                                BorderBrush="Transparent"
+                                ClipToBounds="True"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                            <Grid>
+                                <Border IsHitTestVisible="False"
+                                        Name="InnerBackground"
+                                        Opacity="0"
+                                        CornerRadius="{TemplateBinding CornerRadius}">
+                                    <Border.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="Opacity" Duration="0:0:1.2" Easing="ExponentialEaseOut"/>
+                                        </Transitions>
+                                    </Border.Transitions>
+                                </Border>
+                                <ContentPresenter Name="PartContentPresenter"
+                                                  IsHitTestVisible="False"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Foreground="{TemplateBinding Foreground}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  Margin="{TemplateBinding Padding}"/>
+                            </Grid>
+                        </Border>
+                        <Border IsHitTestVisible="False" Name="OutlineBorder" Margin="0"
+                                IsVisible="False" Opacity="0.9"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BorderThickness="1"
+                                Background="Transparent">
+                        </Border>
+                        <md3:InkRipple Name="PartRipple"
+                                       Brush="{TemplateBinding Foreground}"
+                                       CornerRadius="{TemplateBinding CornerRadius}"
+                                       BaseOpacity="{DynamicResource MdSysStatePressedOpacity}" />
+                    </Grid>
                 </Border>
             </ControlTemplate>
         </Setter>
         
-        
-        <Style Selector= "^:pressed /template/ Border#OutBorder">
-            <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
+        <Style Selector="^.Elevated">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}" />
+            
+            <Style Selector="^ /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 1.5 3 1.1 #26000000" />
+            </Style>
+            
+            <Style Selector="^:pointerover /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 1.2 3 2 #26000000" />
+            </Style>
+            
+            <Style Selector="^:pointerover /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.08"/>
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            </Style>
+            
+            <Style Selector="^:pressed /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 1 2 0.5 #26000000"/>
+            </Style>
+            
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBorder">
+                <Setter Property="Opacity" Value="0.38"/>
+            </Style> 
+            <Style Selector="^:disabled /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.12"/>
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            </Style>
+            
         </Style>
         
+        <Style Selector="^.Filled">
+            <Setter Property="Foreground" Value="{DynamicResource Surface}"></Setter>
         
-        <Style Selector="^:pointerover /template/ Border#OutBorder">
-            <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
-        </Style>  
+            <Style Selector="^ /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 0 0 0 #26000000" />
+            </Style>
+            <Style Selector="^ /template/ Border#InnerBackground">
+                <Setter Property="Background" Value="{DynamicResource Primary}" />
+                <Setter Property="Opacity" Value="1" />
+            </Style>
         
-        <Style Selector="^:disabled /template/ Border#OutBorder">
-            <Setter Property="BoxShadow" Value="0 0 2 0 #32000000" />
+            <Style Selector="^:pointerover /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 1 3 2 #26000000" />
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#OutlineBorder">
+                <Setter Property="IsVisible" Value="True"/>
+                <Setter Property="Background" Value="{DynamicResource OnPrimary}"/>
+                <Setter Property="Opacity" Value="0.08"/>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#InnerBackground">
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            </Style>
+        
+            <Style Selector="^:pressed /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 1 2 1 #26000000"/>
+            </Style>
+        
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBorder">
+                <Setter Property="Opacity" Value="0.38"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.12"/>
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^.Tonal">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"></Setter>
+        
+            <Style Selector="^ /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 0 0 0 #26000000" />
+            </Style>
+            <Style Selector="^ /template/ Border#InnerBackground">
+                <Setter Property="Background" Value="{DynamicResource PrimaryContainer}" />
+                <Setter Property="Opacity" Value="1" />
+            </Style>
+            
+            <Style Selector="^:pointerover /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 1 1.5 1 #26000000" />
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#OutlineBorder">
+                <Setter Property="IsVisible" Value="True"/>
+                <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+                <Setter Property="Opacity" Value="0.08"/>
+            </Style>
+            
+            <Style Selector="^:pressed /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 1 1 0.5 #26000000"/>
+            </Style>
+        
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBorder">
+                <Setter Property="Opacity" Value="0.38"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#OutBorder">
+                <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.12"/>
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^.Outline">
+            <Setter Property="Background" Value="Transparent" />
+            
+            <Style Selector="^ /template/ Border#OutlineBorder">
+                <Setter Property="IsVisible" Value="True"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+            </Style>
+            
+            <Style Selector="^:pointerover /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.08"/>
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            </Style>
+            
+            <Style Selector="^:pressed /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.12"/>
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            </Style>
+            
+            <Style Selector="^:disabled /template/ Border#OutlineBorder">
+                <Setter Property="Opacity" Value="0.12"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}" />
+            </Style>
+            
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBorder">
+                <Setter Property="Opacity" Value="0.38"/>
+            </Style>
+        </Style>
+        
+        <Style Selector="^.Text">
+            <Setter Property="Background" Value="Transparent" />
+            
+            
+            <Style Selector="^:pointerover /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.08"/>
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            </Style>
+            
+            <Style Selector="^:pressed /template/ Border#InnerBackground">
+                <Setter Property="Opacity" Value="0.12"/>
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            </Style>
+            
+            <Style Selector="^:disabled /template/ Border#OutlineBorder">
+                <Setter Property="Opacity" Value="0.12"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}" />
+            </Style>
+            
+            <Style Selector="^:disabled">
+                <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#InnerBorder">
+                <Setter Property="Opacity" Value="0.38"/>
+            </Style>
         </Style>
         
     </ControlTheme>

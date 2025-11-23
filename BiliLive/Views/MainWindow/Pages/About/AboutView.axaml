@@ -4,6 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.About"
              xmlns:md3="https://github.com/greepar/md3"
+             xmlns:customControl="clr-namespace:Material3.UI.Controls.CustomControl;assembly=Material3.UI"
+             xmlns:biliLive="clr-namespace:BiliLive"
+             xmlns:res="clr-namespace:BiliLive.Resources"
              mc:Ignorable="d" d:DesignWidth="870" d:DesignHeight="535"
              x:Class="BiliLive.Views.MainWindow.Pages.About.AboutView"
              x:DataType="vm:AboutViewModel">
@@ -12,20 +15,32 @@
         <vm:AboutViewModel/>
     </Design.DataContext>
     
-    <Grid VerticalAlignment="Center"
-          HorizontalAlignment="Center">
-        <Border>
-            <StackPanel>
+    <Grid VerticalAlignment="Stretch"
+          HorizontalAlignment="Stretch"
+          RowDefinitions="*,Auto"
+          >
+        <Border Grid.Row="0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+            <StackPanel Spacing="20">
                 <!-- <TextBlock>这里是关于页面</TextBlock> -->
-
-                <Button CornerRadius="12"> hello</Button>
+                
+                <StackPanel Orientation="Horizontal"
+                            Spacing="15">
+                    <Button Classes="Elevated"> Elevated</Button>
+                    <Button Classes="Outline"> Outlined</Button>
+                    <Button Classes="Tonal"> Tonal</Button>
+                    <Button Classes="Filled"> Filled</Button>
+                    <Button Classes="Text"> Text</Button>
+                </StackPanel>
+             
                 
                <StackPanel Orientation="Horizontal">
-                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                   <customControl:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="True"/>
-                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
+                   <customControl:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="False"/>
@@ -34,6 +49,50 @@
             </StackPanel>
      
         </Border>
+        
+        <Border Grid.Row="1"
+                IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }"
+                CornerRadius="12"
+                Background="{DynamicResource SurfaceContainer}">
+            <Grid Margin="5">
+                <StackPanel>
+                    <TextBlock Margin="5 0 0 0" Text="Debug Tools"/>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="10">
+                        <CheckBox Theme="{StaticResource MdCheckBox}" 
+                                  Command="{Binding SetTopMostWindowCommand}"
+                                  CommandParameter="{Binding $self.IsChecked}"
+                                  Content="SetTopMost"/>
+                        <Button Classes="Elevated"
+                                Command="{Binding OpenCurrentFolderCommand}"
+                                IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" >
+                            <StackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <SvgBox Margin="3 0 0 0" PathData="{res:Geometry {x:Static res:MdIcons.Windowed}}"/>
+                                <TextBlock VerticalAlignment="Center" FontSize="11">Open Runtime Folder</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+      
+                    <!-- debug mode -->
+                    <!-- <Grid IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" Margin="0 0 5 0"  VerticalAlignment="Center" HorizontalAlignment="Right"> -->
+                    <!--     <Border Background="{DynamicResource OnSurface}" CornerRadius="8" -->
+                    <!--             Height="20" Width="80" -->
+                    <!--             VerticalAlignment="Stretch" -->
+                    <!--             Opacity="0.3" -->
+                    <!--     > -->
+                    <!--     </Border> -->
+                    <!--     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" -->
+                    <!--                FontSize="10" FontWeight="Regular" -->
+                    <!--                Foreground="{DynamicResource OnSurface}" -->
+                    <!--                Text="Debug Mode" /> -->
+                    <!-- </Grid> -->
+                            
+              
+                    <!-- debug mode -->
+                </StackPanel>
+            </Grid>
+        </Border>
+       
     </Grid>
   
 </UserControl>

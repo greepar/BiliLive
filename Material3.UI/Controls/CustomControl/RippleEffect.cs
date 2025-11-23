@@ -1,24 +1,23 @@
 ﻿using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
-using System;
-using Avalonia.Animation.Easings;
-using Avalonia.Input;
 
-namespace BiliLive.Resources.Controls;
+namespace Material3.UI.Controls.CustomControl;
 
 
 
-public class RippleBorder : Border
+public class RippleEffect : Border
 {
     public static readonly StyledProperty<IBrush> RippleColorProperty =
-        AvaloniaProperty.Register<RippleBorder, IBrush>(nameof(RippleColor), 
+        AvaloniaProperty.Register<RippleEffect, IBrush>(nameof(RippleColor), 
             Brushes.White);
 
     public static readonly StyledProperty<double> RippleDurationProperty =
-        AvaloniaProperty.Register<RippleBorder, double>(nameof(RippleDuration), 0.8);
+        AvaloniaProperty.Register<RippleEffect, double>(nameof(RippleDuration), 0.8);
     
     public IBrush RippleColor
     {
@@ -34,7 +33,7 @@ public class RippleBorder : Border
     
     private readonly Canvas _rippleCanvas;
     
-    public RippleBorder()
+    public RippleEffect()
     {
         _rippleCanvas = new Canvas();
         Child = _rippleCanvas;

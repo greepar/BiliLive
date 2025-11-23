@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -172,20 +171,6 @@ public partial class MainWindowViewModel : ViewModelBase
         
         await LoadLoginResult(loginResult);
     }
-
-#if DEBUG
-    // 打开当前程序文件夹，仅调试模式下存在
-    [RelayCommand]
-    private void OpenCurrentFolder()
-    {
-        var currentPath = AppDomain.CurrentDomain.BaseDirectory;
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = currentPath,
-            UseShellExecute = true
-        });
-    }
-#endif
     
     private bool _isDarkTheme = true;
     [RelayCommand]

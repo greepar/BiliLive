@@ -13,6 +13,17 @@ namespace BiliLive.Utils;
 
 public static class AvaloniaUtils
 {
+#if DEBUG
+    public static void SetTopMostWindow(bool isTopMost = true)
+    {
+        var app = App ?? throw new InvalidOperationException("Application is not set");
+        if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow?.Topmost = isTopMost;
+        }
+    }
+#endif
+    
     public static async Task OpenUrl(string url)
     {
         await TopLevel.Launcher.LaunchUriAsync(new Uri(url));

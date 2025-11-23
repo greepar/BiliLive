@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:cc="clr-namespace:Material3.UI.Controls"
+                    xmlns:customControl="clr-namespace:Material3.UI.Controls.CustomControl"
                     x:ClassModifier="internal">
     <!-- Add Resources Here -->
     <Design.PreviewWith>
@@ -25,7 +26,7 @@
         </Border>
     </Design.PreviewWith>
     
-    <ControlTheme x:Key="{x:Type cc:ProgressRing}" TargetType="cc:ProgressRing">
+    <ControlTheme x:Key="{x:Type customControl:ProgressRing}" TargetType="customControl:ProgressRing">
         
         <Setter Property="RenderTransform" Value="{x:Null}"></Setter>
         <Setter Property="ClipToBounds" Value="False"></Setter>

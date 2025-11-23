@@ -5,6 +5,7 @@
         xmlns:biliLive="clr-namespace:BiliLive"
         xmlns:converter="clr-namespace:BiliLive.Views.MainWindow.Converter"
         xmlns:md3="https://github.com/greepar/md3"
+        xmlns:customControl="clr-namespace:Material3.UI.Controls.CustomControl;assembly=Material3.UI"
         x:Class="BiliLive.Views.MainWindow.MainWindow"
         x:DataType="mainWindow:MainWindowViewModel"
         Title="BiliLive"
@@ -74,13 +75,6 @@
                                            Foreground="{DynamicResource OnSurface}"
                                            Text="Debug Mode" />
                             </Grid>
-                            
-                            <Button Click="OpenRuntimeFolderBtn_OnClick" IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" Margin="0 0 8 0" Width="145" Padding="5">
-                                <StackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <SvgBox Margin="3 0 0 0" PathData="{res:Geometry {x:Static res:MdIcons.Windowed}}"/>
-                                    <TextBlock VerticalAlignment="Center" FontSize="11">Open Runtime Folder</TextBlock>
-                                </StackPanel>
-                            </Button>
                             <!-- debug mode -->
                             
                             <ToggleButton Command="{Binding SwitchThemeCommand}"
@@ -289,7 +283,7 @@
                                 <!--              Width="120" MinWidth="10" -->
                                 <!--              /> -->
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding LoadAccountCommand.IsRunning}" Orientation="Horizontal">
-                                    <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                                    <customControl:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
                                                   Stroke="{DynamicResource Primary}"
                                                   StrokeThickness="6"
                                                   IsRotating="True"/>

@@ -1,10 +1,9 @@
-using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 
-namespace Material3.UI.Controls;
+namespace Material3.UI.Controls.CustomControl;
 
 public class ProgressRing : Control
 {
