@@ -19,26 +19,30 @@ public partial class AboutViewModel : ViewModelBase
         DeveloperAvatar = PicHelper.ResizeStreamToBitmap(file,120,120) ?? new Bitmap(file);
     }
 
-#if DEBUG
+
     //调试模式
     
     [RelayCommand]
     private static void SetTopMostWindow(bool isTopMost)
     {
-         AvaloniaUtils.SetTopMostWindow(isTopMost);
+#if DEBUG
+        AvaloniaUtils.SetTopMostWindow(isTopMost);
+#endif
     }
     
     [RelayCommand]
     private static void OpenCurrentFolder()
     {
+        // Console.WriteLine();
+#if DEBUG
         var currentPath = AppDomain.CurrentDomain.BaseDirectory;
         Process.Start(new ProcessStartInfo
         {
             FileName = currentPath,
             UseShellExecute = true
         });
-    }
-    
 #endif
+    }
+
 
 }
