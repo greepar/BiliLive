@@ -14,4 +14,11 @@
         <AvaloniaResource Include="Themes\**\*.axaml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Material3Res.axaml.cs">
+        <DependentUpon>Material3Res.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
 </Project>

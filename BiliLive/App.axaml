@@ -31,12 +31,43 @@
         </TrayIcons>
     </TrayIcon.Icons>
     
+    
+    <Application.Resources>
+        <ResourceDictionary>
+            <FontFamily x:Key="NotoRegular">
+                avares://BiliLive/Assets/Fonts/NotoSans-Regular.ttf#Noto Sans,
+                avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular,
+            </FontFamily>
+            
+            <FontFamily x:Key="NotoMedium">
+                avares://BiliLive/Assets/Fonts/NotoSans-Medium.ttf#Noto Sans Medium,
+                avares://BiliLive/Assets/Fonts/NotoSansSC-Medium.ttf#Noto Sans SC Medium,
+            </FontFamily>
+            
+            <FontFamily x:Key="RobotoRegular">
+                avares://BiliLive/Assets/Fonts/Roboto-Regular.ttf#Roboto
+            </FontFamily>
+            
+            <FontFamily x:Key="RobotoMedium">
+                avares://BiliLive/Assets/Fonts/Roboto-Medium.ttf#Roboto Medium
+            </FontFamily>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Material3.UI/Material3Res.axaml" />
+                <ResourceInclude Source="/Resources/MDColors.axaml" />
+                <ResourceInclude Source="/Views/MainWindow/Controls/PageSwitchButton.axaml"/>
+                <ResourceInclude Source="/Resources/Themes/MdCheckBox.axaml" />
+                <ResourceInclude Source="/Resources/Themes/MdButton.axaml"/>
+                <ResourceInclude Source="/Resources/Themes/MdToggleButton.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    
     <Application.Styles>
-        <FluentTheme />
-        
+        <FluentTheme/>
         <m3:Material3 />
         
-        <Style Selector="Window,UserControl">
+        <Style Selector="Window,UserControl,Button">
             <Setter Property="FontFamily" Value="{DynamicResource NotoRegular}"/>
         </Style>
         
@@ -85,28 +116,6 @@
         <!-- </Style> -->
     </Application.Styles>
 
-    <Application.Resources>
-    
-        <ResourceDictionary>
-            <FontFamily x:Key="NotoRegular">
-                avares://BiliLive/Assets/Fonts/NotoSans-Regular.ttf#Noto Sans,
-                avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular
-            </FontFamily>
-            
-            <FontFamily x:Key="NotoMedium">
-                avares://BiliLive/Assets/Fonts/NotoSans-Medium.ttf#Noto Sans Medium,
-                avares://BiliLive/Assets/Fonts/NotoSansSC-Medium.ttf#Noto Sans SC Medium
-            </FontFamily>
-            
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="/Resources/MDColors.axaml" />
-                <ResourceInclude Source="/Views/MainWindow/Controls/PageSwitchButton.axaml"/>
-                <ResourceInclude Source="/Resources/Themes/MdCheckBox.axaml" />
-                <ResourceInclude Source="/Resources/Themes/MdButton.axaml"/>
-                <ResourceInclude Source="/Resources/Themes/MdToggleButton.axaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Application.Resources>
     
 
     

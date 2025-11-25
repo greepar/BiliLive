@@ -4,11 +4,8 @@
     <Styles.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- <MergeResourceInclude Source="/Accents/Base.xaml" /> -->
-                <ResourceInclude Source="/MDColors.axaml" />
+            
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Styles.Resources>
-  
-    <StyleInclude Source="/Controls/Controls.axaml" />
 </Styles>

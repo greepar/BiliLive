@@ -48,12 +48,10 @@
                             
                             
                             <StackPanel IsVisible="True" Orientation="Horizontal">
-                                <Button Padding="0" Background="Transparent"
+                                <Button Classes="Text" Padding="0" Background="Transparent"
                                         Command="{Binding OpenRoomUrlCommand}">
                                     <Button.Styles>
-                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                            <Setter Property="Background" Value="Transparent"/>
-                                        </Style>
+                                     
                                         
                                         <Style Selector="TextBlock:pointerover">
                                             <Setter Property="Foreground" Value="SkyBlue"/>

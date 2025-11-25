@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.About"
              xmlns:md3="https://github.com/greepar/md3"
-             xmlns:customControl="clr-namespace:Material3.UI.Controls.CustomControl;assembly=Material3.UI"
              xmlns:biliLive="clr-namespace:BiliLive"
              xmlns:res="clr-namespace:BiliLive.Resources"
              mc:Ignorable="d" d:DesignWidth="870" d:DesignHeight="535"
@@ -27,6 +26,8 @@
                 
                 <StackPanel Orientation="Horizontal"
                             Spacing="15">
+                    <!-- <ToggleSwitch></ToggleSwitch> -->
+                    <TextBox Height="40" Width="100"></TextBox>
                     <Button Classes="Elevated"> Elevated</Button>
                     <Button Classes="Outline"> Outlined</Button>
                     <Button Classes="Tonal"> Tonal</Button>
@@ -36,11 +37,11 @@
              
                 
                <StackPanel Orientation="Horizontal">
-                   <customControl:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="True"/>
-                   <customControl:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
+                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
                                  Stroke="{DynamicResource Primary}"
                                  StrokeThickness="6"
                                  IsRotating="False"/>
