@@ -36,12 +36,12 @@
         <ResourceDictionary>
             <FontFamily x:Key="NotoRegular">
                 avares://BiliLive/Assets/Fonts/NotoSans-Regular.ttf#Noto Sans,
-                avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular,
+                avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular
             </FontFamily>
             
             <FontFamily x:Key="NotoMedium">
                 avares://BiliLive/Assets/Fonts/NotoSans-Medium.ttf#Noto Sans Medium,
-                avares://BiliLive/Assets/Fonts/NotoSansSC-Medium.ttf#Noto Sans SC Medium,
+                avares://BiliLive/Assets/Fonts/NotoSansSC-Medium.ttf#Noto Sans SC Medium
             </FontFamily>
             
             <FontFamily x:Key="RobotoRegular">
@@ -64,11 +64,12 @@
     </Application.Resources>
     
     <Application.Styles>
-        <FluentTheme/>
+     
+        <!-- <SimpleTheme/> -->
         <m3:Material3 />
         
         <Style Selector="Window,UserControl,Button">
-            <Setter Property="FontFamily" Value="{DynamicResource NotoRegular}"/>
+            <Setter Property="FontFamily" Value="{StaticResource NotoRegular}"/>
         </Style>
         
         <!-- <Style Selector="Border"> -->

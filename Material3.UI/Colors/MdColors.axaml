@@ -7,6 +7,7 @@
             <SolidColorBrush x:Key="Surface" Color="#FEF7FF" />
             <SolidColorBrush x:Key="SurfaceVariant" Color="#E7E0EB" />
             <SolidColorBrush x:Key="OnSurface" Color="#1D1B20" />
+            <SolidColorBrush x:Key="OnSurfaceVariant" Color="#49454F" />
             <SolidColorBrush x:Key="InverseOnSurface" Color="#F5EFF7" />
             <SolidColorBrush x:Key="SurfaceContainer" Color="#F3EDF7" />
             <SolidColorBrush x:Key="SurfaceContainerLow" Color="#F8F2FA" />
@@ -16,7 +17,9 @@
             <SolidColorBrush x:Key="Primary" Color="#66558E" />
             <SolidColorBrush x:Key="InversePrimary" Color="#D1BCFD" />
             <SolidColorBrush x:Key="PrimaryContainer" Color="#EADDFF" />
+            
             <SolidColorBrush x:Key="Outline" Color="#7A757F" />
+            
             <SolidColorBrush x:Key="OnPrimary" Color="#FFFFFF" />
             <SolidColorBrush x:Key="OnPrimaryFixedVariant" Color="#4E3D75" />
             <SolidColorBrush x:Key="Error" Color="#B3261E" />

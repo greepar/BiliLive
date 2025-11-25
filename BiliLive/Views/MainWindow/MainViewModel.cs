@@ -56,7 +56,7 @@ public enum NavigationPage
     About
 }
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainViewModel : ViewModelBase
 {
     private readonly IBiliService _biliService;
     private DispatcherTimer? _minuteTimer;
@@ -90,7 +90,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public Geometry StreamButtonIcon => IsStreaming ? Geometry.Parse(MdIcons.Restart) : Geometry.Parse(MdIcons.Start);
     
     
-    public MainWindowViewModel(IServiceProvider? serviceProvider = null)
+    public MainViewModel(IServiceProvider? serviceProvider = null)
     {
         //传入服务
         WeakReferenceMessenger.Default.Register<ShowNotificationMessage>(this,  (o, m) =>

@@ -1,0 +1,424 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
+        xmlns:res="clr-namespace:BiliLive.Resources"
+        xmlns:biliLive="clr-namespace:BiliLive"
+        xmlns:converter="clr-namespace:BiliLive.Views.MainWindow.Converter"
+        xmlns:md3="https://github.com/greepar/md3"
+        xmlns:customControl="clr-namespace:Material3.UI.Controls.CustomControl;assembly=Material3.UI"
+        x:Class="BiliLive.Views.MainWindow.MainWindow"
+        x:DataType="mainWindow:MainViewModel"
+        Title="BiliLive"
+        SizeToContent="WidthAndHeight"
+        Icon="/Assets/avalonia-logo.ico"
+        SystemDecorations="None"
+        TransparencyLevelHint="Transparent"
+        WindowStartupLocation="CenterScreen"
+        Topmost="False"
+        Background="Transparent">
+
+    <Design.DataContext>
+        <mainWindow:MainViewModel />
+    </Design.DataContext>
+
+    <Border Background="Transparent"
+            Name="TotalBorder">
+        <!-- 使用Margin留出间隙 -->
+        <Border Name="MainBorder" 
+                MinWidth="800" MinHeight="470"
+                Width="800" Height="470"
+                Margin="10"
+                CornerRadius="28"
+                BoxShadow="0 1 8 2 #26000000"
+                Focusable="True"
+                Background="{DynamicResource Surface}">
+            <!-- 切割圆角 -->
+            <Border CornerRadius="28" ClipToBounds="True">
+                <!-- 总背景 -->
+                <Grid Background="{DynamicResource Surface}">
+                    <!-- 灰色遮罩 默认不可见 -->
+                    <Border IsHitTestVisible="False" Name="CoverBorder" ZIndex="2" Opacity="0" Background="Gray"></Border>
+                    <!-- 可拖拽区域 -->
+                    <Border ZIndex="1"
+                            Height="45"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            PointerPressed="MainWindowStartDragMove">
+                        <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
+                            
+                            <StackPanel.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="Width" Value="25"/>
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="CornerRadius" Value="10"/>
+                                    <Setter Property="Theme" Value="{StaticResource MdButton}"/>
+                                    <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+                                </Style>
+                                <Style Selector="SvgBox">
+                                    <Setter Property="Width" Value="15"/>
+                                    <Setter Property="Height" Value="15"/>
+                                    <Setter Property="Fill" Value="{DynamicResource OnSurface}"/>
+                                </Style>
+                            </StackPanel.Styles>
+                            
+                            <!-- debug mode -->
+                            <Grid IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" Margin="0 0 5 0"  VerticalAlignment="Center" HorizontalAlignment="Right">
+                                <Border Background="{DynamicResource OnSurface}" CornerRadius="8"
+                                        Height="20" Width="80"
+                                        VerticalAlignment="Stretch"
+                                        Opacity="0.3"
+                                        >
+                                </Border>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                           FontSize="10" FontWeight="Regular"
+                                           Foreground="{DynamicResource OnSurface}"
+                                           Text="Debug Mode" />
+                            </Grid>
+                            <!-- debug mode -->
+                            
+                            <ToggleButton Command="{Binding SwitchThemeCommand}"
+                                          Margin="0 0 8 0">
+                                Switch Theme
+                            </ToggleButton>
+                            
+                            <!-- 最小化按钮 -->
+                            <Button Click="MinimizeButton_OnClick">
+                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"/>
+                            </Button>
+
+                            <!-- 关闭按钮 -->
+                            <Button Margin="9 0 15 0"
+                                    Click="CloseButton_OnClick">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="BoxShadow" Value="0 1 2 0 #26000000" />
+                                        <Setter Property="Background" Value="#C94F4F" />
+                                        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+                                    </Style>
+                                </Button.Styles>
+                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Error}}"/>
+                            </Button>
+
+                        </StackPanel>
+                    </Border>
+
+                    <Grid ColumnDefinitions="Auto,*">
+
+                        <!-- 左侧导航栏 -->
+                        <Border Name="SideNavBar"
+                                ClipToBounds="True"
+                                Grid.Column="0"
+                                Width="170">
+
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Duration="0:0:0.2"
+                                                      Property="Width"
+                                                      Easing="ExponentialEaseOut" />
+                                </Transitions>
+                            </Border.Transitions>
+
+                            <Grid HorizontalAlignment="Stretch">
+                                <!-- 背景Border -->
+                                <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7" />
+
+                                <Grid RowDefinitions="Auto,*,Auto">
+                                    <!-- 顶部时间 -->
+                                        <TextBlock Grid.Row="0" Margin="15 15 0 0"
+                                                   FontSize="12" FontWeight="Regular"
+                                                   Foreground="{DynamicResource OnSurface}"
+                                                   Text="{Binding CurrentTime}" />
+
+                                    <!-- 中间导航部分 -->
+                                    <StackPanel Grid.Row="1" Margin="10 30 10 30" Spacing="7"
+                                                Orientation="Vertical">
+                                        <!-- 缩小侧边栏按钮 -->
+                                        <Button Name="MenuOpenBtn" Width="38" Height="38"
+                                                HorizontalAlignment="Left"
+                                                CornerRadius="10"
+                                                Background="{DynamicResource SurfaceContainer}"
+                                                Theme="{StaticResource MdButton}"
+                                                Click="MenuOpenBtn_OnClick">
+                                            <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.MenuOpen}}"
+                                                    Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
+                                        </Button>
+
+                                        <Button Height="40"
+                                                Margin="3 2 0 0"
+                                                HorizontalAlignment="Left"
+                                                CornerRadius="10"
+                                                Background="{DynamicResource InversePrimary}"
+                                                Command="{Binding StartMainServiceCommand}"
+                                                Theme="{StaticResource MdButton}">
+                                            <Border Margin="8 0 8 0" ClipToBounds="True" VerticalAlignment="Center">
+                                                <Grid RowDefinitions="*,*,*">
+                                                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                                                        <SvgBox Grid.Column="0" PathData="{Binding StreamButtonIcon}"
+                                                                Height="20" Margin="0 0 5 0"
+                                                                VerticalAlignment="Center"
+                                                                Fill="{DynamicResource OnSurface}" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   FontSize="12"
+                                                                   VerticalAlignment="Center" Text="{Binding StreamButtonText}" />
+                                                    </Grid>
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+
+
+                                        <!-- 分割线 -->
+                                        <Border Margin="8" />
+
+                                        
+                                        <!-- 设置切换页面按钮样式 -->
+                                        <StackPanel.Styles>
+                                            <Style Selector="ToggleButton">
+                                                <Setter Property="CornerRadius" Value="18"/>
+                                                <Setter Property="Theme" Value="{StaticResource PageSwitchBtn}"/>
+                                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                                <Setter Property="Height" Value="40"/>
+                                                <Setter Property="Background" Value="Transparent"></Setter>
+                                            </Style>
+                                            <Style Selector="SvgBox">
+                                                <Setter Property="Height" Value="20"/>
+                                                <Setter Property="Margin" Value="2 0 5 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="Fill" Value="{DynamicResource OnSurface}"/>
+                                            </Style>
+                                            <Style Selector="TextBlock">
+                                                <Setter Property="FontSize" Value="12"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </StackPanel.Styles>
+                                        
+                                        <!-- 主页按钮 -->
+                                        <ToggleButton Click="SwitchPageAnime"
+                                                      IsChecked="{Binding CurrentBtn,Converter={converter:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.Home}}"
+                                                      Command="{Binding SwitchPageCommand}"
+                                                      CommandParameter="{x:Static mainWindow:NavigationPage.Home}">
+                                                <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
+                                                    <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Home}}"/>
+                                                    <TextBlock Grid.Column="1" Text="主页" />
+                                                </Grid>
+                                        </ToggleButton>
+
+                                        <!-- 自动直播按钮 -->
+                                        <ToggleButton Click="SwitchPageAnime"
+                                                      IsChecked="{Binding CurrentBtn,Converter={converter:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.AutoService}}"
+                                                      Command="{Binding SwitchPageCommand}"
+                                                      CommandParameter="{x:Static mainWindow:NavigationPage.AutoService}">
+                                                <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
+                                                    <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}"/>
+                                                    <TextBlock Grid.Column="1" Text="自动服务" />
+                                                </Grid>
+                                        </ToggleButton>
+
+                                        <!-- 关于按钮 -->
+                                        <ToggleButton Click="SwitchPageAnime"
+                                                      IsChecked="{Binding CurrentBtn,Converter={converter:PageButtonConverter},ConverterParameter={x:Static mainWindow:NavigationPage.About}}"
+                                                      Command="{Binding SwitchPageCommand}"
+                                                      CommandParameter="{x:Static mainWindow:NavigationPage.About}"
+                                                      >
+                                                <Grid Margin="7 0 5 0">
+                                                    <Grid IsHitTestVisible="False" ColumnDefinitions="Auto,*">
+                                                        <SvgBox Grid.Column="0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
+                                                        <TextBlock Grid.Column="1" Text="关于" />
+                                                    </Grid>
+                                                </Grid>
+                                        </ToggleButton>
+                                        
+                                    </StackPanel>
+
+                                    <!-- 底部用户信息栏 -->
+                                    <Border Grid.Row="2" VerticalAlignment="Bottom" Margin="10 0 8 10"
+                                            CornerRadius="15" Height="38" BoxShadow="0 0 10 0 #12000000">
+                                        <Grid>
+                                            <Button Name="AccountBtn" HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Background="Transparent"
+                                                    CornerRadius="15"
+                                                    Click="AccountBtn_OnClick">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="BoxShadow" Value="0 0 4 0 #12000000" />
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="Foreground"
+                                                                Value="{DynamicResource OnSurface}" />
+                                                    </Style>
+                                                </Button.Styles>
+                                            </Button>
+                                            <Grid ColumnDefinitions="Auto,*" IsVisible="True" IsHitTestVisible="False">
+                                                <!-- 头像 -->
+                                                <Border Grid.Column="0" Margin="4 0 0 0"
+                                                        VerticalAlignment="Center"
+                                                        CornerRadius="60" ClipToBounds="True">
+                                                    <Image Source="{Binding UserFace}"
+                                                           Width="33" Height="33"
+                                                           Stretch="Uniform" />
+                                                </Border>
+
+                                                <!-- 用户名 -->
+                                                <TextBlock Grid.Column="1"
+                                                           Margin="5 0 0 0"
+                                                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                           MaxWidth="100"
+                                                           FontSize="13"
+                                                           FontFamily="{DynamicResource NotoMedium}"
+                                                           Text="{Binding GeneralState.UserName}" />
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- 右侧内容区域 -->
+                        <Grid Grid.Column="1">
+                            <Border Background="Transparent" />
+                            <!-- <TextBlock Text="{Binding UserName}"></TextBlock> -->
+                            
+                            <Grid>
+                                <!-- <ProgressBar IsIndeterminate="True" -->
+                                <!--              Width="120" MinWidth="10" -->
+                                <!--              /> -->
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding LoadAccountCommand.IsRunning}" Orientation="Horizontal">
+                                    <customControl:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                                                  Stroke="{DynamicResource Primary}"
+                                                  StrokeThickness="6"
+                                                  IsRotating="True"/>
+                                    <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">Loading ....</TextBlock>
+                                </StackPanel>
+                                
+                                <Border Name="ContentBorder" IsVisible="{Binding !LoadAccountCommand.IsRunning}">
+                                    <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch"
+                                                    Content="{Binding CurrentVm}" />
+                                </Border>
+                            </Grid>
+                           
+
+                            <!-- 左下方弹出登录窗口 -->
+                            <Border Name="LoginBorder"
+                                    IsHitTestVisible="False"
+                                    Background="Transparent"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom"
+                                    RenderTransformOrigin="0,0"
+                                    IsVisible="True"
+                                    Margin="-20 0 0 0"
+                                    Opacity="0">
+                                <Border.RenderTransform>
+                                    <TranslateTransform X="-50" />
+                                </Border.RenderTransform>
+
+                                <ContentControl Content="{Binding AccountVm}" />
+                            </Border>
+
+
+                            <!-- 右下方Popup通知 -->
+                            <ItemsControl ItemsSource="{Binding Notifications}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Bottom"
+                                          Margin="0 0 8 10">
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="popup" Margin="5" CornerRadius="100" Height="40"
+                                                BoxShadow="0 1 8 2 #26000000" HorizontalAlignment="Right">
+
+                                            <Border.RenderTransform>
+                                                <TranslateTransform Y="0" />
+                                            </Border.RenderTransform>
+
+                                            <Border.Styles>
+                                                <Style Selector="Border.popup">
+                                                    <Style.Animations>
+                                                        <Animation Duration="0.2" Easing="ExponentialEaseInOut"
+                                                                   FillMode="Forward">
+                                                            <KeyFrame Cue="0%">
+                                                                <Setter Property="TranslateTransform.X" Value="30" />
+                                                                <Setter Property="Opacity" Value="0" />
+                                                            </KeyFrame>
+                                                            <KeyFrame Cue="100%">
+                                                                <Setter Property="TranslateTransform.X" Value="0" />
+                                                                <Setter Property="Opacity" Value="1" />
+                                                            </KeyFrame>
+                                                        </Animation>
+                                                    </Style.Animations>
+                                                </Style>
+                                            </Border.Styles>
+
+
+                                            <Grid>
+                                                <Border Background="{DynamicResource Primary}" CornerRadius="18"
+                                                        Opacity="0.9"
+                                                        ClipToBounds="True" />
+
+                                                <StackPanel Margin="10 0 10 0"
+                                                            Orientation="Horizontal">
+
+                                                    <Viewbox Width="20" Height="20" Stretch="Uniform"
+                                                             Margin="6 0 6 0"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Path Data="{Binding Geometry}"
+                                                              Fill="{DynamicResource OnPrimary}"
+                                                              Opacity="0.8">
+                                                            <Path.RenderTransform>
+                                                                <TranslateTransform X="0" Y="960" />
+                                                            </Path.RenderTransform>
+                                                        </Path>
+                                                    </Viewbox>
+
+                                                    <TextBlock HorizontalAlignment="Left"
+                                                               Margin="0 0 10 0"
+                                                               VerticalAlignment="Center"
+                                                               FontSize="13"
+                                                               Text="{Binding Message}"
+                                                               Foreground="{DynamicResource OnPrimary}" />
+
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <Border CornerRadius="0,0,28,0"
+                                    Margin="5"
+                                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                    Background= "Transparent"
+                                    BorderBrush="{DynamicResource SurfaceContainerHighest}"
+                                    BorderThickness="1.5"
+                                    Width="300"
+                                    Height="300"
+                                    Cursor= "BottomRightCorner"
+                                    PointerPressed= "MainWindowStartDragResize"
+                                   >
+                                <Border.Clip>
+                                    <RectangleGeometry Rect="275,275,150,150"/>
+                                </Border.Clip>
+                                <Border CornerRadius="0,0,28,0"
+                                        Margin= "0.9"
+                                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                        Background= "Transparent"
+                                        BorderBrush="{DynamicResource SurfaceContainerHighest}"
+                                        BorderThickness="1.5"
+                                        Width="300"
+                                        Height="300">
+                                    <Border.Clip>
+                                        <RectangleGeometry Rect="275,275,22,22"/>
+                                    </Border.Clip>
+                                </Border>
+                            </Border>
+                            
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Border>
+
+        </Border>
+    </Border>
+
+
+</Window>

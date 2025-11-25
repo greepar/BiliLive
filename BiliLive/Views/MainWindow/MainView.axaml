@@ -1,24 +1,20 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
-        xmlns:res="clr-namespace:BiliLive.Resources"
-        xmlns:biliLive="clr-namespace:BiliLive"
-        xmlns:converter="clr-namespace:BiliLive.Views.MainWindow.Converter"
-        xmlns:md3="https://github.com/greepar/md3"
-        xmlns:customControl="clr-namespace:Material3.UI.Controls.CustomControl;assembly=Material3.UI"
-        x:Class="BiliLive.Views.MainWindow.MainWindow"
-        x:DataType="mainWindow:MainWindowViewModel"
-        Title="BiliLive"
-        SizeToContent="WidthAndHeight"
-        Icon="/Assets/avalonia-logo.ico"
-        SystemDecorations="None"
-        TransparencyLevelHint="Transparent"
-        WindowStartupLocation="CenterScreen"
-        Topmost="False"
-        Background="Transparent">
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
+             xmlns:biliLive="clr-namespace:BiliLive"
+             xmlns:res="clr-namespace:BiliLive.Resources"
+             xmlns:converter="clr-namespace:BiliLive.Views.MainWindow.Converter"
+             xmlns:md3="https://github.com/greepar/md3"
+             FontFamily="{StaticResource NotoRegular}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="mainWindow:MainViewModel"
+             x:Class="BiliLive.Views.MainWindow.MainView">
+    
 
     <Design.DataContext>
-        <mainWindow:MainWindowViewModel />
+        <mainWindow:MainViewModel />
     </Design.DataContext>
 
     <Border Background="Transparent"
@@ -43,7 +39,7 @@
                             Height="45"
                             VerticalAlignment="Top"
                             Background="Transparent"
-                            PointerPressed="MainWindowStartDragMove">
+                           >
                         <StackPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Right">
                             
                             <StackPanel.Styles>
@@ -83,13 +79,13 @@
                             </ToggleButton>
                             
                             <!-- 最小化按钮 -->
-                            <Button Click="MinimizeButton_OnClick">
+                            <Button>
                                 <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"/>
                             </Button>
 
                             <!-- 关闭按钮 -->
                             <Button Margin="9 0 15 0"
-                                    Click="CloseButton_OnClick">
+                                   >
                                 <Button.Styles>
                                     <Style Selector="Button:pointerover /template/ ContentPresenter">
                                         <Setter Property="BoxShadow" Value="0 1 2 0 #26000000" />
@@ -283,7 +279,7 @@
                                 <!--              Width="120" MinWidth="10" -->
                                 <!--              /> -->
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding LoadAccountCommand.IsRunning}" Orientation="Horizontal">
-                                    <customControl:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
+                                    <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
                                                   Stroke="{DynamicResource Primary}"
                                                   StrokeThickness="6"
                                                   IsRotating="True"/>
@@ -392,7 +388,6 @@
                                     Width="300"
                                     Height="300"
                                     Cursor= "BottomRightCorner"
-                                    PointerPressed= "MainWindowStartDragResize"
                                    >
                                 <Border.Clip>
                                     <RectangleGeometry Rect="275,275,150,150"/>
@@ -421,4 +416,4 @@
     </Border>
 
 
-</Window>
+</UserControl>

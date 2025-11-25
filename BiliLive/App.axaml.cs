@@ -6,6 +6,7 @@ using BiliLive.Core.Interface;
 using BiliLive.Utils;
 using BiliLive.Views.MainWindow;
 using BiliLive.Views.MainWindow.Controls;
+using BiliLive.Views.MainWindow.Pages.About;
 using BiliLive.Views.MainWindow.Pages.AutoService;
 using BiliLive.Views.MainWindow.Pages.HomePage;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +25,7 @@ public class App : Application
             .ConfigureServices(services =>
             {
                 services.AddSingleton<IBiliService,BiliServiceImpl>();
-                services.AddTransient<MainWindowViewModel>();
+                services.AddTransient<MainViewModel>();
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<AccountsViewModel>();
                 services.AddTransient<HomeViewModel>();
@@ -41,19 +42,28 @@ public class App : Application
     
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        var mainViewModel = AppHost.Services.GetRequiredService<MainViewModel>();
+
+        switch (ApplicationLifetime)
         {
-            desktop.Exit += async (_, _) =>
-            {
-                await ConfigManager.ShutdownAsync();
-            };
+            case IClassicDesktopStyleApplicationLifetime desktop:
+                desktop.Exit += async (_, _) =>
+                {
+                    await ConfigManager.ShutdownAsync();
+                };
             
-            //通过DI获取MainWindow
-            var mainWindowViewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = mainWindowViewModel
-            };
+                //通过DI获取MainWindow
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = mainViewModel
+                };
+                break;
+            case ISingleViewApplicationLifetime singleViewPlatform:
+                singleViewPlatform.MainView = new MainView()
+                {
+                    DataContext = mainViewModel
+                };
+                break;
         }
         base.OnFrameworkInitializationCompleted();
     }

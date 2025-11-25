@@ -5,6 +5,6 @@
 
     <ResourceDictionary.MergedDictionaries>
         <MergeResourceInclude Source="avares://Material3.UI/Controls/ThemeControl/Button.axaml" />
-        <!-- <MergeResourceInclude Source="avares://Material3.UI/Controls/ThemeControl/TextBox.axaml" /> -->
+        <MergeResourceInclude Source="avares://Material3.UI/Controls/ThemeControl/TextBox.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -41,6 +41,7 @@
         <entry key="BiliLive/Views/MainWindow/Controls/ChooseAreaView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/DanmakuPanelView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Controls/PageSwitchButton.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Views/MainWindow/MainView.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/MainWindow.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/About/AboutPage.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/MainWindow/Pages/About/AboutView.axaml" value="BiliLive/BiliLive.csproj" />

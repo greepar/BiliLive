@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BiliLive.Core.Models.BiliService;
@@ -65,18 +66,34 @@ public class BiliServiceImpl : IBiliService
     {
         //初始化 HttpClient 和 CookieContainer
         var cookieContainer = new CookieContainer();
-        var handler = new HttpClientHandler
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
         {
-            UseCookies = true,
-            CookieContainer = cookieContainer
-        };
-        var httpClient = new HttpClient(handler);
-        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+            var handler = new HttpClientHandler
+            {
+                UseCookies = true,
+                CookieContainer = cookieContainer
+            };
+            var httpClient = new HttpClient(handler);
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
         
-        //构造子服务
-        _liveService = new LiveService(httpClient, cookieContainer);
-        _loginService = new LoginService(httpClient, cookieContainer);
-        _awardService = new AwardService(httpClient, cookieContainer);
+            //构造子服务
+            _liveService = new LiveService(httpClient, cookieContainer);
+            _loginService = new LoginService(httpClient, cookieContainer);
+            _awardService = new AwardService(httpClient, cookieContainer);
+        }
+        else
+        {
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        
+            //构造子服务
+            _liveService = new LiveService(httpClient, cookieContainer);
+            _loginService = new LoginService(httpClient, cookieContainer);
+            _awardService = new AwardService(httpClient, cookieContainer);
+        }
+        
+  
     }
 
 }
