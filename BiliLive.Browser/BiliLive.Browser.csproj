@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+    <PropertyGroup>
+        <TargetFramework>net10.0-browser</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <RunAOTCompilation>true</RunAOTCompilation>
+        <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+        <WasmBuildNative>true</WasmBuildNative>
+        <TrimMode>partial</TrimMode>
+        <PublishAotCompressed>true</PublishAotCompressed>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <WasmNative>true</WasmNative>
+        <WasmBundle>true</WasmBundle>
+        <!--        <WasmSingleFileBundle>true</WasmSingleFileBundle>-->
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Browser" Version="11.3.9" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BiliLive\BiliLive.csproj"/>
+    </ItemGroup>
+</Project>
