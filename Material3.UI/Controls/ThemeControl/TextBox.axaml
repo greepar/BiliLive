@@ -5,6 +5,8 @@
   <Design.PreviewWith>
     <Border Background="{DynamicResource Surface}" Padding="20">
       <StackPanel Spacing="5">
+        <TextBox Watermark="floatingWatermark"
+                 UseFloatingWatermark="True"/>
         <TextBox Watermark="watermark"/>
         <TextBox Text="Normal TextBox"/>
       </StackPanel>
