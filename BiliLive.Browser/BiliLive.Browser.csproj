@@ -7,19 +7,15 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <RunAOTCompilation>true</RunAOTCompilation>
-        <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
-        <WasmBuildNative>true</WasmBuildNative>
-        <TrimMode>partial</TrimMode>
-        <PublishAotCompressed>true</PublishAotCompressed>
-        <InvariantGlobalization>true</InvariantGlobalization>
-        <WasmNative>true</WasmNative>
-        <WasmBundle>true</WasmBundle>
-        <!--        <WasmSingleFileBundle>true</WasmSingleFileBundle>-->
+        <RunAOTCompilation>false</RunAOTCompilation>
+       <PublishAotCompressed>fakse</PublishAotCompressed>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>full</TrimMode>
+
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia.Browser" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Browser" Version="11.3.12" />
     </ItemGroup>
 
     <ItemGroup>

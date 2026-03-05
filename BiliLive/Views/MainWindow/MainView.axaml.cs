@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
 
@@ -17,17 +15,18 @@ public partial class MainView : UserControl
 {
     // 账号窗口
     private CancellationTokenSource? _animationCts;
-    
-    private double _originalWidth;
-    private double _originalHeight;
-    
+
     private bool _isTargetVisible = true;
+    private double _originalHeight;
+
+    private double _originalWidth;
+
     public MainView()
     {
         InitializeComponent();
     }
-    
-     private async void AccountBtn_OnClick(object? sender, RoutedEventArgs e)
+
+    private async void AccountBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         try
         {
@@ -39,11 +38,11 @@ public partial class MainView : UserControl
             // 在动画进行时禁用交互
             LoginBorder.IsHitTestVisible = false;
 
-             if (_isTargetVisible)
+            if (_isTargetVisible)
             {
                 LoginBorder.IsVisible = true;
                 _isTargetVisible = false;
-                
+
                 var opacityAnim = new Animation
                 {
                     Duration = TimeSpan.FromMilliseconds(300),
@@ -79,13 +78,12 @@ public partial class MainView : UserControl
                         }
                     }
                 };
-                
+
                 // 并行播放
                 await Task.WhenAll(
                     opacityAnim.RunAsync(LoginBorder, _animationCts.Token),
                     translateAnim.RunAsync(LoginBorder, _animationCts.Token)
                 );
-                
             }
             else
             {
@@ -147,12 +145,13 @@ public partial class MainView : UserControl
                     btn.IsChecked = true;
                     return;
                 }
+
                 btn.IsChecked = true;
             }
-        
+
             ContentBorder.Opacity = 0;
             ContentBorder.RenderTransform = new ScaleTransform(0.9, 0.9);
-        
+
             var animation = new Animation
             {
                 Duration = TimeSpan.FromMilliseconds(300),
@@ -167,12 +166,12 @@ public partial class MainView : UserControl
                         {
                             new Setter(ScaleTransform.ScaleXProperty, 1.0d),
                             new Setter(ScaleTransform.ScaleYProperty, 1.0d),
-                            new Setter(OpacityProperty, 1.0),
+                            new Setter(OpacityProperty, 1.0)
                         }
                     }
                 }
             };
-        
+
             await animation.RunAsync(ContentBorder);
         }
         catch (Exception)

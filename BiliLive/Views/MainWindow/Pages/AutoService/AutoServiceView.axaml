@@ -11,13 +11,7 @@
              x:Class="BiliLive.Views.MainWindow.Pages.AutoService.AutoServiceView">
 
     <UserControl.Styles>
-        <!-- 设置全局的ToggleSwitch主题 -->
-        <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
-            <Setter Property="Background" Value="{DynamicResource Primary}" />
-        </Style>
-
         <!-- 设置Button主题 -->
-
         <Style Selector="Button.sender /template/ Border#OutBorder">
             <Setter Property="BoxShadow" Value="  0 1 2 0 #26000000" />
         </Style>

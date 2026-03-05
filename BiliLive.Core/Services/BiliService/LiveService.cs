@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -78,16 +79,27 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
         {
             { "access_key", "" },
             { "area_v2", lastAreaId ?? throw new InvalidOperationException() },
-            { "build", "9579" },
+            { "build", "9821" },
             { "csrf", csrfValue ?? "" },
             { "csrf_token", csrfValue ?? "" },
             { "platform", "pc_link" },
             { "room_id", roomId.ToString() },
             { "type", "2" },
-            { "version", "7.23.0.9579" },
+            { "version", "7.30.0.9821" },
         };
+
         await SignService.AddAppSignAsync(formData);
-        using var response = await httpClient.PostAsync(StartLiveUrl, new FormUrlEncodedContent(formData));
+        var request = new HttpRequestMessage(HttpMethod.Post, StartLiveUrl)
+        {
+            Content = new FormUrlEncodedContent(formData)
+        };
+        //generate buvid
+        var guid = Guid.NewGuid().ToString("D").ToUpperInvariant();
+        var pid = Environment.ProcessId;
+        var buvid = $"{guid}{pid}user";
+        request.Headers.Add("buvid",buvid);
+        
+        var response = await httpClient.SendAsync(request);
         await using var stream = await response.Content.ReadAsStreamAsync();
         using var jsonDoc = await JsonDocument.ParseAsync(stream);
         var element = jsonDoc.RootElement;
@@ -253,7 +265,6 @@ internal class LiveService(HttpClient httpClient, CookieContainer cookieContaine
             : "未知错误";
         throw new Exception($"上传失败: {message}");
     }
-
     private async Task<long> GetRoomIdAsync()
     {
         await using var response = await httpClient.GetStreamAsync(RoomIdUrl);

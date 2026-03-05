@@ -85,6 +85,30 @@ internal class AltService(HttpClient httpClient,CookieContainer cookieContainer)
         }
     }
     
+    public async Task GetActivitiesListAsync(string roomId)
+    {
+        var csrf = GetCsrfFromCookie();
+        var activitiesApi = $"https://api.bilibili.com/x/activity_components/video_activity/hot_activity" +
+                            $"?ps=20&pn=2&" +
+                            $"web_location=888.139379&mobi_app=iphone&platform=ios&statistics=%7B%22appId%22%3A1%2C%22version%22%3A%228.83.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D&" +
+                            $"csrf={csrf}";
+        await using var responseStream = await httpClient.GetStreamAsync(activitiesApi);
+        using var jsonDoc = await JsonDocument.ParseAsync(responseStream);
+        var code = jsonDoc.RootElement.GetProperty("code").GetInt32();
+        if (code != 0)
+        {
+            var errMsg = jsonDoc.RootElement.GetProperty("message").GetString();
+            throw new Exception(errMsg);
+        }
+        
+        var activities = jsonDoc.RootElement.GetProperty("data").GetProperty("activities").EnumerateArray();
+        foreach (var activity in activities)
+        {
+            var title = activity.GetProperty("title").GetString();
+            Console.WriteLine(title);
+        }
+    }
+    
     //
     //依赖方法
     //

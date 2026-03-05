@@ -16,7 +16,8 @@ public static class SignService
     public static async Task AddAppSignAsync(Dictionary<string, string> parameters)
     {
         // 添加Sign所需参数
-        parameters.Add("ts", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
+        // parameters.Add("ts", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
+        parameters.Add("ts", "1772729597");
         parameters.Add("appkey", "aae92bc66f3edfab");
     
         var query = string.Join("&", parameters.Select(kv => 
@@ -26,6 +27,10 @@ public static class SignService
         httpClient.DefaultRequestHeaders.Add("User-Agent", SignUserAgent);
         using var response =
             await httpClient.PostAsync(SignApi, new StringContent(query));
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"获取App签名失败，状态码：{response.StatusCode}");
+        }
         var sign = await response.Content.ReadAsStringAsync();
         parameters.Add("sign", sign);
     }
@@ -64,11 +69,11 @@ public static class SignService
             kvp => new string(kvp.Value.Where(chr => !"!'()*".Contains(chr)).ToArray())
         );
         // 序列化参数
-        string query = new FormUrlEncodedContent(parameters).ReadAsStringAsync().Result;
+        var query = new FormUrlEncodedContent(parameters).ReadAsStringAsync().Result;
         //计算 w_rid
-        using MD5 md5 = MD5.Create();
-        byte[] hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(query + mixinKey));
-        string wbiSign = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+        using var md5 = MD5.Create();
+        var hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(query + mixinKey));
+        var wbiSign = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         parameters["w_rid"] = wbiSign;
         
         // 重新序列化参数

@@ -10,24 +10,18 @@
         <PublishSingleFile>true</PublishSingleFile>
         <PublishTrimmed>true</PublishTrimmed>
         <SelfContained>true</SelfContained>
-<!--        <Version>2.3.0</Version>-->
-<!--        <FileVersion>2.3.0.0</FileVersion>-->
-<!--        <AssemblyVersion>2.3.0.0</AssemblyVersion>-->
+        <Version>1.0.0</Version>
+        <FileVersion>1.1.0.0</FileVersion>
+        <AssemblyVersion>1.2.0.0</AssemblyVersion>
     </PropertyGroup>
 
     
 <!--    Aot publish-->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <PublishAot>true</PublishAot>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     </PropertyGroup>
-    
-<!--    无运行时 publish-->
-<!--    <PropertyGroup Condition="'$(Configuration)' == 'Release'">-->
-<!--        <PublishAot>false</PublishAot>-->
-<!--        <PublishTrimmed>false</PublishTrimmed>-->
-<!--        <SelfContained>false</SelfContained>-->
-<!--    </PropertyGroup>-->
-    
     
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
@@ -51,7 +45,6 @@
         <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.9" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
-        <PackageReference Include="Semi.Avalonia" Version="11.3.7.1" />
         <PackageReference Include="ViewLocator.Generator" Version="2025.8.4.737-manual">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

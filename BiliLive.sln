@@ -31,4 +31,7 @@ Global
 		{A8EF2770-0368-4529-B804-CEE33B4ABFB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8EF2770-0368-4529-B804-CEE33B4ABFB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = ..\Semi.Avalonia\.run\SC-Single.run.xml
+	EndGlobalSection
 EndGlobal

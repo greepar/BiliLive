@@ -64,57 +64,61 @@
     </Application.Resources>
     
     <Application.Styles>
-     
-        <!-- <SimpleTheme/> -->
+        <FluentTheme/>
         <m3:Material3 />
+
+        <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+        </Style>
         
         <Style Selector="Window,UserControl,Button">
             <Setter Property="FontFamily" Value="{StaticResource NotoRegular}"/>
         </Style>
         
-        <!-- <Style Selector="Border"> -->
-        <!--     <Setter Property="Transitions"> -->
-        <!--         <Transitions> -->
-        <!--             <BrushTransition Property="Background" Duration="0.3"/> -->
-        <!--         </Transitions> -->
-        <!--     </Setter> -->
-        <!-- </Style> -->
-        <!-- <Style Selector="StackPanel"> -->
-        <!--     <Setter Property="Transitions"> -->
-        <!--         <Transitions> -->
-        <!--             <BrushTransition Property="Background" Duration="0.3"/> -->
-        <!--         </Transitions> -->
-        <!--     </Setter> -->
-        <!-- </Style> -->
-        <!-- <Style Selector="Grid"> -->
-        <!--     <Setter Property="Transitions"> -->
-        <!--         <Transitions> -->
-        <!--             <BrushTransition Property="Background" Duration="0.3"/> -->
-        <!--         </Transitions> -->
-        <!--     </Setter> -->
-        <!-- </Style> -->
-        <!-- <Style Selector="TextBox"> -->
-        <!--     <Setter Property="Transitions"> -->
-        <!--         <Transitions> -->
-        <!--             <BrushTransition Property="Foreground" Duration="0.3"/> -->
-        <!--             <BrushTransition Property="BorderBrush" Duration="0.3"/> -->
-        <!--         </Transitions> -->
-        <!--     </Setter> -->
-        <!-- </Style> -->
-        <!-- <Style Selector="TextBlock"> -->
-        <!--     <Setter Property="Transitions"> -->
-        <!--         <Transitions> -->
-        <!--             <BrushTransition Property="Foreground" Duration="0.3"/> -->
-        <!--         </Transitions> -->
-        <!--     </Setter> -->
-        <!-- </Style> -->
-        <!-- <Style Selector="SvgBox"> -->
-        <!--     <Setter Property="Transitions"> -->
-        <!--         <Transitions> -->
-        <!--             <BrushTransition Property="Fill" Duration="0.3"/> -->
-        <!--         </Transitions> -->
-        <!--     </Setter> -->
-        <!-- </Style> -->
+        <Style Selector="Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="StackPanel">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Grid">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
+                    <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/>
+                    <BrushTransition Property="BorderBrush" Easing="CubicEaseInOut" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="TextBlock">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="SvgBox">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Fill" Easing="CubicEaseInOut" Duration="0.3"/>
+                </Transitions>
+            </Setter>
+        </Style>
     </Application.Styles>
 
     

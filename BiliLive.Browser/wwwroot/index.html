@@ -5,30 +5,64 @@
     <title>MapWorkShop.Browser</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="./favicon.webp" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     <link rel="stylesheet" href="./app.css" />
     <style>
-        #progress-container {
-            width: 100%;
-            height: 4px;
-            background: #ccc;
+        #loading-mask {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f8f9fa;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: inherit;
+            transition: opacity 0.5s ease-out;
         }
 
-        #progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #4caf50;
-            transition: width 0.2s;
+        .spinner {
+            width: 48px;
+            height: 48px;
+            animation: rotate 2s linear infinite;
+        }
+
+        .spinner circle {
+            fill: none;
+            stroke: #6750a4;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 1, 200;
+            stroke-dashoffset: 0;
+            animation: dash 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes dash {
+            0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+            50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
+            100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
         }
 
         #loading-text {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            color: #333;
+            margin-top: 20px;
+            color: #1d1b20;
             font-size: 14px;
+            font-weight: 500;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            #loading-mask { background-color: #1c1b1f; }
+            #loading-text { color: #e6e1e5; }
+            .spinner circle { stroke: #d0bcff; }
         }
     </style>
 </head>
@@ -40,63 +74,73 @@
     </div>
 </div>
 
-<div id="progress-container">
-    <div id="progress-bar"></div>
+<div id="loading-mask">
+    <svg class="spinner" viewBox="0 0 50 50">
+        <circle cx="25" cy="25" r="20"></circle>
+    </svg>
+    <div id="loading-text">正在加载...</div>
 </div>
-<div id="loading-text">Loading...</div>
 
 <script type="module">
     import { dotnet } from './_framework/dotnet.js';
 
-    const bar = document.getElementById("progress-bar");
     const text = document.getElementById("loading-text");
 
     let loadedBytes = 0;
     let totalBytes = 0;
 
-    const dotnetRuntime = await dotnet
-        .withDiagnosticTracing(false)
-        .withApplicationArgumentsFromQuery()
-        .withResourceLoader((type, name, defaultUri, integrity) => {
-            // ⬅️ dotnetjs 必须直接返回 URL，不要 fetch
-            if (type === "dotnetjs") {
-                return defaultUri;
-            }
+    try {
+        const dotnetRuntime = await dotnet
+            .withDiagnosticTracing(false)
+            .withApplicationArgumentsFromQuery()
+            .withResourceLoader((type, name, defaultUri, integrity) => {
+                if (type === "dotnetjs") return defaultUri;
 
-            // ⬅️ 其他资源（dll/wasm/pdb等）才 fetch，用来统计进度
-            return fetch(defaultUri, { integrity }).then(resp => {
-                const contentLength = resp.headers.get("Content-Length");
-                if (contentLength) {
-                    totalBytes += parseInt(contentLength);
-                }
-                const reader = resp.body.getReader();
+                return fetch(defaultUri, { integrity }).then(resp => {
+                    if (!resp.ok) return resp;
+                    
+                    const contentLength = resp.headers.get("Content-Length");
+                    if (contentLength) {
+                        totalBytes += parseInt(contentLength);
+                    }
 
-                return new Response(
-                    new ReadableStream({
+                    const reader = resp.body.getReader();
+                    return new Response(new ReadableStream({
                         async pull(controller) {
                             const { done, value } = await reader.read();
                             if (done) {
                                 controller.close();
-                                return;
+                            } else {
+                                loadedBytes += value.length;
+                                if (totalBytes) {
+                                    const percent = Math.round((loadedBytes / totalBytes) * 100);
+                                    text.textContent = `正在加载... ${percent}%`;
+                                }
+                                controller.enqueue(value);
                             }
-                            loadedBytes += value.length;
-                            const percent = totalBytes ? (loadedBytes / totalBytes) * 100 : 0;
-                            bar.style.width = percent + "%";
-                            text.textContent = `Loading... ${percent.toFixed(1)}%`;
-                            controller.enqueue(value);
                         }
-                    })
-                );
-            });
-        })
-        .create();
+                    }), resp);
+                });
+            })
+            .create();
 
-    const config = dotnetRuntime.getConfig();
-    await dotnetRuntime.runMain(config.mainAssemblyName, [globalThis.location.href]);
+        const config = dotnetRuntime.getConfig();
+        await dotnetRuntime.runMain(config.mainAssemblyName, [globalThis.location.href]);
 
-    // 运行完成后移除进度条
-    document.getElementById("progress-container").style.display = "none";
-    text.style.display = "none";
+        // 运行完成后移除加载遮罩
+        const mask = document.getElementById("loading-mask");
+        mask.style.opacity = "0";
+        setTimeout(() => {
+            mask.style.display = "none";
+        }, 500);
+    } catch (err) {
+        console.error("Dotnet Startup Error:", err);
+        const text = document.getElementById("loading-text");
+        text.style.color = "#ffb4ab";
+        text.innerHTML = `启动失败: ${err.message || err.name || JSON.stringify(err)}`;
+        const spinner = document.querySelector(".spinner");
+        if (spinner) spinner.style.display = "none";
+    }
 </script>
 </body>
 

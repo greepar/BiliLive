@@ -32,7 +32,6 @@
     </Design.PreviewWith>
     
     <ControlTheme x:Key="MdButton" TargetType="Button">
-        
         <Setter Property="RenderTransform" Value="{x:Null}"></Setter>
         <Setter Property="ClipToBounds" Value="False"></Setter>
         

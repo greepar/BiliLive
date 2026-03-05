@@ -16,7 +16,6 @@
     
     <Grid Margin="5 0 5 0" RowDefinitions="Auto,Auto,*">
         <TextBlock Grid.Row="0" Text="主页" FontSize="18"/>
-        
         <Border Grid.Row="1"
                 Height="150"
                 CornerRadius="18"
@@ -111,9 +110,9 @@
         
         <Grid Grid.Row="2" Margin="0 10 0 0"
               ColumnDefinitions="2*,*">
+            
             <Border Grid.Column="0" CornerRadius="18" 
                     Background="{DynamicResource SurfaceContainer}">
-                
                 <Grid Margin="15 0 15 15"
                       RowDefinitions="Auto * ">
                     
@@ -136,53 +135,84 @@
                         </Style>
                     </Grid.Styles>
                     
-                    <TextBlock Grid.Row="0"
-                               FontSize="13" Text="直播间信息"
-                               Margin="3 13 0 10"
-                               VerticalAlignment="Center"/>
+     
 
                     <StackPanel Grid.Row="1">
+                        <TextBlock FontSize="13" Text="直播间信息"
+                                   Margin="3 13 0 10"
+                                   VerticalAlignment="Center"/>
+                        
                         <Grid ColumnDefinitions="Auto,*,Auto"
                               VerticalAlignment="Center">
                             <!-- 封面 -->
-                            <Grid Grid.Column="0" >
-                                <!-- <Button ZIndex="100" Background="Red" Theme="{StaticResource MdButton}">123</Button> -->
+                            
+                            <Border Grid.Column="0" 
+                                    CornerRadius="12"
+                                    ClipToBounds="True">
                                 
-                                <Grid.Styles>
-                                    <Style Selector="Border:pointerover">
-                                        <!-- <Setter Property="Opacity" Value="0.2"/> -->
-                                        <!-- <Setter Property="BorderBrush" Value="#41E2F1"></Setter> -->
-                                        <!-- <Setter Property="BorderThickness" Value="2"></Setter> -->
-                                        <Setter Property="BoxShadow" Value="  0 0 10 2 #26000000" />
+                                <Border.Styles>
+                                    <Style Selector="Border#FloatingTip">
+                                        <Setter Property="RenderTransform">
+                                            <TransformOperations>
+                                                translate(0px, 20px)
+                                            </TransformOperations>
+                                        </Setter>
+                                        <Setter Property="Opacity" Value="0"></Setter>
                                     </Style>
-                                </Grid.Styles>
+                                    
+                                    <Style Selector="Grid#CoverGrid:pointerover Border#FloatingTip">
+                                        <Setter Property="RenderTransform">
+                                            <TransformOperations>
+                                                translate(0px, 0px)
+                                            </TransformOperations>
+                                        </Setter>
+                                        <Setter Property="Opacity" Value="0.3"/>
+                                    </Style>
+                                    
+                                    <Style Selector="Border:pointerover">
+                                        <Setter Property="BoxShadow" Value="0 1.5 3 1.1 #26000000"/>
+                                    </Style>
+                                </Border.Styles>
+                                <Grid Name="CoverGrid" ClipToBounds="False">
+                              
+                                
                                 <Button HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
-                                        CornerRadius="12" 
+                                        CornerRadius="12"
+                                        Height="74" Width="132"
                                         Background="Transparent"
                                         Padding="0"
+                                        Classes="Text"
                                         Command="{Binding ChangeRoomCoverCommand}">
                                     <Button.Styles>
-                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                            <Setter Property="CornerRadius" Value="12"></Setter>
-                                            <Setter Property="BoxShadow" Value="0 0 4 1 #12000000" />
-                                            <Setter Property="Background" Value="Transparent" />
-                                            <Setter Property="Foreground"
-                                                    Value="{DynamicResource OnSurface}" />
+                                        <Style Selector="Button:pointerover">
+                                            <Setter Property="Background" Value="SkyBlue"/>
                                         </Style>
                                     </Button.Styles>
+                                    <Border Width="132" Height="74"
+                                            Opacity="1"
+                                            IsHitTestVisible="False"
+                                            Background="Wheat"
+                                            CornerRadius="12" ClipToBounds="True">
+                                        <Image Source="{Binding RoomCover}"
+                                               Width="132" Height="74"/>
+                                    </Border>
                                 </Button>
-                                <Border Width="132" Height="74"
-                                        Opacity="1"
+                                
+                                <Border Name="FloatingTip" CornerRadius="0 0 12 12"
                                         IsHitTestVisible="False"
-                                        Background="Transparent"
-                                        CornerRadius="12" ClipToBounds="True">
-                                    <Image Source="{Binding RoomCover}"
-                                           Width="132" Height="74">
-                                    </Image>
+                                        VerticalAlignment="Bottom" Height="20" Background="Gray">
+                                    <Border.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="Opacity" Easing="ExponentialEaseOut" Duration="0.3"/>
+                                            <TransformOperationsTransition Property="RenderTransform" Easing="ExponentialEaseOut" Duration="0.3"/>
+                                        </Transitions>
+                                    </Border.Transitions>
                                 </Border>
-                              
                             </Grid>
+                            </Border>
+                            
+                            
                          
                         
                             <StackPanel Grid.Column="1" Spacing="3" Margin="10">
@@ -298,17 +328,8 @@
                                 </Border>
                             </Grid>
                         </StackPanel>
-                        
                     </StackPanel>
-                    
-                   
-                    
-               
-                    
-                   
-                    
                 </Grid>
-                
             </Border>
             
             <Border Grid.Column="1" CornerRadius="18" Margin="10 0 0 0"

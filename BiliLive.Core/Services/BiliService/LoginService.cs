@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,6 +11,9 @@ namespace BiliLive.Core.Services.BiliService;
 
 internal class LoginService(HttpClient httpClient, CookieContainer cookieContainer)
 {
+    private const string AppGetQrUrl = "https://passport.bilibili.com/x/passport-tv-login/qrcode/auth_code";
+    private const string AppPollQrUrl = "https://passport.bilibili.com/x/passport-tv-login/qrcode/poll";
+    
     public async Task<LoginResult> LoginAsync(string? biliCookie = null)
     {
         if (biliCookie == null)
@@ -76,12 +80,51 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
                 ErrorMsg = $"Alt未知错误" + ex.Message
             };
         }
-    } 
+    }
 
+    private async Task<string> GetIosQrAuthCode()
+    {
+        var formData = new Dictionary<string, string>
+        {
+            { "appkey", "27eb53fc9058f8c3" },
+            { "mobi_app", "ios" },
+            { "ts", DateTimeOffset.Now.ToUnixTimeSeconds().ToString() }
+        };
+        await SignService.AddAppSignAsync(formData);
+        using var response = await httpClient.PostAsync(AppGetQrUrl, new FormUrlEncodedContent(formData));
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+        var element = jsonDoc.RootElement;
+        var authCode = element.GetProperty("data").GetProperty("auth_code").GetString() ?? throw new InvalidOperationException("无法获取AuthCode");
+        return authCode;
+    }
+    
+    private async Task<string?> PollIosQrAuthCode(string qrAuthCode)
+    {
+        var formData = new Dictionary<string, string>
+        {
+            { "appkey", "27eb53fc9058f8c3" },
+            { "auth_code", qrAuthCode },
+            { "ts", DateTimeOffset.Now.ToUnixTimeSeconds().ToString() }
+        };
+        await SignService.AddAppSignAsync(formData);
+        using var response = await httpClient.PostAsync(AppPollQrUrl, new FormUrlEncodedContent(formData));
+        await using var stream = await response.Content.ReadAsStreamAsync();
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+        var element = jsonDoc.RootElement;
+        var responseCode = element.GetProperty("code").GetInt32();
+        if (responseCode != 0)
+        {
+            return null;
+        }
+        var accessKey = element.GetProperty("data").GetProperty("access_token").GetString() ?? throw new InvalidOperationException("无法获取AccessToken");
+        return accessKey;
+    }
 
+    
     public async Task<QrLoginInfo?> GetLoginUrlAsync()
     {
-        var loginApi = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate";
+        const string loginApi = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate";
         using var loginResponse = await httpClient.GetAsync(loginApi);
         if (loginResponse.IsSuccessStatusCode)
         { 
