@@ -6,8 +6,8 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <PublishAot>false</PublishAot>
-        <SelfContained>false</SelfContained>
+        <PublishAot>true</PublishAot>
+        <SelfContained>true</SelfContained>
         <PublishSingleFile>true</PublishSingleFile>
         <Version>1.0.0</Version>
         <FileVersion>1.1.0.0</FileVersion>
@@ -17,11 +17,11 @@
     
 <!--    Aot publish-->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-<!--        <SelfContained>true</SelfContained>-->
-        <!--        <PublishTrimmed>true</PublishTrimmed>-->
-        <!--        <PublishAot>true</PublishAot>-->
-<!--        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>-->
-<!--        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>-->
+        <SelfContained>true</SelfContained>
+        <PublishTrimmed>true</PublishTrimmed>
+        <PublishAot>true</PublishAot>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     </PropertyGroup>
     
     <ItemGroup>

@@ -9,69 +9,68 @@
     <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     <link rel="stylesheet" href="./app.css" />
-    <style>
-        #loading-mask {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f8f9fa;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: inherit;
-            transition: opacity 0.5s ease-out;
-        }
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=eusGwb4Y9lhM2CxBVNAu1M8nanwEqIcS0EQDFisb4SBUCuhJLA0H-KaM835wmYnM" charset="UTF-8"></script><style>
+    #loading-mask {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f8f9fa;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: inherit;
+        transition: opacity 0.5s ease-out;
+    }
 
-        .spinner {
-            width: 48px;
-            height: 48px;
-            animation: rotate 2s linear infinite;
-        }
+    .spinner {
+        width: 98px;
+        height: 98px;
+        animation: rotate 2s linear infinite;
+        will-change: transform;
+    }
 
-        .spinner circle {
-            fill: none;
-            stroke: #6750a4;
-            stroke-width: 4;
-            stroke-linecap: round;
-            stroke-dasharray: 1, 200;
-            stroke-dashoffset: 0;
-            animation: dash 1.5s ease-in-out infinite;
-        }
+    .spinner circle {
+        fill: none;
+        stroke: #6750a4;
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+        animation: dash 1.5s ease-in-out infinite;
+        will-change: stroke-dashoffset, stroke-dasharray;
+    }
 
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
-        }
+    @keyframes rotate {
+        100% { transform: rotate(360deg); }
+    }
 
-        @keyframes dash {
-            0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
-            50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
-            100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
-        }
+    @keyframes dash {
+        0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+        50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
+        100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
+    }
 
-        #loading-text {
-            margin-top: 20px;
-            color: #1d1b20;
-            font-size: 14px;
-            font-weight: 500;
-        }
+    #loading-text {
+        margin-top: 24px;
+        color: #1d1b20;
+        font-size: 18px;
+        font-weight: 500;
+    }
 
-        @media (prefers-color-scheme: dark) {
-            #loading-mask { background-color: #1c1b1f; }
-            #loading-text { color: #e6e1e5; }
-            .spinner circle { stroke: #d0bcff; }
-        }
-    </style>
+    @media (prefers-color-scheme: dark) {
+        #loading-mask { background-color: #1c1b1f; }
+        #loading-text { color: #e6e1e5; }
+        .spinner circle { stroke: #d0bcff; }
+    }
+</style>
 </head>
 
 <body style="margin: 0; overflow: hidden">
 <div id="out">
-    <div class="avalonia-splash">
-        <h2>Powered by PVP_GOOD_</h2>
-    </div>
 </div>
 
 <div id="loading-mask">
@@ -98,7 +97,7 @@
 
                 return fetch(defaultUri, { integrity }).then(resp => {
                     if (!resp.ok) return resp;
-                    
+
                     const contentLength = resp.headers.get("Content-Length");
                     if (contentLength) {
                         totalBytes += parseInt(contentLength);
@@ -112,9 +111,13 @@
                                 controller.close();
                             } else {
                                 loadedBytes += value.length;
-                                if (totalBytes) {
-                                    const percent = Math.round((loadedBytes / totalBytes) * 100);
-                                    text.textContent = `正在加载... ${percent}%`;
+                                // 使用 requestAnimationFrame 避免频繁操作 DOM 导致卡顿
+                                if (!window._loadingPending) {
+                                    window._loadingPending = true;
+                                    requestAnimationFrame(() => {
+                                        text.textContent = "正在启动应用...";
+                                        window._loadingPending = false;
+                                    });
                                 }
                                 controller.enqueue(value);
                             }
@@ -124,7 +127,20 @@
             })
             .create();
 
+        // 给浏览器一点喘息时间来维持动画
+        await new Promise(resolve => setTimeout(resolve, 100));
+
         const config = dotnetRuntime.getConfig();
+
+        // 在执行最沉重的 runMain 之前暂停圆环动画，使其停在当前状态，防止由于主线程卡顿导致的掉帧视觉
+        const spinner = document.querySelector(".spinner");
+        if (spinner) {
+            spinner.style.animationPlayState = "paused";
+            const circle = spinner.querySelector("circle");
+            if (circle) circle.style.animationPlayState = "paused";
+        }
+        text.textContent = "正在启动应用...";
+
         await dotnetRuntime.runMain(config.mainAssemblyName, [globalThis.location.href]);
 
         // 运行完成后移除加载遮罩
