@@ -29,6 +29,7 @@ public class App : Application
                 services.AddTransient<AutoServiceViewModel>();
                 services.AddTransient<AccountsViewModel>();
                 services.AddTransient<HomeViewModel>();
+                services.AddTransient<AboutViewModel>();
                 // 更多服务...
             })
             .Build();

@@ -74,6 +74,7 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] private AccountsViewModel _accountVm;
     private readonly AutoServiceViewModel _asVm;
     private readonly HomeViewModel _homeVm;
+    private readonly AboutViewModel _aboutVm;
     
     //设置默认页面
     [ObservableProperty]private NavigationPage _currentBtn = NavigationPage.Home;
@@ -119,6 +120,7 @@ public partial class MainViewModel : ViewModelBase
             AccountVm = new AccountsViewModel();
             _asVm = new AutoServiceViewModel();
             _homeVm = new HomeViewModel();
+            _aboutVm = new AboutViewModel();
         }
         else
         {
@@ -126,6 +128,7 @@ public partial class MainViewModel : ViewModelBase
             AccountVm = serviceProvider.GetRequiredService<AccountsViewModel>();
             _asVm = serviceProvider.GetRequiredService<AutoServiceViewModel>();
             _homeVm = serviceProvider.GetRequiredService<HomeViewModel>();
+            _aboutVm = serviceProvider.GetRequiredService<AboutViewModel>();
             LoadAccountCommand.Execute(null);
         }
         CurrentVm = _homeVm;
@@ -262,8 +265,10 @@ public partial class MainViewModel : ViewModelBase
                 break;
             case NavigationPage.About:
                 CurrentBtn = NavigationPage.About;
-                CurrentVm = new AboutViewModel();
+                CurrentVm = _aboutVm;
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(navigationPage), navigationPage, null);
         }
     }
 
@@ -291,12 +296,21 @@ public partial class MainViewModel : ViewModelBase
                     var code = a.GetProperty("code").GetInt32();
                     if (code == 60024)
                     {
-                        var verifyUrl = a.GetProperty("data").GetProperty("qr").GetString();
-                        await ShowWindowHelper.ShowQrCodeAsync("当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播", verifyUrl ?? throw new Exception("当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播，无法获取二维码链接"));
+                        var loginResult = await _biliService.LoginAsync();
+                        switch (loginResult)
+                        {
+                            case LoginSuccess lr:
+                                var verifyUrl = a.GetProperty("data").GetProperty("qr").GetString();
+                                await ConfigManager.SaveConfigAsync(ConfigType.BiliCookie, lr.BiliCookie);
+                                await ShowWindowHelper.ShowQrCodeAsync(verifyUrl ?? throw new Exception("当前账号在触发风控，无法开播，且无法获取二维码链接,请重试"));
+                                break;
+                            case LoginFailed lf: 
+                                await ShowWindowHelper.ShowErrorAsync("登录信息异常，错误信息:" + lf.ErrorMsg);
+                                break;
+                        };
                         GeneralState.IsStreaming = false;
                         return;
                     }
-                    
                     var errMsg = a.GetProperty("message").GetString();
                     await ShowWindowHelper.ShowErrorAsync($"开始推流失败\n,错误码:{code},错误信息:{errMsg}");
                     throw new Exception($"开始推流失败\n,错误码:{code},错误信息:{errMsg}");

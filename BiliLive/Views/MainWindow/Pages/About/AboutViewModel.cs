@@ -6,37 +6,47 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using BiliLive.Core.Interface;
+using BiliLive.Core.Models.BiliService;
+using BiliLive.Resources;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace BiliLive.Views.MainWindow.Pages.About;
 
 public partial class AboutViewModel : ViewModelBase
 {
-    [ObservableProperty]private Bitmap _developerAvatar;
     // [ObservableProperty]private object _currentView = new DialControl();
-    public AboutViewModel()
+
+    private readonly IBiliService _biliService;
+    [ObservableProperty] private Bitmap _developerAvatar;
+
+    public AboutViewModel(IServiceProvider? serviceProvider = null)
     {
+        _biliService = serviceProvider?.GetService(typeof(IBiliService)) as IBiliService ??
+                       throw new ArgumentNullException(nameof(serviceProvider));
         var file = AssetLoader.Open(new Uri("avares://BiliLive/Assets/Pics/userPic.jpg"));
-        DeveloperAvatar = PicHelper.ResizeStreamToBitmap(file,120,120) ?? new Bitmap(file);
+        DeveloperAvatar = PicHelper.ResizeStreamToBitmap(file, 120, 120) ?? new Bitmap(file);
     }
 
 
     //调试模式
-    
+
     [RelayCommand]
-    private static void SetTopMostWindow(bool isTopMost)
+    private void SetTopMostWindow(bool isTopMost)
     {
 #if DEBUG
         AvaloniaUtils.SetTopMostWindow(isTopMost);
 #endif
     }
-    
+
     [RelayCommand]
-    private static void OpenCurrentFolder()
+    private void OpenCurrentFolder()
     {
         // Console.WriteLine();
 #if DEBUG
@@ -49,14 +59,14 @@ public partial class AboutViewModel : ViewModelBase
 #endif
     }
 
-        [RelayCommand]
+    [RelayCommand]
     private static async Task TestAsync()
-    { 
-        await ShowWindowHelper.ShowQrCodeAsync("这是一个测试错误消息","https://www.bilibili.com/");
+    {
+        await ShowWindowHelper.ShowQrCodeAsync("\"这是一个测试错误消息\",\"https://www.bilibili.com/\"");
     }
 
     [RelayCommand]
-    private static async Task GetLiveCookieAsync()
+    private async Task GetLiveCookieAsync()
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -89,6 +99,7 @@ public partial class AboutViewModel : ViewModelBase
                 await ShowWindowHelper.ShowErrorAsync("获取直播Cookie失败：cookies 字段为空");
                 return;
             }
+
             // base64 -> 二进制密文
             var cipher = Convert.FromBase64String(cookiesBase64);
 
@@ -105,8 +116,10 @@ public partial class AboutViewModel : ViewModelBase
                 return;
             }
 
-            static uint ToUInt32Le(byte[] b, int o) =>
-                (uint)(b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24));
+            static uint ToUInt32Le(byte[] b, int o)
+            {
+                return (uint)(b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24));
+            }
 
             static void FromUInt32Le(uint v, byte[] b, int o)
             {
@@ -130,8 +143,8 @@ public partial class AboutViewModel : ViewModelBase
 
                 for (var r = 0; r < 32; r++)
                 {
-                    v1 = unchecked(v1 - ((((v0 >> 5) + k3) ^ ((v0 << 4) + k2) ^ (sum + v0))));
-                    v0 = unchecked(v0 - ((((v1 >> 5) + k1) ^ ((v1 << 4) + k0) ^ (sum + v1))));
+                    v1 = unchecked(v1 - (((v0 >> 5) + k3) ^ ((v0 << 4) + k2) ^ (sum + v0)));
+                    v0 = unchecked(v0 - (((v1 >> 5) + k1) ^ ((v1 << 4) + k0) ^ (sum + v1)));
                     sum = unchecked(sum + 0x61C88647);
                 }
 
@@ -143,15 +156,13 @@ public partial class AboutViewModel : ViewModelBase
             var end = plain.Length;
             while (end > 0 && plain[end - 1] == 0) end--;
             var cookiesJson = Encoding.UTF8.GetString(plain, 0, end);
-            
+
             if (!cookiesJson.Contains("SESSDATA", StringComparison.Ordinal))
             {
                 await ShowWindowHelper.ShowErrorAsync("解密完成，但未检测到 SESSDATA，可能账号未登录");
                 return;
             }
-            
-            Console.WriteLine("直播Cookie获取成功: " + cookiesJson);
-            
+
             using var cookieDoc = JsonDocument.Parse(cookiesJson);
             var cookieMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (var item in cookieDoc.RootElement.EnumerateArray())
@@ -164,20 +175,30 @@ public partial class AboutViewModel : ViewModelBase
                 if (!string.IsNullOrWhiteSpace(name) && value is not null)
                     cookieMap[name] = value;
             }
+
             var liveCookie = string.Join(";",
                 cookieMap.Select(kv => $"{kv.Key}={kv.Value}"));
-            
-            Console.WriteLine("解析cookie" +liveCookie);
-            
-            
-            // WeakReferenceMessenger.Default.Send(new LoginMessage(loginResult));
-            // await ShowWindowHelper.ShowInfoAsync("直播Cookie获取成功");
+
+
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("直播Cookie获取成功,尝试登录中...",
+                Geometry.Parse(MdIcons.Check)));
+
+            var loginResult = await _biliService.LoginAsync(liveCookie);
+            switch (loginResult)
+            {
+                case LoginFailed:
+                    await ShowWindowHelper.ShowErrorAsync("Cookie登录失败，可能是Cookie无效或过期");
+                    break;
+                case LoginSuccess:
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Cookie登录成功！",
+                        Geometry.Parse(MdIcons.Check)));
+                    WeakReferenceMessenger.Default.Send(new LoginMessage(loginResult));
+                    break;
+            }
         }
         catch (Exception ex)
         {
             await ShowWindowHelper.ShowErrorAsync($"获取直播Cookie失败：{ex.Message}");
         }
-
     }
-
 }

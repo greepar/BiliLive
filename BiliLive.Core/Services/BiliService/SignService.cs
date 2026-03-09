@@ -80,10 +80,4 @@ public static class SignService
         var signedQuery = await new FormUrlEncodedContent(parameters).ReadAsStringAsync();
         return signedQuery;
     }
-    
-    public static async Task<string> GetBuvid3Async()
-    {
-        await Task.CompletedTask;
-        return "a";
-    }
 }

@@ -13,6 +13,7 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
 {
     private const string AppGetQrUrl = "https://passport.bilibili.com/x/passport-tv-login/qrcode/auth_code";
     private const string AppPollQrUrl = "https://passport.bilibili.com/x/passport-tv-login/qrcode/poll";
+    private const string GetBuvIdUrl = "https://api.bilibili.com/x/frontend/finger/spi";
     
     public async Task<LoginResult> LoginAsync(string? biliCookie = null)
     {
@@ -49,35 +50,40 @@ internal class LoginService(HttpClient httpClient, CookieContainer cookieContain
             await using var stream = await response.Content.ReadAsStreamAsync();
             using var jsonDoc = await JsonDocument.ParseAsync(stream);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var isLogin = jsonDoc.RootElement.GetProperty("data").GetProperty("isLogin").GetBoolean();
-                if (isLogin)
-                {
-                    var userFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString() ??
-                                      "Unknown";
-                    var userFaceBytes = await httpClient.GetByteArrayAsync(userFaceUrl);
-                    return new LoginSuccess
-                    {
-                        BiliCookie = biliCookie,
-                        UserName =
-                            jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString() ?? "Unknown",
-                        UserId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64(),
-                        UserFaceBytes = userFaceBytes
-                    };
-                }
+            if (!response.IsSuccessStatusCode) throw new Exception("检查登录状态时请求失败，状态码: " + response.StatusCode);
+            var isLogin = jsonDoc.RootElement.GetProperty("data").GetProperty("isLogin").GetBoolean();
+            if (!isLogin)
                 return new LoginFailed
                 {
                     ErrorMsg = "Cookie 已失效，请重新登录"
                 };
+            
+            //自动获取buvid3
+            if (cookieContainer.GetCookies(new Uri("https://space.bilibili.com/"))["buvid3"] == null)
+            {
+                using var buvidResponse = await httpClient.GetAsync(GetBuvIdUrl);
+                await using var buvidStream = await buvidResponse.Content.ReadAsStreamAsync();
+                using var buvidJsonDoc = await JsonDocument.ParseAsync(buvidStream);
+                var buvid = buvidJsonDoc.RootElement.GetProperty("data").GetProperty("b_3").GetString() ?? throw new Exception("获取buvid3失败");
+                biliCookie += $";buvid3={buvid}";
             }
-            throw new Exception("检查登录状态时请求失败，状态码: " + response.StatusCode);
+            var userFaceUrl = jsonDoc.RootElement.GetProperty("data").GetProperty("face").GetString() ??
+                              "Unknown";
+            var userFaceBytes = await httpClient.GetByteArrayAsync(userFaceUrl);
+            return new LoginSuccess
+            {
+                BiliCookie = biliCookie,
+                UserName =
+                    jsonDoc.RootElement.GetProperty("data").GetProperty("uname").GetString() ?? "Unknown",
+                UserId = jsonDoc.RootElement.GetProperty("data").GetProperty("mid").GetInt64(),
+                UserFaceBytes = userFaceBytes
+            };
         }
         catch (Exception ex)
         {
             return new LoginFailed
             {
-                ErrorMsg = $"Alt未知错误" + ex.Message
+                ErrorMsg = $"登录未知错误" + ex.Message
             };
         }
     }

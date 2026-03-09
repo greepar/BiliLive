@@ -28,7 +28,7 @@ public static class ShowWindowHelper
         await ShowWindowAsync(errorWindow);
     }
     
-    public static async Task ShowQrCodeAsync(string message,string qrCodeUrl)
+    public static async Task ShowQrCodeAsync(string qrCodeUrl)
     {
         //生成登录二维码
         using var qrGenerator = new QRCodeGenerator();

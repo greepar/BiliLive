@@ -33,10 +33,19 @@
             </ScaleTransform>
         </Border.RenderTransform>
         
-        <StackPanel Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBlock>首次开播需要扫码验证</TextBlock>
-            <Image Source="{Binding QrImage}" Margin="6" Width="190" Height="190"/>
-            <Button Click="Button_OnClick" HorizontalAlignment="Right" Classes="Elevated">确认</Button>
-        </StackPanel>
+        <Grid Margin="10 10 10 0"
+                RowDefinitions="Auto,*,Auto"
+                    Background="Transparent"
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch">
+            <TextBlock Grid.Row="0" TextWrapping="WrapWithOverflow">触发风控,开播需要扫码验证。</TextBlock>
+            <Border Grid.Row="1" CornerRadius="18"
+                    Background="{DynamicResource SurfaceContainerHighest}"
+                    Height="190" Width="190">
+                <Image Source="{Binding QrImage}" Width="190" Height="190"/>
+            </Border>
+            <Button Grid.Row="2" Click="Button_OnClick" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 0 6"
+                    Height="35"  Classes="Elevated">确认</Button>
+        </Grid>
     </Border>
 </Window>

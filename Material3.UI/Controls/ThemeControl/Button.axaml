@@ -130,7 +130,7 @@
             <Setter Property="Transitions">
                 <Transitions>
                     <!-- <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/>   -->
-                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>  
+                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.1"/>  
                 </Transitions>
             </Setter>
         </Style>

@@ -59,6 +59,9 @@
                                  StrokeThickness="6"
                                  IsRotating="False"/>
                    <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">Loading ....</TextBlock>
+                   <Button Margin="10 0 0 0" 
+                           Classes="Elevated"
+                           Command="{Binding GetLiveCookieCommand}">[测试] 获取直播姬Cookie登录</Button>
                </StackPanel>
             </StackPanel>
      
@@ -81,12 +84,11 @@
                                 Command="{Binding OpenCurrentFolderCommand}"
                                 IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" >
                             <StackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center">
-                                <SvgBox Margin="3 0 0 0" PathData="{res:Geometry {x:Static res:MdIcons.Windowed}}"/>
+                                <SvgBox Height="18" Width="18" Margin="3 0 0 0" PathData="{res:Geometry {x:Static res:MdIcons.Windowed}}"/>
                                 <TextBlock VerticalAlignment="Center" FontSize="11">Open Runtime Folder</TextBlock>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding TestCommand}">test</Button>
-                        <Button Command="{Binding GetLiveCookieCommand}">获取直播姬Cookie</Button>
                     </StackPanel>
       
                     <!-- debug mode -->

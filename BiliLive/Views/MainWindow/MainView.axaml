@@ -76,7 +76,7 @@
                                     <Grid RowDefinitions="*,*,*">
                                         <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
                                             <SvgBox Grid.Column="0" PathData="{Binding StreamButtonIcon}"
-                                                    Height="20" Margin="0 0 3 0"
+                                                    Height="17" Width="17" Margin="0 0 3 0"
                                                     VerticalAlignment="Center"
                                                     Fill="{DynamicResource OnSurface}" />
                                             <TextBlock Grid.Column="1"
