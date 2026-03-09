@@ -30,7 +30,7 @@
         <Setter Property="Background" Value="#E8DEF8"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Padding" Value="16 10 16 10"/>
+        <Setter Property="Padding" Value="16 0 16 0"/>
         <Setter Property="RenderTransform" Value="{x:Null}"/>
         <Setter Property="ClipToBounds" Value="False"/>
         <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
@@ -41,11 +41,11 @@
             <ControlTemplate>
                 <Border Name="OutBorder"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Border.Transitions>
-                        <Transitions>
-                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.4" Easing="ExponentialEaseOut"/>
-                        </Transitions>
-                    </Border.Transitions>
+                    <!-- <Border.Transitions> -->
+                    <!--     <Transitions> -->
+                    <!--         <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.4" Easing="ExponentialEaseOut"/> -->
+                    <!--     </Transitions> -->
+                    <!-- </Border.Transitions> -->
                     <Grid>
                         <Border Name="InnerBorder"
                                 Height="{TemplateBinding Height}"
@@ -125,6 +125,15 @@
         <!--         <Setter Property="Background" Value="{DynamicResource OnSurface}" /> -->
         <!--     </Style> -->
         <!-- </Style> -->
+        
+        <Style Selector="^">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <!-- <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/>   -->
+                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>  
+                </Transitions>
+            </Setter>
+        </Style>
         
         <Style Selector="^.Elevated">
             <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}" />

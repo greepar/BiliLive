@@ -17,7 +17,6 @@
         "resolved": "0.41.0",
         "contentHash": "z04dBVdTIAFTRKi38f0LkajaKA++bR+M8kYCbasXePILD2H+qs7CkLpyiippB24CSbTrWIgpBKm6BenZqkUwvw==",
         "dependencies": {
-          "System.Buffers": "4.6.0",
           "ZstdSharp.Port": "0.8.6"
         }
       },
@@ -25,11 +24,6 @@
         "type": "Transitive",
         "resolved": "6.0.0",
         "contentHash": "hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A=="
-      },
-      "System.Buffers": {
-        "type": "Transitive",
-        "resolved": "4.6.0",
-        "contentHash": "lN6tZi7Q46zFzAbRYXTIvfXcyvQQgxnY7Xm6C6xQ9784dEL1amjM6S6Iw4ZpsvesAKnRVsM4scrDQaDqSClkjA=="
       },
       "System.Drawing.Common": {
         "type": "Transitive",

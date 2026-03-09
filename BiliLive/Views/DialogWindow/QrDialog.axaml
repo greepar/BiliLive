@@ -1,0 +1,42 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:BiliLive.Views.DialogWindow"
+        Background="Transparent"
+        TransparencyBackgroundFallback="{DynamicResource Surface}"
+        TransparencyLevelHint="Transparent"
+        x:Class="BiliLive.Views.DialogWindow.QrDialog"
+        x:DataType="vm:QrDialogViewModel"
+        SystemDecorations="None"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        Title="QRDialog"
+        MaxWidth="560" MaxHeight="300">
+    
+    <Design.DataContext>
+        <vm:QrDialogViewModel/>
+    </Design.DataContext>
+    
+    <Border Name="DialogMainBorder" Height="300" Width="230"
+            BorderThickness="10"
+            BorderBrush="Transparent"
+            CornerRadius="28"
+            BoxShadow="0 1 8 1 #26000000"
+            Focusable="True"
+            Background="{DynamicResource Surface}"
+            Opacity="0"
+    >
+        <Border.RenderTransform>
+            <ScaleTransform>
+                <ScaleTransform.ScaleX>0.9</ScaleTransform.ScaleX>
+                <ScaleTransform.ScaleY>0.9</ScaleTransform.ScaleY>
+            </ScaleTransform>
+        </Border.RenderTransform>
+        
+        <StackPanel Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock>首次开播需要扫码验证</TextBlock>
+            <Image Source="{Binding QrImage}" Margin="6" Width="190" Height="190"/>
+            <Button Click="Button_OnClick" HorizontalAlignment="Right" Classes="Elevated">确认</Button>
+        </StackPanel>
+    </Border>
+</Window>

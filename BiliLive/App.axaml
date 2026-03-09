@@ -71,7 +71,7 @@
             <Setter Property="Background" Value="{DynamicResource Primary}" />
         </Style>
         
-        <Style Selector="Window,UserControl,Button">
+        <Style Selector="Window,UserControl">
             <Setter Property="FontFamily" Value="{StaticResource NotoRegular}"/>
         </Style>
         
@@ -99,9 +99,9 @@
         <Style Selector="TextBox">
             <Setter Property="Transitions">
                 <Transitions>
-                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
-                    <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/>
-                    <BrushTransition Property="BorderBrush" Easing="CubicEaseInOut" Duration="0.3"/>
+                    <!-- <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/> -->
+                    <!-- <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/> -->
+                    <!-- <BrushTransition Property="BorderBrush" Easing="CubicEaseInOut" Duration="0.3"/> -->
                 </Transitions>
             </Setter>
         </Style>

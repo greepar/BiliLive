@@ -54,28 +54,29 @@
                         <StackPanel Grid.Row="1" Margin="10 30 10 30" Spacing="7"
                                     Orientation="Vertical">
                             <!-- 缩小侧边栏按钮 -->
-                            <Button Name="MenuOpenBtn" Width="38" Height="38"
+                            <Button Name="MenuOpenBtn" Height="40" Width="38"
+                                    Margin="3 0 0 0"
+                                    Classes="Text"
                                     HorizontalAlignment="Left"
                                     CornerRadius="10"
                                     Background="{DynamicResource SurfaceContainer}"
-                                    Theme="{StaticResource MdButton}"
                                     Click="MenuOpenBtn_OnClick">
                                 <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.MenuOpen}}"
                                         Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
                             </Button>
 
-                            <Button Height="40"
+                            <Button Height="40" MinWidth="38"
                                     Margin="3 2 0 0"
                                     HorizontalAlignment="Left"
+                                    Classes="Tonal"
                                     CornerRadius="10"
-                                    Background="{DynamicResource InversePrimary}"
                                     Command="{Binding StartMainServiceCommand}"
-                                    Theme="{StaticResource MdButton}">
-                                <Border Margin="8 0 8 0" ClipToBounds="True" VerticalAlignment="Center">
+                                    >
+                                <Border Margin="-5 0 -3 0" ClipToBounds="True" VerticalAlignment="Center">
                                     <Grid RowDefinitions="*,*,*">
                                         <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
                                             <SvgBox Grid.Column="0" PathData="{Binding StreamButtonIcon}"
-                                                    Height="20" Margin="0 0 5 0"
+                                                    Height="20" Margin="0 0 3 0"
                                                     VerticalAlignment="Center"
                                                     Fill="{DynamicResource OnSurface}" />
                                             <TextBlock Grid.Column="1"

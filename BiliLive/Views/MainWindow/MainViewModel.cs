@@ -268,7 +268,7 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task StartMainService()
+    private async Task StartMainServiceAsync()
     {
         try
         {
@@ -281,7 +281,6 @@ public partial class MainViewModel : ViewModelBase
                     return;
                 }
                 var a = await _biliService.StartLiveAsync();
-                // if (responseCode == 60024) return "Error-当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播";
                 var streamUrl = a.GetProperty("data").GetProperty("rtmp").GetProperty("addr").GetString();
                 var streamKey = a.GetProperty("data").GetProperty("rtmp").GetProperty("code").GetString();
                 var liveKey = a.GetProperty("data").GetProperty("live_key").GetString();
@@ -290,6 +289,14 @@ public partial class MainViewModel : ViewModelBase
                     string.IsNullOrWhiteSpace(liveKey))
                 {
                     var code = a.GetProperty("code").GetInt32();
+                    if (code == 60024)
+                    {
+                        var verifyUrl = a.GetProperty("data").GetProperty("qr").GetString();
+                        await ShowWindowHelper.ShowQrCodeAsync("当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播", verifyUrl ?? throw new Exception("当前账号在触发风控，无法开播，尝试手机开播一次后再使用本软件开播，无法获取二维码链接"));
+                        GeneralState.IsStreaming = false;
+                        return;
+                    }
+                    
                     var errMsg = a.GetProperty("message").GetString();
                     await ShowWindowHelper.ShowErrorAsync($"开始推流失败\n,错误码:{code},错误信息:{errMsg}");
                     throw new Exception($"开始推流失败\n,错误码:{code},错误信息:{errMsg}");
@@ -310,6 +317,8 @@ public partial class MainViewModel : ViewModelBase
         catch (Exception ex)
         {
             await ShowWindowHelper.ShowErrorAsync("启动推流失败:" + ex.Message);
+            GeneralState.IsStreaming = false;
+             return;
         }
         IsStreaming = !IsStreaming;
         General.State.IsStreaming = IsStreaming;

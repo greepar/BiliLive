@@ -22,8 +22,21 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
             <StackPanel Spacing="20">
-                <!-- <TextBlock>这里是关于页面</TextBlock> -->
-                
+                <Border CornerRadius="12" Background="{DynamicResource SurfaceContainer}" Height="30">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- 图标 -->
+                        <Border CornerRadius="12" Background="{DynamicResource Primary}" >
+                            <SvgBox Height="20" Width="20"
+                                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                                    Fill="{DynamicResource InverseOnSurface}"
+                                    Margin="6 0 6 0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
+                        </Border>
+
+                        <TextBlock VerticalAlignment="Center" Margin="5 0 0 0">
+                            关于界面仍在设计中... 以下为开发测试组件展示
+                        </TextBlock>
+                    </StackPanel>
+                </Border>                
                 <StackPanel Orientation="Horizontal"
                             Spacing="15">
                     <!-- <ToggleSwitch></ToggleSwitch> -->
@@ -72,6 +85,8 @@
                                 <TextBlock VerticalAlignment="Center" FontSize="11">Open Runtime Folder</TextBlock>
                             </StackPanel>
                         </Button>
+                        <Button Command="{Binding TestCommand}">test</Button>
+                        <Button Command="{Binding GetLiveCookieCommand}">获取直播姬Cookie</Button>
                     </StackPanel>
       
                     <!-- debug mode -->

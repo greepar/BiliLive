@@ -83,7 +83,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Spacing="10">
             <!-- 设置核心部分 -->
-            <Border Background="#F7F2FA"
+            <Border Background="{DynamicResource SurfaceContainer}"
                     CornerRadius="12"
                     Name="MainBorder"
                     Height="32"
@@ -104,7 +104,7 @@
                 
                 <Grid RowDefinitions="Auto,*">
                     <Grid ZIndex="1" Grid.Row="0" Height="32" VerticalAlignment="Top">
-                        <Border Background="#F8EAF3" />
+                        <Border Background="{DynamicResource SurfaceContainer}" />
                         <Grid ColumnDefinitions="Auto,*,Auto">
                             <TextBlock Grid.Column="0" Text="自动直播核心"
                                        FontWeight="Medium"
@@ -117,9 +117,10 @@
                                     HorizontalAlignment="Right"
                                     BoxShadow="0 0.56 0 0 #26000000"
                                     Height="23" CornerRadius="12"
-                                    Background="#FDDEE9">
+                                    Background="{DynamicResource SurfaceContainerHighest}">
                                 <StackPanel Margin="8 0 10 0" Orientation="Horizontal">
                                     <SvgBox Height="15" Margin="0 2 2 0"
+                                            Fill="{DynamicResource OnSurface}"
                                             PathData="{Binding IsCoreSet ,Converter={converters:BoolToGeometryConverter}}" />
                                     <TextBlock
                                         FontSize="11"
@@ -220,12 +221,12 @@
 
                     ClipToBounds="True">
                 <Grid>
-                    <Border Background="#F7F2FA" />
+                    <Border Background="{DynamicResource SurfaceContainer}" />
                     <Grid RowDefinitions="Auto,*">
                         <!-- 总开关 -->
                         <Border Grid.Row="0" Height="32"
                                 VerticalAlignment="Top"
-                                Background="#F8EAF3">
+                                Background="{DynamicResource SurfaceContainer}">
                             <Grid ColumnDefinitions="Auto,*,Auto">
                                 <StackPanel Grid.Column="0" 
                                             Orientation="Horizontal"
@@ -354,32 +355,31 @@
 
                     ClipToBounds="True">
                 <Grid>
-                    <Border Background="#F7F2FA" />
+                    <Border Background="{DynamicResource SurfaceContainer}" />
                     <Grid RowDefinitions="Auto,*">
 
                         <!-- 总开关 -->
                         <Border Grid.Row="0" Height="32"
                                 VerticalAlignment="Top"
-                                Background="#F8EAF3">
+                                Background="{DynamicResource SurfaceContainer}">
                             <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                                 <TextBlock Grid.Column="0" Text="小号自动投喂(在定时直播中途)"
                                            Margin="14 0 0 0"
                                            VerticalAlignment="Center" />
 
                                 <Button Grid.Column="2"
-                                        Margin="0 2 2 2"
+                                        Margin="0 2 2 0"
                                         RenderTransform="scale(0.9)"
-                                        Background="#FDDEE9"
+                                        Background="{DynamicResource SurfaceContainerHighest}"
                                         CornerRadius="12"
-                                        Theme="{StaticResource MdButton}"
+                                        Classes="Text"
                                         Command="{Binding AddAltsCommand}">
-                                    <Button.Styles>
-                                        <Style Selector="Button /template/ ContentPresenter">
-                                            <Setter Property="BoxShadow" Value=" 0 0.56 0 0 #26000000" />
-                                        </Style>
-                                    </Button.Styles>
-                                    <TextBlock VerticalAlignment="Center"
-                                               Margin="8 0 8 0">
+                                    <!-- <Button.Styles> -->
+                                    <!--     <Style Selector="Button /template/ ContentPresenter"> -->
+                                    <!--         <Setter Property="BoxShadow" Value=" 0 0.56 0 0 #26000000" /> -->
+                                    <!--     </Style> -->
+                                    <!-- </Button.Styles> -->
+                                    <TextBlock VerticalAlignment="Center">
                                         + Add account
                                     </TextBlock>
                                 </Button>
@@ -527,12 +527,12 @@
 
                     ClipToBounds="True">
                 <Grid>
-                    <Border Background="#F7F2FA" />
+                    <Border Background="{DynamicResource SurfaceContainer}" />
                     <Grid RowDefinitions="Auto,*">
                         <!-- 总开关 -->
                         <Border Grid.Row="0" Height="32"
                                 VerticalAlignment="Top"
-                                Background="#F8EAF3">
+                                Background="{DynamicResource SurfaceContainer}">
                             <Grid ColumnDefinitions="Auto,Auto,*,Auto">
                                 <TextBlock Grid.Column="0" Text="自动领取激励(定时直播后)"
                                            Margin="14 0 0 0"

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Animation;
@@ -6,8 +7,10 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using BiliLive.Views.DialogWindow;
+using QRCoder;
 
 namespace BiliLive.Utils;
 
@@ -15,15 +18,34 @@ public static class ShowWindowHelper
 {
     public static async Task ShowErrorAsync(string message)
     {
-        var errorWindow = new DialogWindow()
+        var errorWindow = new DialogWindow
         {
-            DataContext = new DialogWindowViewModel()
+            DataContext = new DialogWindowViewModel
             {
                 Message = message
             }
         };
         await ShowWindowAsync(errorWindow);
     }
+    
+    public static async Task ShowQrCodeAsync(string message,string qrCodeUrl)
+    {
+        //生成登录二维码
+        using var qrGenerator = new QRCodeGenerator();
+        using var qrCodeData = qrGenerator.CreateQrCode(qrCodeUrl, QRCodeGenerator.ECCLevel.Q);
+        using var qrCode = new PngByteQRCode(qrCodeData);
+        var qrCodeImage = qrCode.GetGraphic(20);
+        using var stream = new MemoryStream(qrCodeImage);
+        
+        using var vm = new QrDialogViewModel();
+        vm.QrImage = new Bitmap(stream);
+        var qrCodeWindow = new QrDialog
+        {
+            DataContext = vm
+        };
+        await ShowWindowAsync(qrCodeWindow);
+    }
+    
     
     public static async Task ShowWindowAsync(Window window)
     {

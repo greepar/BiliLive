@@ -27,7 +27,7 @@
                 CornerRadius="28"
                 BoxShadow="0 1 8 2 #26000000"
                 Focusable="True"
-                Background="{DynamicResource Surface}">
+           >
             <!-- 切割圆角 -->
             <Border CornerRadius="28" ClipToBounds="True">
                 <!-- 总背景 -->

@@ -7,9 +7,8 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PublishAot>false</PublishAot>
+        <SelfContained>false</SelfContained>
         <PublishSingleFile>true</PublishSingleFile>
-        <PublishTrimmed>true</PublishTrimmed>
-        <SelfContained>true</SelfContained>
         <Version>1.0.0</Version>
         <FileVersion>1.1.0.0</FileVersion>
         <AssemblyVersion>1.2.0.0</AssemblyVersion>
@@ -18,9 +17,11 @@
     
 <!--    Aot publish-->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <PublishAot>true</PublishAot>
-        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+<!--        <SelfContained>true</SelfContained>-->
+        <!--        <PublishTrimmed>true</PublishTrimmed>-->
+        <!--        <PublishAot>true</PublishAot>-->
+<!--        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>-->
+<!--        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>-->
     </PropertyGroup>
     
     <ItemGroup>
@@ -30,7 +31,7 @@
 <!--    Debug时添加包-->
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <!-- 旧版本Avalonia.Diagnostics包-->
-                <PackageReference Include="Avalonia.Diagnostics" Version="11.3.9">
+                <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12">
                     <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
                     <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
                 </PackageReference>
@@ -39,10 +40,10 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.9" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
-        <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.9" />
+        <PackageReference Include="Avalonia" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.12" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
         <PackageReference Include="ViewLocator.Generator" Version="2025.8.4.737-manual">

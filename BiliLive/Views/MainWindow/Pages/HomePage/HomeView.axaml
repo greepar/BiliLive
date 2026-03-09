@@ -46,8 +46,9 @@
                             <TextBlock Margin="0 4 0 0" Text="直播链接:" FontSize="12"/>
                             
                             
-                            <StackPanel IsVisible="True" Orientation="Horizontal">
-                                <Button Classes="Text" Padding="0" Background="Transparent"
+                            <StackPanel IsVisible="True" Orientation="Horizontal"
+                                        Margin="-10 -10 0 -5">
+                                <Button Classes="Text" Padding="10 0 10 0"  Background="Transparent"
                                         Command="{Binding OpenRoomUrlCommand}">
                                     <Button.Styles>
                                      
@@ -77,9 +78,9 @@
                                         </TextBlock>
                                 </Button>
                              
-                                <Button Theme="{StaticResource MdButton}"
+                                <Button Classes="Text"
                                         CornerRadius="8"
-                                        Margin="5,0,0,0"
+                                        Height="30" Width="30"
                                         Command="{Binding CopyTextCommand}"
                                         CommandParameter="{x:Static vm:CopyTarget.RoomUrl}">
                                     <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Copy}}"
@@ -145,10 +146,10 @@
                         <Grid ColumnDefinitions="Auto,*,Auto"
                               VerticalAlignment="Center">
                             <!-- 封面 -->
-                            
                             <Border Grid.Column="0" 
+                                    Width="132" Height="74"
                                     CornerRadius="12"
-                                    ClipToBounds="True">
+                                    ClipToBounds="False">
                                 
                                 <Border.Styles>
                                     <Style Selector="Border#FloatingTip">
@@ -173,15 +174,13 @@
                                         <Setter Property="BoxShadow" Value="0 1.5 3 1.1 #26000000"/>
                                     </Style>
                                 </Border.Styles>
-                                <Grid Name="CoverGrid" ClipToBounds="False">
-                              
-                                
+                                <Border ClipToBounds="True" CornerRadius="12">
+                                      <Grid Name="CoverGrid" ClipToBounds="False">
                                 <Button HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
                                         CornerRadius="12"
                                         Height="74" Width="132"
                                         Background="Transparent"
-                                        Padding="0"
                                         Classes="Text"
                                         Command="{Binding ChangeRoomCoverCommand}">
                                     <Button.Styles>
@@ -192,13 +191,13 @@
                                     <Border Width="132" Height="74"
                                             Opacity="1"
                                             IsHitTestVisible="False"
-                                            Background="Wheat"
+                                            Background="{DynamicResource PrimaryContainer}"
                                             CornerRadius="12" ClipToBounds="True">
                                         <Image Source="{Binding RoomCover}"
                                                Width="132" Height="74"/>
                                     </Border>
                                 </Button>
-                                
+                                    
                                 <Border Name="FloatingTip" CornerRadius="0 0 12 12"
                                         IsHitTestVisible="False"
                                         VerticalAlignment="Bottom" Height="20" Background="Gray">
@@ -209,7 +208,10 @@
                                         </Transitions>
                                     </Border.Transitions>
                                 </Border>
-                            </Grid>
+                                          </Grid>
+                                </Border>
+                              
+                 
                             </Border>
                             
                             
@@ -238,7 +240,7 @@
                                         </Button>
                                     </Grid>
                                     <Button Grid.Column="1" Height="34"
-                                            Theme="{StaticResource MdButton}"
+                                           Classes="Tonal"
                                             Margin="5,0,-5,0" CornerRadius="11"
                                             VerticalAlignment="Bottom"
                                             Command="{Binding SelectAreaCommand}"
@@ -288,9 +290,9 @@
                                             </Flyout>
                                         </Button.Flyout>
                                         
-                                        <StackPanel Spacing="3" Margin="3" Orientation="Horizontal">
-                                            <StackPanel Margin="5" Orientation="Horizontal">
-                                                <SvgBox Margin="2 2 1 2" PathData="{resources:Geometry {x:Static resources:MdIcons.Areas}}"/>
+                                        <StackPanel Spacing="3" Orientation="Horizontal">
+                                            <StackPanel Orientation="Horizontal">
+                                                <SvgBox Height="16" Margin="0 2 2 2" PathData="{resources:Geometry {x:Static resources:MdIcons.Areas}}"/>
                                                 <TextBlock FontSize="12" VerticalAlignment="Center">分区</TextBlock>
                                             </StackPanel>
                                         </StackPanel>
