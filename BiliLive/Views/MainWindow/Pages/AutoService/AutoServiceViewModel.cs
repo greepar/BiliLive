@@ -545,12 +545,9 @@ public partial class AutoServiceViewModel : ViewModelBase
 
         try
         {
-            var cdKey = await _biliService.ClaimAwardAsync(taskId);
-            if (!string.IsNullOrEmpty(cdKey))
-            {
-                //弹出兑换码
-                await ShowWindowHelper.ShowErrorAsync(cdKey);
-            }
+            var cdKey = await _biliService.ClaimAwardAsync(taskId); 
+            //弹出兑换码
+            await ShowWindowHelper.ShowErrorAsync(cdKey);
         }
         catch (Exception ex)
         {
