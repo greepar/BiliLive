@@ -9,7 +9,7 @@
     
     <ItemGroup>
       <PackageReference Include="QRCoder" Version="1.7.0" />
-      <PackageReference Include="SharpCompress" Version="0.47.0" />
+      <PackageReference Include="SharpCompress" Version="0.48.1" />
     </ItemGroup>
     
 </Project>

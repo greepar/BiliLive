@@ -1,0 +1,158 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:chrome="clr-namespace:Avalonia.Controls.Chrome;assembly=Avalonia.Controls"
+                    xmlns:templates="clr-namespace:Avalonia.Markup.Xaml.Templates;assembly=Avalonia.Markup.Xaml"
+                    xmlns:res="clr-namespace:BiliLive.Resources"
+                    xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
+                    x:DataType="mainWindow:MainViewModel"
+                    x:CompileBindings="True">
+
+    <!-- 自定义按钮主题：用于标题栏的最小化/关闭按钮 -->
+    <ControlTheme x:Key="MdCaptionButton" TargetType="Button">
+        <Setter Property="Width" Value="25"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="(chrome:WindowDecorationProperties.ElementRole)" Value="DecorationsElement"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="OutBorder"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      IsHitTestVisible="False"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 0 1 0 #26000000"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- 自定义 WindowDrawnDecorations 主题：圆角 + 阴影 + Material 风格按钮 -->
+    <ControlTheme x:Key="MdWindowDecorations" TargetType="chrome:WindowDrawnDecorations">
+        <Setter Property="DefaultTitleBarHeight" Value="45"/>
+        <Setter Property="DefaultFrameThickness" Value="0"/>
+        <Setter Property="DefaultShadowThickness" Value="10"/>
+        <Setter Property="Template">
+            <templates:WindowDrawnDecorationsTemplate>
+                <chrome:WindowDrawnDecorationsContent>
+
+                    <!-- Underlay：窗口背景 + 圆角 + 阴影 -->
+                    <chrome:WindowDrawnDecorationsContent.Underlay>
+                        <Panel x:Name="PART_UnderlayWrapper">
+                            <Border x:Name="PART_WindowBorder"
+                                    CornerRadius="28"
+                                    Background="{DynamicResource Surface}"
+                                    BoxShadow="0 1 8 2 #26000000"
+                                    IsHitTestVisible="False"/>
+                        </Panel>
+                    </chrome:WindowDrawnDecorationsContent.Underlay>
+
+                    <!-- Overlay：交互按钮 + 主题切换开关 -->
+                    <chrome:WindowDrawnDecorationsContent.Overlay>
+                        <Panel x:Name="PART_OverlayWrapper">
+                            <StackPanel x:Name="PART_OverlayPanel"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Right"
+                                        Height="{TemplateBinding TitleBarHeight}"
+                                        IsVisible="{TemplateBinding HasTitleBar}"
+                                        Orientation="Horizontal"
+                                        Margin="0 0 15 0">
+                                <!-- 主题切换 -->
+                                <ToggleSwitch Command="{Binding SwitchThemeCommand}"
+                                              Foreground="{DynamicResource Primary}"
+                                              VerticalAlignment="Center"
+                                              Margin="0 0 8 0"
+                                              OnContent="Dark Mode"
+                                              OffContent="Dark Mode"
+                                              chrome:WindowDecorationProperties.ElementRole="DecorationsElement"/>
+                                <!-- 最小化 -->
+                                <Button x:Name="PART_MinimizeButton"
+                                        Theme="{StaticResource MdCaptionButton}"
+                                        chrome:WindowDecorationProperties.ElementRole="MinimizeButton">
+                                    <SvgBox Width="15" Height="15"
+                                            PathData="{res:Geometry {x:Static res:MdIcons.Minimize}}"
+                                            Fill="{DynamicResource OnSurface}"/>
+                                </Button>
+                                <!-- 关闭 -->
+                                <Button x:Name="PART_CloseButton"
+                                        Margin="9 0 0 0"
+                                        Theme="{StaticResource MdCaptionButton}"
+                                        chrome:WindowDecorationProperties.ElementRole="CloseButton">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ Border#OutBorder">
+                                            <Setter Property="Background" Value="#C94F4F"/>
+                                            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
+                                        </Style>
+                                    </Button.Styles>
+                                    <SvgBox Width="15" Height="15"
+                                            PathData="{res:Geometry {x:Static res:MdIcons.Error}}"
+                                            Fill="{DynamicResource OnSurface}"/>
+                                </Button>
+                            </StackPanel>
+                        </Panel>
+                    </chrome:WindowDrawnDecorationsContent.Overlay>
+
+                    <!-- 全屏弹出标题栏（fullscreen 时悬停顶部触发） -->
+                    <chrome:WindowDrawnDecorationsContent.FullscreenPopover>
+                        <Panel Height="{TemplateBinding DefaultTitleBarHeight}"
+                               VerticalAlignment="Top"
+                               Background="{DynamicResource Surface}"
+                               chrome:WindowDecorationProperties.ElementRole="TitleBar">
+                            <StackPanel HorizontalAlignment="Right"
+                                        Orientation="Horizontal"
+                                        Margin="0 0 15 0">
+                                <Button x:Name="PART_PopoverCloseButton"
+                                        Theme="{StaticResource MdCaptionButton}"
+                                        chrome:WindowDecorationProperties.ElementRole="CloseButton">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ Border#OutBorder">
+                                            <Setter Property="Background" Value="#C94F4F"/>
+                                        </Style>
+                                    </Button.Styles>
+                                    <SvgBox Width="15" Height="15"
+                                            PathData="{res:Geometry {x:Static res:MdIcons.Error}}"
+                                            Fill="{DynamicResource OnSurface}"/>
+                                </Button>
+                            </StackPanel>
+                        </Panel>
+                    </chrome:WindowDrawnDecorationsContent.FullscreenPopover>
+
+                </chrome:WindowDrawnDecorationsContent>
+            </templates:WindowDrawnDecorationsTemplate>
+        </Setter>
+
+        <!-- Shadow：内缩 underlay/overlay，留出阴影区 -->
+        <Style Selector="^:has-shadow /template/ Panel#PART_UnderlayWrapper">
+            <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}"/>
+        </Style>
+        <Style Selector="^:has-shadow /template/ Panel#PART_OverlayWrapper">
+            <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}"/>
+        </Style>
+
+        <!-- 最大化时去除圆角和阴影 -->
+        <Style Selector="^:maximized /template/ Border#PART_WindowBorder">
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="BoxShadow" Value="0 0 0 0 Transparent"/>
+        </Style>
+
+        <!-- 全屏时隐藏正常 overlay，由 popover 接管 -->
+        <Style Selector="^:fullscreen /template/ StackPanel#PART_OverlayPanel">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

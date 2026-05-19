@@ -40,7 +40,7 @@
                 <StackPanel Orientation="Horizontal"
                             Spacing="15">
                     <!-- <ToggleSwitch></ToggleSwitch> -->
-                    <TextBox Watermark="Title" Width="100" Text="hello"></TextBox>
+                    <TextBox PlaceholderText="Title" Width="100" Text="hello"></TextBox>
                     <Button Classes="Elevated"> Elevated</Button>
                     <Button Classes="Outline"> Outlined</Button>
                     <Button Classes="Tonal"> Tonal</Button>

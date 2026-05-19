@@ -17,9 +17,6 @@ public partial class MainView : UserControl
     private CancellationTokenSource? _animationCts;
 
     private bool _isTargetVisible = true;
-    private double _originalHeight;
-
-    private double _originalWidth;
 
     public MainView()
     {

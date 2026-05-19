@@ -270,17 +270,17 @@
                                 <!-- 小时 -->
                                 <TextBox Classes="time" 
                                          Text="{Binding StartHour}"
-                                         Watermark="H"/>
+                                         PlaceholderText="H"/>
                                 <TextBlock Text=" : " VerticalAlignment="Center" />
                                 <!-- 分钟 -->
                                 <TextBox Classes="time" 
-                                         Watermark="M" 
+                                         PlaceholderText="M" 
                                          Text="{Binding StartMinute}"
                                          TextChanged="TextBox_CheckNum"/>
                                 <TextBlock Text=" : " VerticalAlignment="Center" />
                                 <!-- 秒 -->
                                 <TextBox Classes="time"
-                                         Watermark="S"
+                                         PlaceholderText="S"
                                          Text="{Binding StartSecond}"
                                          TextChanged="TextBox_CheckNum"/>
                                 

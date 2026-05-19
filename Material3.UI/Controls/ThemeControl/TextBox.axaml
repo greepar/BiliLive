@@ -5,7 +5,7 @@
     <Design.PreviewWith>
         <Border Background="{DynamicResource Surface}" Padding="20">
             <StackPanel Spacing="5">
-                <TextBox Watermark="Watermark" />
+                <TextBox PlaceholderText="Watermark" />
                 <TextBox Text="Normal TextBox" />
             </StackPanel>
         </Border>
@@ -129,7 +129,7 @@
                                            Foreground="{DynamicResource OnSurfaceVariant}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
-                                           Text="{TemplateBinding Watermark}"
+                                           Text="{TemplateBinding PlaceholderText}"
                                            TextAlignment="{TemplateBinding TextAlignment}"
                                            TextWrapping="{TemplateBinding TextWrapping}">
                                     <TextBlock.Transitions>

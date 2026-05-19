@@ -59,6 +59,7 @@
                 <ResourceInclude Source="/Resources/Themes/MdCheckBox.axaml" />
                 <ResourceInclude Source="/Resources/Themes/MdButton.axaml"/>
                 <ResourceInclude Source="/Resources/Themes/MdToggleButton.axaml"/>
+                <ResourceInclude Source="/Resources/Themes/MdWindowDecorations.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -9,7 +9,7 @@
         x:DataType="vm:AltManagerViewModel"
         Title="AltsManager"
         ShowInTaskbar="False"
-        SystemDecorations="None"
+        WindowDecorations="None"
         WindowStartupLocation="CenterOwner"
         TransparencyLevelHint="Transparent"
         TransparencyBackgroundFallback="White"
@@ -67,7 +67,7 @@
                                                          Width="30"
                                                          IsEnabled="{Binding !AllowDoneClose}"
                                                          Text="{Binding CookieValue}"
-                                                         Watermark="请输入Cookie"></TextBox>
+                                                         PlaceholderText="请输入Cookie"></TextBox>
                                                 <Button Content="Done"
                                                         IsEnabled="{Binding !AllowDoneClose}"
                                                         Command="{Binding CheckCookieCommand}"></Button>
@@ -113,13 +113,13 @@
                                         
                                         <StackPanel Orientation="Horizontal">
                                                 <TextBlock>Http Proxy:</TextBlock>
-                                                <TextBox Watermark="IP Address"
+                                                <TextBox PlaceholderText="IP Address"
                                                          Text="{Binding ProxyAddress}"/>
                                                 <TextBlock>:</TextBlock>
-                                                <TextBox Watermark="Username"
+                                                <TextBox PlaceholderText="Username"
                                                          Text="{Binding ProxyUsername}"/>
                                                 <TextBlock>:</TextBlock>
-                                                <TextBox Watermark="Password"
+                                                <TextBox PlaceholderText="Password"
                                                          Text="{Binding ProxyPassword}"/>
                                         </StackPanel>
                                         

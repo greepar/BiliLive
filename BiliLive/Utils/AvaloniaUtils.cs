@@ -7,7 +7,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace BiliLive.Utils;
 
@@ -82,7 +81,7 @@ public static class AvaloniaUtils
             return App?.ApplicationLifetime switch
             {
                 IClassicDesktopStyleApplicationLifetime { MainWindow: { } window } => window,
-                ISingleViewApplicationLifetime singleViewApp when singleViewApp.MainView?.GetVisualRoot() is TopLevel root => root,
+                ISingleViewApplicationLifetime singleViewApp when singleViewApp.MainView is { } mainView && TopLevel.GetTopLevel(mainView) is { } root => root,
                 _ => throw new InvalidOperationException("Failed to resolve TopLevel")
             };
         }

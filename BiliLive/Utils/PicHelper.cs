@@ -39,7 +39,7 @@ public static class PicHelper
         // 缩放到目标大小
         var info = new SKImageInfo(targetWidth, targetHeight);
         using var resized = new SKBitmap(info);
-        cropped.ScalePixels(resized, SKFilterQuality.High);
+        cropped.ScalePixels(resized, new SKSamplingOptions(SKCubicResampler.Mitchell));
 
         // 转成 Avalonia Bitmap
         using var image = SKImage.FromBitmap(resized);

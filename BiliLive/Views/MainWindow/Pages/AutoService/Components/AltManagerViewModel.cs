@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
@@ -108,22 +109,42 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
     [RelayCommand]
     private async Task GenerateQrCodeAsync()
     {
-        var qrInfo = await _altService!.GetLoginUrlAsync();
-        if (qrInfo is null) return;
-        using var qrGenerator = new QRCodeGenerator();
-        using var qrCodeData = qrGenerator.CreateQrCode(qrInfo.QrCodeUrl, QRCodeGenerator.ECCLevel.Q);
-        using var qrCode = new PngByteQRCode(qrCodeData);
-        var qrCodeImage = qrCode.GetGraphic(20);
-        using var ms = new MemoryStream(qrCodeImage);
-        QrCodePic = new Bitmap(ms);
-        //轮询等待扫码结果
-        var pollingCts = new CancellationTokenSource();
+        QrLoginInfo? qrInfo;
+        try
+        {
+            qrInfo = await _altService!.GetLoginUrlAsync();
+        }
+        catch (Exception ex) when (ex is TaskCanceledException or HttpRequestException)
+        {
+            //网络异常 / 超时
+            return;
+        }
+        catch (Exception)
+        {
+            return;
+        }
 
+        if (qrInfo is null) return;
+
+        //生成二维码图片
+        using (var qrGenerator = new QRCodeGenerator())
+        using (var qrCodeData = qrGenerator.CreateQrCode(qrInfo.QrCodeUrl, QRCodeGenerator.ECCLevel.Q))
+        using (var qrCode = new PngByteQRCode(qrCodeData))
+        {
+            var qrCodeImage = qrCode.GetGraphic(20);
+            using var ms = new MemoryStream(qrCodeImage);
+            var oldQr = QrCodePic;
+            QrCodePic = new Bitmap(ms);
+            oldQr?.Dispose();
+        }
+
+        //轮询等待扫码结果
+        using var pollingCts = new CancellationTokenSource();
         while (!pollingCts.IsCancellationRequested)
         {
             try
             {
-                var qrStatusCode = await _altService.GeQrStatusCodeAsync(qrInfo.QrCodeKey);
+                var qrStatusCode = await _altService!.GeQrStatusCodeAsync(qrInfo.QrCodeKey);
                 await Task.Delay(1000, pollingCts.Token);
                 switch (qrStatusCode)
                 {
@@ -132,9 +153,6 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
                         break;
                     case 86090:
                         //已扫码，等待手机确认登录
-                        // Status = "Scanned";
-                        // IsScanned = true;
-                        // LoginProgressValue = 50;
                         break;
                     case 0:
                         //登录成功
@@ -147,12 +165,11 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
                             CookieValue = result.BiliCookie;
                             UserName = result.UserName;
                         }
-                        
+
                         await pollingCts.CancelAsync();
                         break;
                     case 86038:
                         //二维码失效
-                        // Status = "Expired.";
                         await pollingCts.CancelAsync();
                         break;
                     default:
@@ -161,14 +178,13 @@ public partial class AltManagerViewModel : ViewModelBase , IDisposable
                         break;
                 }
             }
-            catch (Exception)
+            catch (OperationCanceledException)
             {
                 break;
             }
-            finally
+            catch (Exception)
             {
-                // 释放旧的 Bitmap 资源
-                QrCodePic?.Dispose();
+                break;
             }
         }
     }

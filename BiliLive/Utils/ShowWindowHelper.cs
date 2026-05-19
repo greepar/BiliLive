@@ -49,23 +49,32 @@ public static class ShowWindowHelper
     
     public static async Task ShowWindowAsync(Window window)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: not null } desktop)
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime { MainWindow: not null } desktop)
+            return;
+
+        var mainBorder = desktop.MainWindow.FindControl<Border>("MainBorder");
+        var coverBorder = desktop.MainWindow.FindControl<Border>("CoverBorder");
+
+        // 应用模糊效果（如果存在 MainBorder）
+        if (mainBorder != null)
+            mainBorder.Effect = new BlurEffect { Radius = 5 };
+
+        // 同时跑遮罩动画（如果存在 CoverBorder）和模态对话框
+        if (coverBorder != null)
         {
-            var mainBorder = desktop.MainWindow.FindControl<Border>("MainBorder");
-            var coverBorder = desktop.MainWindow.FindControl<Border>("CoverBorder");
-            if (mainBorder == null || coverBorder == null) return;
-            
-            mainBorder.Effect = new BlurEffect{ Radius = 5 };
             await Task.WhenAll(
-                 GenerateAnimation(true).RunAsync(coverBorder),
-                 window.ShowDialog(desktop.MainWindow)
-                );
-            
+                GenerateAnimation(true).RunAsync(coverBorder),
+                window.ShowDialog(desktop.MainWindow));
+
             _ = GenerateAnimation(false).RunAsync(coverBorder);
-            mainBorder.Effect = null;
-            
-            
         }
+        else
+        {
+            await window.ShowDialog(desktop.MainWindow);
+        }
+
+        if (mainBorder != null)
+            mainBorder.Effect = null;
     }
 
     private static Animation GenerateAnimation(bool isOpening)

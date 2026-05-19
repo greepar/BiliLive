@@ -6,7 +6,7 @@
         TransparencyLevelHint="Transparent"
         x:Class="BiliLive.Views.DialogWindow.DialogWindow"
         x:DataType="vm:DialogWindowViewModel"
-        SystemDecorations="None"
+        WindowDecorations="None"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"

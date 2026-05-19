@@ -16,14 +16,27 @@
     </Design.DataContext>
 
 
-    <!-- 总背景 -->
-    <Grid Background="{DynamicResource Surface}">
-        <Border ZIndex="1"
-                Height="45"
-                VerticalAlignment="Top"
-                Background="Transparent" />
+    <!-- 总背景：上方标题栏 + 下方左右分栏 -->
+    <Grid Background="{DynamicResource Surface}" RowDefinitions="45,*">
 
-        <Grid ColumnDefinitions="Auto,*">
+        <!-- 顶部统一标题栏：和侧边栏同色，自然延伸成反 L -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
+            <Border Grid.Column="0" Grid.ColumnSpan="2"
+                    Background="{DynamicResource InverseOnSurface}"
+                    Opacity="0.7"
+                    IsHitTestVisible="False"/>
+
+            <!-- 左上角时间 -->
+            <TextBlock Grid.Column="0"
+                       Margin="15 0 0 0"
+                       FontSize="12"
+                       FontWeight="Regular"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource OnSurface}"
+                       Text="{Binding CurrentTime}"/>
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
 
             <!-- 左侧导航栏 -->
             <Border Name="SideNavBar"
@@ -40,18 +53,12 @@
                 </Border.Transitions>
 
                 <Grid HorizontalAlignment="Stretch">
-                    <!-- 背景Border -->
+                    <!-- 背景Border：与顶部标题栏同色 -->
                     <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7" />
 
-                    <Grid RowDefinitions="Auto,*,Auto">
-                        <!-- 顶部时间 -->
-                        <TextBlock Grid.Row="0" Margin="15 15 0 0"
-                                   FontSize="12" FontWeight="Regular"
-                                   Foreground="{DynamicResource OnSurface}"
-                                   Text="{Binding CurrentTime}" />
-
+                    <Grid RowDefinitions="*,Auto">
                         <!-- 中间导航部分 -->
-                        <StackPanel Grid.Row="1" Margin="10 30 10 30" Spacing="7"
+                        <StackPanel Grid.Row="0" Margin="10 15 10 30" Spacing="7"
                                     Orientation="Vertical">
                             <!-- 缩小侧边栏按钮 -->
                             <Button Name="MenuOpenBtn" Height="40" Width="38"
@@ -155,7 +162,7 @@
                         </StackPanel>
 
                         <!-- 底部用户信息栏 -->
-                        <Border Grid.Row="2" VerticalAlignment="Bottom" Margin="10 0 8 10"
+                        <Border Grid.Row="1" VerticalAlignment="Bottom" Margin="10 0 8 10"
                                 CornerRadius="15" Height="38" BoxShadow="0 0 10 0 #12000000">
                             <Grid>
                                 <Button Name="AccountBtn" HorizontalAlignment="Stretch"
