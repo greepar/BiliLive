@@ -1,0 +1,149 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="using:System">
+    <!--
+        Material 3 FlyoutPresenter and ToolTip themes.
+
+        FlyoutPresenter spec — generic surface used by Flyout. Same family as
+        the menu surface but with more permissive content padding and a slightly
+        rounder shape, matching the M3 "menu surface, content variant".
+            Background    SurfaceContainer
+            CornerRadius  M3ShapeMedium (12)
+            Elevation     M3Elevation3
+            Padding       16
+            Foreground    OnSurface
+
+        ToolTip — plain tooltip per https://m3.material.io/components/tooltips/specs.
+            Background    InverseSurface
+            Foreground    InverseOnSurface
+            FontSize      12
+            CornerRadius  M3ShapeExtraSmall (4)
+            Padding       8,4
+        Avalonia drives the open/close cycle via the :open pseudo-class and a
+        light opacity transition; we keep that behaviour unchanged.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24" Width="360">
+            <StackPanel Spacing="16">
+                <FlyoutPresenter>
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Flyout content" FontWeight="Medium"/>
+                        <TextBlock Text="A flyout uses a generic surface with M3 elevation 3."
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </FlyoutPresenter>
+
+                <StackPanel Spacing="12">
+                    <ToolTip Opacity="1">Plain tooltip</ToolTip>
+                    <ToolTip Opacity="1">Long tooltip text that should wrap onto a second line when it grows past the maximum width.</ToolTip>
+                    <ToolTip Opacity="1">
+                        <StackPanel>
+                            <TextBlock Text="Multi-line"/>
+                            <TextBlock Text="Tooltip"/>
+                        </StackPanel>
+                    </ToolTip>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- ===== FlyoutPresenter ============================================== -->
+    <ControlTheme x:Key="{x:Type FlyoutPresenter}" TargetType="FlyoutPresenter">
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeMedium}"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="MinWidth" Value="96"/>
+        <Setter Property="MaxWidth" Value="456"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="MaxHeight" Value="640"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="{StaticResource M3BodyMediumFontSize}"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{StaticResource M3Elevation3}">
+                    <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Stretch"/>
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- ===== ToolTip ====================================================== -->
+    <sys:Double x:Key="M3ToolTipMaxWidth">320</sys:Double>
+
+    <ControlTheme x:Key="{x:Type ToolTip}" TargetType="ToolTip">
+        <Setter Property="Background" Value="{DynamicResource InverseSurface}"/>
+        <Setter Property="Foreground" Value="{DynamicResource InverseOnSurface}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmall}"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="MaxWidth" Value="{StaticResource M3ToolTipMaxWidth}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="{StaticResource M3BodySmallFontSize}"/>
+        <Setter Property="FontWeight" Value="{StaticResource M3BodyMediumFontWeight}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <!-- Avalonia toggles Opacity between 0 and 1 via :open. Animate the
+             transition with the M3 short-2 duration / standard easing pair. -->
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity"
+                                  Duration="{StaticResource M3DurationShort2}"
+                                  Easing="{StaticResource M3EasingStandard}"/>
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        BoxShadow="{StaticResource M3Elevation2}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      FontFamily="{TemplateBinding FontFamily}"
+                                      FontSize="{TemplateBinding FontSize}"
+                                      FontWeight="{TemplateBinding FontWeight}"
+                                      MaxWidth="{TemplateBinding MaxWidth}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      TextBlock.LetterSpacing="{TemplateBinding LetterSpacing}"
+                                      TextBlock.TextWrapping="Wrap"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:open">
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

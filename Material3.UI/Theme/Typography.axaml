@@ -1,0 +1,97 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <!--
+        Material 3 type scale.
+        Reference: https://m3.material.io/styles/typography/type-scale-tokens.
+
+        Default font is Roboto. Consumers can override M3FontDefault to swap the
+        application typeface, e.g. set it to a NotoSans family in their App.axaml.
+    -->
+
+    <!-- Default font family. Override in consumer Application.Resources to change. -->
+    <FontFamily x:Key="M3FontDefault">$Default</FontFamily>
+    <FontFamily x:Key="M3FontBrand">$Default</FontFamily>
+    <FontFamily x:Key="M3FontPlain">$Default</FontFamily>
+
+    <!-- Display -->
+    <x:Double x:Key="M3DisplayLargeFontSize">57</x:Double>
+    <FontWeight x:Key="M3DisplayLargeFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3DisplayLargeLineHeight">64</x:Double>
+    <x:Double x:Key="M3DisplayLargeLetterSpacing">-0.25</x:Double>
+
+    <x:Double x:Key="M3DisplayMediumFontSize">45</x:Double>
+    <FontWeight x:Key="M3DisplayMediumFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3DisplayMediumLineHeight">52</x:Double>
+    <x:Double x:Key="M3DisplayMediumLetterSpacing">0</x:Double>
+
+    <x:Double x:Key="M3DisplaySmallFontSize">36</x:Double>
+    <FontWeight x:Key="M3DisplaySmallFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3DisplaySmallLineHeight">44</x:Double>
+    <x:Double x:Key="M3DisplaySmallLetterSpacing">0</x:Double>
+
+    <!-- Headline -->
+    <x:Double x:Key="M3HeadlineLargeFontSize">32</x:Double>
+    <FontWeight x:Key="M3HeadlineLargeFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3HeadlineLargeLineHeight">40</x:Double>
+    <x:Double x:Key="M3HeadlineLargeLetterSpacing">0</x:Double>
+
+    <x:Double x:Key="M3HeadlineMediumFontSize">28</x:Double>
+    <FontWeight x:Key="M3HeadlineMediumFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3HeadlineMediumLineHeight">36</x:Double>
+    <x:Double x:Key="M3HeadlineMediumLetterSpacing">0</x:Double>
+
+    <x:Double x:Key="M3HeadlineSmallFontSize">24</x:Double>
+    <FontWeight x:Key="M3HeadlineSmallFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3HeadlineSmallLineHeight">32</x:Double>
+    <x:Double x:Key="M3HeadlineSmallLetterSpacing">0</x:Double>
+
+    <!-- Title -->
+    <x:Double x:Key="M3TitleLargeFontSize">22</x:Double>
+    <FontWeight x:Key="M3TitleLargeFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3TitleLargeLineHeight">28</x:Double>
+    <x:Double x:Key="M3TitleLargeLetterSpacing">0</x:Double>
+
+    <x:Double x:Key="M3TitleMediumFontSize">16</x:Double>
+    <FontWeight x:Key="M3TitleMediumFontWeight">Medium</FontWeight>
+    <x:Double x:Key="M3TitleMediumLineHeight">24</x:Double>
+    <x:Double x:Key="M3TitleMediumLetterSpacing">0.15</x:Double>
+
+    <x:Double x:Key="M3TitleSmallFontSize">14</x:Double>
+    <FontWeight x:Key="M3TitleSmallFontWeight">Medium</FontWeight>
+    <x:Double x:Key="M3TitleSmallLineHeight">20</x:Double>
+    <x:Double x:Key="M3TitleSmallLetterSpacing">0.1</x:Double>
+
+    <!-- Body -->
+    <x:Double x:Key="M3BodyLargeFontSize">16</x:Double>
+    <FontWeight x:Key="M3BodyLargeFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3BodyLargeLineHeight">24</x:Double>
+    <x:Double x:Key="M3BodyLargeLetterSpacing">0.5</x:Double>
+
+    <x:Double x:Key="M3BodyMediumFontSize">14</x:Double>
+    <FontWeight x:Key="M3BodyMediumFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3BodyMediumLineHeight">20</x:Double>
+    <x:Double x:Key="M3BodyMediumLetterSpacing">0.25</x:Double>
+
+    <x:Double x:Key="M3BodySmallFontSize">12</x:Double>
+    <FontWeight x:Key="M3BodySmallFontWeight">Normal</FontWeight>
+    <x:Double x:Key="M3BodySmallLineHeight">16</x:Double>
+    <x:Double x:Key="M3BodySmallLetterSpacing">0.4</x:Double>
+
+    <!-- Label -->
+    <x:Double x:Key="M3LabelLargeFontSize">14</x:Double>
+    <FontWeight x:Key="M3LabelLargeFontWeight">Medium</FontWeight>
+    <x:Double x:Key="M3LabelLargeLineHeight">20</x:Double>
+    <x:Double x:Key="M3LabelLargeLetterSpacing">0.1</x:Double>
+
+    <x:Double x:Key="M3LabelMediumFontSize">12</x:Double>
+    <FontWeight x:Key="M3LabelMediumFontWeight">Medium</FontWeight>
+    <x:Double x:Key="M3LabelMediumLineHeight">16</x:Double>
+    <x:Double x:Key="M3LabelMediumLetterSpacing">0.5</x:Double>
+
+    <x:Double x:Key="M3LabelSmallFontSize">11</x:Double>
+    <FontWeight x:Key="M3LabelSmallFontWeight">Medium</FontWeight>
+    <x:Double x:Key="M3LabelSmallLineHeight">16</x:Double>
+    <x:Double x:Key="M3LabelSmallLetterSpacing">0.5</x:Double>
+
+</ResourceDictionary>

@@ -1,0 +1,118 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Material 3 RadioButton.
+        Reference: https://m3.material.io/components/radio-button/specs
+
+        - 20x20 outer ring with 2px border
+        - Unselected: OnSurfaceVariant ring
+        - Selected: Primary ring + 10x10 Primary inner dot
+        - 40x40 hit target with circular Primary state layer (hover / pressed)
+        - Disabled: ring + dot use OnSurface at 38%
+        - Label uses LabelLarge type with an 8px gap from the ring
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="20">
+            <StackPanel Spacing="6">
+                <RadioButton GroupName="preview">Option 1</RadioButton>
+                <RadioButton GroupName="preview" IsChecked="True">Option 2 (selected)</RadioButton>
+                <RadioButton GroupName="preview" IsEnabled="False">Disabled</RadioButton>
+                <RadioButton GroupName="preview" IsEnabled="False" IsChecked="True">Disabled selected</RadioButton>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <ControlTheme x:Key="{x:Type RadioButton}" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}" />
+        <Setter Property="FontSize" Value="{StaticResource M3LabelLargeFontSize}" />
+        <Setter Property="FontWeight" Value="{StaticResource M3LabelLargeFontWeight}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid x:Name="RootGrid" ColumnDefinitions="40,*">
+                    <Grid Width="40" Height="40"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center">
+                        <Ellipse x:Name="StateLayer"
+                                 Width="40" Height="40"
+                                 Fill="{DynamicResource Primary}"
+                                 Opacity="0"
+                                 IsHitTestVisible="False" />
+                        <Ellipse x:Name="OuterEllipse"
+                                 Width="20" Height="20"
+                                 Stroke="{DynamicResource OnSurfaceVariant}"
+                                 StrokeThickness="2"
+                                 Fill="Transparent"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center" />
+                        <Ellipse x:Name="CheckGlyph"
+                                 Width="10" Height="10"
+                                 Fill="{DynamicResource Primary}"
+                                 IsVisible="False"
+                                 IsHitTestVisible="False"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+
+                    <ContentPresenter x:Name="PART_ContentPresenter"
+                                      Grid.Column="1"
+                                      Margin="-3,0,0,0"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      RecognizesAccessKey="True"
+                                      TextWrapping="Wrap" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Hover / pressed state layer (Primary tint) -->
+        <Style Selector="^:pointerover /template/ Ellipse#StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Ellipse#StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}" />
+        </Style>
+
+        <!-- Selected: Primary outer ring, Primary inner dot -->
+        <Style Selector="^:checked /template/ Ellipse#OuterEllipse">
+            <Setter Property="Stroke" Value="{DynamicResource Primary}" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#CheckGlyph">
+            <Setter Property="IsVisible" Value="True" />
+            <Setter Property="Fill" Value="{DynamicResource Primary}" />
+        </Style>
+
+        <!-- Disabled label (38% OnSurface) -->
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+
+        <!-- Disabled ring + dot tinted OnSurface 38% -->
+        <Style Selector="^:disabled /template/ Ellipse#OuterEllipse">
+            <Setter Property="Stroke" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Ellipse#CheckGlyph">
+            <Setter Property="Fill" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+
+        <!-- Suppress state layer when disabled -->
+        <Style Selector="^:disabled /template/ Ellipse#StateLayer">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

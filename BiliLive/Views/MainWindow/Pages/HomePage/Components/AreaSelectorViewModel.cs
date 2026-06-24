@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BiliLive.Core.Interface;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -30,8 +30,10 @@ public partial class AreaSelectorViewModel : ViewModelBase
 {
     [ObservableProperty]private ObservableCollection<MainAreas> _areasGroup = [];
     [ObservableProperty]private ObservableCollection<SubAreas> _subAreaGroup = [];
+    [ObservableProperty]private ObservableCollection<SubAreas> _filteredSubAreaGroup = [];
     [ObservableProperty]private string _selectedSubArea = "子分区";
     [ObservableProperty]private string? _selectedMainArea;
+    [ObservableProperty]private string? _searchText;
 
     [ObservableProperty]private bool _isLogged;
     
@@ -48,6 +50,12 @@ public partial class AreaSelectorViewModel : ViewModelBase
         SubAreaGroup.Add(new SubAreas("原神", SelectSubArea));
         SubAreaGroup.Add(new SubAreas("崩坏", SelectSubArea));
         SubAreaGroup.Add(new SubAreas("绝区零", SelectSubArea));
+        RefreshFilteredSubAreas();
+    }
+
+    partial void OnSearchTextChanged(string? value)
+    {
+        RefreshFilteredSubAreas();
     }
 
     [RelayCommand]
@@ -91,6 +99,7 @@ public partial class AreaSelectorViewModel : ViewModelBase
             {
                 SubAreaGroup.Add(new SubAreas(subAreaName, SelectSubArea));
             }
+            RefreshFilteredSubAreas();
         }
         catch { 
             // ignored
@@ -116,7 +125,7 @@ public partial class AreaSelectorViewModel : ViewModelBase
                     {
                         WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(
                             $"已切换分区至{targetSubArea}", 
-                            Geometry.Parse(MdIcons.Check)));
+                            Geometry.Parse(Icons.Check)));
                     });
                 }
                 catch (Exception e)
@@ -130,5 +139,16 @@ public partial class AreaSelectorViewModel : ViewModelBase
         {
             // ignored
         }
+    }
+
+    private void RefreshFilteredSubAreas()
+    {
+        var keyword = SearchText?.Trim();
+        var items = string.IsNullOrWhiteSpace(keyword)
+            ? SubAreaGroup
+            : new ObservableCollection<SubAreas>(SubAreaGroup.Where(area =>
+                area.SubAreaName.Contains(keyword, StringComparison.OrdinalIgnoreCase)));
+
+        FilteredSubAreaGroup = new ObservableCollection<SubAreas>(items);
     }
 }

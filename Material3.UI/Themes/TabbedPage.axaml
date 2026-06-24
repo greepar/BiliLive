@@ -1,0 +1,451 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Material 3 TabbedPage control theme.
+        Spec: https://m3.material.io/components/navigation-rail/specs
+              https://m3.material.io/components/navigation-bar/specs
+              https://m3.material.io/components/tabs/specs
+
+        TabbedPage adapts to the M3 navigation pattern that fits its placement:
+          * Top  - Primary Tabs. 48dp tall row, horizontal label (and optional icon),
+                   3dp Primary pill at the trailing edge.
+          * Left - Navigation Rail. 80dp wide column of 56x80 items. Selected items
+                   show a 56x32 SecondaryContainer pill hugging the icon.
+          * Bottom - Navigation Bar. 80dp tall SurfaceContainer strip with items
+                   distributed by a UniformGrid. Selected items reuse the
+                   Rail's 56x32 SecondaryContainer pill.
+
+        The tab strip's ItemsPanel and the per-item Template both swap based on
+        TabStripPlacement so consumers only set TabPlacement on the TabbedPage.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="16">
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <Border Width="280" Height="320"
+                        Background="{DynamicResource SurfaceContainerLow}"
+                        CornerRadius="{StaticResource M3ShapeMedium}">
+                    <TabbedPage TabPlacement="Top">
+                        <ContentPage Header="Home">
+                            <TextBlock Text="Top: Primary tabs"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                        <ContentPage Header="Search">
+                            <TextBlock Text="Search page"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                        <ContentPage Header="Profile">
+                            <TextBlock Text="Profile page"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                    </TabbedPage>
+                </Border>
+                <Border Width="320" Height="320"
+                        Background="{DynamicResource SurfaceContainerLow}"
+                        CornerRadius="{StaticResource M3ShapeMedium}">
+                    <TabbedPage TabPlacement="Left">
+                        <ContentPage Header="Home">
+                            <TextBlock Text="Left: Navigation Rail"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                        <ContentPage Header="Inbox">
+                            <TextBlock Text="Inbox"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                        <ContentPage Header="Profile">
+                            <TextBlock Text="Profile"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                    </TabbedPage>
+                </Border>
+                <Border Width="280" Height="320"
+                        Background="{DynamicResource SurfaceContainerLow}"
+                        CornerRadius="{StaticResource M3ShapeMedium}">
+                    <TabbedPage TabPlacement="Bottom">
+                        <ContentPage Header="Home">
+                            <TextBlock Text="Bottom: Navigation Bar"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                        <ContentPage Header="Search">
+                            <TextBlock Text="Search"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                        <ContentPage Header="Profile">
+                            <TextBlock Text="Profile"
+                                       Foreground="{DynamicResource OnSurface}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </ContentPage>
+                    </TabbedPage>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- ============================================================
+         TabbedPageTabItemTheme
+
+         Two layouts coexist inside one template, selected by placement:
+           - PART_VerticalLayout: vertical icon+label (Rail / Bar)
+           - PART_HorizontalLayout: horizontal icon+label (Top primary tab)
+
+         The state layer and selected indicator pill share named parts and
+         are repositioned + resized by placement-specific styles.
+         ============================================================ -->
+    <ControlTheme x:Key="TabbedPageTabItemTheme" TargetType="TabItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <!-- Default sizing matches the M3 Navigation Rail item footprint. -->
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Height" Value="80"/>
+
+        <!-- Default IndicatorTemplate = Rail/Bar 56x32 SecondaryContainer pill. -->
+        <Setter Property="IndicatorTemplate">
+            <DataTemplate>
+                <Border Background="{DynamicResource SecondaryContainer}"
+                        CornerRadius="16"
+                        Width="56" Height="32"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+            </DataTemplate>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    <Panel>
+                        <!-- Selected indicator pill. Drawn first so the icon overlays it. -->
+                        <ContentPresenter Name="PART_SelectedPipe"
+                                          Content="{TemplateBinding DataContext}"
+                                          ContentTemplate="{TemplateBinding IndicatorTemplate}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Top"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Stretch"
+                                          Width="56" Height="32"
+                                          Margin="0,16,0,0"
+                                          IsHitTestVisible="False"
+                                          IsVisible="False"/>
+
+                        <!-- State layer: pill-shaped over icon area for Rail/Bar; full
+                             rectangle for Top placement. -->
+                        <Border Name="PART_StateLayer"
+                                Background="{DynamicResource OnSurface}"
+                                Opacity="0"
+                                CornerRadius="16"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Width="56" Height="32"
+                                Margin="0,16,0,0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="{StaticResource M3DurationShort2}"
+                                                      Easing="{StaticResource M3EasingStandard}"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+
+                        <!-- Vertical layout (Rail / Bar) -->
+                        <Grid Name="PART_VerticalLayout"
+                              RowDefinitions="32,Auto"
+                              Margin="0,16,0,12"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Top">
+                            <ContentPresenter Name="PART_IconPresenter"
+                                              Grid.Row="0"
+                                              Content="{TemplateBinding Icon}"
+                                              ContentTemplate="{TemplateBinding IconTemplate}"
+                                              Width="24" Height="24"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Grid.Row="1"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              FontFamily="{TemplateBinding FontFamily}"
+                                              FontSize="{TemplateBinding FontSize}"
+                                              FontWeight="{TemplateBinding FontWeight}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Top"
+                                              Margin="0,4,0,0"/>
+                        </Grid>
+
+                        <!-- Horizontal layout (Top primary tab). Hidden by default. -->
+                        <StackPanel Name="PART_HorizontalLayout"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsVisible="False">
+                            <ContentPresenter Name="PART_IconPresenterH"
+                                              Content="{TemplateBinding Icon}"
+                                              ContentTemplate="{TemplateBinding IconTemplate}"
+                                              Width="20" Height="20"
+                                              VerticalAlignment="Center"
+                                              IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            <ContentPresenter Name="PART_ContentPresenterH"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              FontFamily="{TemplateBinding FontFamily}"
+                                              FontSize="14"
+                                              FontWeight="Medium"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- ===== Selected indicator visibility ===== -->
+        <Style Selector="^:selected /template/ ContentPresenter#PART_SelectedPipe">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+
+        <!-- ===== State-layer pseudo-classes ===== -->
+        <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+        <Style Selector="^:selected:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:selected:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <!-- ===== Selected: switch icon tint to OnSecondaryContainer (Rail/Bar) ===== -->
+        <Style Selector="^:selected /template/ ContentPresenter#PART_IconPresenter">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource OnSecondaryContainer}"/>
+        </Style>
+        <!-- Unselected icon picks up the OnSurfaceVariant role. Label stays OnSurface. -->
+        <Style Selector="^ /template/ ContentPresenter#PART_IconPresenter">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource OnSurfaceVariant}"/>
+        </Style>
+
+        <!-- ===== Disabled ===== -->
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+
+        <!-- =====================================================
+             TabStripPlacement = Bottom (Navigation Bar)
+             ===================================================== -->
+        <Style Selector="^[TabStripPlacement=Bottom]">
+            <Setter Property="Width" Value="NaN"/>
+            <Setter Property="MinWidth" Value="64"/>
+            <Setter Property="Height" Value="80"/>
+        </Style>
+
+        <!-- =====================================================
+             TabStripPlacement = Left (Navigation Rail)
+             Inherits the default 80x80 footprint, vertical layout, and
+             SecondaryContainer pill indicator. Nothing extra needed.
+             ===================================================== -->
+
+        <!-- =====================================================
+             TabStripPlacement = Top (Primary Tabs)
+             Switch to a 48dp horizontal layout with the 3dp Primary pill
+             stretched along the bottom edge.
+             ===================================================== -->
+        <Style Selector="^[TabStripPlacement=Top]">
+            <Setter Property="Width" Value="NaN"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="MinWidth" Value="90"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}"/>
+            <Setter Property="IndicatorTemplate">
+                <DataTemplate>
+                    <Border Background="{DynamicResource Primary}"
+                            CornerRadius="{StaticResource M3ShapeFull}"
+                            Height="3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom"/>
+                </DataTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Top]:selected">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Top] /template/ Grid#PART_VerticalLayout">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Top] /template/ StackPanel#PART_HorizontalLayout">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Top] /template/ ContentPresenter#PART_SelectedPipe">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Width" Value="NaN"/>
+            <Setter Property="Height" Value="3"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Top] /template/ Border#PART_StateLayer">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Width" Value="NaN"/>
+            <Setter Property="Height" Value="NaN"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="CornerRadius" Value="0"/>
+        </Style>
+        <!-- For Top placement the icon next to the label tints with the foreground. -->
+        <Style Selector="^[TabStripPlacement=Top] /template/ ContentPresenter#PART_IconPresenterH">
+            <Setter Property="TextElement.Foreground" Value="{Binding $parent[TabItem].Foreground}"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- ============================================================
+         TabbedPageTabControlTheme
+
+         Hosts the TabbedPage's tab strip and content host. The strip's
+         background and ItemsPanel adapt to placement so we render an M3
+         Navigation Bar (bottom), Navigation Rail (left), or primary tab
+         row (top) without re-templating the TabbedPage itself.
+         ============================================================ -->
+    <ControlTheme x:Key="TabbedPageTabControlTheme" TargetType="TabControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <!-- Default ItemsPanel: vertical stack for Navigation Rail. -->
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical"/>
+            </ItemsPanelTemplate>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Background="{TemplateBinding Background}">
+                    <Border Name="PART_TabStrip"
+                            DockPanel.Dock="{TemplateBinding TabStripPlacement}"
+                            Background="Transparent">
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                    </Border>
+                    <Panel ClipToBounds="True">
+                        <ContentPresenter Name="PART_SelectedContentHost2"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Stretch"
+                                          IsVisible="False"/>
+                        <ContentPresenter Name="PART_SelectedContentHost"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Stretch"/>
+                    </Panel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- =====================================================
+             TabStripPlacement = Bottom (Navigation Bar)
+             ===================================================== -->
+        <Style Selector="^[TabStripPlacement=Bottom]">
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1"/>
+                </ItemsPanelTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Bottom] /template/ Border#PART_TabStrip">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+            <Setter Property="Height" Value="80"/>
+        </Style>
+
+        <!-- =====================================================
+             TabStripPlacement = Left (Navigation Rail)
+             ===================================================== -->
+        <Style Selector="^[TabStripPlacement=Left] /template/ Border#PART_TabStrip">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="80"/>
+        </Style>
+
+        <!-- =====================================================
+             TabStripPlacement = Right (rare; mirror of Rail)
+             ===================================================== -->
+        <Style Selector="^[TabStripPlacement=Right] /template/ Border#PART_TabStrip">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="80"/>
+        </Style>
+
+        <!-- =====================================================
+             TabStripPlacement = Top (Primary Tabs)
+             Horizontal stack, OutlineVariant divider on the bottom edge.
+             ===================================================== -->
+        <Style Selector="^[TabStripPlacement=Top]">
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Top] /template/ Border#PART_TabStrip">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- ============================================================
+         TabbedPage default theme - hosts the inner TabControl using the
+         themes above.
+         ============================================================ -->
+    <ControlTheme x:Key="{x:Type TabbedPage}" TargetType="TabbedPage">
+        <Setter Property="Background" Value="{DynamicResource Surface}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <TabControl Name="PART_TabControl"
+                                Theme="{StaticResource TabbedPageTabControlTheme}"
+                                ItemContainerTheme="{StaticResource TabbedPageTabItemTheme}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

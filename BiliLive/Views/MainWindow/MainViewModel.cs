@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Models;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 using BiliLive.Views.MainWindow.Controls;
 using BiliLive.Views.MainWindow.Pages.About;
 using BiliLive.Views.MainWindow.Pages.AutoService;
@@ -65,9 +65,9 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<NotificationItem> _notifications =
     [
         //图标列表
-        // new("Welcome to BiliLive!", Geometry.Parse(MdIcons.Notice)),
-        // new("Report issues on GitHub", Geometry.Parse(MdIcons.Error)),
-        // new("Check for updates every week", Geometry.Parse(MdIcons.Check)),
+        // new("Welcome to BiliLive!", Geometry.Parse(Icons.Notice)),
+        // new("Report issues on GitHub", Geometry.Parse(Icons.Error)),
+        // new("Check for updates every week", Geometry.Parse(Icons.Check)),
     ];
     
     //构造子控件viewmodel
@@ -88,7 +88,7 @@ public partial class MainViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(StreamButtonText))]
     private bool _isStreaming;
     public string StreamButtonText => IsStreaming ? "停止直播" : "开始直播";
-    public Geometry StreamButtonIcon => IsStreaming ? Geometry.Parse(MdIcons.Restart) : Geometry.Parse(MdIcons.Start);
+    public Geometry StreamButtonIcon => IsStreaming ? Geometry.Parse(Icons.Restart) : Geometry.Parse(Icons.Start);
     
     
     public MainViewModel(IServiceProvider? serviceProvider = null)
@@ -282,7 +282,7 @@ public partial class MainViewModel : ViewModelBase
                 if (General.State.IsStreaming)
                 {
                     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("当前直播被自动直播占用，请先暂停自动直播。"
-                        ,Geometry.Parse(MdIcons.Error)));
+                        ,Geometry.Parse(Icons.Error)));
                     return;
                 }
                 var a = await _biliService.StartLiveAsync();
@@ -317,7 +317,7 @@ public partial class MainViewModel : ViewModelBase
                 }
 
                 WeakReferenceMessenger.Default.Send(
-                    new ShowNotificationMessage("开启推流成功", Geometry.Parse(MdIcons.Check)));
+                    new ShowNotificationMessage("开启推流成功", Geometry.Parse(Icons.Check)));
                 WeakReferenceMessenger.Default.Send(new StartRefreshLiveInfoMessage(streamUrl, streamKey, liveKey));
             }
             else
@@ -325,7 +325,7 @@ public partial class MainViewModel : ViewModelBase
                 WeakReferenceMessenger.Default.Send(new StopRefreshLiveInfoMessage());
                 await _biliService.StopLiveAsync();
                 WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已停止推流",
-                    Geometry.Parse(MdIcons.Check)));
+                    Geometry.Parse(Icons.Check)));
             }
         }
         catch (Exception ex)

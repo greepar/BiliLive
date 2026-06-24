@@ -11,7 +11,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -181,7 +181,7 @@ public partial class AboutViewModel : ViewModelBase
 
 
             WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("直播Cookie获取成功,尝试登录中...",
-                Geometry.Parse(MdIcons.Check)));
+                Geometry.Parse(Icons.Check)));
 
             var loginResult = await _biliService.LoginAsync(liveCookie);
             switch (loginResult)
@@ -191,7 +191,7 @@ public partial class AboutViewModel : ViewModelBase
                     break;
                 case LoginSuccess:
                     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Cookie登录成功！",
-                        Geometry.Parse(MdIcons.Check)));
+                        Geometry.Parse(Icons.Check)));
                     WeakReferenceMessenger.Default.Send(new LoginMessage(loginResult));
                     break;
             }

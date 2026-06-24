@@ -1,0 +1,429 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="https://github.com/greepar/md3">
+    <!--
+        Material 3 Button control theme.
+        Spec: https://m3.material.io/components/buttons/specs
+
+        Five variants are defined as sibling ControlThemes:
+            M3ElevatedButton, M3FilledButton, M3TonalButton,
+            M3OutlinedButton, M3TextButton.
+
+        The default (`<Button>`) maps to the Filled look. Consumers can also
+        select a variant via class:
+            <Button Classes="Elevated"/>  Tonal | Outlined | Text | Filled
+
+        M3IconButton is a square/circular icon button (40x40, full corner).
+        MdButton is kept as a backwards-compatible alias for legacy callers
+        in BiliLive that referenced the previous IconButton.axaml key.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="8" Width="260">
+                <Button Theme="{DynamicResource M3ElevatedButton}">Elevated</Button>
+                <Button Theme="{DynamicResource M3ElevatedButton}" IsEnabled="False">Elevated Disabled</Button>
+                <Button Theme="{DynamicResource M3FilledButton}">Filled</Button>
+                <Button Theme="{DynamicResource M3FilledButton}" IsEnabled="False">Filled Disabled</Button>
+                <Button Theme="{DynamicResource M3TonalButton}">Tonal</Button>
+                <Button Theme="{DynamicResource M3TonalButton}" IsEnabled="False">Tonal Disabled</Button>
+                <Button Theme="{DynamicResource M3OutlinedButton}">Outlined</Button>
+                <Button Theme="{DynamicResource M3OutlinedButton}" IsEnabled="False">Outlined Disabled</Button>
+                <Button Theme="{DynamicResource M3TextButton}">Text</Button>
+                <Button Theme="{DynamicResource M3TextButton}" IsEnabled="False">Text Disabled</Button>
+                <Button>Default = Filled</Button>
+                <Button Classes="Elevated">Class Elevated</Button>
+                <Button Classes="Tonal">Class Tonal</Button>
+                <Button Classes="Outlined">Class Outlined</Button>
+                <Button Classes="Text">Class Text</Button>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Theme="{DynamicResource M3IconButton}"/>
+                    <Button Theme="{DynamicResource MdButton}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--
+        Shared template for the five label-button variants. Variants only
+        differ in their Setter values (background/foreground brushes,
+        border thickness, padding) and in the brush used by their state
+        layer / ripple. The template part naming is stable so that variant
+        ControlThemes can attach pseudo-class styles.
+    -->
+    <ControlTemplate x:Key="M3ButtonTemplate" TargetType="Button">
+        <Border Name="PartContainer"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel ClipToBounds="True">
+                <Border Name="PartStateLayer"
+                        IsHitTestVisible="False"
+                        Opacity="0"
+                        CornerRadius="{TemplateBinding CornerRadius}"/>
+                <m3:InkRipple Name="PartRipple"
+                              Brush="{TemplateBinding Foreground}"
+                              CornerRadius="{TemplateBinding CornerRadius}"
+                              BaseOpacity="{StaticResource M3StatePressedOpacity}"/>
+                <ContentPresenter Name="PartContent"
+                                  IsHitTestVisible="False"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  FontFamily="{TemplateBinding FontFamily}"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  FontWeight="{TemplateBinding FontWeight}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Panel>
+        </Border>
+    </ControlTemplate>
+
+    <!-- =====================================================================
+         Filled (canonical) — Background Primary, Foreground OnPrimary.
+         All other label-button variants derive from this via BasedOn so
+         they only need to publish their deltas.
+         ===================================================================== -->
+    <ControlTheme x:Key="M3FilledButton" TargetType="Button">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="MinWidth" Value="48"/>
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeFull}"/>
+        <Setter Property="Padding" Value="24,0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="{StaticResource M3LabelLargeFontSize}"/>
+        <Setter Property="FontWeight" Value="{StaticResource M3LabelLargeFontWeight}"/>
+        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnPrimary}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template" Value="{StaticResource M3ButtonTemplate}"/>
+
+        <!-- Smooth state-layer fade so hover doesn't pop. -->
+        <Style Selector="^ /template/ Border#PartStateLayer">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="{StaticResource M3DurationShort2}"
+                                      Easing="{StaticResource M3EasingStandard}"/>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <!-- Hover: 8% OnPrimary state layer over the Primary container. -->
+        <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnPrimary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <!-- Pressed: 10% OnPrimary. The ink ripple provides additional feedback. -->
+        <Style Selector="^:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnPrimary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <!-- Disabled: container OnSurface@12%, content OnSurface@38%, no elevation. -->
+        <Style Selector="^:disabled /template/ Border#PartContainer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BoxShadow" Value="{StaticResource M3Elevation0}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PartContent">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =====================================================================
+         Elevated — SurfaceContainerLow ground with Primary content and a
+         level-1 shadow. Hover lifts to level 2; press settles back to level 1.
+         ===================================================================== -->
+    <ControlTheme x:Key="M3ElevatedButton" TargetType="Button"
+                  BasedOn="{StaticResource M3FilledButton}">
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+
+        <Style Selector="^ /template/ Border#PartContainer">
+            <Setter Property="BoxShadow" Value="{StaticResource M3Elevation1}"/>
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#PartContainer">
+            <Setter Property="BoxShadow" Value="{StaticResource M3Elevation2}"/>
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PartContainer">
+            <Setter Property="BoxShadow" Value="{StaticResource M3Elevation1}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =====================================================================
+         Tonal — SecondaryContainer ground with OnSecondaryContainer content.
+         No elevation; state layer uses OnSecondaryContainer.
+         ===================================================================== -->
+    <ControlTheme x:Key="M3TonalButton" TargetType="Button"
+                  BasedOn="{StaticResource M3FilledButton}">
+        <Setter Property="Background" Value="{DynamicResource SecondaryContainer}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSecondaryContainer}"/>
+
+        <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =====================================================================
+         Outlined — Transparent ground, Primary content, 1px Outline border.
+         Pressed border switches to Primary. Disabled border falls back to
+         OutlineVariant (M3 spec calls for OnSurface@12% — OutlineVariant is
+         the closest theme-aware approximation we expose).
+         ===================================================================== -->
+    <ControlTheme x:Key="M3OutlinedButton" TargetType="Button"
+                  BasedOn="{StaticResource M3FilledButton}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Outline}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+
+        <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PartContainer">
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PartContainer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}"/>
+            <Setter Property="BoxShadow" Value="{StaticResource M3Elevation0}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =====================================================================
+         Text — Transparent ground, Primary content, no border, tighter
+         horizontal padding (12) per M3 spec.
+         ===================================================================== -->
+    <ControlTheme x:Key="M3TextButton" TargetType="Button"
+                  BasedOn="{StaticResource M3FilledButton}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        <Setter Property="Padding" Value="12,0"/>
+
+        <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PartContainer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BoxShadow" Value="{StaticResource M3Elevation0}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =====================================================================
+         Default Button theme (used when no Theme is explicitly set).
+         Inherits Filled defaults and registers Classes-based variant swaps
+         so consumers can write `<Button Classes="Elevated">` etc.
+         The Classes-based selectors mirror the dedicated variant ControlThemes.
+         ===================================================================== -->
+    <ControlTheme x:Key="{x:Type Button}" TargetType="Button"
+                  BasedOn="{StaticResource M3FilledButton}">
+
+        <!-- Filled: explicit class — identical to default. Setters listed for clarity. -->
+        <Style Selector="^.Filled">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnPrimary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="24,0"/>
+        </Style>
+
+        <!-- Elevated -->
+        <Style Selector="^.Elevated">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="24,0"/>
+
+            <Style Selector="^ /template/ Border#PartContainer">
+                <Setter Property="BoxShadow" Value="{StaticResource M3Elevation1}"/>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#PartContainer">
+                <Setter Property="BoxShadow" Value="{StaticResource M3Elevation2}"/>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#PartContainer">
+                <Setter Property="BoxShadow" Value="{StaticResource M3Elevation1}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+            </Style>
+        </Style>
+
+        <!-- Tonal -->
+        <Style Selector="^.Tonal">
+            <Setter Property="Background" Value="{DynamicResource SecondaryContainer}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnSecondaryContainer}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="24,0"/>
+
+            <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+            </Style>
+        </Style>
+
+        <!-- Outlined -->
+        <Style Selector="^.Outlined">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Outline}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="24,0"/>
+
+            <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#PartContainer">
+                <Setter Property="BorderBrush" Value="{DynamicResource Primary}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#PartContainer">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}"/>
+                <Setter Property="BoxShadow" Value="{StaticResource M3Elevation0}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Opacity" Value="0"/>
+            </Style>
+        </Style>
+
+        <!-- Text -->
+        <Style Selector="^.Text">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,0"/>
+
+            <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="{DynamicResource Primary}"/>
+                <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#PartContainer">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BoxShadow" Value="{StaticResource M3Elevation0}"/>
+            </Style>
+            <Style Selector="^:disabled /template/ Border#PartStateLayer">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Opacity" Value="0"/>
+            </Style>
+        </Style>
+    </ControlTheme>
+
+    <!-- =====================================================================
+         Icon Button — square / circular chrome button. Defaults to 40x40 with
+         a fully rounded corner. Foreground uses OnSurfaceVariant which reads
+         well over Surface and SurfaceContainer* backgrounds.
+         ===================================================================== -->
+    <ControlTheme x:Key="M3IconButton" TargetType="Button">
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="40"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeFull}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template" Value="{StaticResource M3ButtonTemplate}"/>
+
+        <Style Selector="^ /template/ Border#PartStateLayer">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="{StaticResource M3DurationShort2}"
+                                      Easing="{StaticResource M3EasingStandard}"/>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="^:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurfaceVariant}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurfaceVariant}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PartContent">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!--
+        Note: the BiliLive-flavored `MdButton` (a flexible chrome-only icon button) is
+        intentionally NOT defined here. It lives in Themes/Compat/MdButton.axaml so
+        new M3-only consumers can drop it from their merged dictionaries.
+    -->
+</ResourceDictionary>

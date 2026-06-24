@@ -1,0 +1,274 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="16" Width="280">
+                <ToggleSwitch />
+                <ToggleSwitch IsChecked="True" />
+                <ToggleSwitch Content="Header"
+                              OffContent="Off"
+                              OnContent="On" />
+                <ToggleSwitch IsEnabled="False" OffContent="Disabled" />
+                <ToggleSwitch IsEnabled="False" IsChecked="True" OnContent="Disabled checked" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--
+        Material 3 ToggleSwitch.
+        Spec: https://m3.material.io/components/switch/specs
+
+        Track 52x32 fully rounded; thumb 16dp unchecked, 24dp checked, 28dp pressed.
+        Avalonia ToggleSwitch requires PART_MovingKnobs (Panel). PART_SwitchKnob is a
+        Canvas whose Width determines the thumb travel distance.
+
+        Layout math (track 52, thumb travel 20):
+            unchecked: Canvas.Left=0  -> MovingKnobs(32) spans 0..32, thumb(16) centered at x=16  (8px left inset)
+            checked  : Canvas.Left=20 -> MovingKnobs(32) spans 20..52, thumb(24) centered at x=36 (4px right inset)
+    -->
+    <ControlTheme x:Key="{x:Type ToggleSwitch}" TargetType="ToggleSwitch">
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="KnobTransitions">
+            <Transitions>
+                <DoubleTransition Property="Canvas.Left"
+                                  Duration="{StaticResource M3DurationShort4}"
+                                  Easing="{StaticResource M3EasingEmphasizedDecelerate}" />
+            </Transitions>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Background="{TemplateBinding Background}" RowDefinitions="Auto,*">
+
+                    <!-- Header text shown above the switch row. -->
+                    <ContentPresenter x:Name="PART_ContentPresenter"
+                                      Grid.Row="0"
+                                      VerticalAlignment="Top"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Margin="0,0,0,6"
+                                      RecognizesAccessKey="True" />
+
+                    <Grid Grid.Row="1"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Track + knob area share column 0. -->
+                        <Grid Grid.Column="0"
+                              Width="52" Height="32"
+                              VerticalAlignment="Center">
+                            <!-- Track -->
+                            <Border x:Name="PART_OuterBorder"
+                                    Width="52" Height="32"
+                                    CornerRadius="{StaticResource M3ShapeFull}"
+                                    Background="{DynamicResource SurfaceContainerHighest}"
+                                    BorderBrush="{DynamicResource Outline}"
+                                    BorderThickness="2"
+                                    TemplatedControl.IsTemplateFocusTarget="True" />
+
+                            <!-- Knob travel canvas. Width = travel distance. -->
+                            <Canvas x:Name="PART_SwitchKnob"
+                                    Width="20" Height="32"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent">
+                                <Grid x:Name="PART_MovingKnobs"
+                                      Width="32" Height="32"
+                                      Canvas.Left="0">
+
+                                    <!-- 40dp state-layer ring around the thumb. -->
+                                    <Ellipse x:Name="StateLayer"
+                                             Width="40" Height="40"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Fill="{DynamicResource OnSurface}"
+                                             Opacity="0"
+                                             IsHitTestVisible="False">
+                                        <Ellipse.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Opacity"
+                                                                  Duration="{StaticResource M3DurationShort4}"
+                                                                  Easing="{StaticResource M3EasingEmphasizedDecelerate}" />
+                                                <BrushTransition Property="Fill"
+                                                                 Duration="{StaticResource M3DurationShort4}" />
+                                            </Transitions>
+                                        </Ellipse.Transitions>
+                                    </Ellipse>
+
+                                    <!-- Thumb circle. Sizes 16/24/28 driven by states. -->
+                                    <Ellipse x:Name="Thumb"
+                                             Width="16" Height="16"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Fill="{DynamicResource Outline}">
+                                        <Ellipse.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Width"
+                                                                  Duration="{StaticResource M3DurationShort4}"
+                                                                  Easing="{StaticResource M3EasingEmphasizedDecelerate}" />
+                                                <DoubleTransition Property="Height"
+                                                                  Duration="{StaticResource M3DurationShort4}"
+                                                                  Easing="{StaticResource M3EasingEmphasizedDecelerate}" />
+                                                <BrushTransition Property="Fill"
+                                                                 Duration="{StaticResource M3DurationShort4}" />
+                                            </Transitions>
+                                        </Ellipse.Transitions>
+                                    </Ellipse>
+
+                                    <!-- Tiny check glyph drawn on the thumb when checked. -->
+                                    <Path x:Name="CheckIcon"
+                                          Width="12" Height="12"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Stretch="Uniform"
+                                          Stroke="{DynamicResource OnPrimaryContainer}"
+                                          StrokeThickness="1.6"
+                                          StrokeJoin="Round"
+                                          StrokeLineCap="Round"
+                                          Data="M 2 6 L 4 8 L 8 4"
+                                          Opacity="0"
+                                          IsHitTestVisible="False">
+                                        <Path.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Opacity"
+                                                                  Duration="{StaticResource M3DurationShort4}"
+                                                                  Easing="{StaticResource M3EasingEmphasizedDecelerate}" />
+                                            </Transitions>
+                                        </Path.Transitions>
+                                    </Path>
+                                </Grid>
+                            </Canvas>
+                        </Grid>
+
+                        <!-- Off/On content presenters share column 2; visibility flips with state. -->
+                        <ContentPresenter x:Name="PART_OffContentPresenter"
+                                          Grid.Column="2"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding OffContent}"
+                                          ContentTemplate="{TemplateBinding OffContentTemplate}" />
+                        <ContentPresenter x:Name="PART_OnContentPresenter"
+                                          Grid.Column="2"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding OnContent}"
+                                          ContentTemplate="{TemplateBinding OnContentTemplate}" />
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Hide header margin when there is no header content. -->
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter:empty">
+            <Setter Property="Margin" Value="0" />
+        </Style>
+
+        <!-- ===== Unchecked ===== -->
+        <Style Selector="^:unchecked /template/ ContentPresenter#PART_OffContentPresenter">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:unchecked /template/ ContentPresenter#PART_OnContentPresenter">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="^:unchecked /template/ Path#CheckIcon">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+
+        <!-- ===== Checked ===== -->
+        <Style Selector="^:checked /template/ Border#PART_OuterBorder">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#Thumb">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Fill" Value="{DynamicResource OnPrimary}" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#StateLayer">
+            <Setter Property="Fill" Value="{DynamicResource Primary}" />
+        </Style>
+        <Style Selector="^:checked /template/ Path#CheckIcon">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:checked /template/ ContentPresenter#PART_OffContentPresenter">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="^:checked /template/ ContentPresenter#PART_OnContentPresenter">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+
+        <!-- ===== Hover (unchecked) ===== -->
+        <Style Selector="^:pointerover:unchecked /template/ Ellipse#StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:pointerover:unchecked /template/ Ellipse#Thumb">
+            <Setter Property="Fill" Value="{DynamicResource OnSurfaceVariant}" />
+        </Style>
+
+        <!-- ===== Hover (checked) ===== -->
+        <Style Selector="^:pointerover:checked /template/ Ellipse#StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:pointerover:checked /template/ Ellipse#Thumb">
+            <Setter Property="Fill" Value="{DynamicResource PrimaryContainer}" />
+        </Style>
+
+        <!-- ===== Pressed: thumb expands to fill the track ===== -->
+        <Style Selector="^:pressed /template/ Ellipse#Thumb">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+        </Style>
+        <Style Selector="^:pressed /template/ Ellipse#StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}" />
+        </Style>
+
+        <!-- ===== Disabled ===== -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PART_OuterBorder">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Ellipse#Thumb">
+            <Setter Property="Fill" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Path#CheckIcon">
+            <Setter Property="Stroke" Value="{DynamicResource Surface}" />
+        </Style>
+        <Style Selector="^:disabled:checked /template/ Path#CheckIcon">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_OffContentPresenter">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_OnContentPresenter">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+        <!-- Disabled hover/press should not flash a state layer. -->
+        <Style Selector="^:disabled /template/ Ellipse#StateLayer">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+    </ControlTheme>
+
+    <!-- Backwards-compatible alias for code still referencing MdToggleSwitch. -->
+    <ControlTheme x:Key="MdToggleSwitch" TargetType="ToggleSwitch"
+                  BasedOn="{StaticResource {x:Type ToggleSwitch}}" />
+</ResourceDictionary>

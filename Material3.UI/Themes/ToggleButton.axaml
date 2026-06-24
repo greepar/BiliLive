@@ -1,0 +1,146 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="https://github.com/greepar/md3">
+
+    <!--
+        Material 3 ToggleButton (segmented-button look).
+        Reference: https://m3.material.io/components/segmented-buttons/specs
+
+        - 40dp tall, full pill shape, 1px Outline border, 24px horizontal padding
+        - Unchecked: transparent fill, OnSurface label, 8% OnSurface hover layer
+        - Checked: SecondaryContainer fill, OnSecondaryContainer label,
+          8% OnSecondaryContainer hover layer
+        - Disabled: OnSurface 38% label; if checked, OnSurface 12% container
+        - Press feedback uses InkRipple
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="20">
+            <StackPanel Spacing="6">
+                <ToggleButton>Unchecked</ToggleButton>
+                <ToggleButton IsChecked="True">Checked</ToggleButton>
+                <ToggleButton IsEnabled="False">Disabled unchecked</ToggleButton>
+                <ToggleButton IsEnabled="False" IsChecked="True">Disabled checked</ToggleButton>
+                <ToggleButton Theme="{DynamicResource MdToggleButton}">MdToggleButton alias</ToggleButton>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <ControlTheme x:Key="{x:Type ToggleButton}" TargetType="ToggleButton">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="MinWidth" Value="48" />
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeFull}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="Padding" Value="24,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}" />
+        <Setter Property="FontSize" Value="{StaticResource M3LabelLargeFontSize}" />
+        <Setter Property="FontWeight" Value="{StaticResource M3LabelLargeFontWeight}" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="RenderTransform" Value="{x:Null}" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="OuterBorder"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="Transparent">
+                    <Border x:Name="ContainerBorder"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            ClipToBounds="True">
+                        <Grid>
+                            <Border x:Name="StateLayer"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    Background="Transparent"
+                                    Opacity="0"
+                                    IsHitTestVisible="False" />
+                            <ContentPresenter x:Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              Padding="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True"
+                                              IsHitTestVisible="False" />
+                            <m3:InkRipple x:Name="PART_Ripple"
+                                          Brush="{DynamicResource OnSurface}"
+                                          CornerRadius="{TemplateBinding CornerRadius}"
+                                          BaseOpacity="{StaticResource M3StatePressedOpacity}" />
+                        </Grid>
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Unchecked baseline (transparent container, OnSurface label) -->
+        <Style Selector="^:unchecked /template/ Border#ContainerBorder">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^:unchecked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        </Style>
+        <Style Selector="^:unchecked:pointerover /template/ Border#StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:unchecked:pressed /template/ Border#StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}" />
+        </Style>
+
+        <!-- Checked: SecondaryContainer fill, OnSecondaryContainer label -->
+        <Style Selector="^:checked /template/ Border#ContainerBorder">
+            <Setter Property="Background" Value="{DynamicResource SecondaryContainer}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+        </Style>
+        <Style Selector="^:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource OnSecondaryContainer}" />
+        </Style>
+        <Style Selector="^:checked:pointerover /template/ Border#StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:checked:pressed /template/ Border#StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}" />
+        </Style>
+
+        <!-- Ripple brush tracks the active foreground -->
+        <Style Selector="^:checked /template/ m3|InkRipple#PART_Ripple">
+            <Setter Property="Brush" Value="{DynamicResource OnSecondaryContainer}" />
+        </Style>
+
+        <!-- Disabled (unchecked): 38% OnSurface label, 12% Outline border -->
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+        <Style Selector="^:disabled:unchecked /template/ Border#ContainerBorder">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+        </Style>
+
+        <!-- Disabled (checked): 12% OnSurface filled container -->
+        <Style Selector="^:disabled:checked /template/ Border#ContainerBorder">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+        </Style>
+
+        <!-- Suppress state layer when disabled -->
+        <Style Selector="^:disabled /template/ Border#StateLayer">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+    </ControlTheme>
+
+    <!-- Backwards-compatible alias used by BiliLive code that hasn't been migrated yet. -->
+    <ControlTheme x:Key="MdToggleButton" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}" />
+</ResourceDictionary>

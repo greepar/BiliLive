@@ -4,271 +4,205 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
              xmlns:utility="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components.Utility"
-             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="520"
+             mc:Ignorable="d" d:DesignWidth="328" d:DesignHeight="520"
              x:DataType="components:TimePickerViewModel"
-             x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.TimePickerView"
-             ClipToBounds="True">
+             x:Class="BiliLive.Views.MainWindow.Pages.AutoService.Components.TimePickerView">
 
     <Design.DataContext>
         <components:TimePickerViewModel/>
     </Design.DataContext>
 
-    <UserControl.Resources>
-        <utility:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
-        <utility:MathConverter x:Key="MathConverter"/>
+    <Border x:Name="RootCard"
+            Width="328"
+            Padding="24"
+            CornerRadius="28"
+            Background="{DynamicResource SurfaceContainerHigh}"
+            BoxShadow="{StaticResource M3Elevation3}"
+            ClipToBounds="False"
+            RenderTransformOrigin="50%,0%"
+            Opacity="0">
 
-        <Color x:Key="PrimaryColor">#6750A4</Color>
-        <Color x:Key="OnPrimaryColor">#FFFFFF</Color>
-        <Color x:Key="SurfaceContainerHighestColor">#E6E0E9</Color>
-        <Color x:Key="OnSurfaceColor">#1C1B1F</Color>
-        <Color x:Key="OnSurfaceVariantColor">#49454F</Color>
-        <Color x:Key="OutlineColor">#79747E</Color>
+        <Border.RenderTransform>
+            <TransformOperations>scale(0.92) translateY(-12px)</TransformOperations>
+        </Border.RenderTransform>
 
-        <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
-        <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnPrimaryColor}"/>
-        <SolidColorBrush x:Key="SurfaceContainerHighestBrush" Color="{StaticResource SurfaceContainerHighestColor}"/>
-        <SolidColorBrush x:Key="OnSurfaceBrush" Color="{StaticResource OnSurfaceColor}"/>
-        <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="{StaticResource OnSurfaceVariantColor}"/>
-        <SolidColorBrush x:Key="OutlineBrush" Color="{StaticResource OutlineColor}"/>
-    </UserControl.Resources>
+        <Border.Transitions>
+            <Transitions>
+                <DoubleTransition Property="Opacity"
+                                  Duration="{StaticResource M3DurationMedium2}"
+                                  Easing="{StaticResource M3EasingEmphasizedDecelerate}"/>
+                <TransformOperationsTransition Property="RenderTransform"
+                                               Duration="{StaticResource M3DurationMedium4}"
+                                               Easing="{StaticResource M3EasingEmphasizedDecelerate}"/>
+            </Transitions>
+        </Border.Transitions>
 
-    <UserControl.Styles>
-        <Style Selector="Button.ClockTick">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="CornerRadius" Value="20"/>
-        </Style>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto">
 
-        <Style Selector="Button.ClockTick.Selected">
-            <!-- <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/> -->
-            <!-- <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}"/> -->
-            <!-- <Setter Property="FontWeight" Value="Bold"/> -->
-        </Style>
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Text="Select time"
+                       FontSize="{StaticResource M3LabelMediumFontSize}"
+                       FontWeight="{StaticResource M3LabelMediumFontWeight}"
+                       Foreground="{DynamicResource OnSurfaceVariant}"
+                       Margin="0,0,0,20"/>
 
-        <Style Selector="Button.ClockTick:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#406750A4"/>
-        </Style>
+            <!-- Time fields + AM/PM segmented -->
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="8"
+                        Margin="0,0,0,36">
 
-        <Style Selector="Button.ClockTick:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#606750A4"/>
-        </Style>
+                <Button Theme="{StaticResource M3TimeFieldButton}"
+                        Classes.Selected="{Binding IsHourMode}"
+                        Command="{Binding SetModeCommand}"
+                        CommandParameter="Hour"
+                        Content="{Binding DisplayHour, StringFormat='00'}"/>
 
-        <Style Selector="Button.AmPmToggle">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="{StaticResource OnSurfaceVariantBrush}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style Selector="Button.AmPmToggle:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#20000000"/>
-        </Style>
-        <Style Selector="Button.AmPmToggle:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#30000000"/>
-        </Style>
-        <Style Selector="Button.AmPmToggle.Active">
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}"/>
-        </Style>
+                <TextBlock Text=":"
+                           FontSize="57"
+                           Foreground="{DynamicResource OnSurface}"
+                           VerticalAlignment="Center"/>
 
-        <Style Selector="Button.TimeButton">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource OnSurfaceBrush}"/>
-            <Setter Property="FontSize" Value="52"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.25"/>
-                </Transitions>
-            </Setter>
-        </Style>
+                <Button Theme="{StaticResource M3TimeFieldButton}"
+                        Classes.Selected="{Binding IsMinuteMode}"
+                        Command="{Binding SetModeCommand}"
+                        CommandParameter="Minute"
+                        Content="{Binding Minute, StringFormat='00'}"/>
 
-        <Style Selector="Button.TimeButton:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#206750A4"/>
-        </Style>
-
-        <Style Selector="Button.TimeButton:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#406750A4"/>
-        </Style>
-        
-        <Style Selector="Button.TextButton">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Padding" Value="16,8"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="CornerRadius" Value="20"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style Selector="Button.TextButton:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#106750A4"/>
-        </Style>
-        
-        <Style Selector="Button.TextButton:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#206750A4"/>
-        </Style>
-        
-        <Style Selector="Button.TextButton.Accent">
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource OnPrimaryBrush}"/>
-        </Style>
-
-        <Style Selector="Button.TextButton.Accent:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#FF7E65B9"/>
-        </Style>
-
-        <Style Selector="Button.TextButton.Accent:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#FF5A3E8A"/>
-        </Style>
-    </UserControl.Styles>
-
-    <Border CornerRadius="28"
-            Background="Transparent"
-            ClipToBounds="True">
-        <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="12">
-            <TextBlock Grid.Row="0" Text="Select time" FontSize="16" FontWeight="Medium"
-                       Foreground="{StaticResource OnSurfaceVariantBrush}" Margin="12"/>
-            
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="12,0">
-                <!-- 小时分钟 Panel-->
-                <StackPanel Orientation="Horizontal">
-                    
-                    <Button Width="96" Height="80"
-                            Background="{Binding IsHourMode, Converter={StaticResource BoolToBrushConverter}, ConverterParameter='#6750A4,#E6E0E9'}"
-                            Command="{Binding SetModeCommand}" CommandParameter="Hour"
-                            Content="{Binding DisplayHour, StringFormat='00'}"
-                            Foreground="{Binding IsHourMode, Converter={StaticResource BoolToBrushConverter}, ConverterParameter='#FFFFFF,#1C1B1F'}"
-                            Classes="TimeButton"/>
-                    <TextBlock Text=":" FontSize="52" Foreground="{StaticResource OnSurfaceBrush}" VerticalAlignment="Center" Margin="0,0,0,8"/>
-                    <Button Width="96" Height="80"
-                            Background="{Binding IsMinuteMode, Converter={StaticResource BoolToBrushConverter}, ConverterParameter='#6750A4,#E6E0E9'}"
-                            Command="{Binding SetModeCommand}" CommandParameter="Minute"
-                            Content="{Binding Minute, StringFormat='00'}"
-                            Foreground="{Binding IsMinuteMode, Converter={StaticResource BoolToBrushConverter}, ConverterParameter='#FFFFFF,#1C1B1F'}"
-                            Classes="TimeButton"/>
-                </StackPanel>
-                
-                <Border BorderBrush="{StaticResource OutlineBrush}" BorderThickness="1" CornerRadius="8" Height="80">
-                    <StackPanel>
-                        <Button Content="AM" Classes="AmPmToggle"
-                                Command="{Binding SetAmPmCommand}" CommandParameter="AM"
-                                Classes.Active="{Binding IsAm}"
-                                CornerRadius="7,7,0,0"/>
-
-                        <Rectangle Fill="{StaticResource OutlineBrush}" Height="1"/>
-                        
-                        <Button Content="PM" Classes="AmPmToggle"
-                                Command="{Binding SetAmPmCommand}" CommandParameter="PM"
-                                Classes.Active="{Binding !IsAm}"
-                                CornerRadius="0,0,7,7"/>
-                    </StackPanel>
+                <Border BorderBrush="{DynamicResource Outline}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Width="52"
+                        Height="80"
+                        Margin="4,0,0,0"
+                        ClipToBounds="True">
+                    <Grid RowDefinitions="*,1,*">
+                        <Button Grid.Row="0"
+                                Theme="{StaticResource M3SegmentedAmPmButton}"
+                                Classes.Selected="{Binding IsAm}"
+                                Content="AM"
+                                Command="{Binding SetAmPmCommand}"
+                                CommandParameter="AM"/>
+                        <Border Grid.Row="1" Background="{DynamicResource Outline}"/>
+                        <Button Grid.Row="2"
+                                Theme="{StaticResource M3SegmentedAmPmButton}"
+                                Classes.Selected="{Binding !IsAm}"
+                                Content="PM"
+                                Command="{Binding SetAmPmCommand}"
+                                CommandParameter="PM"/>
+                    </Grid>
                 </Border>
             </StackPanel>
-            
-            
-            <Grid Grid.Row="2" Width="260" Height="260" Margin="0,20">
-                <!-- 背景效果 -->
-                <Ellipse Width="400" Height="400"
-                         Fill="{StaticResource PrimaryBrush}"
-                         Opacity="0.1" 
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center">
-                    <Ellipse.Effect>
-                        <BlurEffect Radius="120"/>
-                    </Ellipse.Effect>
-                </Ellipse>
-                
-                <Ellipse Width="260" Height="260"
-                         Fill="{StaticResource SurfaceContainerHighestBrush}">
-                    <Ellipse.Effect>
-                        <DropShadowEffect Color="{StaticResource PrimaryColor}"
-                                          BlurRadius="50"
-                                          Opacity="0.2"/>
-                    </Ellipse.Effect>
-                </Ellipse>
-                
-                <Canvas Background="Transparent" Width="260" Height="260"
+
+            <!-- Dial -->
+            <Grid Grid.Row="2"
+                  Width="256" Height="256"
+                  HorizontalAlignment="Center"
+                  Margin="0,0,0,12">
+
+                <Ellipse Fill="{DynamicResource SurfaceContainerHighest}"/>
+
+                <Canvas Background="Transparent"
+                        Width="256" Height="256"
                         PointerPressed="ClockCanvas_PointerPressed"
                         PointerMoved="ClockCanvas_PointerMoved"
                         PointerReleased="ClockCanvas_PointerReleased">
-                    
-                    <!-- 指针 -->
-                    <Grid Width="2"
-                          Height="{Binding HandLength, Converter={StaticResource MathConverter}, ConverterParameter='P-20'}"
-                          Canvas.Left="129" Canvas.Top="130"
-                          RenderTransformOrigin="0.5, 0"
+
+                    <!--
+                        Hand: 124x48 horizontal grid. The rotation pivot is the
+                        left-middle (CenterX=0, CenterY=24), positioned at the
+                        dial center (128, 128). Stem 100dp + knob 48dp aligned
+                        right means the knob's center sits at x=124-24=100,
+                        i.e. 100dp from the pivot — exactly the radius the
+                        CircularPanel uses for the digits (0.78 * 128 = 99.84).
+                    -->
+                    <Grid Width="124" Height="48"
+                          Canvas.Left="128" Canvas.Top="104"
                           IsHitTestVisible="False">
                         <Grid.RenderTransform>
-                            <RotateTransform Angle="{Binding HandAngle}"/>
+                            <RotateTransform Angle="{Binding HandAngle}" CenterX="0" CenterY="24">
+                                <RotateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Angle"
+                                                          Duration="{StaticResource M3DurationShort4}"
+                                                          Easing="{StaticResource M3EasingStandard}"/>
+                                    </Transitions>
+                                </RotateTransform.Transitions>
+                            </RotateTransform>
                         </Grid.RenderTransform>
-  
-                        <Rectangle Fill="{StaticResource PrimaryBrush}"/>
-    
-                        <Ellipse Width="40" Height="40"
-                                 Fill="{StaticResource PrimaryBrush}"
-                                 VerticalAlignment="Bottom"
-                                 HorizontalAlignment="Center"
-                                 Margin="0,0,0,-12"/>
+
+                        <!-- Stem: 100dp from the pivot (left edge) up to the knob -->
+                        <Rectangle Width="100" Height="2"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Fill="{DynamicResource Primary}"/>
+
+                        <!-- Knob: 48dp circle at the far end (center sits at x=100) -->
+                        <Ellipse Width="48" Height="48"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Center"
+                                 Fill="{DynamicResource Primary}"/>
                     </Grid>
-                    
-                    <Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryBrush}" Canvas.Left="126" Canvas.Top="126" IsHitTestVisible="False"/>
+
+                    <!-- Center dot -->
+                    <Ellipse Width="8" Height="8"
+                             Canvas.Left="124" Canvas.Top="124"
+                             Fill="{DynamicResource Primary}"
+                             IsHitTestVisible="False"/>
                 </Canvas>
-                
-                    <!-- 小时刻度 -->
-                 <ItemsControl ItemsSource="{Binding HourTicks}" IsVisible="{Binding IsHourMode}">
-                    <ItemsControl.RenderTransform>
-                        <TranslateTransform X="4" Y="4" />
-                    </ItemsControl.RenderTransform>
+
+                <!-- Hour ticks (1..12) -->
+                <ItemsControl ItemsSource="{Binding HourTicks}"
+                              IsVisible="{Binding IsHourMode}"
+                              IsHitTestVisible="False">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <utility:CircularPanel RadiusFactor="0.8" IndexPositionOffset="1" />
+                            <utility:CircularPanel RadiusFactor="0.78" IndexPositionOffset="1"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="utility:ClockTickViewModel">
-                            <Button Content="{Binding Display}" Classes="ClockTick" Classes.Selected="{Binding IsSelected}"
-                                    Command="{Binding $parent[UserControl].((components:TimePickerViewModel)DataContext).SelectTimeCommand}"
-                                    CommandParameter="{Binding}" />
+                            <Button Theme="{StaticResource M3ClockTick}"
+                                    Classes.Selected="{Binding IsSelected}"
+                                    Content="{Binding Display}"
+                                    IsHitTestVisible="False"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                
-                <!-- 分钟刻度 -->
-                <ItemsControl ItemsSource="{Binding MinuteTicks}" IsVisible="{Binding IsMinuteMode}">
-                    <ItemsControl.RenderTransform>
-                        <TranslateTransform X="4" Y="4" />
-                    </ItemsControl.RenderTransform>
+
+                <!-- Minute ticks (0,5,10,...,55) -->
+                <ItemsControl ItemsSource="{Binding MinuteTicks}"
+                              IsVisible="{Binding IsMinuteMode}"
+                              IsHitTestVisible="False">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <utility:CircularPanel RadiusFactor="0.8" />
+                            <utility:CircularPanel RadiusFactor="0.78"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="utility:ClockTickViewModel">
-                            <Button Content="{Binding Display}" Classes="ClockTick" Classes.Selected="{Binding IsSelected}"
-                                    Command="{Binding $parent[UserControl].((components:TimePickerViewModel)DataContext).SelectTimeCommand}"
-                                    CommandParameter="{Binding}" />
+                            <Button Theme="{StaticResource M3ClockTick}"
+                                    Classes.Selected="{Binding IsSelected}"
+                                    Content="{Binding Display}"
+                                    IsHitTestVisible="False"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
-            
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,0,12,12">
-                <Button Content="Cancel" Command="{Binding CancelCommand}" Classes="TextButton"/>
-                <Button Content="OK" Command="{Binding ConfirmCommand}" Classes="TextButton Accent"/>
+
+            <!-- Actions -->
+            <StackPanel Grid.Row="3"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+                <Button Classes="Text"
+                        Content="Cancel"
+                        Command="{Binding CancelCommand}"/>
+                <Button Classes="Text"
+                        Content="OK"
+                        Command="{Binding ConfirmCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

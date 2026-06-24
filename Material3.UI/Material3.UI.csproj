@@ -4,6 +4,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,14 +12,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Themes\**\*.axaml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Material3Res.axaml.cs">
-        <DependentUpon>Material3Res.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
+        <Compile Update="Material3Theme.axaml.cs">
+            <DependentUpon>Material3Theme.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 </Project>

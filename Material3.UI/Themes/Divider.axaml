@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="https://github.com/greepar/md3">
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="20">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <m3:Divider Orientation="Vertical" Width="2" Height="80"
+                            Brush="{DynamicResource OutlineVariant}"/>
+                <m3:Divider Orientation="Horizontal" Width="200" Height="2"
+                            Brush="{DynamicResource OutlineVariant}"/>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <ControlTheme x:Key="{x:Type m3:Divider}" TargetType="m3:Divider">
+        <Setter Property="Brush" Value="{DynamicResource OutlineVariant}"/>
+        <Setter Property="Thickness" Value="1"/>
+    </ControlTheme>
+</ResourceDictionary>

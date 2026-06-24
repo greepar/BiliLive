@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 using BiliLive.Utils;
 using BiliLive.Views.MainWindow.Pages.HomePage.Components;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -209,7 +209,7 @@ public partial class HomeViewModel : ViewModelBase
             // var clipboard = ClipboardHelper.Get();
             var clipboard = AvaloniaUtils.GetClipboard();
             await clipboard.SetTextAsync(text);
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已复制{typeName}到剪贴板", Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已复制{typeName}到剪贴板", Geometry.Parse(Icons.Check)));
         }
         catch (Exception ex)
         {
@@ -230,7 +230,7 @@ public partial class HomeViewModel : ViewModelBase
             await ShowWindowHelper.ShowErrorAsync("修改直播间标题失败:" + ex.Message);
             return;
         }
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间标题成功", Geometry.Parse(MdIcons.Check)));
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间标题成功", Geometry.Parse(Icons.Check)));
         _roomTitle = InputRoomTitle;
         OnPropertyChanged(nameof(IsRoomTitleChanged));
     }
@@ -247,7 +247,7 @@ public partial class HomeViewModel : ViewModelBase
             await ShowWindowHelper.ShowErrorAsync("修改直播间标题失败:" + ex.Message);
         }
 
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间分区成功", Geometry.Parse(MdIcons.Check)));
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("修改直播间分区成功", Geometry.Parse(Icons.Check)));
     }
     
     [RelayCommand]
@@ -259,7 +259,7 @@ public partial class HomeViewModel : ViewModelBase
         {
             var fileBytes = await File.ReadAllBytesAsync(filePath);
             await _biliService.ChangeRoomCoverAsync(fileBytes);
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("更换封面成功",Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("更换封面成功",Geometry.Parse(Icons.Check)));
             var roomInfo = await _biliService.GetRoomInfoAsync();
             using var rcMs = new MemoryStream(roomInfo.RoomCover);
             RoomCover?.Dispose();

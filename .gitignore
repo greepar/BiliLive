@@ -1,6 +1,9 @@
 /.idea/.idea.BiliLive/
-/BiliLive/obj/
 /BiliLive.sln.DotSettings.user
-/BiliLive.Core/obj/
-/BiliLive.Browser/obj/
-/Material3.UI/obj/
+
+# Build output
+**/bin/
+**/obj/
+
+# External repo clone
+/Avalonia/

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BiliLive.Core.Interface;
 using BiliLive.Models;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 using BiliLive.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -49,6 +49,7 @@ public partial class AccountsViewModel : ViewModelBase
                 RefreshUserFaceAsync(General.State.UserFaceByte);
             }
         };
+
     }
     
     public AccountsViewModel(IBiliService biliService) : this()
@@ -70,7 +71,7 @@ public partial class AccountsViewModel : ViewModelBase
             // ignored
         }
     }
-    
+
     [RelayCommand]
     private async Task LoginStatusConverter()
     {
@@ -147,7 +148,7 @@ public partial class AccountsViewModel : ViewModelBase
                 General.ClearState();
                 _ = ConfigManager.SaveConfigAsync(ConfigType.BiliCookie, null);
                 _isConfirmed = false;
-                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已删除当前账号",Geometry.Parse(MdIcons.Check)));
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已删除当前账号",Geometry.Parse(Icons.Check)));
                 break;
             case true when !_isConfirmed:
                 _isConfirmed = true;

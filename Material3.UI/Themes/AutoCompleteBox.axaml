@@ -1,0 +1,170 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:generic="using:System.Collections.Generic">
+
+    <!--
+        Material 3 AutoCompleteBox ControlTheme.
+
+        Composition:
+          * Inner TextBox (PART_TextBox) reuses the M3 TextBox ControlTheme so the
+            field looks identical to a standalone <TextBox>. Filled by default;
+            apply Classes="Outlined" on the AutoCompleteBox to forward the variant.
+          * Popup (PART_Popup) uses SurfaceContainer with M3ShapeExtraSmall corners
+            and Elevation 2 to match the M3 menu / suggestion-list spec.
+          * Suggestion items get an 8% OnSurface hover state layer.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="16" Width="280">
+                <AutoCompleteBox PlaceholderText="State">
+                    <AutoCompleteBox.ItemsSource>
+                        <generic:List x:TypeArguments="x:String">
+                            <x:String>Alabama</x:String>
+                            <x:String>Alaska</x:String>
+                            <x:String>Arizona</x:String>
+                            <x:String>Arkansas</x:String>
+                            <x:String>California</x:String>
+                            <x:String>Colorado</x:String>
+                            <x:String>Connecticut</x:String>
+                            <x:String>Delaware</x:String>
+                        </generic:List>
+                    </AutoCompleteBox.ItemsSource>
+                </AutoCompleteBox>
+
+                <AutoCompleteBox Classes="Outlined" PlaceholderText="State (outlined)">
+                    <AutoCompleteBox.ItemsSource>
+                        <generic:List x:TypeArguments="x:String">
+                            <x:String>Florida</x:String>
+                            <x:String>Georgia</x:String>
+                            <x:String>Hawaii</x:String>
+                        </generic:List>
+                    </AutoCompleteBox.ItemsSource>
+                </AutoCompleteBox>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- ListBoxItem theme used inside the suggestions popup. -->
+    <ControlTheme x:Key="M3AutoCompleteListBoxItem" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmall}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_StateLayer"
+                            Background="{DynamicResource OnSurface}"
+                            Opacity="0"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                    <Border Name="PART_Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Padding="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateFocusOpacity}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type AutoCompleteBox}" TargetType="AutoCompleteBox">
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource OnSurfaceVariant}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmallTop}" />
+        <Setter Property="Padding" Value="16,24,16,8" />
+        <Setter Property="MinHeight" Value="56" />
+        <Setter Property="MaxDropDownHeight" Value="320" />
+        <Setter Property="FontSize" Value="16" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_LayoutRoot">
+                    <!-- The inner TextBox automatically inherits the M3 TextBox ControlTheme.
+                         We pass through PlaceholderText / chrome bindings; the M3 theme handles
+                         the floating label, underline and focus animation. -->
+                    <TextBox Name="PART_TextBox"
+                             PlaceholderText="{TemplateBinding PlaceholderText}"
+                             Foreground="{TemplateBinding Foreground}"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}"
+                             Padding="{TemplateBinding Padding}"
+                             FontSize="{TemplateBinding FontSize}"
+                             MinHeight="{TemplateBinding MinHeight}"
+                             CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
+                             ClearSelectionOnLostFocus="{TemplateBinding ClearSelectionOnLostFocus}"
+                             DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}"
+                             MaxLength="{TemplateBinding MaxLength}"
+                             InnerLeftContent="{TemplateBinding InnerLeftContent}"
+                             InnerRightContent="{TemplateBinding InnerRightContent}"
+                             Margin="0" />
+
+                    <Popup Name="PART_Popup"
+                           WindowManagerAddShadowHint="False"
+                           MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                           MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                           IsLightDismissEnabled="True"
+                           PlacementTarget="{TemplateBinding}">
+                        <Border Name="PART_SuggestionsContainer"
+                                Background="{DynamicResource SurfaceContainer}"
+                                BorderBrush="{DynamicResource OutlineVariant}"
+                                BorderThickness="0"
+                                CornerRadius="{StaticResource M3ShapeExtraSmall}"
+                                BoxShadow="{StaticResource M3Elevation2}"
+                                Padding="0"
+                                Margin="0,4,0,4">
+                            <ListBox Name="PART_SelectingItemsControl"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     ItemTemplate="{TemplateBinding ItemTemplate}"
+                                     ItemContainerTheme="{StaticResource M3AutoCompleteListBoxItem}"
+                                     Margin="0,4"
+                                     ScrollViewer.IsScrollChainingEnabled="False" />
+                        </Border>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Forward the Outlined variant down to the inner TextBox so the field renders
+             the outlined border style while keeping AutoCompleteBox-level setters consistent.
+             To switch the inner TextBox to outlined, set Classes="Outlined" on the AutoCompleteBox
+             AND ensure the inner TextBox inherits via Classes binding (handled by Avalonia). -->
+        <Style Selector="^.Outlined">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Outline}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmall}" />
+            <Setter Property="Padding" Value="16,8" />
+        </Style>
+
+        <!-- Disabled state simply lets the inner TextBox handle its own disabled visuals. -->
+        <Style Selector="^:disabled /template/ TextBox#PART_TextBox">
+            <Setter Property="IsEnabled" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

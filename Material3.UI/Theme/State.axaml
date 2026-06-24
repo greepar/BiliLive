@@ -1,0 +1,30 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Material 3 state layer opacity tokens.
+        Reference: https://m3.material.io/foundations/interaction/states/applying-states.
+
+        State layers are tinted overlays placed on top of a control to
+        communicate hover, focus, pressed, and drag states. Disabled containers
+        and content use lower opacity to look inert.
+    -->
+
+    <!-- Interactive state layer opacities -->
+    <x:Double x:Key="M3StateHoverOpacity">0.08</x:Double>
+    <x:Double x:Key="M3StateFocusOpacity">0.10</x:Double>
+    <x:Double x:Key="M3StatePressedOpacity">0.10</x:Double>
+    <x:Double x:Key="M3StateDraggedOpacity">0.16</x:Double>
+
+    <!-- Disabled state opacities -->
+    <x:Double x:Key="M3StateDisabledContentOpacity">0.38</x:Double>
+    <x:Double x:Key="M3StateDisabledContainerOpacity">0.12</x:Double>
+
+    <!-- Aliases used by existing controls -->
+    <x:Double x:Key="MdSysStateHoverOpacity">0.08</x:Double>
+    <x:Double x:Key="MdSysStateFocusOpacity">0.10</x:Double>
+    <x:Double x:Key="MdSysStatePressedOpacity">0.10</x:Double>
+    <x:Double x:Key="MdSysStateDraggedOpacity">0.16</x:Double>
+    <x:Double x:Key="MdSysStateDisabledContentOpacity">0.38</x:Double>
+    <x:Double x:Key="MdSysStateDisabledContainerOpacity">0.12</x:Double>
+
+</ResourceDictionary>

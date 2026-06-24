@@ -1,0 +1,236 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="using:Avalonia.Controls.Converters">
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24" Width="360">
+            <StackPanel Spacing="16">
+                <ProgressBar Value="0" />
+                <ProgressBar Value="35" />
+                <ProgressBar Value="75" />
+                <ProgressBar Value="100" />
+                <ProgressBar IsIndeterminate="True" />
+                <StackPanel Orientation="Horizontal" Spacing="24" Height="120">
+                    <ProgressBar Orientation="Vertical" Value="40" />
+                    <ProgressBar Orientation="Vertical" IsIndeterminate="True" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <converters:StringFormatConverter x:Key="M3ProgressBarStringFormatConverter" />
+
+    <!--
+        Material 3 Linear Progress Indicator.
+        Spec: https://m3.material.io/components/progress-indicators/specs
+
+        Default height 4 px, fully rounded.
+        Active fill = Primary, track = SecondaryContainer.
+        Stop indicator: a 4 x 4 Primary dot at the trailing end of the bar.
+        4 px gap between active fill and the inactive track (visual approximation
+        via a Surface-tinted spacer rendered at the trailing edge of the active fill).
+        Indeterminate: a single segment translates from -100% to 100% on a 2 s loop,
+        approximating the M3 chasing-arc motion.
+
+        Avalonia template parts: PART_Indicator (active fill, width set by control),
+        PART_Track (inactive container).
+    -->
+
+    <ControlTheme x:Key="{x:Type ProgressBar}" TargetType="ProgressBar">
+        <Setter Property="Foreground" Value="{DynamicResource Primary}" />
+        <Setter Property="Background" Value="{DynamicResource SecondaryContainer}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeFull}" />
+        <Setter Property="MinHeight" Value="4" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+
+        <Setter Property="Template">
+            <ControlTemplate TargetType="ProgressBar">
+                <Border x:Name="ProgressBarRoot"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        ClipToBounds="False">
+                    <Panel>
+
+                        <!-- Inactive track. Named PART_Track for clarity; Avalonia ProgressBar
+                             does not require this part by name, but documenting the role. -->
+                        <Border x:Name="PART_Track"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+
+                        <!-- Stop indicator: 4 x 4 Primary dot at the trailing end of the bar.
+                             Hidden while indeterminate. -->
+                        <Border x:Name="StopIndicator"
+                                Width="4" Height="4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                CornerRadius="{StaticResource M3ShapeFull}"
+                                Background="{TemplateBinding Foreground}" />
+
+                        <!-- Determinate active layer. -->
+                        <Panel x:Name="DeterminateRoot" Opacity="1">
+                            <Panel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="{StaticResource M3DurationShort2}"
+                                                      Easing="{StaticResource M3EasingStandard}" />
+                                </Transitions>
+                            </Panel.Transitions>
+
+                            <!-- PART_Indicator is the active fill. Avalonia sets its
+                                 Width (horizontal) or Height (vertical) based on Value. -->
+                            <Border x:Name="PART_Indicator"
+                                    Margin="{TemplateBinding Padding}"
+                                    Background="{TemplateBinding Foreground}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" />
+                        </Panel>
+
+                        <!-- Indeterminate active layer: a single chasing segment. -->
+                        <Panel x:Name="IndeterminateRoot"
+                               Opacity="0"
+                               ClipToBounds="True">
+                            <Panel.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="{StaticResource M3DurationShort2}"
+                                                      Easing="{StaticResource M3EasingStandard}" />
+                                </Transitions>
+                            </Panel.Transitions>
+                            <Border x:Name="IndeterminateIndicator"
+                                    Background="{TemplateBinding Foreground}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" />
+                        </Panel>
+
+                        <!-- Optional progress text overlay. -->
+                        <LayoutTransformControl x:Name="PART_LayoutTransformControl"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{TemplateBinding ShowProgressText}">
+                            <TextBlock Foreground="{DynamicResource OnSurface}">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource M3ProgressBarStringFormatConverter}">
+                                        <TemplateBinding Property="ProgressTextFormat" />
+                                        <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <TemplateBinding Property="Percentage" />
+                                        <TemplateBinding Property="Minimum" />
+                                        <TemplateBinding Property="Maximum" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </LayoutTransformControl>
+
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Determinate: PART_Indicator is left/bottom anchored. -->
+        <Style Selector="^:horizontal /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="^:vertical /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+        </Style>
+
+        <!-- Default sizing per orientation. M3 default linear thickness is 4. -->
+        <Style Selector="^:horizontal">
+            <Setter Property="MinWidth" Value="200" />
+            <Setter Property="MinHeight" Value="4" />
+        </Style>
+        <Style Selector="^:vertical">
+            <Setter Property="MinWidth" Value="4" />
+            <Setter Property="MinHeight" Value="200" />
+        </Style>
+
+        <!-- Vertical orientation: rotate the stop indicator to the bottom of the bar
+             (which is the trailing end for a vertical bar). -->
+        <Style Selector="^:vertical /template/ Border#StopIndicator">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <!-- Vertical text rotation. -->
+        <Style Selector="^:vertical /template/ LayoutTransformControl#PART_LayoutTransformControl">
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="90" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Hide the stop indicator while the bar is indeterminate. -->
+        <Style Selector="^:indeterminate /template/ Border#StopIndicator">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+        <!-- Cross-fade between determinate and indeterminate roots. -->
+        <Style Selector="^:indeterminate /template/ Panel#DeterminateRoot">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="^:indeterminate /template/ Panel#IndeterminateRoot">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+
+        <!-- Indeterminate sizing: segment is ~40% of the bar. -->
+        <Style Selector="^:horizontal /template/ Border#IndeterminateIndicator">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Width" Value="{Binding $parent[ProgressBar].TemplateSettings.ContainerWidth}" />
+        </Style>
+        <Style Selector="^:vertical /template/ Border#IndeterminateIndicator">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Height" Value="{Binding $parent[ProgressBar].TemplateSettings.ContainerWidth}" />
+        </Style>
+
+        <!-- Indeterminate animation: one chasing segment translating from
+             ContainerAnimationStartPosition to ContainerAnimationEndPosition over 2 s. -->
+        <Style Selector="^:horizontal:indeterminate /template/ Border#IndeterminateIndicator">
+            <Style.Animations>
+                <Animation IterationCount="Infinite" Duration="0:0:2" Easing="{StaticResource M3EasingStandard}">
+                    <KeyFrame KeyTime="0:0:0">
+                        <Setter Property="TranslateTransform.X" Value="{Binding $parent[ProgressBar].TemplateSettings.ContainerAnimationStartPosition}" />
+                    </KeyFrame>
+                    <KeyFrame KeyTime="0:0:2">
+                        <Setter Property="TranslateTransform.X" Value="{Binding $parent[ProgressBar].TemplateSettings.ContainerAnimationEndPosition}" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="^:vertical:indeterminate /template/ Border#IndeterminateIndicator">
+            <Style.Animations>
+                <Animation IterationCount="Infinite" Duration="0:0:2" Easing="{StaticResource M3EasingStandard}">
+                    <KeyFrame KeyTime="0:0:0">
+                        <Setter Property="TranslateTransform.Y" Value="{Binding $parent[ProgressBar].TemplateSettings.ContainerAnimationStartPosition}" />
+                    </KeyFrame>
+                    <KeyFrame KeyTime="0:0:2">
+                        <Setter Property="TranslateTransform.Y" Value="{Binding $parent[ProgressBar].TemplateSettings.ContainerAnimationEndPosition}" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+
+        <!-- Disabled state: 12% OnSurface track, 38% OnSurface active fill. -->
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ Border#PART_Track">
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+            </Style>
+            <Style Selector="^ /template/ Border#PART_Indicator">
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+            </Style>
+            <Style Selector="^ /template/ Border#StopIndicator">
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+            </Style>
+            <Style Selector="^ /template/ Border#IndeterminateIndicator">
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

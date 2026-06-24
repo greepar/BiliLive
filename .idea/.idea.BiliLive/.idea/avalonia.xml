@@ -16,6 +16,7 @@
         <entry key="BiliLive/Resources/Themes/MdCheckBox.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdNotification.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/MdToggleButton.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="BiliLive/Resources/Themes/MdWindowDecorations.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Resources/Themes/PageSwitchButton.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccManager.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="BiliLive/Views/AccountWindow/AccountPage.axaml" value="BiliLive/BiliLive.csproj" />
@@ -70,7 +71,10 @@
         <entry key="Material3.UI/Material3Res.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="Material3.UI/Material3res.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="Material3.UI/MdColors.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Theme/Colors.axaml" value="BiliLive/BiliLive.csproj" />
         <entry key="Material3.UI/Themes/Material3Theme.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Themes/Menu.axaml" value="BiliLive/BiliLive.csproj" />
+        <entry key="Material3.UI/Themes/WindowDecorations.axaml" value="BiliLive/BiliLive.csproj" />
       </map>
     </option>
   </component>

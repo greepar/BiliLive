@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BiliLive.Models;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 using BiliLive.Views.MainWindow;
 using CommunityToolkit.Mvvm.Messaging;
 
@@ -59,7 +59,7 @@ public static class ConfigManager
         }
         catch (JsonException)
         {
-            Dispatcher.UIThread.Invoke(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("配置文件损坏，已重置为默认配置", Geometry.Parse(MdIcons.Error))); });
+            Dispatcher.UIThread.Invoke(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("配置文件损坏，已重置为默认配置", Geometry.Parse(Icons.Error))); });
             var config = new AppConfig();
             var json = JsonSerializer.Serialize(config, SourceGenerateContext.Default.AppConfig);
             await File.WriteAllTextAsync(ConfigFilePath, json);

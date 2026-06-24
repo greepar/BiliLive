@@ -1,9 +1,9 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.HomePage"
-             xmlns:resources="clr-namespace:BiliLive.Resources"
+             xmlns:m3="https://github.com/greepar/md3"
              xmlns:converters="clr-namespace:BiliLive.Converters"
              xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.HomePage.Components"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
@@ -83,7 +83,7 @@
                                         Height="30" Width="30"
                                         Command="{Binding CopyTextCommand}"
                                         CommandParameter="{x:Static vm:CopyTarget.RoomUrl}">
-                                    <SvgBox PathData="{resources:Geometry {x:Static resources:MdIcons.Copy}}"
+                                    <m3:SvgBox PathData="{m3:Geometry {x:Static m3:Icons.Copy}}"
                                             Fill="{DynamicResource OnSurface}"
                                             Width="15" Height="15"/>
                                 </Button>
@@ -119,20 +119,24 @@
                     
                     <Grid.Styles>
                         <Style Selector="Button.copy">
+                            <Setter Property="RenderTransform" Value="{x:Null}"/>
+                        </Style>
+
+                        <Style Selector="Button.copy /template/ Border#PartContainer">
+                            <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
                             <Setter Property="Transitions">
                                 <Transitions>
-                                    <BrushTransition Property="Background" Duration="0.3"/>
+                                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
                                 </Transitions>
                             </Setter>
                         </Style>
-                        
-                        <Style Selector="Button.copy:pressed">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="RenderTransform" Value="{x:Null}"/>
+
+                        <Style Selector="Button.copy:pointerover /template/ Border#PartContainer">
+                            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHigh}"/>
                         </Style>
                         
-                        <Style Selector="Button.copy:pressed /template/ ContentPresenter">
-                            <Setter Property="Background" Value="Transparent"/>
+                        <Style Selector="Button.copy:pressed /template/ Border#PartContainer">
+                            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHigh}"/>
                         </Style>
                     </Grid.Styles>
                     
@@ -236,7 +240,7 @@
                                                     <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
                                                 </Transitions>
                                             </Button.Transitions>
-                                            <SvgBox Height="16" Width="16" PathData="{resources:Geometry {x:Static resources:MdIcons.Check}}"/>
+                                            <m3:SvgBox Height="16" Width="16" PathData="{m3:Geometry {x:Static m3:Icons.Check}}"/>
                                         </Button>
                                     </Grid>
                                     <Button Grid.Column="1" Height="34"
@@ -282,8 +286,8 @@
                                                             </Style.Animations>
                                                         </Style>
                                                     </Border.Styles>
-                                                    <Border ClipToBounds="True" CornerRadius="10"
-                                                            Height="193" Width="329" Opacity="0">
+                                                    <Border ClipToBounds="True" CornerRadius="20"
+                                                            Height="330" Width="430" Opacity="0">
                                                         <components:AreaSelectorView DataContext="{Binding  AreaSelectorVm}"/>
                                                 </Border>
                                                 </Border>
@@ -292,7 +296,7 @@
                                         
                                         <StackPanel Spacing="3" Orientation="Horizontal">
                                             <StackPanel Orientation="Horizontal">
-                                                <SvgBox Height="16" Margin="0 2 2 2" PathData="{resources:Geometry {x:Static resources:MdIcons.Areas}}"/>
+                                                <m3:SvgBox Height="16" Margin="0 2 2 2" PathData="{m3:Geometry {x:Static m3:Icons.Areas}}"/>
                                                 <TextBlock FontSize="12" VerticalAlignment="Center">分区</TextBlock>
                                             </StackPanel>
                                         </StackPanel>
@@ -304,29 +308,37 @@
                         <StackPanel Margin="0 10 0 4" Spacing="5">
                             <Grid >
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
-                                        Background="{DynamicResource Surface}"
+                                        Theme="{StaticResource MdButton}"
+                                        Foreground="{DynamicResource OnSurface}"
+                                        Background="{DynamicResource SurfaceContainer}"
                                         Command="{Binding CopyTextCommand}"
                                         CommandParameter="{x:Static vm:CopyTarget.StreamUrl}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
-                                               Margin="60 0 0 0" Text="{Binding ApiUrl}"/>
+                                               Foreground="{DynamicResource OnSurfaceVariant}"
+                                               Margin="74 0 10 0" Text="{Binding ApiUrl}"/>
                                 </Button>
-                                <Border Margin="2 0 0 0" CornerRadius="12" Height="26"
-                                        Background="{DynamicResource SurfaceContainerHighest}" HorizontalAlignment="Left">
-                                    <TextBlock Margin="5" VerticalAlignment="Center" FontSize="12">推流地址:</TextBlock>
+                                <Border Margin="3 0 0 0" CornerRadius="11" Height="24"
+                                        Background="{DynamicResource SurfaceContainerHigh}" HorizontalAlignment="Left">
+                                    <TextBlock Margin="8 0" VerticalAlignment="Center" FontSize="12"
+                                               Foreground="{DynamicResource OnSurfaceVariant}">推流地址:</TextBlock>
                                 </Border>
                             </Grid>
                     
                             <Grid>
                                 <Button Classes="copy" Height="30" CornerRadius="12" HorizontalAlignment="Stretch"
-                                        Background="{DynamicResource Surface}"
+                                        Theme="{StaticResource MdButton}"
+                                        Foreground="{DynamicResource OnSurface}"
+                                        Background="{DynamicResource SurfaceContainer}"
                                         Command="{Binding CopyTextCommand}"
                                         CommandParameter="{x:Static vm:CopyTarget.StreamKey}">
                                     <TextBlock VerticalAlignment="Center" FontSize="12"
-                                               Margin="60 0 0 0" Text="{Binding MaskedStreamKey}"></TextBlock>
+                                               Foreground="{DynamicResource OnSurfaceVariant}"
+                                               Margin="74 0 10 0" Text="{Binding MaskedStreamKey}"></TextBlock>
                                 </Button>
-                                <Border Margin="2 0 0 0" CornerRadius="12" Height="26"
-                                        Background="{DynamicResource SurfaceContainerHighest}" HorizontalAlignment="Left">
-                                    <TextBlock Margin="5" VerticalAlignment="Center" FontSize="12">推流密钥:</TextBlock>
+                                <Border Margin="3 0 0 0" CornerRadius="11" Height="24"
+                                        Background="{DynamicResource SurfaceContainerHigh}" HorizontalAlignment="Left">
+                                    <TextBlock Margin="8 0" VerticalAlignment="Center" FontSize="12"
+                                               Foreground="{DynamicResource OnSurfaceVariant}">推流密钥:</TextBlock>
                                 </Border>
                             </Grid>
                         </StackPanel>
@@ -351,7 +363,7 @@
                         <Grid Margin="10" 
                               VerticalAlignment="Center"
                               ColumnDefinitions="Auto,Auto,*,Auto">
-                            <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Viewers}}"/>
+                            <m3:SvgBox Grid.Column="0" Height="15" PathData="{m3:Geometry {x:Static m3:Icons.Viewers}}"/>
                             <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="观看人数"/>
                             <!-- 占位 grid 2 -->
                             <TextBlock Grid.Column="3" Text="{Binding Views}" HorizontalAlignment="Center"/>
@@ -363,7 +375,7 @@
                         <Grid Margin="10" 
                               VerticalAlignment="Center"
                               ColumnDefinitions="Auto,Auto,*,Auto">
-                            <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Comments}}"/>
+                            <m3:SvgBox Grid.Column="0" Height="15" PathData="{m3:Geometry {x:Static m3:Icons.Comments}}"/>
                             <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="收到弹幕"/>
                             <!-- 占位 grid 2 -->
                             <TextBlock Grid.Column="3" Text="{Binding Danmakus}" HorizontalAlignment="Center"/>
@@ -375,7 +387,7 @@
                         <Grid Margin="10" 
                               VerticalAlignment="Center"
                               ColumnDefinitions="Auto,Auto,*,Auto">
-                            <SvgBox Grid.Column="0" Height="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Gift}}"/>
+                            <m3:SvgBox Grid.Column="0" Height="15" PathData="{m3:Geometry {x:Static m3:Icons.Gift}}"/>
                             <TextBlock Margin="5 0 0 0" Grid.Column="1" Text="收到礼物"/>
                             <!-- 占位 grid 2 -->
                             <TextBlock Grid.Column="3" Text="{Binding Gifts}" HorizontalAlignment="Center"/>

@@ -5,7 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
-namespace Material3.UI.Controls.CustomControl;
+namespace Material3.UI.Controls;
 
 public enum RippleStackingMode
 {

@@ -12,13 +12,12 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
     public partial class TimePickerViewModel : ObservableObject
     {
         private bool _isDragging;
-        private const double ClockCenter = 130;
+        private const double ClockCenter = 128;
 
         public event Action<DateTime?>? RequestClose;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsMinuteMode))]
-        [NotifyPropertyChangedFor(nameof(HandLength))]
         private bool _isHourMode = true;
 
         public bool IsMinuteMode => !IsHourMode;
@@ -34,8 +33,6 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
 
         [ObservableProperty]
         private double _handAngle;
-
-        public double HandLength => IsHourMode ? 85 : 110;
 
         public ObservableCollection<ClockTickViewModel> HourTicks { get; }
         public ObservableCollection<ClockTickViewModel> MinuteTicks { get; }
@@ -170,7 +167,7 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
                 logicalAngle += 360;
             }
             
-            HandAngle = (logicalAngle + 180) % 360;
+            HandAngle = logicalAngle - 90;
             
             if (IsHourMode)
             {
@@ -199,7 +196,7 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
                 logicalAngle = Minute * 6;
             }
             
-            HandAngle = (logicalAngle + 180) % 360;
+            HandAngle = logicalAngle - 90;
         }
 
       private void UpdateSelectedTick()

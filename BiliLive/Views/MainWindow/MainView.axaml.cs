@@ -38,6 +38,7 @@ public partial class MainView : UserControl
             if (_isTargetVisible)
             {
                 LoginBorder.IsVisible = true;
+                ContentBorder.Effect = new BlurEffect { Radius = 5 };
                 _isTargetVisible = false;
 
                 var opacityAnim = new Animation
@@ -70,7 +71,7 @@ public partial class MainView : UserControl
                             Cue = new Cue(1d),
                             Setters =
                             {
-                                new Setter(TranslateTransform.XProperty, 0.0)
+                                new Setter(TranslateTransform.YProperty, 0.0)
                             }
                         }
                     }
@@ -99,7 +100,7 @@ public partial class MainView : UserControl
                             Setters =
                             {
                                 new Setter(OpacityProperty, 0.0),
-                                new Setter(TranslateTransform.XProperty, -50.0)
+                                new Setter(TranslateTransform.YProperty, 18.0)
                             }
                         }
                     }
@@ -108,6 +109,7 @@ public partial class MainView : UserControl
 
                 // 只有在动画正常完成后才隐藏
                 if (!_animationCts.Token.IsCancellationRequested) LoginBorder.IsVisible = false;
+                ContentBorder.Effect = null;
             }
         }
         catch (OperationCanceledException)
@@ -121,6 +123,10 @@ public partial class MainView : UserControl
         finally
         {
             LoginBorder.IsHitTestVisible = true;
+            if (_isTargetVisible)
+            {
+                ContentBorder.Effect = null;
+            }
         }
     }
 

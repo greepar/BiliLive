@@ -1,12 +1,12 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mainWindow="clr-namespace:BiliLive.Views.MainWindow"
-             xmlns:res="clr-namespace:BiliLive.Resources"
+             xmlns:m3="https://github.com/greepar/md3"
              xmlns:converter="clr-namespace:BiliLive.Views.MainWindow.Converter"
              xmlns:md3="https://github.com/greepar/md3"
-             FontFamily="{StaticResource NotoRegular}"
+             FontFamily="{StaticResource Xiaolai}"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="mainWindow:MainViewModel"
              x:Class="BiliLive.Views.MainWindow.MainView">
@@ -16,7 +16,6 @@
     </Design.DataContext>
 
 
-    <!-- 总背景：上方标题栏 + 下方左右分栏 -->
     <Grid Background="{DynamicResource Surface}" RowDefinitions="45,*">
 
         <!-- 顶部统一标题栏：和侧边栏同色，自然延伸成反 L -->
@@ -33,7 +32,7 @@
                        FontWeight="Regular"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource OnSurface}"
-                       Text="{Binding CurrentTime}"/>
+                       Text="BiliLive"/>
         </Grid>
 
         <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
@@ -54,7 +53,7 @@
 
                 <Grid HorizontalAlignment="Stretch">
                     <!-- 背景Border：与顶部标题栏同色 -->
-                    <Border Background="{DynamicResource InverseOnSurface}" Opacity="0.7" />
+                    <Border Background="Transparent" Opacity="0.7" />
 
                     <Grid RowDefinitions="*,Auto">
                         <!-- 中间导航部分 -->
@@ -68,7 +67,7 @@
                                     CornerRadius="10"
                                     Background="{DynamicResource SurfaceContainer}"
                                     Click="MenuOpenBtn_OnClick">
-                                <SvgBox PathData="{res:Geometry {x:Static res:MdIcons.MenuOpen}}"
+                                <m3:SvgBox PathData="{m3:Geometry {x:Static m3:Icons.MenuOpen}}"
                                         Width="20" Height="20" Fill="{DynamicResource OnSurface}" />
                             </Button>
 
@@ -82,7 +81,7 @@
                                 <Border Margin="-5 0 -3 0" ClipToBounds="True" VerticalAlignment="Center">
                                     <Grid RowDefinitions="*,*,*">
                                         <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
-                                            <SvgBox Grid.Column="0" PathData="{Binding StreamButtonIcon}"
+                                            <m3:SvgBox Grid.Column="0" PathData="{Binding StreamButtonIcon}"
                                                     Height="17" Width="17" Margin="0 0 3 0"
                                                     VerticalAlignment="Center"
                                                     Fill="{DynamicResource OnSurface}" />
@@ -109,7 +108,7 @@
                                     <Setter Property="Height" Value="40" />
                                     <Setter Property="Background" Value="Transparent" />
                                 </Style>
-                                <Style Selector="SvgBox">
+                                <Style Selector="m3|SvgBox">
                                     <Setter Property="Height" Value="20" />
                                     <Setter Property="Margin" Value="2 0 5 0" />
                                     <Setter Property="VerticalAlignment" Value="Center" />
@@ -127,8 +126,8 @@
                                           Command="{Binding SwitchPageCommand}"
                                           CommandParameter="{x:Static mainWindow:NavigationPage.Home}">
                                 <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
-                                    <SvgBox Grid.Column="0"
-                                            PathData="{res:Geometry {x:Static res:MdIcons.Home}}" />
+                                    <m3:SvgBox Grid.Column="0"
+                                            PathData="{m3:Geometry {x:Static m3:Icons.Home}}" />
                                     <TextBlock Grid.Column="1" Text="主页" />
                                 </Grid>
                             </ToggleButton>
@@ -139,8 +138,8 @@
                                           Command="{Binding SwitchPageCommand}"
                                           CommandParameter="{x:Static mainWindow:NavigationPage.AutoService}">
                                 <Grid Margin="7 0 5 0" ColumnDefinitions="Auto,*">
-                                    <SvgBox Grid.Column="0"
-                                            PathData="{res:Geometry {x:Static res:MdIcons.AutoService}}" />
+                                    <m3:SvgBox Grid.Column="0"
+                                            PathData="{m3:Geometry {x:Static m3:Icons.AutoService}}" />
                                     <TextBlock Grid.Column="1" Text="自动服务" />
                                 </Grid>
                             </ToggleButton>
@@ -152,8 +151,8 @@
                                           CommandParameter="{x:Static mainWindow:NavigationPage.About}">
                                 <Grid Margin="7 0 5 0">
                                     <Grid IsHitTestVisible="False" ColumnDefinitions="Auto,*">
-                                        <SvgBox Grid.Column="0"
-                                                PathData="{res:Geometry {x:Static res:MdIcons.Notice}}" />
+                                        <m3:SvgBox Grid.Column="0"
+                                                PathData="{m3:Geometry {x:Static m3:Icons.Notice}}" />
                                         <TextBlock Grid.Column="1" Text="关于" />
                                     </Grid>
                                 </Grid>
@@ -223,7 +222,7 @@
                     </StackPanel>
 
                     <Border Name="ContentBorder" IsVisible="{Binding !LoadAccountCommand.IsRunning}">
-                        <ContentControl Margin="20 50 20 20" VerticalAlignment="Stretch"
+                        <ContentControl Margin="20 20 20 20" VerticalAlignment="Stretch"
                                         Content="{Binding CurrentVm}" />
                     </Border>
                 </Grid>
@@ -232,18 +231,20 @@
                 <!-- 左下方弹出登录窗口 -->
                 <Border Name="LoginBorder"
                         IsHitTestVisible="False"
-                        Background="Transparent"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Bottom"
+                        Background="#66000000"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
                         RenderTransformOrigin="0,0"
                         IsVisible="True"
-                        Margin="-20 0 0 0"
+                        Margin="0"
                         Opacity="0">
                     <Border.RenderTransform>
-                        <TranslateTransform X="-50" />
+                        <TranslateTransform Y="18" />
                     </Border.RenderTransform>
 
-                    <ContentControl Content="{Binding AccountVm}" />
+                    <ContentControl HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Content="{Binding AccountVm}" />
                 </Border>
 
 

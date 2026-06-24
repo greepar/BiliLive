@@ -1,0 +1,134 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="https://github.com/greepar/md3">
+
+    <!--
+        Material 3 Navigation-Rail / page-switch ToggleButton.
+        Spec: https://m3.material.io/components/navigation-rail/specs
+
+        Visual model:
+        * Unselected:  transparent container, OnSurfaceVariant content,
+                       state layer + ripple use OnSurfaceVariant.
+        * Selected:    SecondaryContainer container, OnSecondaryContainer content,
+                       state layer + ripple use OnSecondaryContainer.
+
+        Same state-layer + ink-ripple pipeline as the M3Button so all ripples
+        across the app share consistent timing, opacity and color logic.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="20">
+            <StackPanel Spacing="6">
+                <ToggleButton Theme="{DynamicResource M3PageSwitchButton}"
+                              CornerRadius="18" Padding="16,0" Height="40"
+                              HorizontalAlignment="Stretch">Inbox</ToggleButton>
+                <ToggleButton Theme="{DynamicResource M3PageSwitchButton}" IsChecked="True"
+                              CornerRadius="18" Padding="16,0" Height="40"
+                              HorizontalAlignment="Stretch">Selected</ToggleButton>
+                <ToggleButton Theme="{DynamicResource M3PageSwitchButton}" IsEnabled="False"
+                              CornerRadius="18" Padding="16,0" Height="40"
+                              HorizontalAlignment="Stretch">Disabled</ToggleButton>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <ControlTheme x:Key="M3PageSwitchButton" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="RenderTransform" Value="{x:Null}"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PartContainer"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel ClipToBounds="True">
+                        <Border Name="PartStateLayer"
+                                IsHitTestVisible="False"
+                                Opacity="0"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <m3:InkRipple Name="PartRipple"
+                                      Brush="{TemplateBinding Foreground}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      BaseOpacity="{StaticResource M3StatePressedOpacity}"/>
+                        <ContentPresenter Name="PartContent"
+                                          IsHitTestVisible="False"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          FontFamily="{TemplateBinding FontFamily}"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          FontWeight="{TemplateBinding FontWeight}"
+                                          Padding="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ Border#PartStateLayer">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="{StaticResource M3DurationShort2}"
+                                      Easing="{StaticResource M3EasingStandard}"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^ /template/ Border#PartContainer">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background"
+                                     Duration="{StaticResource M3DurationShort2}"/>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <!-- Unchecked: state layer uses OnSurface tint -->
+        <Style Selector="^:unchecked:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:unchecked:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <!-- Checked: SecondaryContainer pill, OnSecondaryContainer content. -->
+        <Style Selector="^:checked /template/ Border#PartContainer">
+            <Setter Property="Background" Value="{DynamicResource SecondaryContainer}"/>
+        </Style>
+        <Style Selector="^:checked">
+            <Setter Property="Foreground" Value="{DynamicResource OnSecondaryContainer}"/>
+        </Style>
+        <Style Selector="^:checked:pointerover /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:checked:pressed /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSecondaryContainer}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <!-- Disabled: 38% content, no state layer. -->
+        <Style Selector="^:disabled /template/ ContentPresenter#PartContent">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PartStateLayer">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="PageSwitchBtn" TargetType="ToggleButton" BasedOn="{StaticResource M3PageSwitchButton}"/>
+</ResourceDictionary>

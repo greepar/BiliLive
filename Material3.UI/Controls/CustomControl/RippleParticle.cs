@@ -2,7 +2,7 @@
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 
-namespace Material3.UI.Controls.CustomControl;
+namespace Material3.UI.Controls;
 
 internal sealed class RippleParticle : Animatable
 {

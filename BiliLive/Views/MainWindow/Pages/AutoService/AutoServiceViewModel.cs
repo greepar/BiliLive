@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -12,7 +12,7 @@ using BiliLive.Core.Interface;
 using BiliLive.Core.Models.BiliService;
 using BiliLive.Core.Services;
 using BiliLive.Models;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 using BiliLive.Utils;
 using BiliLive.Views.DialogWindow;
 using BiliLive.Views.MainWindow.Pages.AutoService.Components;
@@ -131,7 +131,7 @@ public partial class AutoServiceViewModel : ViewModelBase
         {
             if (!IsCoreSet)
             {
-                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先配置直播核心",Geometry.Parse(MdIcons.Error)));
+                WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先配置直播核心",Geometry.Parse(Icons.Error)));
                 IsAutoStreamEnabled = false;
                 return;
             }
@@ -185,7 +185,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             case ToggleOption.AutoStreamService:
                 if (!IsCoreSet)
                 {
-                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先配置直播核心",Geometry.Parse(MdIcons.Error)));
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先配置直播核心",Geometry.Parse(Icons.Error)));
                     IsAutoStreamEnabled = false;
                     return;
                 }
@@ -250,7 +250,7 @@ public partial class AutoServiceViewModel : ViewModelBase
                 Dispatcher.UIThread.Post(() =>
                 {
                     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(
-                        $"今天直播时间点已无法到达{originalTime - DateTime.Now}时间后开始", Geometry.Parse(MdIcons.Check)));
+                        $"今天直播时间点已无法到达{originalTime - DateTime.Now}时间后开始", Geometry.Parse(Icons.Check)));
                 });
                 streamTime = streamTime.AddDays(1);
             }
@@ -258,7 +258,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             Dispatcher.UIThread.Post(() =>
             {
                 WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"自动开播将在 {streamTime} 开始",
-                    Geometry.Parse(MdIcons.Check)));
+                    Geometry.Parse(Icons.Check)));
             });
             IsInAutoStreaming = null;
             AutoStreamingStatusText = $"等待自动开播，开始时间：{streamTime}";
@@ -287,7 +287,7 @@ public partial class AutoServiceViewModel : ViewModelBase
                 Dispatcher.UIThread.Post(() =>
                 {
                     WeakReferenceMessenger.Default.Send(new ShowNotificationMessage(errText,
-                        Geometry.Parse(MdIcons.Check)));
+                        Geometry.Parse(Icons.Check)));
                 });
                 IsInAutoStreaming = false;
                 AutoStreamingStatusText = errText;
@@ -406,7 +406,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             Dispatcher.UIThread.Post(() =>
             {
                 WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"自动开播任务已取消",
-                    Geometry.Parse(MdIcons.Check)));
+                    Geometry.Parse(Icons.Check)));
             });
             IsInAutoStreaming = false;
             AutoStreamingStatusText = "自动开播任务未开启";
@@ -449,12 +449,12 @@ public partial class AutoServiceViewModel : ViewModelBase
         if (await FfmpegWrapper.CheckFfmpegAvailableAsync(pickFile))
         {
             FfmpegPath = pickFile;
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Ffmpeg路径有效",Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Ffmpeg路径有效",Geometry.Parse(Icons.Check)));
             await ConfigManager.SaveConfigAsync(ConfigType.FfmpegPath,FfmpegPath);
         }
         else
         {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Ffmpeg路径无效，请重新选择",Geometry.Parse(MdIcons.Error)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("Ffmpeg路径无效，请重新选择",Geometry.Parse(Icons.Error)));
         }
     }
     
@@ -463,7 +463,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(FfmpegPath))
         {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先设置Ffmpeg路径",Geometry.Parse(MdIcons.Notice)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("请先设置Ffmpeg路径",Geometry.Parse(Icons.Notice)));
             return;
         }
         var pickFile = await AvaloniaUtils.PickFileAsync("Choose Video Path",[".mp4",".flv",".mkv",".mov",".avi"]);
@@ -471,12 +471,12 @@ public partial class AutoServiceViewModel : ViewModelBase
             return;
         if (!await FfmpegWrapper.CheckVideoAvailableAsync(FfmpegPath,pickFile))
         { 
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("视频文件无效，请重新选择",Geometry.Parse(MdIcons.Error)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("视频文件无效，请重新选择",Geometry.Parse(Icons.Error)));
             return;
         }
      
         VideoPath = pickFile;
-        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("视频文件有效",Geometry.Parse(MdIcons.Check)));
+        WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("视频文件有效",Geometry.Parse(Icons.Check)));
         await ConfigManager.SaveConfigAsync(ConfigType.VideoPath,VideoPath);
     }
 
@@ -493,7 +493,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             {
                 if (alt.UserName == userName)
                 {
-                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"账号 {userName} 已存在，请勿重复添加",Geometry.Parse(MdIcons.Error)));
+                    WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"账号 {userName} 已存在，请勿重复添加",Geometry.Parse(Icons.Error)));
                     return;
                 }
             }
@@ -512,7 +512,7 @@ public partial class AutoServiceViewModel : ViewModelBase
             };
             
             AltsList.Add(await Alt.CreateAltAsync(altSettings,RemoveAlt));
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"登录成功，当前账号 {altSettings.UserName}",Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"登录成功，当前账号 {altSettings.UserName}",Geometry.Parse(Icons.Check)));
         }
     }
     
@@ -539,7 +539,7 @@ public partial class AutoServiceViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(taskId))
         {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"请输入任务ID", Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"请输入任务ID", Geometry.Parse(Icons.Check)));
             return;
         }
 
@@ -680,7 +680,7 @@ public partial class Alt : ObservableObject , IDisposable
             }
             AltSettings.ProxyInfo = vmProxyInfo;
             await ConfigManager.SaveAltSettingsAsync(AltSettings);
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已更新账号 {UserName} 的配置",Geometry.Parse(MdIcons.Check)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已更新账号 {UserName} 的配置",Geometry.Parse(Icons.Check)));
         }
     }
     
@@ -702,7 +702,7 @@ public partial class Alt : ObservableObject , IDisposable
         
         if (AltSettings.DanmakuList == null || AltSettings.DanmakuList.Length == 0)
         {
-            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"账号 {UserName} 未设置弹幕内容，请先设置",Geometry.Parse(MdIcons.Error)));
+            WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"账号 {UserName} 未设置弹幕内容，请先设置",Geometry.Parse(Icons.Error)));
             return;
         }
         
@@ -723,7 +723,7 @@ public partial class Alt : ObservableObject , IDisposable
         }
         
         IsDanmakuSent = true;
-        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已用账号 {UserName} 发送弹幕",Geometry.Parse(MdIcons.Check))); });
+        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已用账号 {UserName} 发送弹幕",Geometry.Parse(Icons.Check))); });
     }
 
     [RelayCommand]
@@ -754,7 +754,7 @@ public partial class Alt : ObservableObject , IDisposable
         }
         
         IsGiftSent = true;
-        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送礼物",Geometry.Parse(MdIcons.Check))); });
+        Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage($"已为账号 {UserName} 发送礼物",Geometry.Parse(Icons.Check))); });
     }
     
     [RelayCommand]
@@ -773,7 +773,7 @@ public partial class Alt : ObservableObject , IDisposable
                 
                 //删除账号时才释放服务
                 Dispose();
-                Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(MdIcons.Check))); });
+                Dispatcher.UIThread.Post(() => { WeakReferenceMessenger.Default.Send(new ShowNotificationMessage("已清除当前账号",Geometry.Parse(Icons.Check))); });
             }
     }
     

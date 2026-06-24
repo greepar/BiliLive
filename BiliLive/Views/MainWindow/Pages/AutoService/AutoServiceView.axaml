@@ -1,9 +1,9 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService"
-             xmlns:resources="clr-namespace:BiliLive.Resources"
+             xmlns:m3="https://github.com/greepar/md3"
              xmlns:converters="clr-namespace:BiliLive.Converters"
              xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.AutoService.Components"
              x:DataType="vm:AutoServiceViewModel"
@@ -62,12 +62,12 @@
                             </Border.Styles>
 
                             <Grid ColumnDefinitions="*,Auto,Auto,*">
-                                <SvgBox Grid.Column="1" Height="22"
+                                <m3:SvgBox Grid.Column="1" Height="22"
                                         Opacity="0.7"
                                         Margin="0 -1 1 -1"
                                         VerticalAlignment="Center"
                                         Fill="{DynamicResource OnSurface}"
-                                        PathData="{resources:Geometry {x:Static resources:MdIcons.Restart} }" />
+                                        PathData="{m3:Geometry {x:Static m3:Icons.Restart} }" />
                                 <TextBlock Grid.Column="2"
                                            HorizontalAlignment="Center">
                                     重新发送
@@ -119,7 +119,7 @@
                                     Height="23" CornerRadius="12"
                                     Background="{DynamicResource SurfaceContainerHighest}">
                                 <StackPanel Margin="8 0 10 0" Orientation="Horizontal">
-                                    <SvgBox Height="15" Margin="0 2 2 0"
+                                    <m3:SvgBox Height="15" Margin="0 2 2 0"
                                             Fill="{DynamicResource OnSurface}"
                                             PathData="{Binding IsCoreSet ,Converter={converters:BoolToGeometryConverter}}" />
                                     <TextBlock
@@ -136,8 +136,8 @@
                                     HorizontalAlignment="Right"
                                     Click="ExpandButton_OnClick"
                                     Theme="{StaticResource MdButton}">
-                                <SvgBox Height="" Opacity="0.5"
-                                        PathData="{resources:Geometry {x:Static resources:MdIcons.Expand}}" />
+                                <m3:SvgBox Height="" Opacity="0.5"
+                                        PathData="{m3:Geometry {x:Static m3:Icons.Expand}}" />
                             </Button>
                         </Grid>
                     </Grid>
@@ -286,27 +286,23 @@
                                 
                                 <!-- 时间选择器按钮 -->
                                 <Button Name="TimePickerButton"
-                                        Height="25" Width="25" Background="#66DCCCFB"
+                                        Height="25" Width="25"
+                                        Background="{DynamicResource SurfaceContainerHighest}"
+                                        Foreground="{DynamicResource OnSurfaceVariant}"
                                         Margin="3 0 0 0"
                                         CornerRadius="8"
                                         Theme="{StaticResource MdButton}"
                                         VerticalAlignment="Center">
-                                    <SvgBox Height="15" Width="15" PathData="{resources:Geometry {x:Static resources:MdIcons.Clock}}"></SvgBox>
+                                    <m3:SvgBox Height="15" Width="15" PathData="{m3:Geometry {x:Static m3:Icons.Clock}}"></m3:SvgBox>
 
                                     <Button.Flyout>
                                         <Flyout Placement="Bottom">
-                                            <Border CornerRadius="35"
-                                                    Background="#F9EEFA" 
-                                                    ClipToBounds="True">
-                                                
-                                                <components:TimePickerView>
-                                                    <components:TimePickerView.DataContext>
-                                                        <components:TimePickerViewModel/>
-                                                    </components:TimePickerView.DataContext>
-                                                </components:TimePickerView>
+                                            <components:TimePickerView>
+                                                <components:TimePickerView.DataContext>
+                                                    <components:TimePickerViewModel/>
+                                                </components:TimePickerView.DataContext>
+                                            </components:TimePickerView>
 
-                                            </Border>
-                                            
                                             <Flyout.FlyoutPresenterTheme>
                                                 <ControlTheme TargetType="FlyoutPresenter">
                                                     <Setter Property="Background" Value="Transparent"/>
@@ -388,7 +384,7 @@
                                               VerticalAlignment="Center"
                                               RenderTransform="scale(0.8)"
                                               OffContent="" OnContent=""
-                                              Command="{Binding ToggleOptions}"
+                                              Command="{Binding ToggleOptionsCommand}"
                                               CommandParameter="{x:Static vm:ToggleOption.AutoGiftService}"
                                               IsChecked="{Binding IsAltGiftServiceEnabled}" />
 
@@ -449,7 +445,7 @@
                                                         <Grid>
                                                             <StackPanel Orientation="Horizontal">
                                                                 <TextBlock Margin="7 0 7 0">弹幕发送 x3</TextBlock>
-                                                                <SvgBox Height="20"
+                                                                <m3:SvgBox Height="20"
                                                                         Fill="{Binding IsDanmakuSent,Converter={converters:BoolToColorConverter}}"
                                                                         PathData="{Binding IsDanmakuSent,Converter={converters:BoolToGeometryConverter}}" />
                                                             </StackPanel>
@@ -471,7 +467,7 @@
                                                         VerticalAlignment="Center">
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Margin="7 0 7 0">发送牛蛙 x2</TextBlock>
-                                                        <SvgBox Height="20"
+                                                        <m3:SvgBox Height="20"
                                                                 Fill="{Binding IsGiftSent,Converter={converters:BoolToColorConverter}}"
                                                                 PathData="{Binding IsGiftSent,Converter={converters:BoolToGeometryConverter}}" />
                                                     </StackPanel>
@@ -487,8 +483,8 @@
                                                         Command="{Binding AltSettingsCommand}">
 
                                                     <StackPanel Orientation="Horizontal">
-                                                        <SvgBox Height="20" Width="20" Margin="2 0 2 0"
-                                                                PathData="{resources:Geometry {x:Static resources:MdIcons.Settings}}"
+                                                        <m3:SvgBox Height="20" Width="20" Margin="2 0 2 0"
+                                                                PathData="{m3:Geometry {x:Static m3:Icons.Settings}}"
                                                                 Opacity="0.7"
                                                                 Fill="Black" />
                                                     </StackPanel>
@@ -501,8 +497,8 @@
                                                         CornerRadius="12"
                                                         Theme="{StaticResource MdButton}"
                                                         Command="{Binding RemoveAltCommand}">
-                                                    <SvgBox Height="20" Width="20" Margin="2 0 2 0"
-                                                            PathData="{resources:Geometry {x:Static resources:MdIcons.Error}}"
+                                                    <m3:SvgBox Height="20" Width="20" Margin="2 0 2 0"
+                                                            PathData="{m3:Geometry {x:Static m3:Icons.Error}}"
                                                             Opacity="0.7"
                                                             Fill="Black" />
                                                 </Button>
@@ -545,7 +541,7 @@
                                 </Border>
                                 <ToggleSwitch Grid.Column="3" Margin="0 0 -4 0"
                                               IsChecked="{Binding IsAutoClaimRewardEnabled}"
-                                              Command="{Binding ToggleOptions}"
+                                              Command="{Binding ToggleOptionsCommand}"
                                               CommandParameter="{x:Static vm:ToggleOption.AutoClaimRewardService}"
                                               VerticalAlignment="Center"
                                               RenderTransform="scale(0.8)"
@@ -575,7 +571,7 @@
                                                 <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
                                             </Transitions>
                                         </Button.Transitions>
-                                        <SvgBox Height="16" Width="16" PathData="{resources:Geometry {x:Static resources:MdIcons.Check}}"/>
+                                        <m3:SvgBox Height="16" Width="16" PathData="{m3:Geometry {x:Static m3:Icons.Check}}"/>
                                     </Button>
                                 </Grid>
                                 <TextBlock>状态:未领取</TextBlock>

@@ -1,0 +1,209 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}"
+                Padding="24"
+                Width="320"
+                Height="160">
+            <TextBlock Text="Host themes (Window, PopupRoot, OverlayPopupHost, EmbeddableControlRoot, TextSelectionHandle, AdornerLayer)"
+                       Foreground="{DynamicResource OnSurface}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"/>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- ============================================================ -->
+    <!-- Window                                                        -->
+    <!-- M3 default surface background, on-surface text. Window chrome -->
+    <!-- (caption buttons, drawn decorations) lives in                  -->
+    <!-- WindowDecorations.axaml; this theme only handles the root      -->
+    <!-- visual tree and content presenter.                             -->
+    <!-- ============================================================ -->
+    <ControlTheme x:Key="{x:Type Window}" TargetType="Window">
+        <Setter Property="Background" Value="{DynamicResource Surface}"/>
+        <Setter Property="TransparencyBackgroundFallback" Value="{DynamicResource Surface}"/>
+        <Setter Property="TopLevel.SystemBarColor" Value="{DynamicResource Surface}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_TransparencyFallback" IsHitTestVisible="False"/>
+                    <Border Background="{TemplateBinding Background}" IsHitTestVisible="False"/>
+                    <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}"/>
+                    <VisualLayerManager Name="PART_VisualLayerManager">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </VisualLayerManager>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- ============================================================ -->
+    <!-- PopupRoot                                                     -->
+    <!-- Transparent background by default. Individual popup-bearing   -->
+    <!-- controls (Menu, ComboBox, Tooltip, etc.) supply their own     -->
+    <!-- M3 surface container + elevation.                              -->
+    <!-- ============================================================ -->
+    <ControlTheme x:Key="{x:Type PopupRoot}" TargetType="PopupRoot">
+        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="TransparencyLevelHint" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontStyle" Value="Normal"/>
+        <Setter Property="Inline.TextDecorations" Value=""/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
+                    <Panel>
+                        <Border Name="PART_TransparencyFallback" IsHitTestVisible="False"/>
+                        <VisualLayerManager Name="PART_VisualLayerManager">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Background="{TemplateBinding Background}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              Padding="{TemplateBinding Padding}"/>
+                        </VisualLayerManager>
+                    </Panel>
+                </LayoutTransformControl>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- ============================================================ -->
+    <!-- OverlayPopupHost                                              -->
+    <!-- In-window popup host. Transparent so the popup content        -->
+    <!-- (with its own M3 elevation/surface) renders cleanly atop the  -->
+    <!-- host window.                                                  -->
+    <!-- ============================================================ -->
+    <ControlTheme x:Key="{x:Type OverlayPopupHost}" TargetType="OverlayPopupHost">
+        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="FontStyle" Value="Normal"/>
+        <Setter Property="Inline.TextDecorations" Value=""/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
+                    <VisualLayerManager Name="PART_VisualLayerManager">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Background="{TemplateBinding Background}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Padding="{TemplateBinding Padding}"/>
+                    </VisualLayerManager>
+                </LayoutTransformControl>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- ============================================================ -->
+    <!-- EmbeddableControlRoot                                         -->
+    <!-- Used when an Avalonia control tree is embedded into another   -->
+    <!-- host (e.g. native windowing surface). Mirrors Window defaults -->
+    <!-- but without window chrome.                                    -->
+    <!-- ============================================================ -->
+    <ControlTheme x:Key="{x:Type EmbeddableControlRoot}" TargetType="EmbeddableControlRoot">
+        <Setter Property="Background" Value="{DynamicResource Surface}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="TopLevel.SystemBarColor" Value="{DynamicResource Surface}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_TransparencyFallback" IsHitTestVisible="False"/>
+                    <Border Background="{TemplateBinding Background}">
+                        <VisualLayerManager Name="PART_VisualLayerManager">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </VisualLayerManager>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- ============================================================ -->
+    <!-- TextSelectionHandle                                           -->
+    <!-- Material 3 text-selection drag handle: a 24x24 Primary-coloured
+         circle with a 1px stem indicator anchored to the caret line.  -->
+    <!-- ============================================================ -->
+    <x:Double x:Key="M3TextSelectionHandleSize">24</x:Double>
+
+    <ControlTheme x:Key="{x:Type TextSelectionHandle}" TargetType="TextSelectionHandle">
+        <Setter Property="Background" Value="{DynamicResource Primary}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <!-- Hit area (transparent, larger than visual) so dragging is comfortable. -->
+                    <Border Background="Transparent"
+                            IsHitTestVisible="True"
+                            Padding="6,2,6,10">
+                        <Ellipse Name="PART_HandlePathIcon"
+                                 Width="{DynamicResource M3TextSelectionHandleSize}"
+                                 Height="{DynamicResource M3TextSelectionHandleSize}"
+                                 Fill="{TemplateBinding Background}"
+                                 Cursor="Arrow"/>
+                    </Border>
+                    <!-- Stem indicator that points at the caret position. -->
+                    <Border Name="PART_Indicator"
+                            Background="{TemplateBinding Background}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Width="2"
+                            Height="6"/>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Caret handle: indicator centred (single caret cursor). -->
+        <Style Selector="^:caret /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Selection start handle: indicator on the right edge of the circle. -->
+        <Style Selector="^:start /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+
+        <!-- Selection end handle: indicator on the left edge of the circle. -->
+        <Style Selector="^:end /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- ============================================================ -->
+    <!-- AdornerLayer                                                  -->
+    <!-- Invisible by default. Provides the M3 default focus adorner:  -->
+    <!-- a 2px Primary outline with a slim OutlineVariant inner ring.  -->
+    <!-- ============================================================ -->
+    <Thickness x:Key="M3FocusAdornerOuterThickness">2</Thickness>
+    <Thickness x:Key="M3FocusAdornerInnerThickness">1</Thickness>
+    <Thickness x:Key="M3FocusAdornerMargin">0</Thickness>
+
+    <ControlTheme x:Key="{x:Type AdornerLayer}" TargetType="AdornerLayer">
+        <Setter Property="DefaultFocusAdorner">
+            <FocusAdornerTemplate>
+                <Border BorderThickness="{StaticResource M3FocusAdornerOuterThickness}"
+                        BorderBrush="{DynamicResource Primary}"
+                        Margin="{StaticResource M3FocusAdornerMargin}">
+                    <Border BorderThickness="{StaticResource M3FocusAdornerInnerThickness}"
+                            BorderBrush="{DynamicResource OutlineVariant}"/>
+                </Border>
+            </FocusAdornerTemplate>
+        </Setter>
+    </ControlTheme>
+
+</ResourceDictionary>

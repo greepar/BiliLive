@@ -1,0 +1,400 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="using:System">
+
+    <!--
+        Material 3 ComboBox / ComboBoxItem ControlTheme.
+        Reference: https://m3.material.io/components/menus/specs (single-select
+        menu button / dropdown variant) + filled text-field chrome.
+
+        Field chrome:
+          * 56dp height, SurfaceContainerHighest fill, 1dp OnSurfaceVariant underline.
+          * On hover the underline brightens to OnSurface.
+          * On focus the underline grows to 2dp Primary.
+          * Right-side dropdown caret (12x12) using the standard M3 chevron path.
+          * Optional floating label that mirrors the M3 TextBox: rests at the field's
+            vertical center, scales to 0.75 + translates to the top edge when the
+            field is focused or holds a non-empty selection / placeholder is hidden.
+
+        Popup:
+          * SurfaceContainer fill, M3ShapeExtraSmall corners, Elevation 2 shadow.
+          * Margin 4dp from the field, MinWidth pinned to the field's actual width.
+
+        ComboBoxItem:
+          * 48dp single-line row, 12dp horizontal padding, 14sp body. Uses the same
+            state-layer pattern as ListBoxItem so hover / pressed / selected feel
+            consistent across the library.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="16" Width="280">
+                <ComboBox PlaceholderText="Region">
+                    <ComboBoxItem>Asia</ComboBoxItem>
+                    <ComboBoxItem>Europe</ComboBoxItem>
+                    <ComboBoxItem>North America</ComboBoxItem>
+                    <ComboBoxItem>Oceania</ComboBoxItem>
+                </ComboBox>
+
+                <ComboBox PlaceholderText="Selected" SelectedIndex="1">
+                    <ComboBoxItem>Option A</ComboBoxItem>
+                    <ComboBoxItem>Option B</ComboBoxItem>
+                    <ComboBoxItem>Option C</ComboBoxItem>
+                </ComboBox>
+
+                <ComboBox PlaceholderText="Disabled" IsEnabled="False">
+                    <ComboBoxItem>Option A</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- ============================== -->
+    <!-- ComboBoxItem                   -->
+    <!-- ============================== -->
+    <ControlTheme x:Key="{x:Type ComboBoxItem}" TargetType="ComboBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="Padding" Value="12,0,12,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="0" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <Border Name="PART_StateLayer"
+                            Background="{DynamicResource OnSurface}"
+                            Opacity="0"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity"
+                                                  Duration="{StaticResource M3DurationShort2}"
+                                                  Easing="{StaticResource M3EasingStandard}" />
+                                <BrushTransition Property="Background"
+                                                 Duration="{StaticResource M3DurationShort2}" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      FontSize="{TemplateBinding FontSize}"
+                                      Padding="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}" />
+        </Style>
+        <Style Selector="^:focus-visible /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.12" />
+        </Style>
+        <Style Selector="^:selected /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.12" />
+        </Style>
+        <Style Selector="^:selected:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.16" />
+        </Style>
+        <Style Selector="^:selected:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.20" />
+        </Style>
+
+        <Style Selector="^:disabled /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ============================== -->
+    <!-- ComboBox                       -->
+    <!-- ============================== -->
+    <ControlTheme x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+        <Setter Property="Height" Value="56" />
+        <Setter Property="MinWidth" Value="120" />
+        <Setter Property="MaxDropDownHeight" Value="320" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource OnSurfaceVariant}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmallTop}" />
+        <Setter Property="Padding" Value="16,0,12,0" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource OnSurfaceVariant}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DataValidationErrors>
+                    <Grid>
+                        <!-- Field background (filled). -->
+                        <Border Name="PART_Background"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+
+                        <!-- Underline / border. Separated from the fill so we can animate
+                             thickness independently when focus moves to the field. -->
+                        <Border Name="PART_BorderElement"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+
+                        <!-- Field content row: selection text on the left, dropdown caret on the right. -->
+                        <Grid ColumnDefinitions="*,Auto" Margin="{TemplateBinding Padding}">
+                            <Panel Grid.Column="0">
+                                <!-- Inline placeholder, only shown when the floating label is suppressed
+                                     (PlaceholderText null/empty). The floating label is the preferred
+                                     M3 affordance and lives outside this DockPanel. -->
+                                <TextBlock Name="PART_PlaceholderTextBlock"
+                                           Text="{TemplateBinding PlaceholderText}"
+                                           Foreground="{TemplateBinding PlaceholderForeground}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                           IsHitTestVisible="False">
+                                    <TextBlock.IsVisible>
+                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                            <Binding Path="SelectionBoxItem"
+                                                     RelativeSource="{RelativeSource TemplatedParent}"
+                                                     Converter="{x:Static ObjectConverters.IsNull}" />
+                                            <Binding Path="!IsEditable"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Path="PlaceholderText"
+                                                     RelativeSource="{RelativeSource TemplatedParent}"
+                                                     Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+                                        </MultiBinding>
+                                    </TextBlock.IsVisible>
+                                </TextBlock>
+
+                                <ContentControl Name="PART_ContentPresenter"
+                                                Content="{TemplateBinding SelectionBoxItem}"
+                                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                Foreground="{TemplateBinding Foreground}"
+                                                FontSize="{TemplateBinding FontSize}"
+                                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                IsVisible="{TemplateBinding IsEditable, Converter={x:Static BoolConverters.Not}}" />
+
+                                <!-- Editable mode keeps Avalonia's required PART name. -->
+                                <TextBox Name="PART_EditableTextBox"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Foreground="{TemplateBinding Foreground}"
+                                         FontSize="{TemplateBinding FontSize}"
+                                         Padding="0"
+                                         Text="{TemplateBinding Text, Mode=TwoWay}"
+                                         PlaceholderText="{TemplateBinding PlaceholderText}"
+                                         VerticalAlignment="Center"
+                                         IsVisible="{TemplateBinding IsEditable}">
+                                    <TextBox.Resources>
+                                        <SolidColorBrush x:Key="TextControlBackgroundFocused">Transparent</SolidColorBrush>
+                                        <SolidColorBrush x:Key="TextControlBackgroundPointerOver">Transparent</SolidColorBrush>
+                                        <Thickness x:Key="TextControlBorderThemeThicknessFocused">0</Thickness>
+                                    </TextBox.Resources>
+                                </TextBox>
+                            </Panel>
+
+                            <!-- Dropdown caret. Standard M3 chevron, scaled to fit the 12x12 hit slot. -->
+                            <Path Name="PART_DropDownGlyph"
+                                  Grid.Column="1"
+                                  Width="12"
+                                  Height="12"
+                                  Margin="12,0,0,0"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Stretch="Uniform"
+                                  Fill="{DynamicResource OnSurfaceVariant}"
+                                  IsHitTestVisible="False"
+                                  Data="M7 10l5 5 5-5z" />
+                        </Grid>
+
+                        <!-- Floating label: only rendered when PlaceholderText is set. Mirrors the
+                             M3 TextBox label motion so the two controls feel cohesive. -->
+                        <Border Name="PART_FloatingLabel"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                IsHitTestVisible="False"
+                                Background="Transparent"
+                                Padding="0"
+                                RenderTransformOrigin="0%,0%">
+                            <Border.IsVisible>
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                         Path="PlaceholderText"
+                                         Converter="{x:Static StringConverters.IsNotNullOrEmpty}" />
+                            </Border.IsVisible>
+                            <Border.RenderTransform>
+                                <TransformOperations>translate(16px, 18px) scale(1)</TransformOperations>
+                            </Border.RenderTransform>
+                            <Border.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform"
+                                                                   Duration="{StaticResource M3DurationShort2}"
+                                                                   Easing="{StaticResource M3EasingStandard}" />
+                                </Transitions>
+                            </Border.Transitions>
+                            <TextBlock Name="PART_FloatingLabelText"
+                                       Text="{TemplateBinding PlaceholderText}"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource OnSurfaceVariant}">
+                                <TextBlock.Transitions>
+                                    <Transitions>
+                                        <BrushTransition Property="Foreground"
+                                                         Duration="{StaticResource M3DurationShort2}"
+                                                         Easing="{StaticResource M3EasingStandard}" />
+                                    </Transitions>
+                                </TextBlock.Transitions>
+                            </TextBlock>
+                        </Border>
+
+                        <!-- Popup chrome (M3 menu surface). -->
+                        <Popup Name="PART_Popup"
+                               WindowManagerAddShadowHint="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                               MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                               MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                               PlacementTarget="PART_Background"
+                               IsLightDismissEnabled="True"
+                               InheritsTransform="True">
+                            <Border Name="PART_PopupBackground"
+                                    Background="{DynamicResource SurfaceContainer}"
+                                    BorderBrush="{DynamicResource OutlineVariant}"
+                                    BorderThickness="0"
+                                    CornerRadius="{StaticResource M3ShapeExtraSmall}"
+                                    BoxShadow="{StaticResource M3Elevation2}"
+                                    Margin="4,4,4,4"
+                                    Padding="0">
+                                <ScrollViewer Name="PART_ScrollViewer"
+                                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                              IsScrollChainingEnabled="False"
+                                              IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}">
+                                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                                    Margin="0,8"
+                                                    ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </DataValidationErrors>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- ===== Floating label motion ===== -->
+        <!-- Float when focused. -->
+        <Style Selector="^:focus /template/ Border#PART_FloatingLabel">
+            <Setter Property="RenderTransform">
+                <TransformOperations>translate(16px, 8px) scale(0.75)</TransformOperations>
+            </Setter>
+        </Style>
+        <Style Selector="^:focus /template/ TextBlock#PART_FloatingLabelText">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}" />
+        </Style>
+        <!-- Float while the dropdown is open (treat as focused). -->
+        <Style Selector="^:dropdownopen /template/ Border#PART_FloatingLabel">
+            <Setter Property="RenderTransform">
+                <TransformOperations>translate(16px, 8px) scale(0.75)</TransformOperations>
+            </Setter>
+        </Style>
+        <Style Selector="^:dropdownopen /template/ TextBlock#PART_FloatingLabelText">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}" />
+        </Style>
+        <!-- Float when a value is selected (SelectionBoxItem != null). -->
+        <Style Selector="^:not(:empty) /template/ Border#PART_FloatingLabel">
+            <Setter Property="RenderTransform">
+                <TransformOperations>translate(16px, 8px) scale(0.75)</TransformOperations>
+            </Setter>
+        </Style>
+
+        <!-- When the label has floated, hide the inline placeholder so they don't overlap. -->
+        <Style Selector="^:focus /template/ TextBlock#PART_PlaceholderTextBlock">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ TextBlock#PART_PlaceholderTextBlock">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+        <!-- ===== Underline interaction ===== -->
+        <Style Selector="^:pointerover:not(:focus) /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}" />
+        </Style>
+        <Style Selector="^:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+        </Style>
+
+        <!-- Glyph color tracks the focus / open state for visual symmetry with the underline. -->
+        <Style Selector="^:focus /template/ Path#PART_DropDownGlyph">
+            <Setter Property="Fill" Value="{DynamicResource Primary}" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ Path#PART_DropDownGlyph">
+            <Setter Property="Fill" Value="{DynamicResource Primary}" />
+        </Style>
+
+        <!-- ===== Error state ===== -->
+        <Style Selector="^:error /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Error}" />
+        </Style>
+        <Style Selector="^:error:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Error}" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+        </Style>
+        <Style Selector="^:error /template/ TextBlock#PART_FloatingLabelText">
+            <Setter Property="Foreground" Value="{DynamicResource Error}" />
+        </Style>
+
+        <!-- ===== Disabled state ===== -->
+        <Style Selector="^:disabled /template/ Border#PART_Background">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="0.04" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}" />
+            <Setter Property="Opacity" Value="0.38" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentControl#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="0.38" />
+        </Style>
+        <Style Selector="^:disabled /template/ TextBlock#PART_PlaceholderTextBlock">
+            <Setter Property="Opacity" Value="0.38" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PART_FloatingLabel">
+            <Setter Property="Opacity" Value="0.38" />
+        </Style>
+        <Style Selector="^:disabled /template/ Path#PART_DropDownGlyph">
+            <Setter Property="Opacity" Value="0.38" />
+        </Style>
+
+        <!-- Editable mode (kept for parity with Avalonia's ComboBox; not the M3 default). -->
+        <Style Selector="^[IsEditable=true]">
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

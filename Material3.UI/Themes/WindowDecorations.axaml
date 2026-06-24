@@ -1,0 +1,170 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:chrome="clr-namespace:Avalonia.Controls.Chrome;assembly=Avalonia.Controls"
+                    xmlns:templates="clr-namespace:Avalonia.Markup.Xaml.Templates;assembly=Avalonia.Markup.Xaml"
+                    xmlns:m3="https://github.com/greepar/md3">
+
+    <!-- Caption button used by the window decoration template. Internal: addressed by key inside this file only. -->
+    <ControlTheme x:Key="M3CaptionButton" TargetType="Button">
+        <Setter Property="Width" Value="22"/>
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainer}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="(chrome:WindowDecorationProperties.ElementRole)" Value="DecorationsElement"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="OutBorder"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      IsHitTestVisible="False"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#OutBorder">
+            <Setter Property="BoxShadow" Value="0 0 1 0 #26000000"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- Backwards-compatible alias for code paths that still reference the old key. -->
+    <ControlTheme x:Key="MdCaptionButton" TargetType="Button" BasedOn="{StaticResource M3CaptionButton}" />
+
+    <!-- Window decorations: rounded surface, drop shadow, Material caption buttons. -->
+    <ControlTheme x:Key="M3WindowDecorations" TargetType="chrome:WindowDrawnDecorations">
+        <Setter Property="DefaultTitleBarHeight" Value="45"/>
+        <Setter Property="DefaultFrameThickness" Value="0"/>
+        <Setter Property="DefaultShadowThickness" Value="10"/>
+        <Setter Property="Template">
+            <templates:WindowDrawnDecorationsTemplate>
+                <chrome:WindowDrawnDecorationsContent>
+
+                    <chrome:WindowDrawnDecorationsContent.Underlay>
+                        <Panel x:Name="PART_UnderlayWrapper">
+                            <Border x:Name="PART_WindowBorder"
+                                    CornerRadius="28"
+                                    Background="{DynamicResource Surface}"
+                                    BoxShadow="0 1 8 2 #26000000"
+                                    IsHitTestVisible="False"/>
+                        </Panel>
+                    </chrome:WindowDrawnDecorationsContent.Underlay>
+
+                    <chrome:WindowDrawnDecorationsContent.Overlay>
+                        <Panel x:Name="PART_OverlayWrapper">
+                            <StackPanel x:Name="PART_OverlayPanel"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Right"
+                                        Height="{TemplateBinding TitleBarHeight}"
+                                        IsVisible="{TemplateBinding HasTitleBar}"
+                                        Orientation="Horizontal"
+                                         Margin="0 0 12 0">
+                                <Button Width="52"
+                                        Height="26"
+                                        CornerRadius="13"
+                                        Padding="0"
+                                        Margin="0 0 7 0"
+                                        VerticalAlignment="Center"
+                                        Background="{DynamicResource SurfaceContainerHigh}"
+                                        Command="{x:Static m3:Material3Theme.SwitchThemeCommand}"
+                                        Theme="{StaticResource M3CaptionButton}"
+                                        chrome:WindowDecorationProperties.ElementRole="DecorationsElement">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ Border#OutBorder">
+                                            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
+                                            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
+                                        </Style>
+                                    </Button.Styles>
+                                    <Grid ColumnDefinitions="*,*" Margin="5 0">
+                                        <m3:SvgBox Grid.Column="0"
+                                                   Width="14" Height="14"
+                                                   Fill="{DynamicResource Primary}"
+                                                   PathData="{m3:Geometry {x:Static m3:Icons.Moon}}"/>
+                                        <m3:SvgBox Grid.Column="1"
+                                                   Width="14" Height="14"
+                                                   Fill="{DynamicResource Primary}"
+                                                   PathData="{m3:Geometry {x:Static m3:Icons.Sun}}"/>
+                                    </Grid>
+                                </Button>
+                                <Button x:Name="PART_MinimizeButton"
+                                        Theme="{StaticResource M3CaptionButton}"
+                                        chrome:WindowDecorationProperties.ElementRole="MinimizeButton">
+                                    <m3:SvgBox Width="12" Height="12"
+                                               PathData="{m3:Geometry {x:Static m3:Icons.Minimize}}"
+                                               Fill="{DynamicResource OnSurface}"/>
+                                </Button>
+                                <Button x:Name="PART_CloseButton"
+                                         Margin="7 0 0 0"
+                                         Theme="{StaticResource M3CaptionButton}"
+                                         chrome:WindowDecorationProperties.ElementRole="CloseButton">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ Border#OutBorder">
+                                            <Setter Property="Background" Value="#C94F4F"/>
+                                            <Setter Property="BoxShadow" Value="0 1 2 0 #26000000"/>
+                                        </Style>
+                                    </Button.Styles>
+                                    <m3:SvgBox Width="12" Height="12"
+                                               PathData="{m3:Geometry {x:Static m3:Icons.Error}}"
+                                               Fill="{DynamicResource OnSurface}"/>
+                                </Button>
+                            </StackPanel>
+                        </Panel>
+                    </chrome:WindowDrawnDecorationsContent.Overlay>
+
+                    <chrome:WindowDrawnDecorationsContent.FullscreenPopover>
+                        <Panel Height="{TemplateBinding DefaultTitleBarHeight}"
+                               VerticalAlignment="Top"
+                               Background="{DynamicResource Surface}"
+                               chrome:WindowDecorationProperties.ElementRole="TitleBar">
+                            <StackPanel HorizontalAlignment="Right"
+                                        Orientation="Horizontal"
+                                         Margin="0 0 12 0">
+                                <Button x:Name="PART_PopoverCloseButton"
+                                        Theme="{StaticResource M3CaptionButton}"
+                                        chrome:WindowDecorationProperties.ElementRole="CloseButton">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ Border#OutBorder">
+                                            <Setter Property="Background" Value="#C94F4F"/>
+                                        </Style>
+                                    </Button.Styles>
+                                    <m3:SvgBox Width="12" Height="12"
+                                               PathData="{m3:Geometry {x:Static m3:Icons.Error}}"
+                                               Fill="{DynamicResource OnSurface}"/>
+                                </Button>
+                            </StackPanel>
+                        </Panel>
+                    </chrome:WindowDrawnDecorationsContent.FullscreenPopover>
+
+                </chrome:WindowDrawnDecorationsContent>
+            </templates:WindowDrawnDecorationsTemplate>
+        </Setter>
+
+        <Style Selector="^:has-shadow /template/ Panel#PART_UnderlayWrapper">
+            <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}"/>
+        </Style>
+        <Style Selector="^:has-shadow /template/ Panel#PART_OverlayWrapper">
+            <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}"/>
+        </Style>
+
+        <Style Selector="^:maximized /template/ Border#PART_WindowBorder">
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="BoxShadow" Value="0 0 0 0 Transparent"/>
+        </Style>
+
+        <Style Selector="^:fullscreen /template/ StackPanel#PART_OverlayPanel">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="MdWindowDecorations" TargetType="chrome:WindowDrawnDecorations" BasedOn="{StaticResource M3WindowDecorations}" />
+</ResourceDictionary>

@@ -3,82 +3,196 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:components="clr-namespace:BiliLive.Views.MainWindow.Pages.HomePage.Components"
-             mc:Ignorable="d" d:DesignWidth="329" d:DesignHeight="193"
-             Background="{DynamicResource SurfaceContainer}"
+             xmlns:m3="https://github.com/greepar/md3"
+             mc:Ignorable="d" d:DesignWidth="430" d:DesignHeight="330"
+             Background="Transparent"
              x:Class="BiliLive.Views.MainWindow.Pages.HomePage.Components.AreaSelectorView"
              x:DataType="components:AreaSelectorViewModel">
-    
+
     <Design.DataContext>
         <components:AreaSelectorViewModel/>
     </Design.DataContext>
-    
-    <Grid Margin="5" RowDefinitions="Auto,*">
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
-            <TextBlock Grid.Column="0" Text="选择分区" FontSize="16" FontWeight="Bold" Margin="10,10,0,5" />
-            <TextBlock Grid.Column="1" Margin="2,0,10,6"
-                       VerticalAlignment="Bottom"
-                       FontSize="12" Text="{Binding SelectedSubArea,StringFormat=[{0}]}"/>
-        </Grid>
-        <Grid Grid.Row="1">
-            <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding LoadAreasCommand.IsRunning }"/>
-       
-            <TextBlock IsVisible="{Binding !IsLogged}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">请先登录账号</TextBlock>
-          
-            <Grid RowDefinitions="Auto,*" IsVisible="{Binding !LoadAreasCommand.IsRunning}">
-                <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                    <ItemsControl ItemsSource="{Binding AreasGroup}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Classes="Text" 
-                                        Margin="5 0 5 0"
-                                        Command="{Binding SelectAreaCommand}">
-                                    <Button.Styles>
-                                        <Style ></Style>
-                                    </Button.Styles>
-                                    <TextBlock Foreground="{DynamicResource OnSurface}" 
-                                               Text="{Binding AreaName }" />
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-        
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,10,0,0">
-                    <ItemsControl ItemsSource="{Binding SubAreaGroup}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Classes="Outline" Margin="2 0 2 0" Command="{Binding SelectSubAreaCommand}"
-                                        CornerRadius="12" Height="30"
-                                        Background="{DynamicResource SurfaceContainerHighest}"
-                                        >
-                                    <TextBlock
-                                        Foreground="{DynamicResource OnSurface}"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding SubAreaName }" />
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-                
-              
 
-                
+    <UserControl.Resources>
+        <ControlTheme x:Key="AreaChipButton" TargetType="Button">
+            <Setter Property="MinWidth" Value="72"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{DynamicResource Surface}"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ChipRoot"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^ /template/ Border#ChipRoot">
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <BrushTransition Property="Background" Duration="0:0:0.12"/>
+                    </Transitions>
+                </Setter>
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#ChipRoot">
+                <Setter Property="Background" Value="{DynamicResource SurfaceContainerHigh}"/>
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ChipRoot">
+                <Setter Property="Background" Value="{DynamicResource SecondaryContainer}"/>
+            </Style>
+        </ControlTheme>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Button.areaPill, Button.subAreaPill">
+            <Setter Property="Theme" Value="{StaticResource AreaChipButton}"/>
+        </Style>
+        <Style Selector="Button.subAreaPill">
+            <Setter Property="MinWidth" Value="86"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerLow}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Border Width="430"
+            Height="330"
+            CornerRadius="20"
+            ClipToBounds="True"
+            Background="{DynamicResource Surface}">
+        <Grid RowDefinitions="Auto,Auto,Auto,*">
+            <Border Grid.Row="0"
+                    Height="78"
+                    Background="{DynamicResource PrimaryContainer}"
+                    Opacity="0.22"
+                    IsHitTestVisible="False"/>
+
+            <Grid Grid.Row="0" Margin="18 14 18 0" ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10">
+                    <Border Width="38" Height="38" CornerRadius="15" Background="{DynamicResource Primary}">
+                        <m3:SvgBox Width="19" Height="19"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Fill="{DynamicResource OnPrimary}"
+                                   PathData="{m3:Geometry {x:Static m3:Icons.Areas}}"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center" Spacing="1">
+                        <TextBlock Text="选择分区" FontSize="17" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedSubArea,StringFormat=当前：{0}}"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource OnSurfaceVariant}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                        Width="34" Height="34"
+                        CornerRadius="17"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Background="{DynamicResource SurfaceContainerHigh}"
+                        Theme="{StaticResource MdButton}"
+                        Command="{Binding RefreshAreasCommand}">
+                    <m3:SvgBox Width="16" Height="16"
+                               Fill="{DynamicResource OnSurface}"
+                               PathData="{m3:Geometry {x:Static m3:Icons.Restart}}"/>
+                </Button>
             </Grid>
 
-        </Grid>
-       
-    </Grid>
+            <TextBox Grid.Row="1"
+                     Height="38"
+                     Margin="16 8 16 0"
+                     CornerRadius="18"
+                     PlaceholderText="搜索分区，例如：原神 / CS2 / 电台"
+                     Text="{Binding SearchText}"/>
 
+            <Border Grid.Row="2" Margin="14 10 14 0" CornerRadius="18" Background="{DynamicResource SurfaceContainerLowest}">
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding AreasGroup}" Margin="6">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="6" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="areaPill"
+                                        Command="{Binding SelectAreaCommand}">
+                                    <TextBlock HorizontalAlignment="Center"
+                                               TextAlignment="Center"
+                                               Text="{Binding AreaName}" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+            <Grid Grid.Row="3" Margin="14" RowDefinitions="Auto,*">
+                <ProgressBar Grid.Row="0"
+                             Height="3"
+                             Margin="10 0"
+                             IsIndeterminate="True"
+                             IsVisible="{Binding LoadAreasCommand.IsRunning}"/>
+
+                <Border Grid.Row="1"
+                        CornerRadius="18"
+                        Background="{DynamicResource SurfaceContainer}">
+                    <Grid>
+                        <TextBlock IsVisible="{Binding !IsLogged}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource OnSurfaceVariant}"
+                                   Text="请先登录账号"/>
+
+                        <TextBlock IsVisible="{Binding !FilteredSubAreaGroup.Count}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource OnSurfaceVariant}"
+                                   Text="没有找到匹配的分区"/>
+
+                        <ScrollViewer IsVisible="{Binding !LoadAreasCommand.IsRunning}"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      Margin="10">
+                            <ItemsControl ItemsSource="{Binding FilteredSubAreaGroup}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Classes="subAreaPill"
+                                                Command="{Binding SelectSubAreaCommand}">
+                                            <TextBlock HorizontalAlignment="Center"
+                                                       TextAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Text="{Binding SubAreaName}" />
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
 </UserControl>

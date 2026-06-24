@@ -1,0 +1,168 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Material 3 ListBox / ListBoxItem ControlTheme.
+        Reference: https://m3.material.io/components/lists/specs
+
+        Composition:
+          * ListBox container is a transparent host - it carries no chrome of its own,
+            so it nests cleanly inside cards, drawers, and navigation rails.
+          * ListBoxItem is a 56dp single-line row using the M3 state-layer pattern:
+            a tinted Border ("PART_StateLayer") sits behind the content presenter and
+            ramps its opacity for hover (8%), pressed (10%), and selected (12%/16%)
+            states. The state layer also switches its tint between OnSurface (idle)
+            and Primary (selected / focused).
+          * When selected, the state layer becomes pill-shaped (M3ShapeExtraLarge =
+            28dp) so the row reads as an M3 navigation-list selection. Unselected
+            rows stay rectangular.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="16" Width="320">
+                <ListBox>
+                    <ListBoxItem>Inbox</ListBoxItem>
+                    <ListBoxItem>Outbox</ListBoxItem>
+                    <ListBoxItem IsSelected="True">Favorites</ListBoxItem>
+                    <ListBoxItem>Trash</ListBoxItem>
+                    <ListBoxItem IsEnabled="False">Disabled item</ListBoxItem>
+                </ListBox>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- ============================== -->
+    <!-- ListBoxItem                    -->
+    <!-- ============================== -->
+    <ControlTheme x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Height" Value="56" />
+        <Setter Property="Padding" Value="16,0,12,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <!-- Default rectangular shape; the :selected style swaps in the pill radius. -->
+        <Setter Property="CornerRadius" Value="0" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <!-- State layer: tinted overlay used for hover / pressed / selected / focus.
+                         Opacity is animated via pseudo-class selectors. The Background brush is
+                         flipped from OnSurface to Primary for selection-driven states. -->
+                    <Border Name="PART_StateLayer"
+                            Background="{DynamicResource OnSurface}"
+                            Opacity="0"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity"
+                                                  Duration="{StaticResource M3DurationShort2}"
+                                                  Easing="{StaticResource M3EasingStandard}" />
+                                <BrushTransition Property="Background"
+                                                 Duration="{StaticResource M3DurationShort2}" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      FontSize="{TemplateBinding FontSize}"
+                                      Padding="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- ===== Idle state-layer ramps (OnSurface tint) ===== -->
+        <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}" />
+        </Style>
+
+        <!-- ===== Focus visible (keyboard) - Primary tint at 12% ===== -->
+        <Style Selector="^:focus-visible /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.12" />
+        </Style>
+
+        <!-- ===== Selected (pill-shaped Primary state layer) ===== -->
+        <Style Selector="^:selected /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.12" />
+            <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraLarge}" />
+        </Style>
+        <Style Selector="^:selected:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.16" />
+            <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraLarge}" />
+        </Style>
+        <Style Selector="^:selected:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}" />
+            <Setter Property="Opacity" Value="0.20" />
+            <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraLarge}" />
+        </Style>
+
+        <!-- Selected: tint the foreground with the OnSurface "active" role (still readable
+             because the state layer is only 12-16% Primary). -->
+        <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        </Style>
+
+        <!-- ===== Disabled: no state layer, dim the content to 38% ===== -->
+        <Style Selector="^:disabled /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ============================== -->
+    <!-- ListBox container              -->
+    <!-- ============================== -->
+    <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollInertiaEnabled" Value="True" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Border"
+                        ClipToBounds="{TemplateBinding ClipToBounds}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ScrollViewer Name="PART_ScrollViewer"
+                                  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                  IsScrollInertiaEnabled="{TemplateBinding (ScrollViewer.IsScrollInertiaEnabled)}"
+                                  IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+                                  AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                  BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                  HorizontalSnapPointsType="{TemplateBinding (ScrollViewer.HorizontalSnapPointsType)}"
+                                  VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}">
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        Margin="{TemplateBinding Padding}" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

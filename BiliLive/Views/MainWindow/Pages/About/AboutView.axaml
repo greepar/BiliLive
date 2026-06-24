@@ -1,11 +1,11 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BiliLive.Views.MainWindow.Pages.About"
              xmlns:md3="https://github.com/greepar/md3"
              xmlns:biliLive="clr-namespace:BiliLive"
-             xmlns:res="clr-namespace:BiliLive.Resources"
+             xmlns:m3="https://github.com/greepar/md3"
              mc:Ignorable="d" d:DesignWidth="870" d:DesignHeight="535"
              x:Class="BiliLive.Views.MainWindow.Pages.About.AboutView"
              x:DataType="vm:AboutViewModel">
@@ -16,56 +16,105 @@
     
     <Grid VerticalAlignment="Stretch"
           HorizontalAlignment="Stretch"
-          RowDefinitions="*,Auto"
-          >
-        <Border Grid.Row="0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center">
-            <StackPanel Spacing="20">
-                <Border CornerRadius="12" Background="{DynamicResource SurfaceContainer}" Height="30">
-                    <StackPanel Orientation="Horizontal">
-                        <!-- 图标 -->
-                        <Border CornerRadius="12" Background="{DynamicResource Primary}" >
-                            <SvgBox Height="20" Width="20"
-                                    VerticalAlignment="Center" HorizontalAlignment="Center"
-                                    Fill="{DynamicResource InverseOnSurface}"
-                                    Margin="6 0 6 0" PathData="{res:Geometry {x:Static res:MdIcons.Notice}}"/>
+          RowDefinitions="*,Auto">
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Hidden">
+            <StackPanel Spacing="14" Margin="5 0 5 18" MaxWidth="720" HorizontalAlignment="Center">
+                <Border CornerRadius="22"
+                        Padding="26"
+                        Background="{DynamicResource SurfaceContainer}">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                        <Border Grid.RowSpan="3"
+                                Width="72" Height="72"
+                                CornerRadius="24"
+                                Background="{DynamicResource Primary}">
+                            <m3:SvgBox Height="34" Width="34"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Fill="{DynamicResource OnPrimary}"
+                                       PathData="{m3:Geometry {x:Static m3:Icons.Notice}}"/>
                         </Border>
 
-                        <TextBlock VerticalAlignment="Center" Margin="5 0 0 0">
-                            关于界面仍在设计中... 以下为开发测试组件展示
-                        </TextBlock>
-                    </StackPanel>
-                </Border>                
-                <StackPanel Orientation="Horizontal"
-                            Spacing="15">
-                    <!-- <ToggleSwitch></ToggleSwitch> -->
-                    <TextBox PlaceholderText="Title" Width="100" Text="hello"></TextBox>
-                    <Button Classes="Elevated"> Elevated</Button>
-                    <Button Classes="Outline"> Outlined</Button>
-                    <Button Classes="Tonal"> Tonal</Button>
-                    <Button Classes="Filled"> Filled</Button>
-                    <Button Classes="Text"> Text</Button>
-                </StackPanel>
-             
-                
-               <StackPanel Orientation="Horizontal">
-                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="170"
-                                 Stroke="{DynamicResource Primary}"
-                                 StrokeThickness="6"
-                                 IsRotating="True"/>
-                   <md3:ProgressRing Width="40" Height="40" Speed="180" SweepAngle="180"
-                                 Stroke="{DynamicResource Primary}"
-                                 StrokeThickness="6"
-                                 IsRotating="False"/>
-                   <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">Loading ....</TextBlock>
-                   <Button Margin="10 0 0 0" 
-                           Classes="Elevated"
-                           Command="{Binding GetLiveCookieCommand}">[测试] 获取直播姬Cookie登录</Button>
-               </StackPanel>
+                        <TextBlock Grid.Column="1"
+                                   Margin="20 2 0 0"
+                                   Text="BiliLive"
+                                   FontSize="30"
+                                   FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1"
+                                   Margin="20 4 0 0"
+                                   Foreground="{DynamicResource OnSurfaceVariant}"
+                                   Text="轻量的 B 站直播自动化工具，用于直播状态管理、定时任务和辅助操作。"
+                                   TextWrapping="Wrap"/>
+                        <StackPanel Grid.Row="2" Grid.Column="1"
+                                    Margin="20 16 0 0"
+                                    Orientation="Horizontal"
+                                    Spacing="10">
+                            <Button Classes="Filled"
+                                    Command="{Binding GetLiveCookieCommand}">
+                                获取直播姬 Cookie 登录
+                            </Button>
+                            <Button Classes="Tonal"
+                                    Command="{Binding OpenCurrentFolderCommand}"
+                                    IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }">
+                                打开运行目录
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                    <Border Grid.Column="0"
+                            CornerRadius="18"
+                            Padding="18"
+                            Background="{DynamicResource SurfaceContainerLow}">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="当前能力" FontSize="16" FontWeight="SemiBold"/>
+                            <TextBlock Foreground="{DynamicResource OnSurfaceVariant}" TextWrapping="Wrap">
+                                主页查看直播间状态、封面和推流信息；自动服务页配置定时直播、小号投喂和激励领取。
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1"
+                            CornerRadius="18"
+                            Padding="18"
+                            Background="{DynamicResource SurfaceContainerLow}">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="界面风格" FontSize="16" FontWeight="SemiBold"/>
+                            <WrapPanel>
+                                <Border CornerRadius="12" Padding="10 5" Margin="0 0 8 8" Background="{DynamicResource SecondaryContainer}">
+                                    <TextBlock Text="Material 3" FontSize="12"/>
+                                </Border>
+                                <Border CornerRadius="12" Padding="10 5" Margin="0 0 8 8" Background="{DynamicResource SecondaryContainer}">
+                                    <TextBlock Text="浅色 / 深色" FontSize="12"/>
+                                </Border>
+                                <Border CornerRadius="12" Padding="10 5" Margin="0 0 8 8" Background="{DynamicResource SecondaryContainer}">
+                                    <TextBlock Text="圆角卡片" FontSize="12"/>
+                                </Border>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border CornerRadius="18"
+                        Padding="18"
+                        Background="{DynamicResource SurfaceContainer}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <md3:ProgressRing Grid.Column="0"
+                                          Width="34" Height="34"
+                                          Speed="180"
+                                          SweepAngle="170"
+                                          Stroke="{DynamicResource Primary}"
+                                          StrokeThickness="5"
+                                          IsRotating="True"/>
+                        <StackPanel Grid.Column="1" Margin="14 0 0 0" Spacing="3">
+                            <TextBlock Text="后续计划" FontWeight="SemiBold"/>
+                            <TextBlock Foreground="{DynamicResource OnSurfaceVariant}"
+                                       Text="这里会继续补充版本信息、项目链接和更新日志。"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </StackPanel>
-     
-        </Border>
+        </ScrollViewer>
         
         <Border Grid.Row="1"
                 IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }"
@@ -84,7 +133,7 @@
                                 Command="{Binding OpenCurrentFolderCommand}"
                                 IsVisible="{ x:Static biliLive:BuildInfo.IsDebugMode }" >
                             <StackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Center">
-                                <SvgBox Height="18" Width="18" Margin="3 0 0 0" PathData="{res:Geometry {x:Static res:MdIcons.Windowed}}"/>
+                                <m3:SvgBox Height="18" Width="18" Margin="3 0 0 0" PathData="{m3:Geometry {x:Static m3:Icons.Windowed}}"/>
                                 <TextBlock VerticalAlignment="Center" FontSize="11">Open Runtime Folder</TextBlock>
                             </StackPanel>
                         </Button>

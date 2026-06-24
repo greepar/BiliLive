@@ -1,0 +1,359 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Material 3 ScrollBar / ScrollViewer / ScrollContentPresenter / ScrollBar-internal RepeatButton.
+
+        M3 has no formal scrollbar spec, so we follow the standard Material overlay pattern:
+          * Default thin (4 px) rail aligned to the right (vertical) or bottom (horizontal),
+            fully rounded.
+          * On hover or interaction the bar expands to 12 px and shows a faint OnSurface @ 4%
+            track behind the thumb.
+          * Thumb is OnSurface @ 40% by default, 60% on hover, 80% pressed.
+          * Line/page step buttons are kept around for Avalonia template completeness but are
+            invisible in the overlay style.
+
+        Important: this file does NOT override the global RepeatButton or Thumb themes.
+        Slider.axaml owns those. The two themes below use NAMED keys (M3ScrollBarLineButton,
+        M3ScrollBarPageButton, M3ScrollBarThumb) and are attached via Theme="..." on the
+        relevant elements inside the ScrollBar template.
+    -->
+
+    <Design.PreviewWith>
+        <Border Padding="24" Background="{DynamicResource Surface}">
+            <StackPanel Orientation="Horizontal" Spacing="32">
+                <!-- ScrollViewer with overflowing content. -->
+                <Border Width="220" Height="220"
+                        Background="{DynamicResource SurfaceContainer}"
+                        CornerRadius="{StaticResource M3ShapeSmall}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto"
+                                  Padding="12">
+                        <StackPanel Spacing="8" Width="320">
+                            <TextBlock Text="Item 1" />
+                            <TextBlock Text="Item 2" />
+                            <TextBlock Text="Item 3" />
+                            <TextBlock Text="Item 4" />
+                            <TextBlock Text="Item 5" />
+                            <TextBlock Text="Item 6" />
+                            <TextBlock Text="Item 7" />
+                            <TextBlock Text="Item 8" />
+                            <TextBlock Text="Item 9" />
+                            <TextBlock Text="Item 10" />
+                            <TextBlock Text="Item 11" />
+                            <TextBlock Text="Item 12" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+
+                <!-- Standalone scrollbars (AllowAutoHide=False so they stay visible). -->
+                <StackPanel Spacing="16">
+                    <ScrollBar Orientation="Horizontal" AllowAutoHide="False" Width="180" />
+                    <ScrollBar Orientation="Horizontal" AllowAutoHide="False" Width="180" IsEnabled="False" />
+                </StackPanel>
+                <ScrollBar Orientation="Vertical" AllowAutoHide="False" Height="180" />
+                <ScrollBar Orientation="Vertical" AllowAutoHide="False" Height="180" IsEnabled="False" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--
+        Line step buttons (PART_LineUpButton / PART_LineDownButton).
+        Required by the Avalonia ScrollBar template but invisible in the overlay style.
+    -->
+    <ControlTheme x:Key="M3ScrollBarLineButton" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsVisible" Value="False" />
+        <Setter Property="Width" Value="0" />
+        <Setter Property="Height" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        Page step buttons (PART_PageUpButton / PART_PageDownButton).
+        These fill the empty space on either side of the thumb so clicks on the rail
+        page-scroll. They have a transparent background so they only register hits.
+    -->
+    <ControlTheme x:Key="M3ScrollBarPageButton" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        Draggable thumb. Fully rounded OnSurface pill.
+        Opacity transitions on hover/press; the actual width/height (thin vs expanded)
+        is driven by the ScrollBar :expanded styles below.
+    -->
+    <ControlTheme x:Key="M3ScrollBarThumb" TargetType="Thumb">
+        <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="ThumbBorder"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{StaticResource M3ShapeFull}"
+                        Opacity="0.4">
+                    <Border.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity"
+                                              Duration="{StaticResource M3DurationShort2}"
+                                              Easing="{StaticResource M3EasingStandard}" />
+                        </Transitions>
+                    </Border.Transitions>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#ThumbBorder">
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#ThumbBorder">
+            <Setter Property="Opacity" Value="0.8" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#ThumbBorder">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        ScrollContentPresenter: passthrough. No template override, just defaults.
+        Avalonia provides built-in rendering for this presenter.
+    -->
+    <ControlTheme x:Key="{x:Type ScrollContentPresenter}" TargetType="ScrollContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="Arrow" />
+    </ControlTheme>
+
+    <!-- ScrollBar -->
+    <ControlTheme x:Key="{x:Type ScrollBar}" TargetType="ScrollBar">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="AllowAutoHide" Value="True" />
+
+        <!-- Vertical: the ScrollBar always reserves a 12 px column; the visible rail
+             starts thin (4 px) on the right edge and widens to 12 px when expanded. -->
+        <Style Selector="^:vertical">
+            <Setter Property="Width" Value="12" />
+            <Setter Property="MinWidth" Value="12" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel x:Name="PART_VerticalRoot" Background="{TemplateBinding Background}">
+                        <!-- Faint rail behind the thumb. Hidden until :expanded. -->
+                        <Border x:Name="TrackBackground"
+                                Background="{DynamicResource OnSurface}"
+                                Opacity="0"
+                                CornerRadius="{StaticResource M3ShapeFull}"
+                                HorizontalAlignment="Right"
+                                Width="4">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="{StaticResource M3DurationMedium2}"
+                                                      Easing="{StaticResource M3EasingStandard}" />
+                                    <DoubleTransition Property="Width"
+                                                      Duration="{StaticResource M3DurationMedium2}"
+                                                      Easing="{StaticResource M3EasingStandard}" />
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <RepeatButton Name="PART_LineUpButton"
+                                          Theme="{StaticResource M3ScrollBarLineButton}"
+                                          Grid.Row="0" />
+
+                            <Track Grid.Row="1"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}"
+                                   DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                   ViewportSize="{TemplateBinding ViewportSize}"
+                                   Orientation="{TemplateBinding Orientation}"
+                                   IsDirectionReversed="True">
+                                <Track.DecreaseButton>
+                                    <RepeatButton Name="PART_PageUpButton"
+                                                  Theme="{StaticResource M3ScrollBarPageButton}" />
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton Name="PART_PageDownButton"
+                                                  Theme="{StaticResource M3ScrollBarPageButton}" />
+                                </Track.IncreaseButton>
+                                <Thumb Theme="{StaticResource M3ScrollBarThumb}"
+                                       Width="4"
+                                       MinHeight="20"
+                                       HorizontalAlignment="Right">
+                                    <Thumb.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="Width"
+                                                              Duration="{StaticResource M3DurationMedium2}"
+                                                              Easing="{StaticResource M3EasingStandard}" />
+                                        </Transitions>
+                                    </Thumb.Transitions>
+                                </Thumb>
+                            </Track>
+
+                            <RepeatButton Name="PART_LineDownButton"
+                                          Theme="{StaticResource M3ScrollBarLineButton}"
+                                          Grid.Row="2" />
+                        </Grid>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+
+            <!-- Vertical :expanded: rail and thumb grow to 12 px, rail fades in to 4% OnSurface. -->
+            <Style Selector="^:expanded /template/ Border#TrackBackground">
+                <Setter Property="Opacity" Value="0.04" />
+                <Setter Property="Width" Value="12" />
+            </Style>
+            <Style Selector="^:expanded /template/ Thumb">
+                <Setter Property="Width" Value="12" />
+            </Style>
+        </Style>
+
+        <!-- Horizontal: mirror of vertical, anchored to the bottom edge. -->
+        <Style Selector="^:horizontal">
+            <Setter Property="Height" Value="12" />
+            <Setter Property="MinHeight" Value="12" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel x:Name="PART_HorizontalRoot" Background="{TemplateBinding Background}">
+                        <Border x:Name="TrackBackground"
+                                Background="{DynamicResource OnSurface}"
+                                Opacity="0"
+                                CornerRadius="{StaticResource M3ShapeFull}"
+                                VerticalAlignment="Bottom"
+                                Height="4">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="{StaticResource M3DurationMedium2}"
+                                                      Easing="{StaticResource M3EasingStandard}" />
+                                    <DoubleTransition Property="Height"
+                                                      Duration="{StaticResource M3DurationMedium2}"
+                                                      Easing="{StaticResource M3EasingStandard}" />
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <RepeatButton Name="PART_LineUpButton"
+                                          Theme="{StaticResource M3ScrollBarLineButton}"
+                                          Grid.Column="0" />
+
+                            <Track Grid.Column="1"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}"
+                                   DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                   ViewportSize="{TemplateBinding ViewportSize}"
+                                   Orientation="{TemplateBinding Orientation}">
+                                <Track.DecreaseButton>
+                                    <RepeatButton Name="PART_PageUpButton"
+                                                  Theme="{StaticResource M3ScrollBarPageButton}" />
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton Name="PART_PageDownButton"
+                                                  Theme="{StaticResource M3ScrollBarPageButton}" />
+                                </Track.IncreaseButton>
+                                <Thumb Theme="{StaticResource M3ScrollBarThumb}"
+                                       Height="4"
+                                       MinWidth="20"
+                                       VerticalAlignment="Bottom">
+                                    <Thumb.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="Height"
+                                                              Duration="{StaticResource M3DurationMedium2}"
+                                                              Easing="{StaticResource M3EasingStandard}" />
+                                        </Transitions>
+                                    </Thumb.Transitions>
+                                </Thumb>
+                            </Track>
+
+                            <RepeatButton Name="PART_LineDownButton"
+                                          Theme="{StaticResource M3ScrollBarLineButton}"
+                                          Grid.Column="2" />
+                        </Grid>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+
+            <!-- Horizontal :expanded: rail and thumb grow vertically to 12 px. -->
+            <Style Selector="^:expanded /template/ Border#TrackBackground">
+                <Setter Property="Opacity" Value="0.04" />
+                <Setter Property="Height" Value="12" />
+            </Style>
+            <Style Selector="^:expanded /template/ Thumb">
+                <Setter Property="Height" Value="12" />
+            </Style>
+        </Style>
+
+        <!-- Disabled: dim the rail to disabled-container opacity. -->
+        <Style Selector="^:disabled /template/ Border#TrackBackground">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+    </ControlTheme>
+
+    <!-- ScrollViewer: M3 overlay scrollbars sit on top of the content. -->
+    <ControlTheme x:Key="{x:Type ScrollViewer}" TargetType="ScrollViewer">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="AllowAutoHide" Value="True" />
+        <Setter Property="IsScrollInertiaEnabled" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                    <ScrollContentPresenter Name="PART_ContentPresenter"
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Background="{TemplateBinding Background}"
+                                            HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
+                                            VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
+                                            HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
+                                            VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
+                                            Padding="{TemplateBinding Padding}"
+                                            ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                        <ScrollContentPresenter.GestureRecognizers>
+                            <ScrollGestureRecognizer CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
+                                                     CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
+                                                     IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
+                        </ScrollContentPresenter.GestureRecognizers>
+                    </ScrollContentPresenter>
+                    <ScrollBar Name="PART_HorizontalScrollBar"
+                               Orientation="Horizontal"
+                               Grid.Row="1"
+                               Grid.Column="0" />
+                    <ScrollBar Name="PART_VerticalScrollBar"
+                               Orientation="Vertical"
+                               Grid.Row="0"
+                               Grid.Column="1" />
+                    <!-- Bottom-right corner cap. Kept transparent in M3 since both rails
+                         are floating overlays and don't need a separator chip. -->
+                    <Panel x:Name="PART_ScrollBarsSeparator"
+                           Grid.Row="1"
+                           Grid.Column="1"
+                           Background="Transparent" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- When AllowAutoHide is on, the content fills the entire grid and the
+             scrollbars float over it (true overlay behaviour). -->
+        <Style Selector="^[AllowAutoHide=True] /template/ ScrollContentPresenter#PART_ContentPresenter">
+            <Setter Property="Grid.ColumnSpan" Value="2" />
+            <Setter Property="Grid.RowSpan" Value="2" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

@@ -2,8 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="BiliLive.App"
              xmlns:local="using:BiliLive"
-             xmlns:m3="using:Material3.UI"
-             RequestedThemeVariant="Light">
+             xmlns:behaviors="clr-namespace:BiliLive.Behaviors"
+             xmlns:m3="https://github.com/greepar/md3"
+             RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
@@ -34,6 +35,12 @@
     
     <Application.Resources>
         <ResourceDictionary>
+            
+            <FontFamily x:Key="Xiaolai">
+                avares://BiliLive/Assets/Fonts/Xiaolai-Regular.ttf#Xiaolai
+            </FontFamily>
+
+            
             <FontFamily x:Key="NotoRegular">
                 avares://BiliLive/Assets/Fonts/NotoSans-Regular.ttf#Noto Sans,
                 avares://BiliLive/Assets/Fonts/NotoSansSC-Regular.ttf#Noto Sans SC Regular
@@ -53,20 +60,13 @@
             </FontFamily>
             
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://Material3.UI/Material3Res.axaml" />
-                <ResourceInclude Source="/Resources/MDColors.axaml" />
-                <ResourceInclude Source="/Views/MainWindow/Controls/PageSwitchButton.axaml"/>
-                <ResourceInclude Source="/Resources/Themes/MdCheckBox.axaml" />
-                <ResourceInclude Source="/Resources/Themes/MdButton.axaml"/>
-                <ResourceInclude Source="/Resources/Themes/MdToggleButton.axaml"/>
-                <ResourceInclude Source="/Resources/Themes/MdWindowDecorations.axaml"/>
+                <!-- All M3 themes are now provided by <m3:Material3Theme/> below. -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
     
     <Application.Styles>
-        <FluentTheme/>
-        <m3:Material3 />
+        <m3:Material3Theme />
 
         <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
             <Setter Property="Background" Value="{DynamicResource Primary}" />
@@ -75,45 +75,18 @@
         <Style Selector="Window,UserControl">
             <Setter Property="FontFamily" Value="{StaticResource NotoRegular}"/>
         </Style>
-        
-        <Style Selector="Border">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
-                </Transitions>
-            </Setter>
-        </Style>
-        <Style Selector="StackPanel">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
-                </Transitions>
-            </Setter>
-        </Style>
-        <Style Selector="Grid">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
-                </Transitions>
-            </Setter>
-        </Style>
+
         <Style Selector="TextBox">
             <Setter Property="Transitions">
                 <Transitions>
-                    <!-- <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/> -->
-                    <!-- <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/> -->
-                    <!-- <BrushTransition Property="BorderBrush" Easing="CubicEaseInOut" Duration="0.3"/> -->
                 </Transitions>
             </Setter>
         </Style>
-        <Style Selector="TextBlock">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/>
-                </Transitions>
-            </Setter>
+        <Style Selector="ScrollViewer">
+            <Setter Property="behaviors:SmoothScrollBehavior.IsEnabled" Value="True"/>
+            <Setter Property="IsScrollInertiaEnabled" Value="True"/>
         </Style>
-        <Style Selector="SvgBox">
+        <Style Selector="m3|SvgBox">
             <Setter Property="Transitions">
                 <Transitions>
                     <BrushTransition Property="Fill" Easing="CubicEaseInOut" Duration="0.3"/>

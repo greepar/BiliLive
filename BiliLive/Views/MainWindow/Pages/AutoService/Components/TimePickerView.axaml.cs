@@ -1,5 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia.Animation;
+using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
 {
@@ -8,6 +11,29 @@ namespace BiliLive.Views.MainWindow.Pages.AutoService.Components
         public TimePickerView()
         {
             InitializeComponent();
+            // Each time this control is added to a visual tree (i.e. the host
+            // Flyout opens), kick the entrance transition by setting the
+            // RenderTransform / Opacity to their resting values. The Border's
+            // Transitions definition handles the easing.
+            AttachedToVisualTree += (_, _) =>
+            {
+                if (this.FindControl<Border>("RootCard") is { } card)
+                {
+                    // Reset to the "from" state instantly...
+                    card.Opacity = 0;
+                    card.RenderTransform =
+                        TransformOperations.Parse("scale(0.92) translateY(-12px)");
+
+                    // ...then schedule the "to" state on the next layout pass
+                    // so the transitions get a chance to interpolate.
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        card.Opacity = 1;
+                        card.RenderTransform =
+                            TransformOperations.Parse("scale(1) translateY(0)");
+                    }, Avalonia.Threading.DispatcherPriority.Background);
+                }
+            };
         }
 
         private void ClockCanvas_PointerPressed(object? sender, PointerPressedEventArgs e)

@@ -6,7 +6,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace Material3.UI.Controls.CustomControl;
+namespace Material3.UI.Controls;
 
 
 

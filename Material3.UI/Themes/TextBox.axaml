@@ -1,0 +1,265 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Material 3 TextBox ControlTheme.
+        Reference: https://m3.material.io/components/text-fields/specs
+
+        Variants:
+          * default                                 — compact, M3 colored, NO floating label
+                                                       (drop-in replacement that respects whatever
+                                                        Height / Padding / CornerRadius the consumer sets)
+          * Classes="Filled"                        — full M3 filled spec (56dp + floating label)
+          * Classes="Outlined"                      — full M3 outlined spec (56dp + floating label + notch)
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="16" Width="280">
+                <TextBlock Text="default (compact)" Foreground="{DynamicResource OnSurface}" />
+                <TextBox PlaceholderText="Search..." />
+                <TextBox PlaceholderText="Search..." Text="default value" />
+                <TextBox PlaceholderText="Search..." Height="30" CornerRadius="12" />
+
+                <TextBlock Text="Filled (full M3)" Foreground="{DynamicResource OnSurface}" Margin="0,12,0,0"/>
+                <TextBox Classes="Filled" PlaceholderText="Label" />
+                <TextBox Classes="Filled" PlaceholderText="Label" Text="Filled value" />
+
+                <TextBlock Text="Outlined (full M3)" Foreground="{DynamicResource OnSurface}" Margin="0,12,0,0"/>
+                <TextBox Classes="Outlined" PlaceholderText="Label" />
+                <TextBox Classes="Outlined" PlaceholderText="Label" Text="Outlined value" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- =========================================================================
+         Default TextBox (compact)
+         ========================================================================= -->
+    <ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource Primary}"/>
+        <Setter Property="SelectionBrush" Value="{DynamicResource Primary}"/>
+        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource OnPrimary}"/>
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_BorderElement"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <DockPanel LastChildFill="True"
+                               Margin="{TemplateBinding Padding}">
+                        <ContentPresenter Name="PART_InnerLeftContent"
+                                          DockPanel.Dock="Left"
+                                          VerticalAlignment="Center"
+                                          IsVisible="{TemplateBinding InnerLeftContent, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                          Content="{TemplateBinding InnerLeftContent}"/>
+                        <ContentPresenter Name="PART_InnerRightContent"
+                                          DockPanel.Dock="Right"
+                                          VerticalAlignment="Center"
+                                          IsVisible="{TemplateBinding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                          Content="{TemplateBinding InnerRightContent}"/>
+                        <ScrollViewer Name="PART_ScrollViewer"
+                                      AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                      BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                      HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                      IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                      VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Panel>
+                                <TextBlock Name="PART_Watermark"
+                                           Text="{TemplateBinding Watermark}"
+                                           Foreground="{DynamicResource OnSurfaceVariant}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           IsHitTestVisible="False"
+                                           IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                <TextBlock Name="PART_PlaceholderText"
+                                           Text="{TemplateBinding PlaceholderText}"
+                                           Foreground="{DynamicResource OnSurfaceVariant}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           IsHitTestVisible="False"
+                                           IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                <TextPresenter Name="PART_TextPresenter"
+                                               Text="{TemplateBinding Text, Mode=TwoWay}"
+                                               CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                               CaretBrush="{TemplateBinding CaretBrush}"
+                                               CaretIndex="{TemplateBinding CaretIndex}"
+                                               LineHeight="{TemplateBinding LineHeight}"
+                                               LetterSpacing="{TemplateBinding LetterSpacing}"
+                                               PasswordChar="{TemplateBinding PasswordChar}"
+                                               RevealPassword="{TemplateBinding RevealPassword}"
+                                               SelectionBrush="{TemplateBinding SelectionBrush}"
+                                               SelectionEnd="{TemplateBinding SelectionEnd}"
+                                               SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                               SelectionStart="{TemplateBinding SelectionStart}"
+                                               TextAlignment="{TemplateBinding TextAlignment}"
+                                               TextWrapping="{TemplateBinding TextWrapping}"
+                                               VerticalAlignment="Center"/>
+                            </Panel>
+                            <ScrollViewer.Styles>
+                                <Style Selector="ScrollContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Cursor" Value="IBeam"/>
+                                </Style>
+                            </ScrollViewer.Styles>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Hover -->
+        <Style Selector="^:pointerover:not(:focus) /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHigh}"/>
+        </Style>
+
+        <!-- Disabled -->
+        <Style Selector="^:disabled /template/ Border#PART_BorderElement">
+            <Setter Property="Opacity" Value="0.38"/>
+        </Style>
+
+        <!-- =========================================================================
+             Filled variant — full M3 spec
+             ========================================================================= -->
+        <Style Selector="^.Filled">
+            <Setter Property="Height" Value="56"/>
+            <Setter Property="MinHeight" Value="56"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighest}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurfaceVariant}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmallTop}"/>
+            <Setter Property="Padding" Value="16,24,16,8"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid>
+                        <Border Name="PART_FillElement"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Border Name="PART_BorderElement"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <DockPanel Name="PART_ContentRoot"
+                                   LastChildFill="True"
+                                   Margin="{TemplateBinding Padding}">
+                            <ContentPresenter Name="PART_InnerLeftContent"
+                                              DockPanel.Dock="Left"
+                                              VerticalAlignment="Center"
+                                              IsVisible="{TemplateBinding InnerLeftContent, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                              Content="{TemplateBinding InnerLeftContent}"/>
+                            <ContentPresenter Name="PART_InnerRightContent"
+                                              DockPanel.Dock="Right"
+                                              VerticalAlignment="Center"
+                                              IsVisible="{TemplateBinding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                              Content="{TemplateBinding InnerRightContent}"/>
+                            <ScrollViewer Name="PART_ScrollViewer"
+                                          AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                          HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                          VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                                <TextPresenter Name="PART_TextPresenter"
+                                               Text="{TemplateBinding Text, Mode=TwoWay}"
+                                               CaretBrush="{TemplateBinding CaretBrush}"
+                                               CaretIndex="{TemplateBinding CaretIndex}"
+                                               PasswordChar="{TemplateBinding PasswordChar}"
+                                               RevealPassword="{TemplateBinding RevealPassword}"
+                                               SelectionBrush="{TemplateBinding SelectionBrush}"
+                                               SelectionEnd="{TemplateBinding SelectionEnd}"
+                                               SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                               SelectionStart="{TemplateBinding SelectionStart}"
+                                               TextAlignment="{TemplateBinding TextAlignment}"
+                                               TextWrapping="{TemplateBinding TextWrapping}"
+                                               VerticalAlignment="Center"/>
+                            </ScrollViewer>
+                        </DockPanel>
+                        <Border Name="PART_FloatingLabel"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                IsHitTestVisible="False"
+                                Padding="0"
+                                RenderTransformOrigin="0%,0%">
+                            <Border.IsVisible>
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                         Path="PlaceholderText"
+                                         Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+                            </Border.IsVisible>
+                            <Border.RenderTransform>
+                                <TransformOperations>translate(16px, 18px) scale(1)</TransformOperations>
+                            </Border.RenderTransform>
+                            <Border.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform"
+                                                                   Duration="{StaticResource M3DurationShort2}"
+                                                                   Easing="{StaticResource M3EasingStandard}"/>
+                                </Transitions>
+                            </Border.Transitions>
+                            <TextBlock Name="PART_FloatingLabelText"
+                                       Text="{TemplateBinding PlaceholderText}"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource OnSurfaceVariant}"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="^.Filled:focus /template/ Border#PART_FloatingLabel">
+            <Setter Property="RenderTransform">
+                <TransformOperations>translate(16px, 8px) scale(0.75)</TransformOperations>
+            </Setter>
+        </Style>
+        <Style Selector="^.Filled:not(:empty) /template/ Border#PART_FloatingLabel">
+            <Setter Property="RenderTransform">
+                <TransformOperations>translate(16px, 8px) scale(0.75)</TransformOperations>
+            </Setter>
+        </Style>
+        <Style Selector="^.Filled:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+        </Style>
+        <Style Selector="^.Filled:focus /template/ TextBlock#PART_FloatingLabelText">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        </Style>
+        <Style Selector="^.Filled:pointerover:not(:focus) /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}"/>
+        </Style>
+
+        <!-- =========================================================================
+             Outlined variant — full M3 spec
+             ========================================================================= -->
+        <Style Selector="^.Outlined">
+            <Setter Property="Height" Value="56"/>
+            <Setter Property="MinHeight" Value="56"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Outline}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmall}"/>
+            <Setter Property="Padding" Value="16,8"/>
+        </Style>
+        <Style Selector="^.Outlined:pointerover:not(:focus) /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="^.Outlined:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource Primary}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

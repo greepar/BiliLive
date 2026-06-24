@@ -13,9 +13,7 @@ public partial class AltManager : Window
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is Button && DoneBtn.IsFocused)
-        { }
-        else
+        if (!ReferenceEquals(sender, DoneBtn))
         {
             if (DataContext is AltManagerViewModel vm)
             {

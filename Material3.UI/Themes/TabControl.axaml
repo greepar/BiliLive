@@ -1,0 +1,438 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Material 3 TabControl / TabItem / TabStrip / TabStripItem.
+        Spec: https://m3.material.io/components/tabs/specs
+
+        Primary tabs (top placement, the M3 default for TabControl):
+          * 48dp tall row, 16dp horizontal padding per item.
+          * Strip carries a 1dp OutlineVariant divider along its trailing edge so the
+            row reads as a tab bar regardless of the surface it sits on.
+          * Selected indicator is a 3dp tall fully-rounded pill in Primary, painted
+            into the IndicatorTemplate slot on PART_SelectedPipe so callers can
+            override it without re-templating the item.
+          * State layer follows the M3 token table (hover 8%, pressed 10% OnSurface).
+          * Disabled content sinks to 38% to look inert.
+
+        TabStrip / TabStripItem reuse the same visual vocabulary as a horizontal
+        flow of TabItems so consumers can build secondary M3 tab bars without a
+        full TabControl content host.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="32" Width="520">
+                <TabControl>
+                    <TabItem Header="Overview">
+                        <Border Background="{DynamicResource SurfaceContainerLow}"
+                                CornerRadius="{StaticResource M3ShapeMedium}"
+                                Height="120" Padding="16">
+                            <TextBlock Text="Overview content"
+                                       Foreground="{DynamicResource OnSurface}"/>
+                        </Border>
+                    </TabItem>
+                    <TabItem Header="Specs">
+                        <Border Background="{DynamicResource SurfaceContainerLow}"
+                                CornerRadius="{StaticResource M3ShapeMedium}"
+                                Height="120" Padding="16">
+                            <TextBlock Text="Specs content"
+                                       Foreground="{DynamicResource OnSurface}"/>
+                        </Border>
+                    </TabItem>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+
+                <TabStrip>
+                    <TabStripItem>Music</TabStripItem>
+                    <TabStripItem IsSelected="True">Movies</TabStripItem>
+                    <TabStripItem>Books</TabStripItem>
+                    <TabStripItem IsEnabled="False">Disabled</TabStripItem>
+                </TabStrip>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- ===== Shared design tokens for primary tabs ===== -->
+    <x:Double x:Key="M3TabItemMinHeight">48</x:Double>
+    <x:Double x:Key="M3TabItemHeight">48</x:Double>
+    <Thickness x:Key="M3TabItemPadding">16,0</Thickness>
+    <x:Double x:Key="M3TabItemFontSize">14</x:Double>
+    <x:Double x:Key="M3TabItemPipeThickness">3</x:Double>
+    <x:Double x:Key="M3TabItemVerticalPipeWidth">3</x:Double>
+    <x:Double x:Key="M3TabItemVerticalPipeHeight">24</x:Double>
+
+    <!-- =========================================================
+         TabItem (Primary tab)
+         ========================================================= -->
+    <ControlTheme x:Key="{x:Type TabItem}" TargetType="TabItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="{StaticResource M3TabItemFontSize}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Padding" Value="{StaticResource M3TabItemPadding}"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="MinHeight" Value="{StaticResource M3TabItemMinHeight}"/>
+        <Setter Property="Height" Value="{StaticResource M3TabItemHeight}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <!-- Default indicator: 3dp pill in Primary, hugged into PART_SelectedPipe. -->
+        <Setter Property="IndicatorTemplate">
+            <DataTemplate>
+                <Border Background="{DynamicResource Primary}"
+                        CornerRadius="{StaticResource M3ShapeFull}"
+                        Height="{StaticResource M3TabItemPipeThickness}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
+            </DataTemplate>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_LayoutRoot"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Panel>
+                            <!-- M3 state layer: tinted overlay that ramps opacity for hover / pressed. -->
+                            <Border Name="PART_StateLayer"
+                                    Background="{DynamicResource OnSurface}"
+                                    Opacity="0"
+                                    IsHitTestVisible="False">
+                                <Border.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Opacity"
+                                                          Duration="{StaticResource M3DurationShort2}"
+                                                          Easing="{StaticResource M3EasingStandard}"/>
+                                    </Transitions>
+                                </Border.Transitions>
+                            </Border>
+
+                            <StackPanel Name="PART_HeaderPanel"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Spacing="8">
+                                <ContentPresenter Name="PART_IconPresenter"
+                                                  Content="{TemplateBinding Icon}"
+                                                  ContentTemplate="{TemplateBinding IconTemplate}"
+                                                  Width="20" Height="20"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                <ContentPresenter Name="PART_ContentPresenter"
+                                                  Content="{TemplateBinding Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                  FontFamily="{TemplateBinding FontFamily}"
+                                                  FontSize="{TemplateBinding FontSize}"
+                                                  FontWeight="{TemplateBinding FontWeight}"
+                                                  Padding="{TemplateBinding Padding}"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"/>
+                            </StackPanel>
+                        </Panel>
+                    </Border>
+
+                    <!-- Selection indicator host. The IndicatorTemplate decides the pill's shape. -->
+                    <ContentPresenter Name="PART_SelectedPipe"
+                                      Content="{TemplateBinding DataContext}"
+                                      ContentTemplate="{TemplateBinding IndicatorTemplate}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Bottom"
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Stretch"
+                                      Height="{StaticResource M3TabItemPipeThickness}"
+                                      IsHitTestVisible="False"
+                                      IsVisible="False"/>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- ===== State layer pseudo-classes ===== -->
+        <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <!-- Selected: switch foreground to Primary, surface the indicator. -->
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        </Style>
+        <Style Selector="^:selected /template/ ContentPresenter#PART_SelectedPipe">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <!-- Selected hover/press use the Primary tint to communicate active affordance. -->
+        <Style Selector="^:selected:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:selected:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <!-- Disabled content sinks to 38% per M3 disabled token. -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+        <Style Selector="^:disabled /template/ StackPanel#PART_HeaderPanel">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+
+        <!-- ===== Placement-specific indicator geometry ===== -->
+        <!-- Top / Bottom: 3dp pill stretched horizontally along the strip edge. -->
+        <Style Selector="^[TabStripPlacement=Top] /template/ ContentPresenter#PART_SelectedPipe">
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Height" Value="{StaticResource M3TabItemPipeThickness}"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Bottom] /template/ ContentPresenter#PART_SelectedPipe">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Height" Value="{StaticResource M3TabItemPipeThickness}"/>
+        </Style>
+
+        <!-- Left / Right: 3dp pill rotated to a vertical orientation. -->
+        <Style Selector="^[TabStripPlacement=Left]">
+            <Setter Property="IndicatorTemplate">
+                <DataTemplate>
+                    <Border Background="{DynamicResource Primary}"
+                            CornerRadius="{StaticResource M3ShapeFull}"
+                            Width="{StaticResource M3TabItemVerticalPipeWidth}"
+                            Height="{StaticResource M3TabItemVerticalPipeHeight}"/>
+                </DataTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Left] /template/ ContentPresenter#PART_SelectedPipe">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="{StaticResource M3TabItemVerticalPipeWidth}"/>
+            <Setter Property="Height" Value="{StaticResource M3TabItemVerticalPipeHeight}"/>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Right]">
+            <Setter Property="IndicatorTemplate">
+                <DataTemplate>
+                    <Border Background="{DynamicResource Primary}"
+                            CornerRadius="{StaticResource M3ShapeFull}"
+                            Width="{StaticResource M3TabItemVerticalPipeWidth}"
+                            Height="{StaticResource M3TabItemVerticalPipeHeight}"/>
+                </DataTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Right] /template/ ContentPresenter#PART_SelectedPipe">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="{StaticResource M3TabItemVerticalPipeWidth}"/>
+            <Setter Property="Height" Value="{StaticResource M3TabItemVerticalPipeHeight}"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =========================================================
+         TabControl
+         ========================================================= -->
+    <ControlTheme x:Key="{x:Type TabControl}" TargetType="TabControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                    <DockPanel>
+                        <!-- Tab strip: dock to the placement edge. The 1dp OutlineVariant divider
+                             along the inward edge gives the strip its M3 tab bar appearance. -->
+                        <Border Name="PART_TabStrip"
+                                DockPanel.Dock="{TemplateBinding TabStripPlacement}"
+                                Background="Transparent"
+                                BorderBrush="{DynamicResource OutlineVariant}"
+                                BorderThickness="0,0,0,1">
+                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                        </Border>
+                        <Panel ClipToBounds="True">
+                            <ContentPresenter Name="PART_SelectedContentHost2"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              IsVisible="False"/>
+                            <ContentPresenter Name="PART_SelectedContentHost"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Panel>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- The strip's divider edge depends on the placement: we always paint along
+             the edge that faces the content host. -->
+        <Style Selector="^[TabStripPlacement=Top] /template/ Border#PART_TabStrip">
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Bottom] /template/ Border#PART_TabStrip">
+            <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Left] /template/ Border#PART_TabStrip">
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Right] /template/ Border#PART_TabStrip">
+            <Setter Property="BorderThickness" Value="1,0,0,0"/>
+        </Style>
+
+        <!-- Vertical strips need a vertical WrapPanel to flow items down. -->
+        <Style Selector="^[TabStripPlacement=Left] /template/ ItemsPresenter#PART_ItemsPresenter > WrapPanel">
+            <Setter Property="Orientation" Value="Vertical"/>
+        </Style>
+        <Style Selector="^[TabStripPlacement=Right] /template/ ItemsPresenter#PART_ItemsPresenter > WrapPanel">
+            <Setter Property="Orientation" Value="Vertical"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =========================================================
+         TabStripItem (mirrors TabItem visuals, no Icon slot)
+         ========================================================= -->
+    <ControlTheme x:Key="{x:Type TabStripItem}" TargetType="TabStripItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariant}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="{StaticResource M3TabItemFontSize}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Padding" Value="{StaticResource M3TabItemPadding}"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="MinHeight" Value="{StaticResource M3TabItemMinHeight}"/>
+        <Setter Property="Height" Value="{StaticResource M3TabItemHeight}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel>
+                        <Border Name="PART_StateLayer"
+                                Background="{DynamicResource OnSurface}"
+                                Opacity="0"
+                                IsHitTestVisible="False">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="{StaticResource M3DurationShort2}"
+                                                      Easing="{StaticResource M3EasingStandard}"/>
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          FontFamily="{TemplateBinding FontFamily}"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          FontWeight="{TemplateBinding FontWeight}"
+                                          Padding="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                        <Border Name="PART_SelectedPipe"
+                                Background="{DynamicResource Primary}"
+                                CornerRadius="{StaticResource M3ShapeFull}"
+                                Height="{StaticResource M3TabItemPipeThickness}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Bottom"
+                                IsHitTestVisible="False"
+                                IsVisible="False"/>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        </Style>
+        <Style Selector="^:selected /template/ Border#PART_SelectedPipe">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <Style Selector="^:selected:pointerover /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:selected:pressed /template/ Border#PART_StateLayer">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PART_StateLayer">
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!-- =========================================================
+         TabStrip
+         ========================================================= -->
+    <ControlTheme x:Key="{x:Type TabStrip}" TargetType="TabStrip">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OutlineVariant}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

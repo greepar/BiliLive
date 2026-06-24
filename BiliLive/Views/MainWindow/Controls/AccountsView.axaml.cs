@@ -13,11 +13,11 @@ namespace BiliLive.Views.MainWindow.Controls;
 public partial class AccountsView : UserControl
 {
     private CancellationTokenSource? _animationCts;
-    private bool _isTargetVisible = true; // 目标元素的初始可见状态
+    private bool _isTargetVisible = true; // 当前显示账号信息页
 
-    private readonly Animation _translateAnim = new Animation
+    private readonly Animation _slideLeftAnimation = new Animation
     {
-        Duration = TimeSpan.FromMilliseconds(300),
+        Duration = TimeSpan.FromMilliseconds(220),
         Easing = new ExponentialEaseOut(),
         FillMode = FillMode.Forward,
         Children =
@@ -27,15 +27,33 @@ public partial class AccountsView : UserControl
                 Cue = new Cue(1d),
                 Setters =
                 {
-                    new Setter(TranslateTransform.XProperty, 180.0)
+                    new Setter(TranslateTransform.XProperty, -18.0)
                 }
             }
         }
     };
-    
-    private readonly Animation _backAnimation = new Animation
+
+    private readonly Animation _slideRightAnimation = new Animation
     {
-        Duration = TimeSpan.FromMilliseconds(300),
+        Duration = TimeSpan.FromMilliseconds(220),
+        Easing = new ExponentialEaseOut(),
+        FillMode = FillMode.Forward,
+        Children =
+        {
+            new KeyFrame
+            {
+                Cue = new Cue(1d),
+                Setters =
+                {
+                    new Setter(TranslateTransform.XProperty, 18.0)
+                }
+            }
+        }
+    };
+
+    private readonly Animation _resetAnimation = new Animation
+    {
+        Duration = TimeSpan.FromMilliseconds(220),
         Easing = new ExponentialEaseOut(),
         FillMode = FillMode.Forward,
         Children =
@@ -70,27 +88,20 @@ public partial class AccountsView : UserControl
             if (_isTargetVisible)
             {
                 _isTargetVisible = false;
-                
-                // 并行播放
-                QrLoginBorder.Width = 225;
-                QrLoginBorder.Height = 145;
+
                 await Task.WhenAll(
-                    _translateAnim.RunAsync(AccountBorder, _animationCts.Token),
-                    _backAnimation.RunAsync(QrLoginBorder, _animationCts.Token)
+                    _slideLeftAnimation.RunAsync(AccountBorder, _animationCts.Token),
+                    _resetAnimation.RunAsync(QrLoginBorder, _animationCts.Token)
                 );
-                
             }
             else
             {
                 _isTargetVisible = true;
-                
-                QrLoginBorder.Width = 219;
-                QrLoginBorder.Height = 135;
+
                 await Task.WhenAll(
-                    _translateAnim.RunAsync(QrLoginBorder, _animationCts.Token),
-                    _backAnimation.RunAsync(AccountBorder, _animationCts.Token)
+                    _slideRightAnimation.RunAsync(QrLoginBorder, _animationCts.Token),
+                    _resetAnimation.RunAsync(AccountBorder, _animationCts.Token)
                 );
-                
             }
         }
         catch (OperationCanceledException)

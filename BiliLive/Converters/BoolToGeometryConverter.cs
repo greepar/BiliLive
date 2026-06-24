@@ -3,7 +3,7 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using BiliLive.Resources;
+using Material3.UI.Controls;
 
 namespace BiliLive.Converters;
 
@@ -12,8 +12,8 @@ public class BoolToGeometryConverter : MarkupExtension, IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is bool b)
-            return b ? Geometry.Parse(MdIcons.Check) : Geometry.Parse(MdIcons.Error); 
-        return Geometry.Parse(MdIcons.Minimize);
+            return b ? Geometry.Parse(Icons.Check) : Geometry.Parse(Icons.Error); 
+        return Geometry.Parse(Icons.Minimize);
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

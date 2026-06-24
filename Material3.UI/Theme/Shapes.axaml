@@ -1,0 +1,35 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Material 3 shape scale.
+        Reference: https://m3.material.io/styles/shape/shape-scale-tokens.
+
+        Each token is exposed both as a CornerRadius value (for use with
+        CornerRadius="{StaticResource ...}") and as a x:Double scalar
+        (for layout calculations or rectangle clipping).
+    -->
+
+    <CornerRadius x:Key="M3ShapeNone">0</CornerRadius>
+    <CornerRadius x:Key="M3ShapeExtraSmall">4</CornerRadius>
+    <CornerRadius x:Key="M3ShapeSmall">8</CornerRadius>
+    <CornerRadius x:Key="M3ShapeMedium">12</CornerRadius>
+    <CornerRadius x:Key="M3ShapeLarge">16</CornerRadius>
+    <CornerRadius x:Key="M3ShapeExtraLarge">28</CornerRadius>
+    <!-- Pill / circle shape: any value larger than half the control's largest dimension -->
+    <CornerRadius x:Key="M3ShapeFull">9999</CornerRadius>
+
+    <x:Double x:Key="M3ShapeNoneRadius">0</x:Double>
+    <x:Double x:Key="M3ShapeExtraSmallRadius">4</x:Double>
+    <x:Double x:Key="M3ShapeSmallRadius">8</x:Double>
+    <x:Double x:Key="M3ShapeMediumRadius">12</x:Double>
+    <x:Double x:Key="M3ShapeLargeRadius">16</x:Double>
+    <x:Double x:Key="M3ShapeExtraLargeRadius">28</x:Double>
+
+    <!-- Asymmetric shapes used by certain components (e.g. dialog top corners) -->
+    <CornerRadius x:Key="M3ShapeExtraSmallTop">4 4 0 0</CornerRadius>
+    <CornerRadius x:Key="M3ShapeSmallTop">8 8 0 0</CornerRadius>
+    <CornerRadius x:Key="M3ShapeMediumTop">12 12 0 0</CornerRadius>
+    <CornerRadius x:Key="M3ShapeLargeTop">16 16 0 0</CornerRadius>
+    <CornerRadius x:Key="M3ShapeExtraLargeTop">28 28 0 0</CornerRadius>
+
+</ResourceDictionary>

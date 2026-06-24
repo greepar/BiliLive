@@ -30,7 +30,7 @@
 
 <!--    Debug时添加包-->
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-        <PackageReference Include="HotAvalonia" Version="3.1.0" PrivateAssets="All" Publish="True" />
+        <PackageReference Include="HotAvalonia" Version="3.1.1" PrivateAssets="All" Publish="True" />
         <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.0.3" PrivateAssets="All" />
 <!--        <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.1.0" />-->
     </ItemGroup>
@@ -38,8 +38,8 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="12.0.3" />
         <PackageReference Include="Avalonia.Desktop" Version="12.0.3" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3" />
-        <PackageReference Include="Avalonia.Themes.Simple" Version="12.0.3" />
+        <PackageReference Include="StaticLink.Avalonia" Version="3.119.2-7151.10" />
+        <PackageReference Include="StaticLink.Avalonia.Native" Version="12.0.3.1" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
         <PackageReference Include="ViewLocator.Generator" Version="2025.8.4.737-manual">

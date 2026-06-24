@@ -1,0 +1,77 @@
+<Styles x:Class="Material3.UI.Material3Theme"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Design tokens -->
+                <ResourceInclude Source="avares://Material3.UI/Theme/Colors.axaml" />
+                <ResourceInclude Source="avares://Material3.UI/Theme/Shapes.axaml" />
+                <ResourceInclude Source="avares://Material3.UI/Theme/Typography.axaml" />
+                <ResourceInclude Source="avares://Material3.UI/Theme/Elevation.axaml" />
+                <ResourceInclude Source="avares://Material3.UI/Theme/State.axaml" />
+                <ResourceInclude Source="avares://Material3.UI/Theme/Motion.axaml" />
+
+                <!-- Control themes -->
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Button.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/CheckBox.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/RadioButton.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/ToggleButton.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/ToggleSwitch.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/TextBox.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/AutoCompleteBox.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Slider.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/ProgressBar.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/ScrollBar.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/ListBox.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/ComboBox.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Menu.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Flyout.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/TabControl.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/TabbedPage.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Misc.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Hosts.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Card.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Divider.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/NotificationCard.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/WindowDecorations.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Variants/PageSwitchButton.axaml" />
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Variants/TimePicker.axaml" />
+
+                <!-- Backwards-compat aliases (must come last to win over base themes) -->
+                <MergeResourceInclude Source="avares://Material3.UI/Themes/Compat/MdButton.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    <!-- Cross-cutting fade transitions previously defined in BiliLive App.axaml. -->
+    <Style Selector="Border">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="StackPanel">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Grid">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Easing="CubicEaseInOut" Duration="0.3"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="TextBlock">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Easing="CubicEaseInOut" Duration="0.3"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+</Styles>

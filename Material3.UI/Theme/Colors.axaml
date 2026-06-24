@@ -1,0 +1,166 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Material 3 baseline color scheme.
+        Roles documented at https://m3.material.io/styles/color/system/overview.
+        Colors are sourced from the M3 baseline scheme (seed #6750A4).
+        These can be overridden at runtime by ThemeManager.SetSeed() (Stage 6).
+    -->
+    <ResourceDictionary.ThemeDictionaries>
+
+        <ResourceDictionary x:Key="Light">
+            <!-- Primary -->
+            <SolidColorBrush x:Key="Primary" Color="#65558F" />
+            <SolidColorBrush x:Key="OnPrimary" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="PrimaryContainer" Color="#EADDFF" />
+            <SolidColorBrush x:Key="OnPrimaryContainer" Color="#21005D" />
+            <SolidColorBrush x:Key="InversePrimary" Color="#D0BCFE" />
+            <SolidColorBrush x:Key="OnPrimaryFixed" Color="#21005D" />
+            <SolidColorBrush x:Key="OnPrimaryFixedVariant" Color="#4F378A" />
+            <SolidColorBrush x:Key="PrimaryFixed" Color="#EADDFF" />
+            <SolidColorBrush x:Key="PrimaryFixedDim" Color="#D0BCFE" />
+
+            <!-- Secondary -->
+            <SolidColorBrush x:Key="Secondary" Color="#625B71" />
+            <SolidColorBrush x:Key="OnSecondary" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="SecondaryContainer" Color="#E8DEF8" />
+            <SolidColorBrush x:Key="OnSecondaryContainer" Color="#1D192B" />
+            <SolidColorBrush x:Key="OnSecondaryFixed" Color="#1D192B" />
+            <SolidColorBrush x:Key="OnSecondaryFixedVariant" Color="#4A4458" />
+            <SolidColorBrush x:Key="SecondaryFixed" Color="#E8DEF8" />
+            <SolidColorBrush x:Key="SecondaryFixedDim" Color="#CCC2DC" />
+
+            <!-- Tertiary -->
+            <SolidColorBrush x:Key="Tertiary" Color="#7D5260" />
+            <SolidColorBrush x:Key="OnTertiary" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TertiaryContainer" Color="#FFD8E4" />
+            <SolidColorBrush x:Key="OnTertiaryContainer" Color="#31111D" />
+            <SolidColorBrush x:Key="OnTertiaryFixed" Color="#31111D" />
+            <SolidColorBrush x:Key="OnTertiaryFixedVariant" Color="#633B48" />
+            <SolidColorBrush x:Key="TertiaryFixed" Color="#FFD8E4" />
+            <SolidColorBrush x:Key="TertiaryFixedDim" Color="#EFB8C8" />
+
+            <!-- Error -->
+            <SolidColorBrush x:Key="Error" Color="#B3261E" />
+            <SolidColorBrush x:Key="OnError" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="ErrorContainer" Color="#F9DEDC" />
+            <SolidColorBrush x:Key="OnErrorContainer" Color="#410E0B" />
+
+            <!-- Status (extended, not in M3 spec but used by NotificationCard) -->
+            <SolidColorBrush x:Key="Success" Color="#2E7D32" />
+            <SolidColorBrush x:Key="OnSuccess" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="SuccessContainer" Color="#A6F2A6" />
+            <SolidColorBrush x:Key="OnSuccessContainer" Color="#002106" />
+            <SolidColorBrush x:Key="Warning" Color="#EF6C00" />
+            <SolidColorBrush x:Key="OnWarning" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="WarningContainer" Color="#FFDCC1" />
+            <SolidColorBrush x:Key="OnWarningContainer" Color="#2E1500" />
+
+            <!-- Surface family -->
+            <SolidColorBrush x:Key="Background" Color="#FEF7FF" />
+            <SolidColorBrush x:Key="OnBackground" Color="#1D1B20" />
+            <SolidColorBrush x:Key="Surface" Color="#FEF7FF" />
+            <SolidColorBrush x:Key="SurfaceDim" Color="#DED8E1" />
+            <SolidColorBrush x:Key="SurfaceBright" Color="#FEF7FF" />
+            <SolidColorBrush x:Key="SurfaceVariant" Color="#E7E0EC" />
+            <SolidColorBrush x:Key="OnSurface" Color="#1D1B20" />
+            <SolidColorBrush x:Key="OnSurfaceVariant" Color="#49454F" />
+            <SolidColorBrush x:Key="InverseSurface" Color="#322F35" />
+            <SolidColorBrush x:Key="InverseOnSurface" Color="#F5EFF7" />
+
+            <!-- Surface Container tonal variants -->
+            <SolidColorBrush x:Key="SurfaceContainerLowest" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="SurfaceContainerLow" Color="#F7F2FA" />
+            <SolidColorBrush x:Key="SurfaceContainer" Color="#F3EDF7" />
+            <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#ECE6F0" />
+            <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#E6E0E9" />
+
+            <!-- Outline / shadow / scrim -->
+            <SolidColorBrush x:Key="Outline" Color="#79747E" />
+            <SolidColorBrush x:Key="OutlineVariant" Color="#CAC4D0" />
+            <SolidColorBrush x:Key="Shadow" Color="#000000" />
+            <SolidColorBrush x:Key="Scrim" Color="#000000" />
+
+            <!-- Surface tint used by elevation -->
+            <SolidColorBrush x:Key="SurfaceTint" Color="#65558F" />
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <!-- Primary -->
+            <SolidColorBrush x:Key="Primary" Color="#D0BCFE" />
+            <SolidColorBrush x:Key="OnPrimary" Color="#381E72" />
+            <SolidColorBrush x:Key="PrimaryContainer" Color="#4F378A" />
+            <SolidColorBrush x:Key="OnPrimaryContainer" Color="#EADDFF" />
+            <SolidColorBrush x:Key="InversePrimary" Color="#65558F" />
+            <SolidColorBrush x:Key="OnPrimaryFixed" Color="#21005D" />
+            <SolidColorBrush x:Key="OnPrimaryFixedVariant" Color="#4F378A" />
+            <SolidColorBrush x:Key="PrimaryFixed" Color="#EADDFF" />
+            <SolidColorBrush x:Key="PrimaryFixedDim" Color="#D0BCFE" />
+
+            <!-- Secondary -->
+            <SolidColorBrush x:Key="Secondary" Color="#CCC2DC" />
+            <SolidColorBrush x:Key="OnSecondary" Color="#332D41" />
+            <SolidColorBrush x:Key="SecondaryContainer" Color="#4A4458" />
+            <SolidColorBrush x:Key="OnSecondaryContainer" Color="#E8DEF8" />
+            <SolidColorBrush x:Key="OnSecondaryFixed" Color="#1D192B" />
+            <SolidColorBrush x:Key="OnSecondaryFixedVariant" Color="#4A4458" />
+            <SolidColorBrush x:Key="SecondaryFixed" Color="#E8DEF8" />
+            <SolidColorBrush x:Key="SecondaryFixedDim" Color="#CCC2DC" />
+
+            <!-- Tertiary -->
+            <SolidColorBrush x:Key="Tertiary" Color="#EFB8C8" />
+            <SolidColorBrush x:Key="OnTertiary" Color="#492532" />
+            <SolidColorBrush x:Key="TertiaryContainer" Color="#633B48" />
+            <SolidColorBrush x:Key="OnTertiaryContainer" Color="#FFD8E4" />
+            <SolidColorBrush x:Key="OnTertiaryFixed" Color="#31111D" />
+            <SolidColorBrush x:Key="OnTertiaryFixedVariant" Color="#633B48" />
+            <SolidColorBrush x:Key="TertiaryFixed" Color="#FFD8E4" />
+            <SolidColorBrush x:Key="TertiaryFixedDim" Color="#EFB8C8" />
+
+            <!-- Error -->
+            <SolidColorBrush x:Key="Error" Color="#F2B8B5" />
+            <SolidColorBrush x:Key="OnError" Color="#601410" />
+            <SolidColorBrush x:Key="ErrorContainer" Color="#8C1D18" />
+            <SolidColorBrush x:Key="OnErrorContainer" Color="#F9DEDC" />
+
+            <!-- Status -->
+            <SolidColorBrush x:Key="Success" Color="#81C784" />
+            <SolidColorBrush x:Key="OnSuccess" Color="#003910" />
+            <SolidColorBrush x:Key="SuccessContainer" Color="#1B5E20" />
+            <SolidColorBrush x:Key="OnSuccessContainer" Color="#A6F2A6" />
+            <SolidColorBrush x:Key="Warning" Color="#FFB74D" />
+            <SolidColorBrush x:Key="OnWarning" Color="#502400" />
+            <SolidColorBrush x:Key="WarningContainer" Color="#723600" />
+            <SolidColorBrush x:Key="OnWarningContainer" Color="#FFDCC1" />
+
+            <!-- Surface family -->
+            <SolidColorBrush x:Key="Background" Color="#141218" />
+            <SolidColorBrush x:Key="OnBackground" Color="#E6E0E9" />
+            <SolidColorBrush x:Key="Surface" Color="#141218" />
+            <SolidColorBrush x:Key="SurfaceDim" Color="#141218" />
+            <SolidColorBrush x:Key="SurfaceBright" Color="#3B383E" />
+            <SolidColorBrush x:Key="SurfaceVariant" Color="#49454F" />
+            <SolidColorBrush x:Key="OnSurface" Color="#E6E0E9" />
+            <SolidColorBrush x:Key="OnSurfaceVariant" Color="#CAC4D0" />
+            <SolidColorBrush x:Key="InverseSurface" Color="#E6E0E9" />
+            <SolidColorBrush x:Key="InverseOnSurface" Color="#322F35" />
+
+            <!-- Surface Container tonal variants -->
+            <SolidColorBrush x:Key="SurfaceContainerLowest" Color="#0F0D13" />
+            <SolidColorBrush x:Key="SurfaceContainerLow" Color="#1D1B20" />
+            <SolidColorBrush x:Key="SurfaceContainer" Color="#211F26" />
+            <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#2B2930" />
+            <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#36343B" />
+
+            <!-- Outline / shadow / scrim -->
+            <SolidColorBrush x:Key="Outline" Color="#938F99" />
+            <SolidColorBrush x:Key="OutlineVariant" Color="#49454F" />
+            <SolidColorBrush x:Key="Shadow" Color="#000000" />
+            <SolidColorBrush x:Key="Scrim" Color="#000000" />
+
+            <!-- Surface tint used by elevation -->
+            <SolidColorBrush x:Key="SurfaceTint" Color="#D0BCFE" />
+        </ResourceDictionary>
+
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

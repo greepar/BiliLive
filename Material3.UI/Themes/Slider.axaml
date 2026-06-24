@@ -1,0 +1,280 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24" Width="520">
+            <StackPanel Spacing="24">
+                <Slider Value="30" />
+                <Slider Value="60" TickFrequency="10" IsSnapToTickEnabled="True" />
+                <Slider IsEnabled="False" Value="40" />
+                <StackPanel Orientation="Horizontal" Spacing="24" Height="220">
+                    <Slider Orientation="Vertical" Value="50" />
+                    <Slider Orientation="Vertical" Value="70" TickFrequency="10" IsSnapToTickEnabled="True" />
+                    <Slider Orientation="Vertical" IsEnabled="False" Value="40" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--
+        Material 3 (Expressive) Slider.
+        Spec: https://m3.material.io/components/sliders/specs
+
+        Track height 16 px, fully rounded.
+        Active track  = Primary, Inactive track = SecondaryContainer.
+        Thumb is a vertical pill: 4 x 44, Primary, fully rounded.
+        6 px gap between thumb and the active/inactive tracks.
+        Hover: thumb grows to 6 px wide. Pressed: shrinks to 2 px.
+        Disabled: track 12% OnSurface, thumb 38% OnSurface.
+        Stop indicators (dots) drawn along the inactive track when IsSnapToTickEnabled.
+    -->
+
+    <!-- Horizontal active fill (left of thumb).
+         Has a 6 px right margin so it never touches the thumb. -->
+    <ControlTheme x:Key="M3SliderHorizontalActiveTrack" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{StaticResource M3ShapeFull}"
+                        Height="16"
+                        Margin="0,0,6,0"
+                        VerticalAlignment="Center" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Horizontal inactive fill (right of thumb).
+         Has a 6 px left margin so it never touches the thumb.
+         Stop indicators (dots) are drawn on top via an overlay panel. -->
+    <ControlTheme x:Key="M3SliderHorizontalInactiveTrack" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{StaticResource M3ShapeFull}"
+                        Height="16"
+                        Margin="6,0,0,0"
+                        VerticalAlignment="Center" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Vertical active fill (below thumb when not reversed).
+         6 px top margin keeps it off the thumb. -->
+    <ControlTheme x:Key="M3SliderVerticalActiveTrack" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{StaticResource M3ShapeFull}"
+                        Width="16"
+                        Margin="0,6,0,0"
+                        HorizontalAlignment="Center" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Vertical inactive fill (above thumb when not reversed).
+         6 px bottom margin keeps it off the thumb. -->
+    <ControlTheme x:Key="M3SliderVerticalInactiveTrack" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{StaticResource M3ShapeFull}"
+                        Width="16"
+                        Margin="0,0,0,6"
+                        HorizontalAlignment="Center" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Horizontal thumb: vertical pill 4 x 44, smooth width transition. -->
+    <ControlTheme x:Key="M3SliderHorizontalThumb" TargetType="Thumb">
+        <Setter Property="Background" Value="{DynamicResource Primary}" />
+        <Setter Property="Width" Value="4" />
+        <Setter Property="Height" Value="44" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Width"
+                                  Duration="{StaticResource M3DurationShort2}"
+                                  Easing="{StaticResource M3EasingStandard}" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{StaticResource M3ShapeFull}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- Vertical thumb: horizontal pill 44 x 4. -->
+    <ControlTheme x:Key="M3SliderVerticalThumb" TargetType="Thumb">
+        <Setter Property="Background" Value="{DynamicResource Primary}" />
+        <Setter Property="Width" Value="44" />
+        <Setter Property="Height" Value="4" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Height"
+                                  Duration="{StaticResource M3DurationShort2}"
+                                  Easing="{StaticResource M3EasingStandard}" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{StaticResource M3ShapeFull}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Slider}" TargetType="Slider">
+        <Setter Property="Background" Value="{DynamicResource SecondaryContainer}" />
+        <Setter Property="Foreground" Value="{DynamicResource Primary}" />
+        <Setter Property="BorderThickness" Value="0" />
+
+        <!-- Horizontal -->
+        <Style Selector="^:horizontal">
+            <Setter Property="MinHeight" Value="44" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DataValidationErrors>
+                        <Grid x:Name="SliderContainer" Background="Transparent">
+                            <Grid.Styles>
+                                <Style Selector="TickBar">
+                                    <Setter Property="ReservedSpace" Value="{Binding #PART_Track.Thumb.Bounds}" />
+                                </Style>
+                            </Grid.Styles>
+
+                            <!-- Stop indicators along the inactive track. Visible when snap-to-tick is on. -->
+                            <TickBar x:Name="StopIndicators"
+                                     Height="4"
+                                     VerticalAlignment="Center"
+                                     Placement="Top"
+                                     Orientation="Horizontal"
+                                     Ticks="{TemplateBinding Ticks}"
+                                     TickFrequency="{TemplateBinding TickFrequency}"
+                                     Minimum="{TemplateBinding Minimum}"
+                                     Maximum="{TemplateBinding Maximum}"
+                                     IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                     Fill="{DynamicResource OnSecondaryContainer}"
+                                     Opacity="0.38"
+                                     IsVisible="{TemplateBinding IsSnapToTickEnabled}" />
+
+                            <Track Name="PART_Track"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}"
+                                   IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                   Orientation="Horizontal">
+                                <Track.DecreaseButton>
+                                    <RepeatButton Name="PART_DecreaseButton"
+                                                  Theme="{StaticResource M3SliderHorizontalActiveTrack}"
+                                                  Background="{TemplateBinding Foreground}" />
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton Name="PART_IncreaseButton"
+                                                  Theme="{StaticResource M3SliderHorizontalInactiveTrack}"
+                                                  Background="{TemplateBinding Background}" />
+                                </Track.IncreaseButton>
+                                <Thumb Name="PART_Thumb"
+                                       Theme="{StaticResource M3SliderHorizontalThumb}" />
+                            </Track>
+                        </Grid>
+                    </DataValidationErrors>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <!-- Vertical -->
+        <Style Selector="^:vertical">
+            <Setter Property="MinWidth" Value="44" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DataValidationErrors>
+                        <Grid x:Name="SliderContainer" Background="Transparent">
+                            <Grid.Styles>
+                                <Style Selector="TickBar">
+                                    <Setter Property="ReservedSpace" Value="{Binding #PART_Track.Thumb.Bounds}" />
+                                </Style>
+                            </Grid.Styles>
+
+                            <TickBar x:Name="StopIndicators"
+                                     Width="4"
+                                     HorizontalAlignment="Center"
+                                     Placement="Left"
+                                     Orientation="Vertical"
+                                     Ticks="{TemplateBinding Ticks}"
+                                     TickFrequency="{TemplateBinding TickFrequency}"
+                                     Minimum="{TemplateBinding Minimum}"
+                                     Maximum="{TemplateBinding Maximum}"
+                                     IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                     Fill="{DynamicResource OnSecondaryContainer}"
+                                     Opacity="0.38"
+                                     IsVisible="{TemplateBinding IsSnapToTickEnabled}" />
+
+                            <Track Name="PART_Track"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}"
+                                   IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                   Orientation="Vertical">
+                                <Track.DecreaseButton>
+                                    <RepeatButton Name="PART_DecreaseButton"
+                                                  Theme="{StaticResource M3SliderVerticalActiveTrack}"
+                                                  Background="{TemplateBinding Foreground}" />
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton Name="PART_IncreaseButton"
+                                                  Theme="{StaticResource M3SliderVerticalInactiveTrack}"
+                                                  Background="{TemplateBinding Background}" />
+                                </Track.IncreaseButton>
+                                <Thumb Name="PART_Thumb"
+                                       Theme="{StaticResource M3SliderVerticalThumb}" />
+                            </Track>
+                        </Grid>
+                    </DataValidationErrors>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <!-- Hover: thumb width grows from 4 to 6 (height for vertical). -->
+        <Style Selector="^:horizontal:pointerover /template/ Thumb#PART_Thumb">
+            <Setter Property="Width" Value="6" />
+        </Style>
+        <Style Selector="^:vertical:pointerover /template/ Thumb#PART_Thumb">
+            <Setter Property="Height" Value="6" />
+        </Style>
+
+        <!-- Pressed: thumb shrinks to 2. -->
+        <Style Selector="^:horizontal:pressed /template/ Thumb#PART_Thumb">
+            <Setter Property="Width" Value="2" />
+        </Style>
+        <Style Selector="^:vertical:pressed /template/ Thumb#PART_Thumb">
+            <Setter Property="Height" Value="2" />
+        </Style>
+
+        <!-- Disabled: track 12% OnSurface, thumb 38% OnSurface. -->
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ RepeatButton#PART_DecreaseButton">
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+            </Style>
+            <Style Selector="^ /template/ RepeatButton#PART_IncreaseButton">
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+            </Style>
+            <Style Selector="^ /template/ Thumb#PART_Thumb">
+                <Setter Property="Background" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}" />
+            </Style>
+            <Style Selector="^ /template/ TickBar#StopIndicators">
+                <Setter Property="Fill" Value="{DynamicResource OnSurface}" />
+                <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

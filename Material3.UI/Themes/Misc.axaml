@@ -1,0 +1,471 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Material 3 control themes for miscellaneous primitives:
+            Expander, Separator, PathIcon, HyperlinkButton, GridSplitter.
+
+        Each ControlTheme uses x:Key="{x:Type T}" so it applies globally
+        whenever the host application merges this dictionary into the
+        Material3 theme.
+    -->
+
+    <Design.PreviewWith>
+        <Border Background="{DynamicResource Surface}" Padding="24">
+            <StackPanel Spacing="16" Width="360">
+
+                <Expander Header="Expander (Down)">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Expanded content line 1"/>
+                        <TextBlock Text="Expanded content line 2"/>
+                    </StackPanel>
+                </Expander>
+
+                <Expander Header="Expander expanded by default" IsExpanded="True">
+                    <TextBlock Text="Body content"/>
+                </Expander>
+
+                <Separator/>
+
+                <StackPanel Orientation="Horizontal" Spacing="12" Height="40">
+                    <PathIcon Data="M5,12 L10,17 L19,8"/>
+                    <PathIcon Data="M5,12 L10,17 L19,8" Foreground="{DynamicResource Primary}"/>
+                </StackPanel>
+
+                <StackPanel Spacing="4">
+                    <HyperlinkButton Content="Open documentation"/>
+                    <HyperlinkButton Content="Visited link" IsVisited="True"/>
+                </StackPanel>
+
+                <Grid ColumnDefinitions="*, Auto, *" Height="60">
+                    <Border Grid.Column="0" Background="{DynamicResource SurfaceContainerLow}"/>
+                    <GridSplitter Grid.Column="1"/>
+                    <Border Grid.Column="2" Background="{DynamicResource SurfaceContainerHigh}"/>
+                </Grid>
+
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--
+    ============================================================
+        Expander
+        Spec: https://m3.material.io/
+        - Container: SurfaceContainerHigh, 12dp corner, no border, padding 0
+        - Header row: 56dp tall, padding 16,0,12,0, hover state layer
+          8% OnSurface, chevron rotates 180deg when expanded
+        - Content area below: padding 16,0,16,16
+    ============================================================
+    -->
+
+    <ControlTheme x:Key="M3ExpanderHeaderToggleButton" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="Height" Value="56"/>
+        <Setter Property="Padding" Value="16,0,12,0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="{StaticResource M3LabelLargeFontSize}"/>
+        <Setter Property="FontWeight" Value="{StaticResource M3LabelLargeFontWeight}"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="HeaderRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Panel>
+                        <Border x:Name="StateLayer"
+                                Background="{DynamicResource OnSurface}"
+                                Opacity="0"
+                                IsHitTestVisible="False"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Grid ColumnDefinitions="*,Auto"
+                              Margin="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="PART_ContentPresenter"
+                                              Grid.Column="0"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True"/>
+                            <Border x:Name="ChevronContainer"
+                                    Grid.Column="1"
+                                    Width="24"
+                                    Height="24"
+                                    Margin="8,0,0,0"
+                                    Background="Transparent"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                                <Path x:Name="ExpandCollapseChevron"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Stretch="None"
+                                      Stroke="{DynamicResource OnSurfaceVariant}"
+                                      StrokeThickness="2"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Data="M 0 0 L 6 6 L 12 0"
+                                      RenderTransformOrigin="50%,50%">
+                                    <Path.RenderTransform>
+                                        <RotateTransform Angle="0"/>
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Border>
+                        </Grid>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Hover state layer 8% OnSurface -->
+        <Style Selector="^:pointerover /template/ Border#StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StateHoverOpacity}"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#StateLayer">
+            <Setter Property="Opacity" Value="{StaticResource M3StatePressedOpacity}"/>
+        </Style>
+
+        <!-- Chevron rotation driven by parent Expander via Tag -->
+        <Style Selector="^[Tag=expanded] /template/ Path#ExpandCollapseChevron">
+            <Style.Animations>
+                <Animation FillMode="Both"
+                           Easing="{StaticResource M3EasingStandard}"
+                           Duration="{StaticResource M3DurationShort2}">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="RotateTransform.Angle" Value="0"/>
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="RotateTransform.Angle" Value="180"/>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="^[Tag=collapsed] /template/ Path#ExpandCollapseChevron">
+            <Style.Animations>
+                <Animation FillMode="Both"
+                           Easing="{StaticResource M3EasingStandard}"
+                           Duration="{StaticResource M3DurationShort2}">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="RotateTransform.Angle" Value="180"/>
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="RotateTransform.Angle" Value="0"/>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Path#ExpandCollapseChevron">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Expander}" TargetType="Expander">
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceContainerHigh}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeMedium}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Top"/>
+        <Setter Property="MinHeight" Value="56"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="ExpanderRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <DockPanel LastChildFill="True">
+                        <ToggleButton x:Name="PART_ToggleButton"
+                                      Theme="{StaticResource M3ExpanderHeaderToggleButton}"
+                                      DockPanel.Dock="Top"
+                                      MinHeight="{TemplateBinding MinHeight}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      IsEnabled="{TemplateBinding IsEnabled}"
+                                      Content="{TemplateBinding Header}"
+                                      ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                      IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"/>
+                        <Border x:Name="ExpanderContent"
+                                IsVisible="{TemplateBinding IsExpanded}"
+                                Padding="16,0,16,16"
+                                HorizontalAlignment="Stretch">
+                            <ContentPresenter x:Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              Padding="{TemplateBinding Padding}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Drive chevron rotation through the inner toggle's Tag -->
+        <Style Selector="^:expanded /template/ ToggleButton#PART_ToggleButton">
+            <Setter Property="Tag" Value="expanded"/>
+        </Style>
+        <Style Selector="^:not(:expanded) /template/ ToggleButton#PART_ToggleButton">
+            <Setter Property="Tag" Value="collapsed"/>
+        </Style>
+
+        <!-- Direction-specific docking. Down is default; mirror header position for the others. -->
+        <Style Selector="^:up /template/ ToggleButton#PART_ToggleButton">
+            <Setter Property="DockPanel.Dock" Value="Bottom"/>
+        </Style>
+        <Style Selector="^:left /template/ ToggleButton#PART_ToggleButton">
+            <Setter Property="DockPanel.Dock" Value="Right"/>
+        </Style>
+        <Style Selector="^:right /template/ ToggleButton#PART_ToggleButton">
+            <Setter Property="DockPanel.Dock" Value="Left"/>
+        </Style>
+        <Style Selector="^:down /template/ ToggleButton#PART_ToggleButton">
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+        </Style>
+
+        <Style Selector="^:disabled /template/ Border#ExpanderRoot">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!--
+    ============================================================
+        Separator
+        Thin horizontal divider, OutlineVariant fill, 1dp.
+    ============================================================
+    -->
+
+    <ControlTheme x:Key="{x:Type Separator}" TargetType="Separator">
+        <Setter Property="Background" Value="{DynamicResource OutlineVariant}"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Height="{TemplateBinding Height}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Background="{TemplateBinding Background}"/>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+    ============================================================
+        PathIcon
+        Default 24x24, OnSurface fill. The Path geometry comes from the
+        consumer's Data property; this theme just sets the defaults and
+        a Viewbox-based template so the geometry scales correctly.
+    ============================================================
+    -->
+
+    <ControlTheme x:Key="{x:Type PathIcon}" TargetType="PathIcon">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+        <Setter Property="Width" Value="24"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <Viewbox Width="{TemplateBinding Width}"
+                             Height="{TemplateBinding Height}">
+                        <Path Fill="{TemplateBinding Foreground}"
+                              Data="{TemplateBinding Data}"
+                              Stretch="Uniform"/>
+                    </Viewbox>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!--
+    ============================================================
+        HyperlinkButton
+        Text-only button with Primary foreground, no chrome, hover
+        underline. Visited links get a Tertiary foreground (M3 itself
+        does not strictly define a visited state).
+    ============================================================
+    -->
+
+    <ControlTheme x:Key="{x:Type HyperlinkButton}" TargetType="HyperlinkButton">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="CornerRadius" Value="{StaticResource M3ShapeExtraSmall}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="{DynamicResource M3FontDefault}"/>
+        <Setter Property="FontSize" Value="{StaticResource M3LabelLargeFontSize}"/>
+        <Setter Property="FontWeight" Value="{StaticResource M3LabelLargeFontWeight}"/>
+        <Setter Property="TextBlock.TextDecorations" Value="{x:Null}"/>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter x:Name="PART_ContentPresenter"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  RecognizesAccessKey="True"/>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Hover: underline the label -->
+        <Style Selector="^:pointerover">
+            <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+        </Style>
+
+        <!-- Pressed: keep underline, slightly emphasized -->
+        <Style Selector="^:pressed">
+            <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
+        </Style>
+        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="0.85"/>
+        </Style>
+
+        <!-- Visited: Tertiary foreground -->
+        <Style Selector="^:visited">
+            <Setter Property="Foreground" Value="{DynamicResource Tertiary}"/>
+        </Style>
+        <Style Selector="^:visited /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Tertiary}"/>
+        </Style>
+        <Style Selector="^:visited:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource Tertiary}"/>
+        </Style>
+
+        <!-- Disabled -->
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource OnSurface}"/>
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContentOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!--
+    ============================================================
+        GridSplitter
+        Thin draggable line. OutlineVariant in idle state, Primary at
+        40% alpha on hover/drag. The control auto-detects vertical vs
+        horizontal orientation and sets the appropriate cursor.
+    ============================================================
+    -->
+
+    <ControlTheme x:Key="{x:Type GridSplitter}" TargetType="GridSplitter">
+        <Setter Property="Focusable" Value="True"/>
+        <Setter Property="MinWidth" Value="1"/>
+        <Setter Property="MinHeight" Value="1"/>
+        <Setter Property="Width" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource OutlineVariant}"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="PreviewContent">
+            <Template>
+                <Rectangle Fill="{DynamicResource Primary}" Opacity="0.4"/>
+            </Template>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="SplitterRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"/>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Horizontal splitter (Width=Auto, Height=1) when sized via attached props -->
+        <Style Selector="^[ResizeDirection=Rows]">
+            <Setter Property="Width" Value="NaN"/>
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="MinWidth" Value="1"/>
+            <Setter Property="MinHeight" Value="1"/>
+        </Style>
+        <Style Selector="^[ResizeDirection=Columns]">
+            <Setter Property="Width" Value="1"/>
+            <Setter Property="Height" Value="NaN"/>
+            <Setter Property="MinWidth" Value="1"/>
+            <Setter Property="MinHeight" Value="1"/>
+        </Style>
+
+        <Style Selector="^:pointerover /template/ Border#SplitterRoot">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="0.4"/>
+        </Style>
+        <Style Selector="^:pressed /template/ Border#SplitterRoot">
+            <Setter Property="Background" Value="{DynamicResource Primary}"/>
+            <Setter Property="Opacity" Value="0.6"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#SplitterRoot">
+            <Setter Property="Opacity" Value="{StaticResource M3StateDisabledContainerOpacity}"/>
+        </Style>
+    </ControlTheme>
+
+    <!--
+    ============================================================
+        ItemsControl
+        Avalonia ships ItemsControl without a default ControlTheme,
+        so consumers that use a bare <ItemsControl> get an empty
+        render. Provide a minimal ScrollViewer-less template so the
+        ItemsPresenter actually appears.
+    ============================================================
+    -->
+
+    <ControlTheme x:Key="{x:Type ItemsControl}" TargetType="ItemsControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+</ResourceDictionary>
